@@ -1,0 +1,46 @@
+style.
+  .database-table th, .database-table td {
+  border-bottom: 2px rgba(146, 146, 146, 0.09) solid;
+  text-align: left;
+  }
+  .database-table thead th {
+  padding: 10px 0
+  }
+  .database-table tbody td {
+  color: #b6b6b6;
+  padding: 9px 0;
+  font-size: 15.5px
+  }
+  .database-table tr > :first-child {
+  padding-left: 50px;
+  }
+  .database-table tbody tr:hover {
+  background-color: #fafafa;
+  }
+  .database-table td a.name {
+  color: black;
+  text-decoration: none;
+  opacity: 0.7;
+  }
+  .database-table td a:hover {
+  color: #00bdec;
+  opacity: 1;
+  }
+  .database-table .check-out {
+  visibility: hidden;
+  color:#00bdec
+  }
+  .database-table tbody tr:hover .check-out {
+  visibility: visible;
+  }
+  @media only screen and (max-width: 1150px) {
+  th:nth-child(2), td:nth-child(2), colgroup col:nth-child(2) {
+  display: none;
+  }
+  }
+  @media only screen and (max-width: 991px) {
+  .database-table .check-out {
+  visibility: visible;
+  color:#00bdec
+  }
+  }
