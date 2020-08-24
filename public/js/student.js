@@ -13,7 +13,7 @@ export const newStudent = async (
   try {
     const res = await axios({
       method: "POST",
-      url: "http://127.0.0.1:8080/api/v1/students",
+      url: "/api/v1/students",
       data: {
         firstName,
         lastName,
@@ -28,10 +28,9 @@ export const newStudent = async (
     if (res.data.status === "success") {
       showAlert("success", "Student added successfully!");
       window.setTimeout(() => {
-        location.assign(`/students/${res.data.data.student.slug}`);
+        location.assign("/students");
       }, 1500);
     }
-    console.log(res);
   } catch (err) {
     showAlert("error", err.response.data.message);
     console.log(err.response.data);
@@ -51,7 +50,7 @@ export const editStudent = async (
   try {
     const res = await axios({
       method: "PATCH",
-      url: `http://127.0.0.1:8080/api/v1/students/${id}`,
+      url: `/api/v1/students/${id}`,
       data: {
         firstName,
         lastName,
@@ -66,10 +65,9 @@ export const editStudent = async (
     if (res.data.status === "success") {
       showAlert("success", "Student added successfully!");
       window.setTimeout(() => {
-        location.assign(`/students/${res.data.data.student.slug}`);
+        location.assign("/students");
       }, 1500);
     }
-    console.log(res);
   } catch (err) {
     showAlert("error", err.response.data.message);
     console.log(err.response.data);

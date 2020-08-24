@@ -36,6 +36,7 @@ const filtering = () => {
     } else {
       $(this).css("display", "none");
     }
+    // });
+    // console.log(count);
   });
-  console.log(count);
 };

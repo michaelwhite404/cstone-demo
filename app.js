@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const cookieParser = require("cookie-parser");
 const pug = require("pug");
 const path = require("path");
+const compression = require("compression");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -51,10 +52,12 @@ app.use(mongoSanitize());
 // Data Sanitization angainst XSS attacks
 app.use(xss());
 
-app.use((req, res, next) => {
-  console.log(req.cookies);
-  next();
-});
+app.use(compression());
+
+// app.use((req, res, next) => {
+//   console.log(req.cookies);
+//   next();
+// });
 
 app.use("/", viewRouter);
 app.use("/api/v1/chromebooks", chromebookRouter);

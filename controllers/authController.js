@@ -57,7 +57,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     );
   }
   req.body.password = makePassword(12);
-  console.log(req.body.password);
   const newEmployee = await Employee.create(req.body);
   createSendToken(newEmployee, 201, res);
 });
@@ -72,7 +71,6 @@ exports.createEmployee = catchAsync(async (req, res, next) => {
     );
   }
   req.body.password = makePassword(12);
-  console.log(req.body.password);
   const newEmployee = await Employee.create(req.body);
 
   const url = `${req.protocol}://${req.get("host")}`;
@@ -136,7 +134,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   // 2.) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
+  // console.log(decoded);
   // 3.) Check if employee still exists
   const freshEmployee = await Employee.findById(decoded.id);
   if (!freshEmployee) {
@@ -176,7 +174,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
       // THERE IS A LOGGED IN USER
       res.locals.employee = freshEmployee;
-      console.log(res.locals.employee);
+      // console.log(res.locals.employee);
       return next();
     } catch (err) {
       return next();

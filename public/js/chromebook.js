@@ -13,7 +13,7 @@ export const editChromebook = async (
   try {
     const res = await axios({
       method: "PATCH",
-      url: `http://127.0.0.1:8080/api/v1/chromebooks/${id}`,
+      url: `/api/v1/chromebooks/${id}`,
       data: {
         name,
         brand,
@@ -46,7 +46,7 @@ export const addChromebook = async (
   try {
     const res = await axios({
       method: "POST",
-      url: "http://127.0.0.1:8080/api/v1/chromebooks",
+      url: "/api/v1/chromebooks",
       data: {
         name,
         brand,
@@ -72,7 +72,7 @@ export const checkOut = async (lastUser, chromebookId) => {
   try {
     const res = await axios({
       method: "PATCH",
-      url: `http://127.0.0.1:8080/api/v1/chromebooks/${chromebookId}/check-out`,
+      url: `/api/v1/chromebooks/${chromebookId}/check-out`,
       data: { lastUser },
     });
 
@@ -91,7 +91,7 @@ export const checkIn = async (chromebookId) => {
   try {
     const res = await axios({
       method: "PATCH",
-      url: `http://127.0.0.1:8080/api/v1/chromebooks/${chromebookId}/check-in`,
+      url: `/api/v1/chromebooks/${chromebookId}/check-in`,
       data: {},
     });
 
@@ -103,6 +103,6 @@ export const checkIn = async (chromebookId) => {
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
-    console.log(err.response.data);
+    // console.log(err.response.data);
   }
 };

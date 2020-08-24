@@ -116,7 +116,7 @@ employeeSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       10
     );
 
-    console.log(changedTimeStamp, JWTTimestamp);
+    // console.log(changedTimeStamp, JWTTimestamp);
     return JWTTimestamp < changedTimeStamp;
   }
 
