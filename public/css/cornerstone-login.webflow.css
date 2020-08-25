@@ -432,7 +432,8 @@ a {
   margin-right: 10px;
 }
 
-.chromebook-table-wrapper {
+.chromebook-table-wrapper,
+.tablet-table-wrapper {
   font-family: "Google Sans Medium", sans-serif;
 }
 
@@ -762,7 +763,8 @@ a {
   display: none;
 }
 
-.chromebook-search-input {
+.chromebook-search-input,
+.tablet-search-input {
   display: inline-block;
   width: 200px;
   height: 35px;
@@ -775,7 +777,8 @@ a {
   font-size: 13px;
 }
 
-.chromebook-search-wrapper {
+.chromebook-search-wrapper,
+.tablet-search-wrapper {
   position: static;
   left: 50%;
   top: 50%;

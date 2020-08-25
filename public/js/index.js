@@ -1,6 +1,7 @@
 import "@babel/polyfill";
 import { login, logout } from "./login";
 import { editChromebook, addChromebook, checkOut, checkIn } from "./chromebook";
+import { editTablet, addTablet, checkOutTablet, checkInTablet } from "./tablet";
 import { newUser, editUser } from "./user";
 import { newStudent, editStudent } from "./student";
 import { updatePassword } from "./password";
@@ -10,6 +11,8 @@ const loginForm = $("#login-form");
 const logOutBtn = $("#log-out-button");
 const editChromebookForm = $("#edit-chromebook");
 const addChromebookForm = $("#add-chromebook");
+const editTabletForm = $("#edit-tablet");
+const addTabletForm = $("#add-tablet");
 const newUserForm = $("#new-user");
 const editUserForm = $("#edit-user");
 const newStudentForm = $("#new-student");
@@ -53,6 +56,33 @@ if (addChromebookForm) {
     const macAddress = $("#create-chromebook-mac").val();
     const status = $("#create-chromebook-status").find(":selected").val();
     addChromebook(name, brand, model, serialNumber, macAddress, status);
+  });
+}
+
+if (editTabletForm) {
+  $(editTabletForm).on("submit", (e) => {
+    e.preventDefault();
+    const name = $("#edit-tablet-name").val();
+    const brand = $("#edit-tablet-brand").val();
+    const model = $("#edit-tablet-model").val();
+    const serialNumber = $("#edit-tablet-sn").val();
+    const macAddress = $("#edit-tablet-mac").val();
+    const status = $("#edit-tablet-status").find(":selected").val();
+    const id = $("#edit-tablet").attr("data-tablet");
+    editTablet(name, brand, model, serialNumber, macAddress, status, id);
+  });
+}
+
+if (addTabletForm) {
+  $(addTabletForm).on("submit", (e) => {
+    e.preventDefault();
+    const name = $("#create-tablet-name").val();
+    const brand = $("#create-tablet-brand").val();
+    const model = $("#create-tablet-model").val();
+    const serialNumber = $("#create-tablet-sn").val();
+    const macAddress = $("#create-tablet-mac").val();
+    const status = $("#create-tablet-status").find(":selected").val();
+    addTablet(name, brand, model, serialNumber, macAddress, status);
   });
 }
 
@@ -196,9 +226,13 @@ if ($(checkOutForm)) {
     e.preventDefault();
     changeValue = $(gradeSelect).val();
     const studentId = $(`select.student-list[value="${changeValue}"]`).val();
-    const chromebookId = $(checkOutForm).attr("data-chromebook");
     if (changeValue != -1 && studentId != -1) {
-      checkOut(studentId, chromebookId);
+      const deviceId = $(checkOutForm).attr("data-device");
+      if (window.location.pathname.split("/")[1] === "tablets") {
+        checkOutTablet(studentId, deviceId);
+      } else {
+        checkOut(studentId, deviceId);
+      }
     }
   });
 }
@@ -214,8 +248,12 @@ if (checkInForm) {
   $(checkInForm).on("submit", function (e) {
     e.preventDefault();
     if ($("#checkin-checkbox").is(":checked")) {
-      const chromebookId = $(checkInForm).attr("data-chromebook");
-      checkIn(chromebookId);
+      const deviceId = $(checkInForm).attr("data-device");
+      if (window.location.pathname.split("/")[1] === "tablets") {
+        checkInTablet(deviceId);
+      } else {
+        checkIn(deviceId);
+      }
     }
   });
 }

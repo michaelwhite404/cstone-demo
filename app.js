@@ -12,6 +12,7 @@ const compression = require("compression");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const chromebookRouter = require("./routes/chromebookRoutes");
+const tabletRouter = require("./routes/tabletRoutes");
 const employeeRouter = require("./routes/employeeRoutes");
 const studentRouter = require("./routes/studentRoutes");
 const viewRouter = require("./routes/viewRoutes");
@@ -61,6 +62,7 @@ app.use(compression());
 
 app.use("/", viewRouter);
 app.use("/api/v1/chromebooks", chromebookRouter);
+app.use("/api/v1/tablets", tabletRouter);
 app.use("/api/v1/users", employeeRouter);
 app.use("/api/v1/students", studentRouter);
 

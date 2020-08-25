@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const Chromebook = require("../models/chromebookModel");
+const Tablet = require("../models/tabletModel");
 const AppError = require("../utils/appError");
 const Employee = require("../models/employeeModel");
 const Student = require("../models/studentModel");
@@ -90,6 +91,82 @@ exports.getAllChromebooksPage = catchAsync(async (req, res, next) => {
   res.status(200).render("allChromebooks", {
     title: "Chromebooks",
     chromebooks,
+  });
+});
+
+exports.addTabletPage = (req, res, next) => {
+  res.status(200).render("addTablet", {
+    title: "Add New Tablet",
+  });
+};
+
+exports.getTabletPage = catchAsync(async (req, res, next) => {
+  const tablet = await Tablet.findOne({
+    slug: req.params.slug,
+  })
+    .populate({
+      path: "lastUser",
+      fields: "fullName grade",
+    })
+    .populate({
+      path: "teacherCheckOut",
+      fields: "fullName email",
+    });
+
+  if (!tablet) {
+    return next(new AppError("No tablet found with that ID", 404));
+  }
+
+  const grades = await Student.aggregate([
+    {
+      $group: {
+        _id: "$grade",
+        count: { $sum: 1 },
+        students: { $push: { id: "$_id", fullName: "$fullName" } },
+      },
+    },
+    {
+      $project: {
+        grade: "$_id",
+        students: 1,
+        count: 1,
+        _id: 0,
+      },
+    },
+    {
+      $sort: { grade: 1 },
+    },
+  ]);
+
+  res.status(200).render("oneTablet", {
+    title: tablet.name,
+    tablet,
+    grades,
+  });
+});
+
+exports.editTabletPage = catchAsync(async (req, res, next) => {
+  const tablet = await Tablet.findOne({ slug: req.params.slug });
+
+  if (!tablet) {
+    return next(new AppError("No tablet found with that ID", 404));
+  }
+
+  res.status(200).render("editTablet", {
+    title: "Edit Tablet",
+    tablet,
+  });
+});
+
+exports.getAllTabletsPage = catchAsync(async (req, res, next) => {
+  const tablets = await Tablet.find().sort({ name: 1 }).populate({
+    path: "lastUser",
+    fields: "fullName grade",
+  });
+
+  res.status(200).render("allTablets", {
+    title: "Tablets",
+    tablets,
   });
 });
 

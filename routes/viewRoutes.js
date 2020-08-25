@@ -45,6 +45,34 @@ router.get(
   viewsController.getChromebookPage
 );
 
+// All Tablets - "/tablets" (DONE!!)
+router.get(
+  "/tablets",
+  authController.protect,
+  viewsController.getAllTabletsPage
+);
+
+// Add Tablet - "/tablets/add" (DONE!!)
+router.get(
+  "/tablets/add",
+  authController.protect,
+  viewsController.addTabletPage
+);
+
+// Edit Tablet - "/tablets/:slug/edit" (DONE!!)
+router.get(
+  "/tablets/:slug/edit",
+  authController.protect,
+  viewsController.editTabletPage
+);
+
+// One Tablet "/tablets/:slug" (DONE!!)
+router.get(
+  "/tablets/:slug",
+  authController.protect,
+  viewsController.getTabletPage
+);
+
 // All Users (Page not created) - "/users"
 
 // Create user - "/users/new" (DONE!!)
