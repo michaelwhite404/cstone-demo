@@ -8,8 +8,9 @@ const Student = require("../models/studentModel");
 exports.getHomePage = (req, res, next) => {
   if (res.locals.employee) {
     res.redirect("/dashboard");
+  } else {
+    res.status(200).render("login");
   }
-  res.status(200).render("login");
 };
 
 exports.getDashboardPage = catchAsync(async (req, res, next) => {
