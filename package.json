@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "dev": "nodemon server.js",
     "start:dev": "NODE_ENV=development nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
@@ -15,8 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
+    "capitalize": "^2.0.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
@@ -30,6 +31,7 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.4.11",
     "nodemon": "^2.0.4",
+    "pluralize": "^8.0.0",
     "pug": "^3.0.0",
     "slugify": "^1.4.5",
     "validator": "^13.1.1",

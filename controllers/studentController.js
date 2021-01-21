@@ -2,9 +2,15 @@ const Student = require("../models/studentModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const slugify = require("slugify");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllStudents = catchAsync(async (req, res, next) => {
-  const students = await Student.find();
+  const features = new APIFeatures(Student.find(), req.query)
+    .filter()
+    .limitFields()
+    .paginate()
+  
+  const students = await features.query;
 
   // SEND RESPONSE
   res.status(200).json({

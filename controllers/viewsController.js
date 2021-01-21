@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
-const Chromebook = require("../models/chromebookModel");
-const Tablet = require("../models/tabletModel");
+// const Chromebook = require("../models/chromebookModel");
+// const Tablet = require("../models/tabletModel");
+const Device = require("../models/deviceModel")
 const AppError = require("../utils/appError");
 const Employee = require("../models/employeeModel");
 const Student = require("../models/studentModel");
@@ -26,8 +27,9 @@ exports.addChromebookPage = (req, res, next) => {
 };
 
 exports.getChromebookPage = catchAsync(async (req, res, next) => {
-  const chromebook = await Chromebook.findOne({
+  const chromebook = await Device.findOne({
     slug: req.params.slug,
+    deviceType: "chromebook"
   })
     .populate({
       path: "lastUser",
@@ -71,7 +73,10 @@ exports.getChromebookPage = catchAsync(async (req, res, next) => {
 });
 
 exports.editChromebookPage = catchAsync(async (req, res, next) => {
-  const chromebook = await Chromebook.findOne({ slug: req.params.slug });
+  const chromebook = await Device.findOne({ 
+    slug: req.params.slug,
+    deviceType: "chromebook"
+  });
 
   if (!chromebook) {
     return next(new AppError("No chromebook found with that ID", 404));
@@ -84,7 +89,7 @@ exports.editChromebookPage = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllChromebooksPage = catchAsync(async (req, res, next) => {
-  const chromebooks = await Chromebook.find().sort({ name: 1 }).populate({
+  const chromebooks = await Device.find({deviceType: "chromebook"}).sort({ name: 1 }).populate({
     path: "lastUser",
     fields: "fullName grade",
   });
@@ -102,8 +107,9 @@ exports.addTabletPage = (req, res, next) => {
 };
 
 exports.getTabletPage = catchAsync(async (req, res, next) => {
-  const tablet = await Tablet.findOne({
+  const tablet = await Device.findOne({
     slug: req.params.slug,
+    deviceType: "tablet"
   })
     .populate({
       path: "lastUser",
@@ -147,7 +153,10 @@ exports.getTabletPage = catchAsync(async (req, res, next) => {
 });
 
 exports.editTabletPage = catchAsync(async (req, res, next) => {
-  const tablet = await Tablet.findOne({ slug: req.params.slug });
+  const tablet = await Device.findOne({
+    slug: req.params.slug,
+    deviceType: "tablet"
+  });
 
   if (!tablet) {
     return next(new AppError("No tablet found with that ID", 404));
@@ -160,7 +169,7 @@ exports.editTabletPage = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllTabletsPage = catchAsync(async (req, res, next) => {
-  const tablets = await Tablet.find().sort({ name: 1 }).populate({
+  const tablets = await Device.find({ deviceType: "tablet" }).sort({ name: 1 }).populate({
     path: "lastUser",
     fields: "fullName grade",
   });
