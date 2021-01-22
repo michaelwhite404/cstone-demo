@@ -1,6 +1,4 @@
 const catchAsync = require("../utils/catchAsync");
-// const Chromebook = require("../models/chromebookModel");
-// const Tablet = require("../models/tabletModel");
 const Device = require("../models/deviceModel")
 const AppError = require("../utils/appError");
 const Employee = require("../models/employeeModel");

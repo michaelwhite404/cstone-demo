@@ -6,13 +6,23 @@ const capitalize = require('capitalize');
 const slugify = require('slugify');
 
 const preCheck = (req) => {
+  // Init
   let key = "doc";
   let filter = {};
-  if (req.params.id) filter._id = req.params.id 
+
+  if (req.params) {
+    filter = {...req.params}
+    if (filter.id) {
+      filter._id = filter.id;
+      delete filter.id;
+    }
+  }
+  
   if (req.device) {
     filter.deviceType = req.device;
     key = req.device;
   }
+  if (req.key) key = req.key;
 
   let info = {
     filter,

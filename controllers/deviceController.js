@@ -2,6 +2,7 @@ const Device = require("../models/deviceModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
+const CheckoutLog = require("../models/checkoutLogModel");
 
 exports.getAllDevices = factory.getAll(Device);
 exports.getDevice = factory.getOne(Device);
@@ -27,10 +28,18 @@ exports.checkOutDevice = catchAsync(async (req, res, next) => {
   device.checkedOut = true;
   device.lastCheckOut = Date.now();
   device.lastUser = req.body.lastUser;
-  device.teacherCheckOut = req.employee.id;;
+  device.teacherCheckOut = req.employee.id;
   device.status = "Checked Out";
 
   await device.save({ validateBeforeSave: false });
+
+  await CheckoutLog.create({
+    device: device._id,
+    checkOutDate: Date.now(),
+    deviceUser: req.body.lastUser,
+    teacherCheckOut: req.employee.id,
+    checkedIn: false
+  });
 
   res.status(200).json({
     status: "success",
@@ -60,6 +69,13 @@ exports.checkInDevice = catchAsync(async (req, res, next) => {
   device.status = "Available";
 
   await device.save({ validateBeforeSave: false });
+
+  const log = await CheckoutLog.findOne({ device: device._id, checkedIn: false });
+  log.checkInDate = Date.now();
+  log.teacherCheckIn = req.employee.id,
+  log.checkedIn = true;
+
+  await log.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: "success",

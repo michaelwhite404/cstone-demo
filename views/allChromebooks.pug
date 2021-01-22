@@ -49,7 +49,7 @@ block content
                   | #{chromebook.status}
                 if chromebook.status === 'Available'
                   td 
-                    a.check-out(href=`/chromebooks/${chromebook.slug}`)
+                    a.check-out(href=`/chromebooks/${chromebook.slug}#check-out`)
                       b Check Out >
                 if chromebook.status === 'Checked Out'
                   //- Come Back And Implement

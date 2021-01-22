@@ -87,3 +87,6 @@ block content
 block addEnd
   script.
     $('h1').css('display', 'none')
+    if (window.location.hash === "#check-out") {
+      $(".chromebook-checkout-container").addClass("blinking");
+    }

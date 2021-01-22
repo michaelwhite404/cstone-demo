@@ -11,7 +11,8 @@ const compression = require("compression");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const deviceRouter = require("./routes/deviceRouter")
+const deviceRouter = require("./routes/deviceRoutes");
+const logRouter = require("./routes/logRoutes");
 const employeeRouter = require("./routes/employeeRoutes");
 const studentRouter = require("./routes/studentRoutes");
 const viewRouter = require("./routes/viewRoutes");
@@ -62,6 +63,7 @@ app.use(compression());
 app.use("/", viewRouter);
 app.use("/api/v1/chromebooks", (req, res, next) => {req.device = "chromebook"; next();} , deviceRouter);
 app.use("/api/v1/tablets", (req, res, next) => {req.device = "tablet"; next();}, deviceRouter);
+app.use("/api/v1/logs", (req, res, next) => {req.key = "log"; next();}, logRouter);
 app.use("/api/v1/users", employeeRouter);
 app.use("/api/v1/students", studentRouter);
 
