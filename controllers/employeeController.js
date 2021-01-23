@@ -9,7 +9,7 @@ exports.getAllEmployees = catchAsync(async (req, res, next) => {
   // SEND RESPONSE
   res.status(200).json({
     status: "success",
-    requestedAt: req.requestTime,
+    requestedAt: Date(),
     results: employees.length,
     data: {
       employees,
@@ -61,6 +61,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
+    requestedAt: Date(),
     data: {
       employee,
     },

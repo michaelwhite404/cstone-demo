@@ -1,18 +1,14 @@
 import "@babel/polyfill";
-import { login, logout } from "./login";
-import { editChromebook, addChromebook, checkOut, checkIn } from "./chromebook";
-import { editTablet, addTablet, checkOutTablet, checkInTablet } from "./tablet";
 import { newUser, editUser } from "./user";
 import { newStudent, editStudent } from "./student";
 import { updatePassword } from "./password";
+import { addDevice, checkInDevice, checkOutDevice, editDevice } from "./device";
 
 // DOM ELEMENTS
 const loginForm = $("#login-form");
 const logOutBtn = $("#log-out-button");
-const editChromebookForm = $("#edit-chromebook");
-const addChromebookForm = $("#add-chromebook");
-const editTabletForm = $("#edit-tablet");
-const addTabletForm = $("#add-tablet");
+const editDeviceForm = $("#edit-device");
+const addDeviceForm = $("#add-device");
 const newUserForm = $("#new-user");
 const editUserForm = $("#edit-user");
 const newStudentForm = $("#new-student");
@@ -32,57 +28,29 @@ if (loginForm) {
 
 if (logOutBtn) $(logOutBtn).on("click", logout);
 
-if (editChromebookForm) {
-  $(editChromebookForm).on("submit", (e) => {
+if (editDeviceForm) {
+  $(editDeviceForm).on("submit", (e) => {
     e.preventDefault();
-    const name = $("#edit-chromebook-name").val();
-    const brand = $("#edit-chromebook-brand").val();
-    const model = $("#edit-chromebook-model").val();
-    const serialNumber = $("#edit-chromebook-sn").val();
-    const macAddress = $("#edit-chromebook-mac").val();
-    const status = $("#edit-chromebook-status").find(":selected").val();
-    const id = $("#edit-chromebook").attr("data-chromebook");
-    editChromebook(name, brand, model, serialNumber, macAddress, status, id);
+    const name = $("#edit-device-name").val();
+    const brand = $("#edit-device-brand").val();
+    const model = $("#edit-device-model").val();
+    const serialNumber = $("#edit-device-sn").val();
+    const macAddress = $("#edit-device-mac").val();
+    const status = $("#edit-device-status").find(":selected").val();
+    editDevice(name, brand, model, serialNumber, macAddress, status);
   });
 }
 
-if (addChromebookForm) {
-  $(addChromebookForm).on("submit", (e) => {
+if (addDeviceForm) {
+  $(addDeviceForm).on("submit", (e) => {
     e.preventDefault();
-    const name = $("#create-chromebook-name").val();
-    const brand = $("#create-chromebook-brand").val();
-    const model = $("#create-chromebook-model").val();
-    const serialNumber = $("#create-chromebook-sn").val();
-    const macAddress = $("#create-chromebook-mac").val();
-    const status = $("#create-chromebook-status").find(":selected").val();
-    addChromebook(name, brand, model, serialNumber, macAddress, status);
-  });
-}
-
-if (editTabletForm) {
-  $(editTabletForm).on("submit", (e) => {
-    e.preventDefault();
-    const name = $("#edit-tablet-name").val();
-    const brand = $("#edit-tablet-brand").val();
-    const model = $("#edit-tablet-model").val();
-    const serialNumber = $("#edit-tablet-sn").val();
-    const macAddress = $("#edit-tablet-mac").val();
-    const status = $("#edit-tablet-status").find(":selected").val();
-    const id = $("#edit-tablet").attr("data-tablet");
-    editTablet(name, brand, model, serialNumber, macAddress, status, id);
-  });
-}
-
-if (addTabletForm) {
-  $(addTabletForm).on("submit", (e) => {
-    e.preventDefault();
-    const name = $("#create-tablet-name").val();
-    const brand = $("#create-tablet-brand").val();
-    const model = $("#create-tablet-model").val();
-    const serialNumber = $("#create-tablet-sn").val();
-    const macAddress = $("#create-tablet-mac").val();
-    const status = $("#create-tablet-status").find(":selected").val();
-    addTablet(name, brand, model, serialNumber, macAddress, status);
+    const name = $("#create-device-name").val();
+    const brand = $("#create-device-brand").val();
+    const model = $("#create-device-model").val();
+    const serialNumber = $("#create-device-sn").val();
+    const macAddress = $("#create-device-mac").val();
+    const status = $("#create-device-status").find(":selected").val();
+    addDevice(name, brand, model, serialNumber, macAddress, status);
   });
 }
 
@@ -227,12 +195,7 @@ if ($(checkOutForm)) {
     changeValue = $(gradeSelect).val();
     const studentId = $(`select.student-list[value="${changeValue}"]`).val();
     if (changeValue != -1 && studentId != -1) {
-      const deviceId = $(checkOutForm).attr("data-device");
-      if (window.location.pathname.split("/")[1] === "tablets") {
-        checkOutTablet(studentId, deviceId);
-      } else {
-        checkOut(studentId, deviceId);
-      }
+      checkOutDevice(studentId)
     }
   });
 }
@@ -249,11 +212,7 @@ if (checkInForm) {
     e.preventDefault();
     if ($("#checkin-checkbox").is(":checked")) {
       const deviceId = $(checkInForm).attr("data-device");
-      if (window.location.pathname.split("/")[1] === "tablets") {
-        checkInTablet(deviceId);
-      } else {
-        checkIn(deviceId);
-      }
+      checkInDevice();
     }
   });
 }

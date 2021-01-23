@@ -14,6 +14,7 @@ export const login = async (email, password) => {
 
     if (res.data.status === "success") {
       showAlert("success", "Logged in successfully!");
+      window.localStorage.setItem("email", email);
       if (!res.data.data.employee.passwordChangedAt) {
         window.setTimeout(() => {
           location.assign("/new-password");

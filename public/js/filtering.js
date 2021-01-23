@@ -2,7 +2,7 @@ var searching = false;
 var checking = false;
 var passedSearch, passedCheck;
 
-$("#chromebook-search-input").on("input", function () {
+$("#device-search-input").on("input", function () {
   searching = $(this).val() ? true : false;
   filtering();
 });
@@ -15,7 +15,7 @@ $(".available-checkbox").change(function () {
 const testSearch = (text) => {
   if (searching === false) return true;
   if (text.slice(-1) === ">") text = text.slice(0, -11);
-  var input = $("#chromebook-search-input").val();
+  var input = $("#device-search-input").val();
   return text.toLowerCase().includes(input.toLowerCase());
 };
 

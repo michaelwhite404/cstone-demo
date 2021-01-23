@@ -20,57 +20,65 @@ router.get(
 // All Chromebooks - "/chromebooks" (DONE!!)
 router.get(
   "/chromebooks",
+  (req, res, next) => { req.device = "chromebook"; next(); },
   authController.protect,
-  viewsController.getAllChromebooksPage
+  viewsController.getAllDevicesPage
 );
 
 // Add Chromebook - "/chromebooks/add" (DONE!!)
 router.get(
   "/chromebooks/add",
+  (req, res, next) => { req.device = "chromebook"; next(); },
   authController.protect,
-  viewsController.addChromebookPage
+  viewsController.addDevicePage
 );
 
 // Edit Chromebook - "/chromebooks/:slug/edit" (DONE!!)
 router.get(
   "/chromebooks/:slug/edit",
+  (req, res, next) => { req.device = "chromebook"; next(); },
   authController.protect,
-  viewsController.editChromebookPage
+  viewsController.editDevicePage
 );
 
 // One Chromebook "/chromebooks/:slug" (DONE!!)
 router.get(
   "/chromebooks/:slug",
+  (req, res, next) => { req.device = "chromebook"; next(); },
   authController.protect,
-  viewsController.getChromebookPage
+  viewsController.getDevicePage
 );
 
 // All Tablets - "/tablets" (DONE!!)
 router.get(
   "/tablets",
+  (req, res, next) => { req.device = "tablet"; next(); },
   authController.protect,
-  viewsController.getAllTabletsPage
+  viewsController.getAllDevicesPage
 );
 
 // Add Tablet - "/tablets/add" (DONE!!)
 router.get(
   "/tablets/add",
+  (req, res, next) => { req.device = "tablet"; next(); },
   authController.protect,
-  viewsController.addTabletPage
+  viewsController.addDevicePage
 );
 
 // Edit Tablet - "/tablets/:slug/edit" (DONE!!)
 router.get(
   "/tablets/:slug/edit",
+  (req, res, next) => { req.device = "tablet"; next(); },
   authController.protect,
-  viewsController.editTabletPage
+  viewsController.editDevicePage
 );
 
 // One Tablet "/tablets/:slug" (DONE!!)
 router.get(
   "/tablets/:slug",
+  (req, res, next) => { req.device = "tablet"; next(); },
   authController.protect,
-  viewsController.getTabletPage
+  viewsController.getDevicePage
 );
 
 // All Users (Page not created) - "/users"

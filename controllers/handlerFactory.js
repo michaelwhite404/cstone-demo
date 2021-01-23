@@ -2,7 +2,6 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const pluralize = require('pluralize');
-const capitalize = require('capitalize');
 const slugify = require('slugify');
 
 const preCheck = (req) => {
@@ -45,6 +44,7 @@ exports.deleteOne = (Model) =>
 
     res.status(204).json({
       status: 'success',
+      requestedAt: Date(),
       data: null,
     });
   });
@@ -64,6 +64,7 @@ exports.updateOne = (Model) =>
 
     res.status(200).json({
       status: 'success',
+      requestedAt: Date(),
       data: {
         [key]: doc,
       },
@@ -77,8 +78,9 @@ exports.createOne = (Model) =>
 
     res.status(201).json({
       status: 'success',
+      requestedAt: Date(),
       data: {
-        [`new${capitalize(req.device) || "Doc"}`]: newDoc,
+        [`${(req.device) || "doc"}`]: newDoc,
       },
     });
   });
@@ -97,6 +99,7 @@ exports.getOne = (Model, popOptions) =>
 
     res.status(200).json({
       status: 'success',
+      requestedAt: Date(),
       data: {
         [key]: doc,
       },
@@ -116,7 +119,7 @@ exports.getAll = (Model) =>
     // SEND RESPONSE
     res.status(200).json({
       status: 'success',
-      requestedAt: req.requestTime,
+      requestedAt: Date(),
       results: docs.length,
       data: {
         [pluralize(key)]: docs,

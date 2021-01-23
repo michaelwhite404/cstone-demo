@@ -3,47 +3,50 @@ extends base
 block content
   .content-top
     .heading-wrapper
-      img#w-node-46e418b23310-8dcbe826.image(src=`/images/chromebook-logos/${chromebook.brand}-Logo.png` height="50" alt=`${chromebook.brand} Logo`)
-      h2.title-heading.item #{chromebook.name}
+      img#w-node-46e418b23310-8dcbe826.image(src=`/images/device-logos/${device.brand}-Logo.png` height="50" alt=`${device.brand} Logo`)
+      h2.title-heading.item #{device.name}
     .status-wrapper
-      div(class=`${chromebook.status.toLowerCase().split(" ").join("")}-circle`)
-      div(id=`status-${chromebook.status.toLowerCase().split(" ").join("")}`) #{chromebook.status}
-  .chromebook-item-content-wrapper
-    .chromebook-item-container
+      div(class=`${device.status.toLowerCase().split(" ").join("")}-circle`)
+      div(id=`status-${device.status.toLowerCase().split(" ").join("")}`) #{device.status}
+  .device-item-content-wrapper
+    .device-item-container
       div
         h4 Model
-        div #{chromebook.model}
+        div #{device.model}
       div
         h4 Serial Number
-        div #{chromebook.serialNumber}
+        div #{device.serialNumber}
       div
         h4 MAC Address
-        div #{chromebook.macAddress}
+        div #{device.macAddress}
       div
         h4 Management Type
         div Cloud
       div
         h4 Device Type
         div Education Upgrade
-      div
-        h4 Auto-update expiration
-        div #{chromebook.autoUpdateExpiration}
-      if chromebook.checkedOut
+      if device.autoUpdateExpiration
+        div
+          h4 Auto-update expiration
+          div #{device.autoUpdateExpiration}
+      else
+        div
+      if device.checkedOut
         .conditional-check-out
           h4 Checked Out By
-          div= `${chromebook.lastUser.fullName} (${chromebook.lastUser.grade}th)`
+          div= `${device.lastUser.fullName} (${device.lastUser.grade}th)`
         .conditional-check-out
           h4 Teacher Check Out
-          div= `${chromebook.teacherCheckOut.fullName} (${chromebook.teacherCheckOut.email})`
+          div= `${device.teacherCheckOut.fullName} (${device.teacherCheckOut.email})`
         .conditional-check-out
           h4 Check Out Date
-          - const date = new Date(`${chromebook.lastCheckOut}`).toLocaleString()
+          - const date = new Date(`${device.lastCheckOut}`).toLocaleString()
           div= date
-    if chromebook.status === 'Available'
-      .chromebook-checkout-container
+    if device.status === 'Available'
+      .device-checkout-container
         h2 Check Out
         #w-node-611e299c3c11-8dcbe826.w-form
-          form#checkout-form.checkout-form(name="wf-form-checkout-form" data-name="checkout-form" data-device=`${chromebook._id}`)
+          form#checkout-form.checkout-form(name="wf-form-checkout-form" data-name="checkout-form")
             #w-node-8205072e68af-8dcbe826.div-block-2
               label(for="check-out-grade") Grade:
               select#check-out-grade.grade-dropdown.w-select(name="check-out-grade" required="" data-name="check-out-grade")
@@ -71,22 +74,27 @@ block content
                   each student in grade.students
                     option(value=`${student.id}`) #{student.fullName}
             #w-node-cb2224221011-8dcbe826
-              input.checking-button.w-button.disabled(type="submit" value="Check Out Chromebook" data-wait="Please wait...")
-    if chromebook.status === 'Checked Out'
-      .chromebook-checkin-container
+              input.checking-button.w-button.disabled(type="submit" value=`Check Out ${capitalize(device.deviceType)}` data-wait="Please wait...")
+    if device.status === 'Checked Out'
+      .device-checkin-container
         h2 Check In
         #w-node-0358f8b77d52-8dcbe826.w-form
-          form#checkin-form.checkin-form(name="wf-form-checkin-form" data-name="checkin-form" data-device=`${chromebook._id}`)
+          form#checkin-form.checkin-form(name="wf-form-checkin-form" data-name="checkin-form" data-device=`${device._id}`)
             #w-node-0358f8b77d54-8dcbe826.div-block-2
               label.w-checkbox
                 input#checkin-checkbox.w-checkbox-input(type="checkbox" name="checkbox" data-name="Checkbox" required="")
-                span.w-form-label= `${chromebook.lastUser.fullName} has returned the laptop in working condition`
+                span.w-form-label= `${device.lastUser.fullName} has returned the laptop in working condition`
             #w-node-0358f8b77d5c-8dcbe826
-              input.checking-button.w-button.disabled(type="submit" value="Check In Chromebook" data-wait="Please wait...")
+              input.checking-button.w-button.disabled(type="submit" value=`Check In ${capitalize(device.deviceType)}` data-wait="Please wait...")
 
 block addEnd
   script.
     $('h1').css('display', 'none')
     if (window.location.hash === "#check-out") {
-      $(".chromebook-checkout-container").addClass("blinking");
+      $(".device-checkout-container").addClass("blinking");
     }
+    window.pageData = { 
+      id: "#{device._id}", 
+      deviceType: "#{key}"
+    };
+    $("script").last().remove()

@@ -5,7 +5,7 @@ block content
     form#no-submit(data-name="no-submit" name="wf-form-no-submit")
       .content-top
         .div-block-3
-          .tablet-search-wrapper
+          .device-search-wrapper
             .search-icon-wrapper
               .w-embed
                 // Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)
@@ -14,14 +14,14 @@ block content
                     path(d="M483.4,454.444l-121.3-121.4c28.7-35.2,46-80,46-128.9c0-112.5-91.5-204.1-204.1-204.1S0,91.644,0,204.144\
                     s91.5,204,204.1,204c48.8,0,93.7-17.3,128.9-46l121.3,121.3c8.3,8.3,20.9,8.3,29.2,0S491.8,462.744,483.4,454.444z M40.7,204.144\
                     c0-90.1,73.2-163.3,163.3-163.3s163.4,73.3,163.4,163.4s-73.3,163.4-163.4,163.4S40.7,294.244,40.7,204.144z")
-            input#tablet-search-input.tablet-search-input.w-input(type="text" maxlength="256" name="Chromebook-Search-Input" data-name="Chromebook Search Input" placeholder="Search")
+            input#device-search-input.device-search-input.w-input(type="text" maxlength="256" name="Device-Search-Input" data-name="Device Search Input" placeholder="Search")
           label.w-checkbox.available-button
             input#available.w-checkbox-input.available-checkbox(type="checkbox" name="checkbox" data-name="Checkbox")
             .available-circle
             span.w-form-label Available
-        a.add-button.w-button(href="/tablets/add") + Add Tablet
-      .tablet-table-wrapper.w-embed
-        table.database-table#tablets-table(style="width:100%")
+        a.add-button.w-button(href=`/${pluralize(key)}/add`) + Add #{capitalize(key)}
+      .device-table-wrapper.w-embed
+        table.database-table#device-table(style="width:100%")
           colgroup
             col(span="1" style="width:18%;")
             col(span="1" style="width:7%;")
@@ -36,24 +36,24 @@ block content
               th Check Out
           tbody
             //- Test Beginning
-            each tablet in tablets
+            each device in devices
               tr
                 td
-                  img.laptop-logo(src=`/images/tablet-logos/${tablet.brand}-Logo.png`)
-                  a.name(href=`/tablets/${tablet.slug}`) #{tablet.name}
-                td #{tablet.brand}
-                td #{tablet.serialNumber}
-                td #{tablet.macAddress}
-                td(id=`status-${tablet.status.toLowerCase().split(" ").join("")}`)
-                  div(class=`${tablet.status.toLowerCase().split(" ").join("")}-circle`)
-                  | #{tablet.status}
-                if tablet.status === 'Available'
+                  img.device-logo(src=`/images/device-logos/${device.brand}-Logo.png`)
+                  a.name(href=`/${pluralize(key)}/${device.slug}`) #{device.name}
+                td #{device.brand}
+                td #{device.serialNumber}
+                td #{device.macAddress}
+                td(id=`status-${device.status.toLowerCase().split(" ").join("")}`)
+                  div(class=`${device.status.toLowerCase().split(" ").join("")}-circle`)
+                  | #{device.status}
+                if device.status === 'Available'
                   td 
-                    a.check-out(href=`/tablets/${tablet.slug}`)
+                    a.check-out(href=`/${pluralize(key)}/${device.slug}#check-out`)
                       b Check Out >
-                if tablet.status === 'Checked Out'
+                if device.status === 'Checked Out'
                   //- Come Back And Implement
-                  td= `${tablet.lastUser.fullName} (${tablet.lastUser.grade}th)`
+                  td= `${device.lastUser.fullName} (${device.lastUser.grade}th)`
                 else
                   td
               //- Test
@@ -69,15 +69,15 @@ block addEnd
     $('.available-button').css('border', 'solid 2px #e9effd')
     }
     });
-    $('.tablet-search-input').on('keyup', function () {
+    $('.device-search-input').on('keyup', function () {
     if ($(this).val()) {
-    $('.tablet-search-wrapper').css('border', 'solid 2px #60a5f8');
+    $('.device-search-wrapper').css('border', 'solid 2px #60a5f8');
     } else {
-    $('.tablet-search-wrapper').css('border', 'solid 2px #e9effd');
+    $('.device-search-wrapper').css('border', 'solid 2px #e9effd');
     }
     });
     $('form#no-submit').submit(function(e) {
     return false;
     e.preventDefault();
     });
-  script(src="/js/tabletFiltering.js")
+  script(src="/js/filtering.js")
