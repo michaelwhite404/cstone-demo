@@ -1,4 +1,5 @@
 import "@babel/polyfill";
+import { login, logout } from "./login";
 import { newUser, editUser } from "./user";
 import { newStudent, editStudent } from "./student";
 import { updatePassword } from "./password";
