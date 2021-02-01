@@ -24,7 +24,7 @@ $("form").on("submit", function() {
   const spinner = "<div class='spinner'><div class='inner one'></div><div class='inner two'></div><div class='inner three'></div></div>";
   const currentButton = $(this).find('input[type=submit]')
   $(currentButton).replaceWith(spinner);
-  currentButton.prop("disabled", true);
+  // currentButton.prop("disabled", true);
   window.setInterval(() => {
     $(".spinner").replaceWith(currentButton)
   }, 2500)
