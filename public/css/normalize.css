@@ -250,8 +250,12 @@ input[type="reset"] {
  * Re-set default cursor for disabled elements.
  */
 button[disabled],
-html input[disabled] {
-  cursor: default;
+button[disabled]:hover,
+html input[disabled],
+html input[disabled]:hover {
+  cursor: not-allowed;
+  background-color: lightgray;
+  box-shadow: none;
 }
 /**
  * Remove inner padding and border in Firefox 4+.

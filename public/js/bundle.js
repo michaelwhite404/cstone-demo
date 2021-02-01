@@ -9817,6 +9817,15 @@ var checkInForm = $("#checkin-form");
 var firstPasswordForm = $("#create-first-password-form");
 var updateErrorForm = $("#update-error-form");
 var createErrorForm = $("#create-error-form");
+$("form").on("submit", function () {
+  var spinner = "<div class='spinner'><div class='inner one'></div><div class='inner two'></div><div class='inner three'></div></div>";
+  var currentButton = $(this).find('input[type=submit]');
+  $(currentButton).replaceWith(spinner);
+  currentButton.prop("disabled", true);
+  window.setInterval(function () {
+    $(".spinner").replaceWith(currentButton);
+  }, 2500);
+});
 
 if (loginForm) {
   $(loginForm).on("submit", function (e) {
