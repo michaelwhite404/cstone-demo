@@ -4,7 +4,10 @@ const AppError = require("../utils/appError");
 const Employee = require("../models/employeeModel");
 const Student = require("../models/studentModel");
 const capitalize = require("capitalize");
-const pluralize = require("pluralize")
+const pluralize = require("pluralize");
+const CheckoutLog = require("../models/checkoutLogModel");
+const ErrorLog = require("../models/errorLogModel");
+const camelize = require("../utils/camelize")
 
 exports.getHomePage = (req, res, next) => {
   if (res.locals.employee) {
@@ -98,12 +101,32 @@ exports.getDevicePage = catchAsync(async (req, res, next) => {
     },
   ]);
 
+  const checkOutLog = await CheckoutLog.find({device: device._id})
+    .sort({checkOutDate: -1})
+    .populate({
+      path: "deviceUser teacherCheckOut teacherCheckIn",
+      fields: "fullName"
+    })
+
+  const errorLogs = await ErrorLog.find({device: device._id})
+    .sort({createdAt: -1})
+    .populate({
+      path: "checkInInfo",
+      populate: {
+        path: "deviceUser",
+        select: "fullName"
+      }    
+    });
+
   res.status(200).render("oneDevice", {
     title: device.name,
     device,
     grades,
     capitalize,
-    key: req.device
+    key: req.device,
+    checkOutLog,
+    errorLogs,
+    camelize
   });
 });
 

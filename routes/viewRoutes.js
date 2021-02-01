@@ -10,10 +10,14 @@ router.use(authController.isLoggedIn);
 // Home Page (Login) - "/"
 router.get("/", viewsController.getHomePage);
 
+// Reset Password
+router.get("/reset-password/:token");
+
+router.use(authController.protect);
+
 // Dashboard - "/dashboard"  (1/2 DONE!!)
 router.get(
   "/dashboard",
-  authController.protect,
   viewsController.getDashboardPage
 );
 
@@ -21,7 +25,6 @@ router.get(
 router.get(
   "/chromebooks",
   (req, res, next) => { req.device = "chromebook"; next(); },
-  authController.protect,
   viewsController.getAllDevicesPage
 );
 
@@ -29,7 +32,6 @@ router.get(
 router.get(
   "/chromebooks/add",
   (req, res, next) => { req.device = "chromebook"; next(); },
-  authController.protect,
   viewsController.addDevicePage
 );
 
@@ -37,7 +39,6 @@ router.get(
 router.get(
   "/chromebooks/:slug/edit",
   (req, res, next) => { req.device = "chromebook"; next(); },
-  authController.protect,
   viewsController.editDevicePage
 );
 
@@ -45,7 +46,6 @@ router.get(
 router.get(
   "/chromebooks/:slug",
   (req, res, next) => { req.device = "chromebook"; next(); },
-  authController.protect,
   viewsController.getDevicePage
 );
 
@@ -53,7 +53,6 @@ router.get(
 router.get(
   "/tablets",
   (req, res, next) => { req.device = "tablet"; next(); },
-  authController.protect,
   viewsController.getAllDevicesPage
 );
 
@@ -61,7 +60,6 @@ router.get(
 router.get(
   "/tablets/add",
   (req, res, next) => { req.device = "tablet"; next(); },
-  authController.protect,
   viewsController.addDevicePage
 );
 
@@ -69,7 +67,6 @@ router.get(
 router.get(
   "/tablets/:slug/edit",
   (req, res, next) => { req.device = "tablet"; next(); },
-  authController.protect,
   viewsController.editDevicePage
 );
 
@@ -77,7 +74,6 @@ router.get(
 router.get(
   "/tablets/:slug",
   (req, res, next) => { req.device = "tablet"; next(); },
-  authController.protect,
   viewsController.getDevicePage
 );
 
@@ -86,7 +82,6 @@ router.get(
 // Create user - "/users/new" (DONE!!)
 router.get(
   "/users/new",
-  authController.protect,
   viewsController.createUserPage
 );
 
@@ -95,7 +90,6 @@ router.get(
 // Edit user - "/users/:slug/edit" (DONE!!)
 router.get(
   "/users/:slug/edit",
-  authController.protect,
   viewsController.editUserPage
 );
 
@@ -106,26 +100,20 @@ router.get(
 // Create student - "/students/new" (DONE!!)
 router.get(
   "/students/new",
-  authController.protect,
   viewsController.createStudentPage
 );
 
 // Edit student - "/students/:slug/edit" (DONE!!)
 router.get(
   "/students/:slug/edit",
-  authController.protect,
   viewsController.editStudentPage
 );
 
 // New Password
 router.get(
   "/new-password",
-  authController.protect,
   viewsController.getNewPasswordPage
 );
-
-// Reset Password
-router.get("/reset-password/:token");
 
 // Test Route (DONE!!)
 router.get("/test-group", viewsController.testGroup);

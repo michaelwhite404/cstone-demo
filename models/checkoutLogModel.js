@@ -20,11 +20,13 @@ const checkoutLogSchema = new mongoose.Schema(
     },
     deviceUser: {
       type: mongoose.Schema.ObjectId,
-      ref: "Student"
+      ref: "Student",
+      required: true
     },
     teacherCheckOut: {
       type: mongoose.Schema.ObjectId,
-      ref: "Employee"
+      ref: "Employee",
+      required: true
     },
     teacherCheckIn: {
       type: mongoose.Schema.ObjectId,
@@ -33,6 +35,11 @@ const checkoutLogSchema = new mongoose.Schema(
     checkedIn: {
       type: Boolean,
       default: false
+    },
+    error: {
+      type: mongoose.Schema.ObjectId,
+      ref: "ErrorLog",
+      required: false,
     }
   }, 
   {

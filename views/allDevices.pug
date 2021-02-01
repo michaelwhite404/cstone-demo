@@ -80,4 +80,9 @@ block addEnd
     return false;
     e.preventDefault();
     });
+    (function() {
+      if(performance.navigation.type == 2){
+        location.reload(true);
+      }
+    })()
   script(src="/js/filtering.js")

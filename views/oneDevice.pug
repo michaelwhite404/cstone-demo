@@ -1,5 +1,20 @@
 extends base
 
+mixin errorSpan(name, data, icon)
+  span
+    b #{name}
+    =" "
+    - if (icon)
+      i(class=`material-icons ${icon} md-12`) #{icon}&nbsp;
+    | #{data}
+
+mixin errorChip(value)
+  .chip-wrapper
+    label.w-radio
+      .chip.waves-effect
+        input.w-form-formradioinput.radio-button.w-radio-input(type='radio' value=`${value}` name='Update Status' required='')
+        | #{value}
+
 block content
   .content-top
     .heading-wrapper
@@ -9,7 +24,7 @@ block content
       div(class=`${device.status.toLowerCase().split(" ").join("")}-circle`)
       div(id=`status-${device.status.toLowerCase().split(" ").join("")}`) #{device.status}
   .device-item-content-wrapper
-    .device-item-container
+    section.device-item-container
       div
         h4 Model
         div #{device.model}
@@ -43,7 +58,7 @@ block content
           - const date = new Date(`${device.lastCheckOut}`).toLocaleString()
           div= date
     if device.status === 'Available'
-      .device-checkout-container
+      section.device-checkout-container
         h2 Check Out
         #w-node-611e299c3c11-8dcbe826.w-form
           form#checkout-form.checkout-form(name="wf-form-checkout-form" data-name="checkout-form")
@@ -76,18 +91,169 @@ block content
             #w-node-cb2224221011-8dcbe826
               input.checking-button.w-button.disabled(type="submit" value=`Check Out ${capitalize(device.deviceType)}` data-wait="Please wait...")
     if device.status === 'Checked Out'
-      .device-checkin-container
+      section.device-checkin-container
         h2 Check In
         #w-node-0358f8b77d52-8dcbe826.w-form
           form#checkin-form.checkin-form(name="wf-form-checkin-form" data-name="checkin-form" data-device=`${device._id}`)
             #w-node-0358f8b77d54-8dcbe826.div-block-2
-              label.w-checkbox
-                input#checkin-checkbox.w-checkbox-input(type="checkbox" name="checkbox" data-name="Checkbox" required="")
-                span.w-form-label= `${device.lastUser.fullName} has returned the laptop in working condition`
+              label.w-radio
+                input#error-title.w-form-formradioinput.radio-button.w-radio-input(type="radio" value="Fine" name="Check In Status" required)
+                span.w-form-label #{device.lastUser.fullName} has returned the #{device.deviceType} in working condition
+              label.w-radio
+                input.w-form-formradioinput.radio-button.w-radio-input(type="radio" value="Error" name="Check In Status" required)
+                span.w-form-label There is an issue with the #{device.deviceType}
+              .error-text-fields-wrapper#error-text-fields-checkin
+                .error-text-fields-container
+                  .create-user-label(style="display:flex;align-items: flex-end") Title of Issue
+                    span.required-asterisk *
+                  div
+                    input.form-text-field.w-input#checkin-error-title
+                  .create-user-label Description of Issue
+                    span.required-asterisk *
+                  .checkin-decsription-container 
+                    textarea.form-text-field.w-input.textarea#checkin-error-description(rows="5" cols="50" maxlength="500")
+                    p.text-counter 
+                      span 0
+                      | /500
             #w-node-0358f8b77d5c-8dcbe826
-              input.checking-button.w-button.disabled(type="submit" value=`Check In ${capitalize(device.deviceType)}` data-wait="Please wait...")
+              input#checkin-button.checking-button.w-button.disabled(type="submit" value=`Check In ${capitalize(device.deviceType)}` data-wait="Please wait...")
+    if device.status === 'Broken'
+      section.device-error-update-container
+        h2 Update Error
+        .update-error-form-wrapper.w-form
+          form.update-error-form#update-error-form
+            .update-error-fields-container
+              .create-user-label(style="display: flex;align-items: center") Error to update
+                span.required-asterisk *
+              select#select-current-error.form-select.w-node-c4b4e7e1a532-c92df52a.w-select(name="Current Error" data-name="current error")
+                for errorLog in errorLogs
+                  - if (!errorLog.final)
+                    option(value=`${errorLog._id}`) #{errorLog.title} (#{errorLog.status})
+              .create-user-label(style="display: flex;padding-top: 9px;") Update Status
+                span.required-asterisk *
+              .status-chips-container
+                +errorChip("Broken")
+                +errorChip("In Repair")
+                +errorChip("Fixed")
+                +errorChip("Unfixable")
+                .pop-text
+              .create-user-label Description of Issue
+                span.required-asterisk *
+              .checkin-decsription-container 
+                textarea.form-text-field.w-input.textarea#update-error-description(rows="5" cols="50" maxlength="500")
+                p.text-counter
+                  span 0
+                  | /500
+                input#update-error-button.checking-button.w-button.disabled(type="submit" value="Update Error" data-wait="Please wait..." style="margin-right:0px")
+
+    section.device-log-container
+      h2 #{capitalize(device.deviceType)} Check Out History
+      if checkOutLog.length > 0
+        table.database-table#checkout-history
+          thead
+            tr
+              th
+              th Status
+              th Student
+              th Check Out Date
+              th Check Out Teacher
+              th Check In Date
+              th Check In Teacher
+          tbody
+            each log in checkOutLog
+              //- - const checked = log.checkedIn ? log.error ? {text: "Checked In (Error)", class: "warning"} : {text: "Checked In", class: "check_circle"} : {text: "Checked Out", class: "remove_circle"}
+              - const checked = log.checkedIn ? {text: "Checked In", class: "check_circle"} : {text: "Checked Out", class: "remove_circle"}
+              - if (log.error) checked.class = "warning"
+              tr(data-checkout-id=`${log._id}`)
+                td 
+                  i(class=`material-icons ${checked.class} md-24`) #{checked.class}                  
+                td #{checked.text}
+                  - if (log.error)
+                    =" "
+                    span.go-to-error(data-error-id=`${log.error._id}`) (Error) 
+                td #{log.deviceUser.fullName}
+                td #{new Date(`${log.checkOutDate}`).toLocaleString()}
+                td #{log.teacherCheckOut.fullName}
+                td #{log.checkInDate ? new Date(`${log.checkInDate}`).toLocaleString() : "-"}
+                td #{log.teacherCheckIn ? log.teacherCheckIn.fullName : "-"}
+      else
+        p.nothing There are no records to display
+    section.device-error-log-container
+      h2 #{capitalize(device.deviceType)} Error History
+      - if (device.status !== "Checked Out")
+        .create-error-form-wrapper
+          form.create-error-form#create-error-form
+            .error-text-fields-wrapper#error-text-fields-create
+              h3 Add New Error
+              .error-text-fields-container
+                .create-user-label(style="display:flex;align-items: center") Title of Issue
+                  span.required-asterisk *
+                div
+                  input.form-text-field.w-input#create-error-title
+                .create-user-label Description of Issue
+                  span.required-asterisk *
+                .checkin-decsription-container 
+                  textarea.form-text-field.w-input.textarea#create-error-description(rows="5" cols="50" maxlength="500")
+                  p.text-counter 
+                    span 0
+                    | /500
+                  .buttons-wrapper
+                    .cancel-button#cancel-create-new-error Cancel
+                    input#create-error-button.checking-button.w-button.disabled(type="submit" value="Create New Error" data-wait="Please wait..." style="margin-right:0px")
+      - const statusIcons = {fixed: "check_circle", inRepair: "construction", broken: "error", unfixable: "block"}
+      if errorLogs.length > 0
+        table.database-table#error-history
+          thead
+            tr
+              th 
+              th Status
+              th Title
+              th Error Created Date
+              th Description
+              th
+          tbody
+            for errorLog in errorLogs
+              tr(id=`${errorLog._id}` data-expanded="0")
+                td
+                  i(class=`material-icons ${statusIcons[camelize(errorLog.status)]} md-24`) #{statusIcons[camelize(errorLog.status)]}
+                td #{errorLog.status}
+                td #{errorLog.title}
+                td #{new Date(`${errorLog.createdAt}`).toLocaleString()}
+                td.device-description-cell #{errorLog.description}
+                td
+                  span(style="color:black;cursor:pointer")
+                    i.material-icons.expand_more.md-24 expand_more
+              tr.error-info-row
+                td(colspan="6")
+                  div.more-error-info
+                    +errorSpan("Title", errorLog.title)
+                    +errorSpan("Description", errorLog.description)
+                    +errorSpan("Status", errorLog.status, statusIcons[camelize(errorLog.status)])
+                    - if (errorLog.updates.length)
+                      br
+                      +errorSpan("Updates")
+                      br
+                      - let updateIndex = 0;
+                      each update in errorLog.updates
+                        - updateIndex++
+                        span
+                          - if (updateIndex == errorLog.updates.length && errorLog.final == true)
+                            b Final Update:
+                          - else
+                            b Update #{updateIndex}:
+                          | &nbsp;&nbsp;&nbsp;#{update.description}
+                          div
+                            | #{update.createdAt.toLocaleString()}
+                          div
+                            i(class=`material-icons ${statusIcons[camelize(update.status)]} md-15`) #{statusIcons[camelize(update.status)]}&nbsp;
+                            | #{update.status}
+      else
+        p.nothing There are no errors to display
+      - if (device.status !== "Checked Out")
+        button#new-error-button.add-button.w-button + Add New Error
 
 block addEnd
+  script(src="/js/expand.js")
   script.
     $('h1').css('display', 'none')
     if (window.location.hash === "#check-out") {
@@ -97,4 +263,5 @@ block addEnd
       id: "#{device._id}", 
       deviceType: "#{key}"
     };
-    $("script").last().remove()
+    Object.freeze(window.pageData);
+    $("script").last().remove();

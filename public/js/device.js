@@ -5,7 +5,7 @@ import { showAlert } from "./alerts";
 
 export const editDevice = async (name, brand, model, serialNumber, macAddress, status) => {
   try {
-    const { id, deviceType } = window.pageData
+    const { id, deviceType } = window.pageData;
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}`,
@@ -25,7 +25,7 @@ export const editDevice = async (name, brand, model, serialNumber, macAddress, s
         location.assign(`/${pluralize(deviceType)}/${res.data.data[deviceType].slug}`);
       }, 1500);
     }
-  } catch {
+  } catch (err) {
     showAlert("error", err.response.data.message);
   }
 };
@@ -59,7 +59,7 @@ export const addDevice = async (name, brand, model, serialNumber, macAddress, st
 
 export const checkOutDevice = async (lastUser) => {
   try {
-    const { id, deviceType } = window.pageData
+    const { id, deviceType } = window.pageData;
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}/check-out`,
@@ -77,17 +77,56 @@ export const checkOutDevice = async (lastUser) => {
   }
 };
 
-export const checkInDevice = async () => {
+export const checkInDevice = async (error, title, description) => {
   try {
-    const { id, deviceType } = window.pageData
+    const { id, deviceType } = window.pageData;
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}/check-in`,
-      data: {},
+      data: {error, title, description},
     });
 
     if (res.data.status === "success") {
       showAlert("success", `${capitalize(deviceType)} checked in!`);
+      window.setTimeout(() => {
+        history.go();
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert("error", err.response.data.message);
+  }
+};
+
+export const updateError = async (errorId, status, description) => {
+  try {
+    const res = await axios({
+      method: "PATCH",
+      url: `/api/v1/error-logs/${errorId}`,
+      data: {status, description},
+    });
+
+    if (res.data.status === "success") {
+      showAlert("success", "Error updated sucessfully");
+      window.setTimeout(() => {
+        history.go();
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert("error", err.response.data.message);
+  }
+};
+
+export const createError = async (title, description) => {
+  try {
+    const { id } = window.pageData;
+    const res = await axios({
+      method: "POST",
+      url: "/api/v1/error-logs/",
+      data: {title, description, device: id},
+    });
+
+    if (res.data.status === "success") {
+      showAlert("success", "Error created sucessfully");
       window.setTimeout(() => {
         history.go();
       }, 1500);
