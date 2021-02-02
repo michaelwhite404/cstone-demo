@@ -9818,13 +9818,12 @@ var firstPasswordForm = $("#create-first-password-form");
 var updateErrorForm = $("#update-error-form");
 var createErrorForm = $("#create-error-form");
 $("form").on("submit", function () {
-  var spinner = "<div class='spinner'><div class='inner one'></div><div class='inner two'></div><div class='inner three'></div></div>";
-  var currentButton = $(this).find('input[type=submit]');
-  $(currentButton).replaceWith(spinner); // currentButton.prop("disabled", true);
-
+  var originalButton = $(this).find("input[type='submit']");
+  var waitButtonHTML = "<div id='wait-button' class='checking-button w-button disabled' type='submit' value='Please wait...' data-wait='Please wait...' disabled style='user-select: none;'>Please wait...</div>";
+  $(originalButton).replaceWith(waitButtonHTML);
   window.setInterval(function () {
-    $(".spinner").replaceWith(currentButton);
-  }, 2500);
+    $('#wait-button').replaceWith(originalButton);
+  }, 3000);
 });
 
 if (loginForm) {

@@ -21,13 +21,12 @@ const updateErrorForm = $("#update-error-form");
 const createErrorForm = $("#create-error-form");
 
 $("form").on("submit", function() {
-  const spinner = "<div class='spinner'><div class='inner one'></div><div class='inner two'></div><div class='inner three'></div></div>";
-  const currentButton = $(this).find('input[type=submit]')
-  $(currentButton).replaceWith(spinner);
-  // currentButton.prop("disabled", true);
+  const originalButton = $(this).find("input[type='submit']");
+  const waitButtonHTML = "<div id='wait-button' class='checking-button w-button disabled' type='submit' value='Please wait...' data-wait='Please wait...' disabled style='user-select: none;'>Please wait...</div>"
+  $(originalButton).replaceWith(waitButtonHTML);
   window.setInterval(() => {
-    $(".spinner").replaceWith(currentButton)
-  }, 2500)
+    $('#wait-button').replaceWith(originalButton);
+  }, 3000)
 });
 
 if (loginForm) {
