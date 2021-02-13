@@ -8,8 +8,8 @@ exports.getAllStudents = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Student.find(), req.query)
     .filter()
     .limitFields()
-    .paginate()
-  
+    .paginate();
+
   const students = await features.query;
 
   // SEND RESPONSE
@@ -76,6 +76,9 @@ exports.updateStudent = catchAsync(async (req, res, next) => {
 
 exports.groupTest = catchAsync(async (req, res, next) => {
   const grades = await Student.aggregate([
+    {
+      $sort: { lastName: 1 },
+    },
     {
       $group: {
         _id: "$grade",

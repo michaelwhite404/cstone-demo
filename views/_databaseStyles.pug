@@ -6,7 +6,7 @@ style.
   border-bottom: 2px rgba(146, 146, 146, 0.09) solid;
   text-align: left;
   }
-  .database-table thead th {
+  .database-table thead th, .database-table tfoot td {
   padding: 10px 0
   }
   .database-table tbody td {
@@ -24,6 +24,31 @@ style.
   .database-table#error-history tr > :last-child {
   padding-right: 25px;
   }
+  .database-table#stats-table tr > :first-child {
+  padding-left: 45px;
+  }
+  .database-table#stats-table tbody tr.model-row > :first-child {
+  padding-left: 95px;
+  }
+  .database-table#stats-table .brand-row td  {
+  color: black;
+  }
+  .database-table#stats-table tr > :not(:first-child) {
+  text-align: center;
+  }
+  .database-table#stats-table tr > :nth-child(2){
+  padding-right: 65px;
+  }
+  .database-table#stats-table tr > :last-child{
+  padding-right: 15px;
+  }
+  .database-table#stats-table tr.brand-row {
+  background-color: #f6fbff;
+  } 
+  .database-table#stats-table tfoot {
+  font-size: 16px;
+  background-color: aliceblue;
+  } 
   .database-table tbody tr:hover:not(.error-info-row) {
   background-color: #fafafa;
   }

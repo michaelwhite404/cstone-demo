@@ -24,9 +24,11 @@ export const login = async (email, password) => {
           location.assign("/dashboard");
         }, 1500);
       }
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
@@ -41,7 +43,9 @@ export const logout = async (e) => {
     if (res.data.status === "success") {
       window.location.assign("/");
     }
+    return true;
   } catch (err) {
     showAlert("error", "Error logging out! Try again");
+    return false;
   }
 };

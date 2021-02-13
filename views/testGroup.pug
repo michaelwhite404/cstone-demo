@@ -22,3 +22,20 @@ block content
       option(value="") Select a Student...
       each student in grade.students
         option(value=`${student.id}`) #{student.fullName}
+
+  input(type="text" class="form-text-field w-input picker1")
+  //- input(type="text" class="form-control picker2" value=`${new Date()}`)
+
+block addEnd
+  script.
+    const pickerOptions = {
+      format: 'MM/DD/YYYY, HH:mm:ss',
+      controls: true,
+      headers: true,
+      text: {
+        title: 'Pick a date (Time uses 24-hour format)',
+      },
+    };
+    
+    new Picker(document.querySelector('.picker1'), pickerOptions);
+    //- new Picker(document.querySelector('.picker2'), pickerOptions);

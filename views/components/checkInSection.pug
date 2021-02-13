@@ -1,0 +1,27 @@
+if device.status === 'Checked Out'
+  section.device-checkin-container
+    h2 Check In
+    #w-node-0358f8b77d52-8dcbe826
+      form#checkin-form.checkin-form(name="wf-form-checkin-form" data-name="checkin-form" data-device=`${device._id}`)
+        #w-node-0358f8b77d54-8dcbe826.div-block-2
+          label.w-radio
+            input.w-form-formradioinput.radio-button.w-radio-input(type="radio" value="Fine" name="Check In Status" required)
+            span.w-form-label #{device.lastUser.fullName} has returned the #{device.deviceType} in working condition
+          label.w-radio
+            input.w-form-formradioinput.radio-button.w-radio-input(type="radio" value="Error" name="Check In Status" required)
+            span.w-form-label There is an issue with the #{device.deviceType}
+          .error-text-fields-wrapper#error-text-fields-checkin
+            .error-text-fields-container
+              .create-user-label(style="display:flex;align-items: flex-end") Title of Issue
+                span.required-asterisk *
+              div
+                input.form-text-field.w-input#checkin-error-title
+              .create-user-label Description of Issue
+                span.required-asterisk *
+              .checkin-decsription-container 
+                textarea.form-text-field.w-input.textarea#checkin-error-description(rows="5" cols="50" maxlength="500")
+                p.text-counter 
+                  span 0
+                  | /500
+        #w-node-0358f8b77d5c-8dcbe826
+          input#checkin-button.checking-button.w-button(type="submit" value=`Check In ${capitalize(device.deviceType)}` data-wait="Please wait..." disabled)

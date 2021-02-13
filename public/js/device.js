@@ -1,9 +1,16 @@
 import axios from "axios";
 import capitalize from "capitalize";
-import pluralize from "pluralize"
+import pluralize from "pluralize";
 import { showAlert } from "./alerts";
 
-export const editDevice = async (name, brand, model, serialNumber, macAddress, status) => {
+export const editDevice = async (
+  name,
+  brand,
+  model,
+  serialNumber,
+  macAddress,
+  status
+) => {
   try {
     const { id, deviceType } = window.pageData;
     const res = await axios({
@@ -22,15 +29,26 @@ export const editDevice = async (name, brand, model, serialNumber, macAddress, s
     if (res.data.status === "success") {
       showAlert("success", `${capitalize(deviceType)} edit successful!`);
       window.setTimeout(() => {
-        location.assign(`/${pluralize(deviceType)}/${res.data.data[deviceType].slug}`);
+        location.assign(
+          `/${pluralize(deviceType)}/${res.data.data[deviceType].slug}`
+        );
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
-export const addDevice = async (name, brand, model, serialNumber, macAddress, status) => {
+export const addDevice = async (
+  name,
+  brand,
+  model,
+  serialNumber,
+  macAddress,
+  status
+) => {
   try {
     const deviceTypePlural = window.location.pathname.split("/")[1];
     const res = await axios({
@@ -47,23 +65,37 @@ export const addDevice = async (name, brand, model, serialNumber, macAddress, st
     });
 
     if (res.data.status === "success") {
-      showAlert("success", `${capitalize(pluralize.singular(deviceTypePlural))} Added!`);
+      showAlert(
+        "success",
+        `${capitalize(pluralize.singular(deviceTypePlural))} Added!`
+      );
       window.setTimeout(() => {
-        location.assign(`/${deviceTypePlural}/${res.data.data[pluralize.singular(deviceTypePlural)].slug}`);
+        location.assign(
+          `/${deviceTypePlural}/${
+            res.data.data[pluralize.singular(deviceTypePlural)].slug
+          }`
+        );
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
-export const checkOutDevice = async (lastUser) => {
+export const checkOutDevice = async (lastUser, lastCheckOut, dueDate) => {
   try {
     const { id, deviceType } = window.pageData;
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}/check-out`,
-      data: { lastUser },
+      data: {
+        lastUser,
+        lastCheckOut,
+        checkOutDate: lastCheckOut,
+        dueDate,
+      },
     });
 
     if (res.data.status === "success") {
@@ -71,9 +103,11 @@ export const checkOutDevice = async (lastUser) => {
       window.setTimeout(() => {
         history.go();
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
@@ -83,7 +117,7 @@ export const checkInDevice = async (error, title, description) => {
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}/check-in`,
-      data: {error, title, description},
+      data: { error, title, description },
     });
 
     if (res.data.status === "success") {
@@ -91,9 +125,11 @@ export const checkInDevice = async (error, title, description) => {
       window.setTimeout(() => {
         history.go();
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
@@ -102,7 +138,7 @@ export const updateError = async (errorId, status, description) => {
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/error-logs/${errorId}`,
-      data: {status, description},
+      data: { status, description },
     });
 
     if (res.data.status === "success") {
@@ -110,19 +146,21 @@ export const updateError = async (errorId, status, description) => {
       window.setTimeout(() => {
         history.go();
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };
 
-export const createError = async (title, description) => {
+export const createError = async (title, description, createdAt) => {
   try {
     const { id } = window.pageData;
     const res = await axios({
       method: "POST",
       url: "/api/v1/error-logs/",
-      data: {title, description, device: id},
+      data: { title, description, device: id, createdAt },
     });
 
     if (res.data.status === "success") {
@@ -130,8 +168,10 @@ export const createError = async (title, description) => {
       window.setTimeout(() => {
         history.go();
       }, 1500);
+      return true;
     }
   } catch (err) {
     showAlert("error", err.response.data.message);
+    return false;
   }
 };

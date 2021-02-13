@@ -22,6 +22,10 @@ const deviceSchema = new mongoose.Schema({
     required: [true, "Each Device must have a serial number"],
     unique: false,
   },
+  dueDate: {
+    type: Date,
+    required: false,
+  },
   macAddress: {
     type: String,
     required: [true, "Each Device must have a MAC Address"],

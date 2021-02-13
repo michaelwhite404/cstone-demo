@@ -3,7 +3,14 @@ import { login, logout } from "./login";
 import { newUser, editUser } from "./user";
 import { newStudent, editStudent } from "./student";
 import { updatePassword } from "./password";
-import { addDevice, checkInDevice, checkOutDevice, createError, editDevice, updateError } from "./device";
+import {
+  addDevice,
+  checkInDevice,
+  checkOutDevice,
+  createError,
+  editDevice,
+  updateError,
+} from "./device";
 
 // DOM ELEMENTS
 const loginForm = $("#login-form");
@@ -20,49 +27,86 @@ const firstPasswordForm = $("#create-first-password-form");
 const updateErrorForm = $("#update-error-form");
 const createErrorForm = $("#create-error-form");
 
-$("form").on("submit", function() {
-  const originalButton = $(this).find("input[type='submit']");
-  const waitButtonHTML = "<div id='wait-button' class='checking-button w-button disabled' type='submit' value='Please wait...' data-wait='Please wait...' disabled style='user-select: none;'>Please wait...</div>"
-  $(originalButton).replaceWith(waitButtonHTML);
-  window.setInterval(() => {
-    $('#wait-button').replaceWith(originalButton);
-  }, 3000)
-});
+const fakeboxFormat = (el) => {
+  const dateStr = $(el).val();
+  const date = new Date(dateStr).toLocaleString();
+  const dateText = $(el).prev().find(".date-text");
+  $(dateText).text(date);
+  if ($(el).data("invalid") === "future")
+    if (new Date(dateStr).getTime() > new Date(Date.now()).getTime())
+      $(el).prev().css("color", "red");
+    else $(el).prev().css("color", "cornflowerblue");
+  if ($(el).data("invalid") === "past")
+    if (new Date(dateStr).getTime() < new Date(Date.now()).getTime())
+      $(el).prev().css("color", "red");
+    else $(el).prev().css("color", "cornflowerblue");
+};
 
+const toggleDateHolder = (el) => {
+  const checkbox = $(el);
+  const dateHolder = $(checkbox).closest(".date-wrapper").find(".date-holder");
+  if ($(checkbox).is(":checked")) {
+    $(dateHolder).show();
+  } else $(dateHolder).hide();
+};
+
+// Login (DONE: 2021-02-12T22:45:38Z)
 if (loginForm) {
-  $(loginForm).on("submit", (e) => {
+  $(loginForm).on("submit", async function (e) {
     e.preventDefault();
+    $(this).find("input[type='submit']").prop("disabled", true);
     const email = $("input#login-email").val();
     const password = $("input#login-password").val();
-    login(email, password);
+    const success = await login(email, password);
+    if (!success) $(this).find("input[type='submit']").prop("disabled", false);
   });
 }
 
 if (logOutBtn) $(logOutBtn).on("click", logout);
 
 if (editDeviceForm) {
-  $(editDeviceForm).on("submit", (e) => {
+  $(editDeviceForm).on("submit", async function (e) {
     e.preventDefault();
+    editDeviceForm.find("input[type='submit']").prop("disabled", true);
     const name = $("#edit-device-name").val();
     const brand = $("#edit-device-brand").val();
     const model = $("#edit-device-model").val();
     const serialNumber = $("#edit-device-sn").val();
     const macAddress = $("#edit-device-mac").val();
     const status = $("#edit-device-status").find(":selected").val();
-    editDevice(name, brand, model, serialNumber, macAddress, status);
+    const success = await editDevice(
+      name,
+      brand,
+      model,
+      serialNumber,
+      macAddress,
+      status
+    );
+    if (!success)
+      editDeviceForm.find("input[type='submit']").prop("disabled", false);
   });
 }
 
 if (addDeviceForm) {
-  $(addDeviceForm).on("submit", (e) => {
+  $(addDeviceForm).on("submit", async function (e) {
     e.preventDefault();
+    addDeviceForm.find("input[type='submit']").prop("disabled", true);
     const name = $("#create-device-name").val();
     const brand = $("#create-device-brand").val();
     const model = $("#create-device-model").val();
     const serialNumber = $("#create-device-sn").val();
     const macAddress = $("#create-device-mac").val();
     const status = $("#create-device-status").find(":selected").val();
-    addDevice(name, brand, model, serialNumber, macAddress, status);
+    const success = await addDevice(
+      name,
+      brand,
+      model,
+      serialNumber,
+      macAddress,
+      status
+    );
+    if (!success)
+      addDeviceForm.find("input[type='submit']").prop("disabled", false);
   });
 }
 
@@ -161,15 +205,60 @@ if (editStudentForm) {
   });
 }
 
-// Check Out
+// Check Out (DONE: 2021-02-12T19:09:33Z)
 if ($(checkOutForm)) {
   const gradeSelect = $("#check-out-grade");
+  const validateSubmit = (submit) => {
+    const grade = $(gradeSelect).val();
+    // 1.) Is Grade Picked
+    if ($(gradeSelect).val() < 0) {
+      $("#checkout-button").prop("disabled", true);
+      return false;
+    }
+    // 2.) Is Student Picked
+    let lastUser = $(`select.student-list[value="${grade}"]`).val();
+    if (lastUser == "-1") {
+      $("#checkout-button").prop("disabled", true);
+      return false;
+    }
+    // 3.) Is there a checkout date & is it valid
+    let lastCheckOut = $("#checkout-date").val();
+    if ($("#checkout-date-checker").is(":checked")) {
+      if (
+        !lastCheckOut ||
+        new Date(lastCheckOut).getTime() > new Date(Date.now()).getTime()
+      ) {
+        $("#checkout-button").prop("disabled", true);
+        lastCheckOut = "";
+        return false;
+      } else lastCheckOut = new Date(lastCheckOut).toISOString();
+    } else lastCheckOut = "";
+    // 4.) Is there a due date & is it valid
+    let dueDate = $("#due-date").val();
+    if ($("#due-date-checker").is(":checked")) {
+      if (
+        !dueDate ||
+        new Date(dueDate).getTime() < new Date(Date.now()).getTime()
+      ) {
+        $("#checkout-button").prop("disabled", true);
+        dueDate = "";
+        return false;
+      } else dueDate = new Date(dueDate).toISOString();
+    } else dueDate = "";
+    if (submit !== "submit") $("#checkout-button").prop("disabled", false);
+    const data = {
+      lastUser,
+      lastCheckOut,
+      dueDate,
+    };
+    return data;
+  };
+
   let changeValue;
   $(gradeSelect).change(function () {
     if ($(gradeSelect).val() == -1) {
       $("select.student-list").css("display", "none");
       $('select.student-list[value="-1"]').css("display", "block");
-      $(".checking-button").addClass("disabled");
     } else {
       changeValue = $(gradeSelect).val();
       // Hide all Student Lists
@@ -177,63 +266,75 @@ if ($(checkOutForm)) {
       // Show Correct Grade List
       $(`select.student-list[value="${changeValue}"]`).css("display", "block");
     }
-
-    if (
-      $(gradeSelect).val() == -1 ||
-      $(`select.student-list[value="${changeValue}"]`).val() == -1 ||
-      $(`select.student-list[value="${changeValue}"]`).val() == undefined
-    ) {
-      $(".checking-button").addClass("disabled");
-    } else {
-      $(".checking-button").removeClass("disabled");
-    }
+    validateSubmit();
   });
 
   $(".student-list").change(function () {
-    changeValue = $(gradeSelect).val();
-    if (
-      $(gradeSelect).val() == -1 ||
-      $(`select.student-list[value="${changeValue}"]`).val() == -1 ||
-      $(`select.student-list[value="${changeValue}"]`).val() == undefined
-    ) {
-      $(".checking-button").addClass("disabled");
-    } else {
-      $(".checking-button").removeClass("disabled");
-    }
+    validateSubmit();
   });
 
-  $(checkOutForm).on("submit", (e) => {
+  $("#checkout-form .date-wrapper input[type='checkbox']").on(
+    "change",
+    function () {
+      toggleDateHolder($(this));
+      validateSubmit();
+    }
+  );
+
+  $(".fakebox").on("click", function () {
+    $(this).next().trigger("click");
+  });
+
+  $("#checkout-form .date-wrapper input[type='text']").on(
+    "change",
+    function () {
+      fakeboxFormat($(this));
+      validateSubmit();
+    }
+  );
+
+  $(checkOutForm).on("submit", async function (e) {
     e.preventDefault();
-    changeValue = $(gradeSelect).val();
-    const studentId = $(`select.student-list[value="${changeValue}"]`).val();
-    if (changeValue != -1 && studentId != -1) {
-      checkOutDevice(studentId)
+    checkOutForm.find("input[type='submit']").prop("disabled", true);
+    const data = validateSubmit("submit");
+    if (data) {
+      const { lastUser, lastCheckOut, dueDate } = data;
+      const success = await checkOutDevice(lastUser, lastCheckOut, dueDate);
+      console.log(success);
+      if (!success)
+        checkOutForm.find("input[type='submit']").prop("disabled", false);
     }
   });
 }
 
-// Check In
+// Check In (DONE: 2021-02-12T22:51:29Z)
 if (checkInForm) {
   /**
    * Returns if submit button should be disabled
    */
-  const testErrorFields = () => {
+  const testErrorFields = (submit) => {
     let disable = false;
     const $button = $("#checkin-button");
-    $("#error-text-fields-checkin .form-text-field").each(function() {
-      if($(this).val().length < 1) {disable = true; return;}
+    $("#error-text-fields-checkin .form-text-field").each(function () {
+      if ($(this).val().length < 1) {
+        disable = true;
+        return;
+      }
     });
-    disable ? $button.addClass("disabled") :  $button.removeClass("disabled");
+    if (submit !== "submit")
+      disable
+        ? $button.prop("disabled", true)
+        : $button.prop("disabled", false);
     return disable;
-  }
+  };
 
   // Show Character Count
-  $("#checkin-error-description").on("input", function() {
+  $("#checkin-error-description").on("input", function () {
     $(this).next().find("span").text($(this).val().length);
   });
 
   // Error Pop Into View
-  $("input[name='Check In Status']").on("change", function() {
+  $("input[name='Check In Status']").on("change", function () {
     let $errorFields = $("#error-text-fields-checkin");
     // If error, show errror box
     if ($("input[name='Check In Status']:checked").val() == "Error") {
@@ -241,78 +342,91 @@ if (checkInForm) {
       testErrorFields();
     } else {
       $errorFields.slideUp(750);
-      $(".checking-button").removeClass("disabled");
-    } 
+      $(".checking-button").prop("disabled", false);
+    }
   });
 
-  $("#error-text-fields-checkin .form-text-field").on("input", function() {
+  $("#error-text-fields-checkin .form-text-field").on("input", function () {
     if ($("input[name='Check In Status']:checked").val() == "Error") {
       testErrorFields();
     }
-  }); 
+  });
 
-  $(checkInForm).on("submit", function (e) {
+  $(checkInForm).on("submit", async function (e) {
     e.preventDefault();
-    const status = $("input[name='Check In Status']:checked").val()
+    $(this).find("input[type='submit']").prop("disabled", true);
+    const status = $("input[name='Check In Status']:checked").val();
+    let success;
     if (status) {
       if (status === "Error") {
-        if(!testErrorFields()) {
+        if (!testErrorFields("submit")) {
           const title = $("#checkin-error-title").val();
           const description = $("#checkin-error-description").val();
-          checkInDevice(true, title, description)
+          success = await checkInDevice(true, title, description);
         }
-      } else checkInDevice(false);
+      } else success = await checkInDevice(false);
+      console.log(success);
+      if (!success)
+        $(this).find("input[type='submit']").prop("disabled", false);
     }
   });
 }
 
+// Check In (DONE: 2021-02-13T00:03:15Z)
 if (updateErrorForm) {
-  const testFields = () => {
+  const testFields = (submit) => {
     const $button = $("#update-error-button");
     const $statusCheck = $("input[name='Update Status']").is(":checked");
     const $descCheck = $("#update-error-description").val().length > 0;
-    const $idCheck = $('#select-current-error').val();
+    const $idCheck = $("#select-current-error").val();
     if ($statusCheck && $descCheck && $idCheck) {
-      $button.removeClass("disabled");
+      if (submit !== "submit") $button.prop("disabled", false);
       return true;
     }
-    $button.addClass("disabled");
+    if (submit !== "submit") $button.prop("disabled", true);
     return false;
-  }
+  };
 
   // On Status Change
-  $("input[name='Update Status']").on("change", function() {
-    $("input[name='Update Status']").each(function() {
+  $("input[name='Update Status']").on("change", function () {
+    $("input[name='Update Status']").each(function () {
       if ($(this).is(":checked")) {
         $(this).closest(".chip").addClass("selected");
         if ($(this).val() === "Fixed" || $(this).val() === "Unfixable") {
-          const message = '*Updating this error to "' + $(this).val() + '" will finalize the error';
+          const message =
+            '*Updating this error to "' +
+            $(this).val() +
+            '" will finalize the error';
           $(".pop-text").empty();
           $(".pop-text").append(message);
         } else $(".pop-text").empty();
-      }
-      else $(this).closest(".chip").removeClass("selected");
+      } else $(this).closest(".chip").removeClass("selected");
     });
     testFields();
   });
 
   // On description Change
-  $("#update-error-description").on("input", function() {
+  $("#update-error-description").on("input", function () {
     // Show Character Count
     $(this).next().find("span").text($(this).val().length);
     testFields();
   });
 
-  $(updateErrorForm).on("submit", function(e) {
+  $(updateErrorForm).on("submit", async function (e) {
     e.preventDefault();
-    const errorId = $('#select-current-error').val();
+    $(this).find("input[type='submit']").prop("disabled", true);
+    const errorId = $("#select-current-error").val();
     const status = $("input[name='Update Status']:checked").val();
     const description = $("#update-error-description").val();
-    if (testFields()) updateError(errorId, status , description)
+    if (testFields("submit")) {
+      const success = await updateError(errorId, status, description);
+      console.log(success);
+      if (!success)
+        $(this).find("input[type='submit']").prop("disabled", false);
+    }
   });
 
   function waveTrigger(event) {
-
     // Get clicked element
     const $element = event.target;
     // Create ripple element and append to $element
@@ -330,7 +444,10 @@ if (updateErrorForm) {
     // Then begin ripple effect.
     const elementWidth = $element.offsetWidth;
     const elementHeight = $element.offsetHeight;
-    const scale = Math.max(elementHeight, elementWidth) / Math.min(elementHeight, elementWidth) * 1.53;
+    const scale =
+      (Math.max(elementHeight, elementWidth) /
+        Math.min(elementHeight, elementWidth)) *
+      1.53;
     $waves.style.transform = "scale(" + scale + ")";
     $waves.style.opacity = "1";
     $waves.dataset.waving = "true"; // This is to keep track
@@ -339,26 +456,23 @@ if (updateErrorForm) {
     setTimeout(function () {
       $waves.dataset.waving = "";
     }, 350);
-
   }
 
-
   function waveCheckRelease($element) {
-
     let isStillWaving;
 
     // Loop through all ripples
-    [].slice.call($element.getElementsByClassName("waves-ripple")).forEach(function ($wave) {
-
-      // Check if they're still going.
-      if ($wave.dataset.waving) {
-        isStillWaving = 1;
-      } else {
-
-        // Remove it if not.
-        $wave.remove();
-      }
-    });
+    [].slice
+      .call($element.getElementsByClassName("waves-ripple"))
+      .forEach(function ($wave) {
+        // Check if they're still going.
+        if ($wave.dataset.waving) {
+          isStillWaving = 1;
+        } else {
+          // Remove it if not.
+          $wave.remove();
+        }
+      });
 
     // If anything is still going, check again.
     if (isStillWaving) {
@@ -366,15 +480,12 @@ if (updateErrorForm) {
         waveCheckRelease($element);
       }, 20);
     }
-
   }
-
 
   // Bind clicks to trigger/cancel effect
   function onMouseDown(event) {
-
     let $target = event.target;
-    
+
     // Check if this element needs the wave-effect + trigger it if so.
     if ($target.classList.contains("waves-effect")) {
       waveTrigger(event);
@@ -382,7 +493,6 @@ if (updateErrorForm) {
   }
 
   function onMouseUp(event) {
-
     let $target = event.target;
 
     // Begin checking for whether or not this effect has ended
@@ -391,48 +501,97 @@ if (updateErrorForm) {
     }
   }
 
-
-  document.addEventListener("mousedown", onMouseDown, {passive: true});
-  document.addEventListener("mouseup", onMouseUp, {passive: true});
-  document.addEventListener("mouseout", onMouseUp); 
+  document.addEventListener("mousedown", onMouseDown, { passive: true });
+  document.addEventListener("mouseup", onMouseUp, { passive: true });
+  document.addEventListener("mouseout", onMouseUp);
 }
 
 if (createErrorForm) {
-  const testErrorFields = () => {
+  const testErrorFields = (submit) => {
     let disable = false;
     const $button = $("#create-error-button");
-    $("#error-text-fields-create .form-text-field").each(function() {
-      if($(this).val().length < 1) {disable = true; return;}
+    $("#error-text-fields-create .form-text-field").each(function () {
+      if ($(this).val().length < 1) {
+        disable = true;
+        return;
+      }
     });
-    disable ? $button.addClass("disabled") :  $button.removeClass("disabled");
+    const errorDate = $("#error-date").val();
+    if ($("#error-date-checker").is(":checked")) {
+      if (!errorDate) disable = true;
+      if (new Date(errorDate).getTime() > new Date(Date.now()).getTime())
+        disable = true;
+    }
+
+    if (submit !== "submit") {
+      if (disable) {
+        $button.prop("disabled", true);
+      } else {
+        $button.prop("disabled", false);
+      }
+    }
     return disable;
-  }
+  };
 
   // Show Character Count
-  $("#create-error-description").on("input", function() {
+  $("#create-error-description").on("input", function () {
     $(this).next().find("span").text($(this).val().length);
   });
 
-  $("#error-text-fields-create .form-text-field").on("input", testErrorFields); 
+  $("#error-text-fields-create .form-text-field").on("input", testErrorFields);
 
-  $("#new-error-button").on("click", function() {
+  $("#create-error-form .date-wrapper input[type='checkbox']").on(
+    "change",
+    function () {
+      toggleDateHolder($(this));
+      testErrorFields();
+    }
+  );
+
+  $(".fakebox").on("click", function () {
+    $(this).next().trigger("click");
+  });
+
+  $("#create-error-form .date-wrapper input[type='text']").on(
+    "change",
+    function () {
+      fakeboxFormat($(this));
+      testErrorFields();
+    }
+  );
+
+  $("#new-error-button").on("click", function () {
     $(this).hide();
     $("#error-text-fields-create").fadeIn(250);
     $(this).siblings(".nothing").hide();
-    $('html, body').animate({ scrollTop: $(".create-error-form-wrapper").offset().top - 100 }, 1200);
+    $("html, body").animate(
+      { scrollTop: $(".create-error-form-wrapper").offset().top - 100 },
+      1200
+    );
   });
 
-  $("#cancel-create-new-error").on("click", function() {
+  $("#cancel-create-new-error").on("click", function () {
     $(this).closest("#error-text-fields-create").slideUp(1000);
     $(".device-error-log-container .nothing").show(200);
     $("#new-error-button").show();
   });
 
-  $(createErrorForm).on("submit", function (e) {
+  $(createErrorForm).on("submit", async function (e) {
     e.preventDefault();
+    $(this).find("input[type='submit']").prop("disabled", true);
     const title = $("#create-error-title").val();
     const description = $("#create-error-description").val();
-    if(!testErrorFields()) createError(title, description)
+    const errorDate = $("#error-date").val();
+    let createdAt;
+    if ($("#error-date-checker").is(":checked")) {
+      createdAt = new Date(errorDate).toISOString();
+    }
+    if (!testErrorFields("submit")) {
+      const success = await createError(title, description, createdAt);
+      console.log(success);
+      if (!success)
+        $(this).find("input[type='submit']").prop("disabled", false);
+    }
   });
 }
 
@@ -443,13 +602,16 @@ $(firstPasswordForm).on("submit", function (e) {
   updatePassword(password, passwordConfirm);
 });
 
-$(".go-to-error").on("click", function() {
+$(".go-to-error").on("click", function () {
   const errorId = $(this).data("error-id");
   const errorRow = $("#" + errorId);
   if ($(errorRow).attr("data-expanded") == false) {
     $(errorRow).find(".expand_more").trigger("click");
   } else {
-    $('html, body').animate({ scrollTop: $(errorRow).offset().top - 100 }, 1200);
+    $("html, body").animate(
+      { scrollTop: $(errorRow).offset().top - 100 },
+      1200
+    );
   }
   $(errorRow).addClass("blinking-row").next().addClass("blinking-row");
 

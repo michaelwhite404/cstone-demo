@@ -8460,35 +8460,42 @@ var login = /*#__PURE__*/function () {
           case 3:
             res = _context.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "Logged in successfully!");
-              window.localStorage.setItem("email", email);
-
-              if (!res.data.data.employee.passwordChangedAt) {
-                window.setTimeout(function () {
-                  location.assign("/new-password");
-                }, 1500);
-              } else {
-                window.setTimeout(function () {
-                  location.assign("/dashboard");
-                }, 1500);
-              }
+            if (!(res.data.status === "success")) {
+              _context.next = 9;
+              break;
             }
 
-            _context.next = 10;
+            (0, _alerts.showAlert)("success", "Logged in successfully!");
+            window.localStorage.setItem("email", email);
+
+            if (!res.data.data.employee.passwordChangedAt) {
+              window.setTimeout(function () {
+                location.assign("/new-password");
+              }, 1500);
+            } else {
+              window.setTimeout(function () {
+                location.assign("/dashboard");
+              }, 1500);
+            }
+
+            return _context.abrupt("return", true);
+
+          case 9:
+            _context.next = 15;
             break;
 
-          case 7:
-            _context.prev = 7;
+          case 11:
+            _context.prev = 11;
             _context.t0 = _context["catch"](0);
             (0, _alerts.showAlert)("error", _context.t0.response.data.message);
+            return _context.abrupt("return", false);
 
-          case 10:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 7]]);
+    }, _callee, null, [[0, 11]]);
   }));
 
   return function login(_x, _x2) {
@@ -8520,20 +8527,20 @@ var logout = /*#__PURE__*/function () {
               window.location.assign("/");
             }
 
-            _context2.next = 11;
-            break;
+            return _context2.abrupt("return", true);
 
-          case 8:
-            _context2.prev = 8;
+          case 9:
+            _context2.prev = 9;
             _context2.t0 = _context2["catch"](0);
             (0, _alerts.showAlert)("error", "Error logging out! Try again");
+            return _context2.abrupt("return", false);
 
-          case 11:
+          case 13:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 8]]);
+    }, _callee2, null, [[0, 9]]);
   }));
 
   return function logout(_x3) {
@@ -9239,27 +9246,33 @@ var editDevice = /*#__PURE__*/function () {
           case 4:
             res = _context.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " edit successful!"));
-              window.setTimeout(function () {
-                location.assign("/".concat((0, _pluralize.default)(deviceType), "/").concat(res.data.data[deviceType].slug));
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context.next = 9;
+              break;
             }
 
-            _context.next = 11;
+            (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " edit successful!"));
+            window.setTimeout(function () {
+              location.assign("/".concat((0, _pluralize.default)(deviceType), "/").concat(res.data.data[deviceType].slug));
+            }, 1500);
+            return _context.abrupt("return", true);
+
+          case 9:
+            _context.next = 15;
             break;
 
-          case 8:
-            _context.prev = 8;
+          case 11:
+            _context.prev = 11;
             _context.t0 = _context["catch"](0);
             (0, _alerts.showAlert)("error", _context.t0.response.data.message);
+            return _context.abrupt("return", false);
 
-          case 11:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[0, 11]]);
   }));
 
   return function editDevice(_x, _x2, _x3, _x4, _x5, _x6) {
@@ -9295,27 +9308,33 @@ var addDevice = /*#__PURE__*/function () {
           case 4:
             res = _context2.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(_pluralize.default.singular(deviceTypePlural)), " Added!"));
-              window.setTimeout(function () {
-                location.assign("/".concat(deviceTypePlural, "/").concat(res.data.data[_pluralize.default.singular(deviceTypePlural)].slug));
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context2.next = 9;
+              break;
             }
 
-            _context2.next = 11;
+            (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(_pluralize.default.singular(deviceTypePlural)), " Added!"));
+            window.setTimeout(function () {
+              location.assign("/".concat(deviceTypePlural, "/").concat(res.data.data[_pluralize.default.singular(deviceTypePlural)].slug));
+            }, 1500);
+            return _context2.abrupt("return", true);
+
+          case 9:
+            _context2.next = 15;
             break;
 
-          case 8:
-            _context2.prev = 8;
+          case 11:
+            _context2.prev = 11;
             _context2.t0 = _context2["catch"](0);
             (0, _alerts.showAlert)("error", _context2.t0.response.data.message);
+            return _context2.abrupt("return", false);
 
-          case 11:
+          case 15:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 8]]);
+    }, _callee2, null, [[0, 11]]);
   }));
 
   return function addDevice(_x7, _x8, _x9, _x10, _x11, _x12) {
@@ -9326,7 +9345,7 @@ var addDevice = /*#__PURE__*/function () {
 exports.addDevice = addDevice;
 
 var checkOutDevice = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(lastUser) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(lastUser, lastCheckOut, dueDate) {
     var _window$pageData2, id, deviceType, res;
 
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
@@ -9340,37 +9359,46 @@ var checkOutDevice = /*#__PURE__*/function () {
               method: "PATCH",
               url: "/api/v1/".concat((0, _pluralize.default)(deviceType), "/").concat(id, "/check-out"),
               data: {
-                lastUser: lastUser
+                lastUser: lastUser,
+                lastCheckOut: lastCheckOut,
+                checkOutDate: lastCheckOut,
+                dueDate: dueDate
               }
             });
 
           case 4:
             res = _context3.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " checkout successful!"));
-              window.setTimeout(function () {
-                history.go();
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context3.next = 9;
+              break;
             }
 
-            _context3.next = 11;
+            (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " checkout successful!"));
+            window.setTimeout(function () {
+              history.go();
+            }, 1500);
+            return _context3.abrupt("return", true);
+
+          case 9:
+            _context3.next = 15;
             break;
 
-          case 8:
-            _context3.prev = 8;
+          case 11:
+            _context3.prev = 11;
             _context3.t0 = _context3["catch"](0);
             (0, _alerts.showAlert)("error", _context3.t0.response.data.message);
+            return _context3.abrupt("return", false);
 
-          case 11:
+          case 15:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 8]]);
+    }, _callee3, null, [[0, 11]]);
   }));
 
-  return function checkOutDevice(_x13) {
+  return function checkOutDevice(_x13, _x14, _x15) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -9401,30 +9429,36 @@ var checkInDevice = /*#__PURE__*/function () {
           case 4:
             res = _context4.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " checked in!"));
-              window.setTimeout(function () {
-                history.go();
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context4.next = 9;
+              break;
             }
 
-            _context4.next = 11;
+            (0, _alerts.showAlert)("success", "".concat((0, _capitalize.default)(deviceType), " checked in!"));
+            window.setTimeout(function () {
+              history.go();
+            }, 1500);
+            return _context4.abrupt("return", true);
+
+          case 9:
+            _context4.next = 15;
             break;
 
-          case 8:
-            _context4.prev = 8;
+          case 11:
+            _context4.prev = 11;
             _context4.t0 = _context4["catch"](0);
             (0, _alerts.showAlert)("error", _context4.t0.response.data.message);
+            return _context4.abrupt("return", false);
 
-          case 11:
+          case 15:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, null, [[0, 8]]);
+    }, _callee4, null, [[0, 11]]);
   }));
 
-  return function checkInDevice(_x14, _x15, _x16) {
+  return function checkInDevice(_x16, _x17, _x18) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -9452,30 +9486,36 @@ var updateError = /*#__PURE__*/function () {
           case 3:
             res = _context5.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "Error updated sucessfully");
-              window.setTimeout(function () {
-                history.go();
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context5.next = 8;
+              break;
             }
 
-            _context5.next = 10;
+            (0, _alerts.showAlert)("success", "Error updated sucessfully");
+            window.setTimeout(function () {
+              history.go();
+            }, 1500);
+            return _context5.abrupt("return", true);
+
+          case 8:
+            _context5.next = 14;
             break;
 
-          case 7:
-            _context5.prev = 7;
+          case 10:
+            _context5.prev = 10;
             _context5.t0 = _context5["catch"](0);
             (0, _alerts.showAlert)("error", _context5.t0.response.data.message);
+            return _context5.abrupt("return", false);
 
-          case 10:
+          case 14:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 7]]);
+    }, _callee5, null, [[0, 10]]);
   }));
 
-  return function updateError(_x17, _x18, _x19) {
+  return function updateError(_x19, _x20, _x21) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -9483,7 +9523,7 @@ var updateError = /*#__PURE__*/function () {
 exports.updateError = updateError;
 
 var createError = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(title, description) {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(title, description, createdAt) {
     var id, res;
     return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
@@ -9498,37 +9538,44 @@ var createError = /*#__PURE__*/function () {
               data: {
                 title: title,
                 description: description,
-                device: id
+                device: id,
+                createdAt: createdAt
               }
             });
 
           case 4:
             res = _context6.sent;
 
-            if (res.data.status === "success") {
-              (0, _alerts.showAlert)("success", "Error created sucessfully");
-              window.setTimeout(function () {
-                history.go();
-              }, 1500);
+            if (!(res.data.status === "success")) {
+              _context6.next = 9;
+              break;
             }
 
-            _context6.next = 11;
+            (0, _alerts.showAlert)("success", "Error created sucessfully");
+            window.setTimeout(function () {
+              history.go();
+            }, 1500);
+            return _context6.abrupt("return", true);
+
+          case 9:
+            _context6.next = 15;
             break;
 
-          case 8:
-            _context6.prev = 8;
+          case 11:
+            _context6.prev = 11;
             _context6.t0 = _context6["catch"](0);
             (0, _alerts.showAlert)("error", _context6.t0.response.data.message);
+            return _context6.abrupt("return", false);
 
-          case 11:
+          case 15:
           case "end":
             return _context6.stop();
         }
       }
-    }, _callee6, null, [[0, 8]]);
+    }, _callee6, null, [[0, 11]]);
   }));
 
-  return function createError(_x20, _x21) {
+  return function createError(_x22, _x23, _x24) {
     return _ref6.apply(this, arguments);
   };
 }();
@@ -9803,6 +9850,10 @@ var _password = require("./password");
 
 var _device = require("./device");
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 // DOM ELEMENTS
 var loginForm = $("#login-form");
 var logOutBtn = $("#log-out-button");
@@ -9817,50 +9868,133 @@ var checkInForm = $("#checkin-form");
 var firstPasswordForm = $("#create-first-password-form");
 var updateErrorForm = $("#update-error-form");
 var createErrorForm = $("#create-error-form");
-$("form").on("submit", function () {
-  var originalButton = $(this).find("input[type='submit']");
-  var waitButtonHTML = "<div id='wait-button' class='checking-button w-button disabled' type='submit' value='Please wait...' data-wait='Please wait...' disabled style='user-select: none;'>Please wait...</div>";
-  $(originalButton).replaceWith(waitButtonHTML);
-  window.setInterval(function () {
-    $('#wait-button').replaceWith(originalButton);
-  }, 3000);
-});
+
+var fakeboxFormat = function fakeboxFormat(el) {
+  var dateStr = $(el).val();
+  var date = new Date(dateStr).toLocaleString();
+  var dateText = $(el).prev().find(".date-text");
+  $(dateText).text(date);
+  if ($(el).data("invalid") === "future") if (new Date(dateStr).getTime() > new Date(Date.now()).getTime()) $(el).prev().css("color", "red");else $(el).prev().css("color", "cornflowerblue");
+  if ($(el).data("invalid") === "past") if (new Date(dateStr).getTime() < new Date(Date.now()).getTime()) $(el).prev().css("color", "red");else $(el).prev().css("color", "cornflowerblue");
+};
+
+var toggleDateHolder = function toggleDateHolder(el) {
+  var checkbox = $(el);
+  var dateHolder = $(checkbox).closest(".date-wrapper").find(".date-holder");
+
+  if ($(checkbox).is(":checked")) {
+    $(dateHolder).show();
+  } else $(dateHolder).hide();
+}; // Login (DONE: 2021-02-12T22:45:38Z)
+
 
 if (loginForm) {
-  $(loginForm).on("submit", function (e) {
-    e.preventDefault();
-    var email = $("input#login-email").val();
-    var password = $("input#login-password").val();
-    (0, _login.login)(email, password);
-  });
+  $(loginForm).on("submit", /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+      var email, password, success;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              e.preventDefault();
+              $(this).find("input[type='submit']").prop("disabled", true);
+              email = $("input#login-email").val();
+              password = $("input#login-password").val();
+              _context.next = 6;
+              return (0, _login.login)(email, password);
+
+            case 6:
+              success = _context.sent;
+              if (!success) $(this).find("input[type='submit']").prop("disabled", false);
+
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
 }
 
 if (logOutBtn) $(logOutBtn).on("click", _login.logout);
 
 if (editDeviceForm) {
-  $(editDeviceForm).on("submit", function (e) {
-    e.preventDefault();
-    var name = $("#edit-device-name").val();
-    var brand = $("#edit-device-brand").val();
-    var model = $("#edit-device-model").val();
-    var serialNumber = $("#edit-device-sn").val();
-    var macAddress = $("#edit-device-mac").val();
-    var status = $("#edit-device-status").find(":selected").val();
-    (0, _device.editDevice)(name, brand, model, serialNumber, macAddress, status);
-  });
+  $(editDeviceForm).on("submit", /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+      var name, brand, model, serialNumber, macAddress, status, success;
+      return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              e.preventDefault();
+              editDeviceForm.find("input[type='submit']").prop("disabled", true);
+              name = $("#edit-device-name").val();
+              brand = $("#edit-device-brand").val();
+              model = $("#edit-device-model").val();
+              serialNumber = $("#edit-device-sn").val();
+              macAddress = $("#edit-device-mac").val();
+              status = $("#edit-device-status").find(":selected").val();
+              _context2.next = 10;
+              return (0, _device.editDevice)(name, brand, model, serialNumber, macAddress, status);
+
+            case 10:
+              success = _context2.sent;
+              if (!success) editDeviceForm.find("input[type='submit']").prop("disabled", false);
+
+            case 12:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function (_x2) {
+      return _ref2.apply(this, arguments);
+    };
+  }());
 }
 
 if (addDeviceForm) {
-  $(addDeviceForm).on("submit", function (e) {
-    e.preventDefault();
-    var name = $("#create-device-name").val();
-    var brand = $("#create-device-brand").val();
-    var model = $("#create-device-model").val();
-    var serialNumber = $("#create-device-sn").val();
-    var macAddress = $("#create-device-mac").val();
-    var status = $("#create-device-status").find(":selected").val();
-    (0, _device.addDevice)(name, brand, model, serialNumber, macAddress, status);
-  });
+  $(addDeviceForm).on("submit", /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+      var name, brand, model, serialNumber, macAddress, status, success;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              e.preventDefault();
+              addDeviceForm.find("input[type='submit']").prop("disabled", true);
+              name = $("#create-device-name").val();
+              brand = $("#create-device-brand").val();
+              model = $("#create-device-model").val();
+              serialNumber = $("#create-device-sn").val();
+              macAddress = $("#create-device-mac").val();
+              status = $("#create-device-status").find(":selected").val();
+              _context3.next = 10;
+              return (0, _device.addDevice)(name, brand, model, serialNumber, macAddress, status);
+
+            case 10:
+              success = _context3.sent;
+              if (!success) addDeviceForm.find("input[type='submit']").prop("disabled", false);
+
+            case 12:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
+    return function (_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }());
 }
 
 if (newUserForm) {
@@ -9951,17 +10085,64 @@ if (editStudentForm) {
     var id = $("#edit-student").attr("data-student");
     (0, _student.editStudent)(firstName, lastName, status, grade, schoolEmail, personalEmail, customID, id);
   });
-} // Check Out
+} // Check Out (DONE: 2021-02-12T19:09:33Z)
 
 
 if ($(checkOutForm)) {
   var gradeSelect = $("#check-out-grade");
+
+  var validateSubmit = function validateSubmit(submit) {
+    var grade = $(gradeSelect).val(); // 1.) Is Grade Picked
+
+    if ($(gradeSelect).val() < 0) {
+      $("#checkout-button").prop("disabled", true);
+      return false;
+    } // 2.) Is Student Picked
+
+
+    var lastUser = $("select.student-list[value=\"".concat(grade, "\"]")).val();
+
+    if (lastUser == "-1") {
+      $("#checkout-button").prop("disabled", true);
+      return false;
+    } // 3.) Is there a checkout date & is it valid
+
+
+    var lastCheckOut = $("#checkout-date").val();
+
+    if ($("#checkout-date-checker").is(":checked")) {
+      if (!lastCheckOut || new Date(lastCheckOut).getTime() > new Date(Date.now()).getTime()) {
+        $("#checkout-button").prop("disabled", true);
+        lastCheckOut = "";
+        return false;
+      } else lastCheckOut = new Date(lastCheckOut).toISOString();
+    } else lastCheckOut = ""; // 4.) Is there a due date & is it valid
+
+
+    var dueDate = $("#due-date").val();
+
+    if ($("#due-date-checker").is(":checked")) {
+      if (!dueDate || new Date(dueDate).getTime() < new Date(Date.now()).getTime()) {
+        $("#checkout-button").prop("disabled", true);
+        dueDate = "";
+        return false;
+      } else dueDate = new Date(dueDate).toISOString();
+    } else dueDate = "";
+
+    if (submit !== "submit") $("#checkout-button").prop("disabled", false);
+    var data = {
+      lastUser: lastUser,
+      lastCheckOut: lastCheckOut,
+      dueDate: dueDate
+    };
+    return data;
+  };
+
   var changeValue;
   $(gradeSelect).change(function () {
     if ($(gradeSelect).val() == -1) {
       $("select.student-list").css("display", "none");
       $('select.student-list[value="-1"]').css("display", "block");
-      $(".checking-button").addClass("disabled");
     } else {
       changeValue = $(gradeSelect).val(); // Hide all Student Lists
 
@@ -9970,38 +10151,67 @@ if ($(checkOutForm)) {
       $("select.student-list[value=\"".concat(changeValue, "\"]")).css("display", "block");
     }
 
-    if ($(gradeSelect).val() == -1 || $("select.student-list[value=\"".concat(changeValue, "\"]")).val() == -1 || $("select.student-list[value=\"".concat(changeValue, "\"]")).val() == undefined) {
-      $(".checking-button").addClass("disabled");
-    } else {
-      $(".checking-button").removeClass("disabled");
-    }
+    validateSubmit();
   });
   $(".student-list").change(function () {
-    changeValue = $(gradeSelect).val();
-
-    if ($(gradeSelect).val() == -1 || $("select.student-list[value=\"".concat(changeValue, "\"]")).val() == -1 || $("select.student-list[value=\"".concat(changeValue, "\"]")).val() == undefined) {
-      $(".checking-button").addClass("disabled");
-    } else {
-      $(".checking-button").removeClass("disabled");
-    }
+    validateSubmit();
   });
-  $(checkOutForm).on("submit", function (e) {
-    e.preventDefault();
-    changeValue = $(gradeSelect).val();
-    var studentId = $("select.student-list[value=\"".concat(changeValue, "\"]")).val();
-
-    if (changeValue != -1 && studentId != -1) {
-      (0, _device.checkOutDevice)(studentId);
-    }
+  $("#checkout-form .date-wrapper input[type='checkbox']").on("change", function () {
+    toggleDateHolder($(this));
+    validateSubmit();
   });
-} // Check In
+  $(".fakebox").on("click", function () {
+    $(this).next().trigger("click");
+  });
+  $("#checkout-form .date-wrapper input[type='text']").on("change", function () {
+    fakeboxFormat($(this));
+    validateSubmit();
+  });
+  $(checkOutForm).on("submit", /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+      var data, lastUser, lastCheckOut, dueDate, success;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              e.preventDefault();
+              checkOutForm.find("input[type='submit']").prop("disabled", true);
+              data = validateSubmit("submit");
+
+              if (!data) {
+                _context4.next = 10;
+                break;
+              }
+
+              lastUser = data.lastUser, lastCheckOut = data.lastCheckOut, dueDate = data.dueDate;
+              _context4.next = 7;
+              return (0, _device.checkOutDevice)(lastUser, lastCheckOut, dueDate);
+
+            case 7:
+              success = _context4.sent;
+              console.log(success);
+              if (!success) checkOutForm.find("input[type='submit']").prop("disabled", false);
+
+            case 10:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+
+    return function (_x4) {
+      return _ref4.apply(this, arguments);
+    };
+  }());
+} // Check In (DONE: 2021-02-12T22:51:29Z)
 
 
 if (checkInForm) {
   /**
    * Returns if submit button should be disabled
    */
-  var testErrorFields = function testErrorFields() {
+  var testErrorFields = function testErrorFields(submit) {
     var disable = false;
     var $button = $("#checkin-button");
     $("#error-text-fields-checkin .form-text-field").each(function () {
@@ -10010,7 +10220,7 @@ if (checkInForm) {
         return;
       }
     });
-    disable ? $button.addClass("disabled") : $button.removeClass("disabled");
+    if (submit !== "submit") disable ? $button.prop("disabled", true) : $button.prop("disabled", false);
     return disable;
   }; // Show Character Count
 
@@ -10027,7 +10237,7 @@ if (checkInForm) {
       testErrorFields();
     } else {
       $errorFields.slideUp(750);
-      $(".checking-button").removeClass("disabled");
+      $(".checking-button").prop("disabled", false);
     }
   });
   $("#error-text-fields-checkin .form-text-field").on("input", function () {
@@ -10035,35 +10245,83 @@ if (checkInForm) {
       testErrorFields();
     }
   });
-  $(checkInForm).on("submit", function (e) {
-    e.preventDefault();
-    var status = $("input[name='Check In Status']:checked").val();
+  $(checkInForm).on("submit", /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(e) {
+      var status, success, title, description;
+      return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              e.preventDefault();
+              $(this).find("input[type='submit']").prop("disabled", true);
+              status = $("input[name='Check In Status']:checked").val();
 
-    if (status) {
-      if (status === "Error") {
-        if (!testErrorFields()) {
-          var title = $("#checkin-error-title").val();
-          var description = $("#checkin-error-description").val();
-          (0, _device.checkInDevice)(true, title, description);
+              if (!status) {
+                _context5.next = 18;
+                break;
+              }
+
+              if (!(status === "Error")) {
+                _context5.next = 13;
+                break;
+              }
+
+              if (testErrorFields("submit")) {
+                _context5.next = 11;
+                break;
+              }
+
+              title = $("#checkin-error-title").val();
+              description = $("#checkin-error-description").val();
+              _context5.next = 10;
+              return (0, _device.checkInDevice)(true, title, description);
+
+            case 10:
+              success = _context5.sent;
+
+            case 11:
+              _context5.next = 16;
+              break;
+
+            case 13:
+              _context5.next = 15;
+              return (0, _device.checkInDevice)(false);
+
+            case 15:
+              success = _context5.sent;
+
+            case 16:
+              console.log(success);
+              if (!success) $(this).find("input[type='submit']").prop("disabled", false);
+
+            case 18:
+            case "end":
+              return _context5.stop();
+          }
         }
-      } else (0, _device.checkInDevice)(false);
-    }
-  });
-}
+      }, _callee5, this);
+    }));
+
+    return function (_x5) {
+      return _ref5.apply(this, arguments);
+    };
+  }());
+} // Check In (DONE: 2021-02-13T00:03:15Z)
+
 
 if (updateErrorForm) {
-  var testFields = function testFields() {
+  var testFields = function testFields(submit) {
     var $button = $("#update-error-button");
     var $statusCheck = $("input[name='Update Status']").is(":checked");
     var $descCheck = $("#update-error-description").val().length > 0;
-    var $idCheck = $('#select-current-error').val();
+    var $idCheck = $("#select-current-error").val();
 
     if ($statusCheck && $descCheck && $idCheck) {
-      $button.removeClass("disabled");
+      if (submit !== "submit") $button.prop("disabled", false);
       return true;
     }
 
-    $button.addClass("disabled");
+    if (submit !== "submit") $button.prop("disabled", true);
     return false;
   }; // On Status Change
 
@@ -10088,13 +10346,44 @@ if (updateErrorForm) {
     $(this).next().find("span").text($(this).val().length);
     testFields();
   });
-  $(updateErrorForm).on("submit", function (e) {
-    e.preventDefault();
-    var errorId = $('#select-current-error').val();
-    var status = $("input[name='Update Status']:checked").val();
-    var description = $("#update-error-description").val();
-    if (testFields()) (0, _device.updateError)(errorId, status, description);
-  });
+  $(updateErrorForm).on("submit", /*#__PURE__*/function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(e) {
+      var errorId, status, description, success;
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              e.preventDefault();
+              $(this).find("input[type='submit']").prop("disabled", true);
+              errorId = $("#select-current-error").val();
+              status = $("input[name='Update Status']:checked").val();
+              description = $("#update-error-description").val();
+
+              if (!testFields("submit")) {
+                _context6.next = 11;
+                break;
+              }
+
+              _context6.next = 8;
+              return (0, _device.updateError)(errorId, status, description);
+
+            case 8:
+              success = _context6.sent;
+              console.log(success);
+              if (!success) $(this).find("input[type='submit']").prop("disabled", false);
+
+            case 11:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, this);
+    }));
+
+    return function (_x6) {
+      return _ref6.apply(this, arguments);
+    };
+  }());
 
   function waveTrigger(event) {
     // Get clicked element
@@ -10169,7 +10458,7 @@ if (updateErrorForm) {
 }
 
 if (createErrorForm) {
-  var _testErrorFields = function _testErrorFields() {
+  var _testErrorFields = function _testErrorFields(submit) {
     var disable = false;
     var $button = $("#create-error-button");
     $("#error-text-fields-create .form-text-field").each(function () {
@@ -10178,7 +10467,21 @@ if (createErrorForm) {
         return;
       }
     });
-    disable ? $button.addClass("disabled") : $button.removeClass("disabled");
+    var errorDate = $("#error-date").val();
+
+    if ($("#error-date-checker").is(":checked")) {
+      if (!errorDate) disable = true;
+      if (new Date(errorDate).getTime() > new Date(Date.now()).getTime()) disable = true;
+    }
+
+    if (submit !== "submit") {
+      if (disable) {
+        $button.prop("disabled", true);
+      } else {
+        $button.prop("disabled", false);
+      }
+    }
+
     return disable;
   }; // Show Character Count
 
@@ -10187,11 +10490,24 @@ if (createErrorForm) {
     $(this).next().find("span").text($(this).val().length);
   });
   $("#error-text-fields-create .form-text-field").on("input", _testErrorFields);
+  $("#create-error-form .date-wrapper input[type='checkbox']").on("change", function () {
+    toggleDateHolder($(this));
+
+    _testErrorFields();
+  });
+  $(".fakebox").on("click", function () {
+    $(this).next().trigger("click");
+  });
+  $("#create-error-form .date-wrapper input[type='text']").on("change", function () {
+    fakeboxFormat($(this));
+
+    _testErrorFields();
+  });
   $("#new-error-button").on("click", function () {
     $(this).hide();
     $("#error-text-fields-create").fadeIn(250);
     $(this).siblings(".nothing").hide();
-    $('html, body').animate({
+    $("html, body").animate({
       scrollTop: $(".create-error-form-wrapper").offset().top - 100
     }, 1200);
   });
@@ -10200,12 +10516,48 @@ if (createErrorForm) {
     $(".device-error-log-container .nothing").show(200);
     $("#new-error-button").show();
   });
-  $(createErrorForm).on("submit", function (e) {
-    e.preventDefault();
-    var title = $("#create-error-title").val();
-    var description = $("#create-error-description").val();
-    if (!_testErrorFields()) (0, _device.createError)(title, description);
-  });
+  $(createErrorForm).on("submit", /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(e) {
+      var title, description, errorDate, createdAt, success;
+      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              e.preventDefault();
+              $(this).find("input[type='submit']").prop("disabled", true);
+              title = $("#create-error-title").val();
+              description = $("#create-error-description").val();
+              errorDate = $("#error-date").val();
+
+              if ($("#error-date-checker").is(":checked")) {
+                createdAt = new Date(errorDate).toISOString();
+              }
+
+              if (_testErrorFields("submit")) {
+                _context7.next = 12;
+                break;
+              }
+
+              _context7.next = 9;
+              return (0, _device.createError)(title, description, createdAt);
+
+            case 9:
+              success = _context7.sent;
+              console.log(success);
+              if (!success) $(this).find("input[type='submit']").prop("disabled", false);
+
+            case 12:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7, this);
+    }));
+
+    return function (_x7) {
+      return _ref7.apply(this, arguments);
+    };
+  }());
 }
 
 $(firstPasswordForm).on("submit", function (e) {
@@ -10221,7 +10573,7 @@ $(".go-to-error").on("click", function () {
   if ($(errorRow).attr("data-expanded") == false) {
     $(errorRow).find(".expand_more").trigger("click");
   } else {
-    $('html, body').animate({
+    $("html, body").animate({
       scrollTop: $(errorRow).offset().top - 100
     }, 1200);
   }
@@ -10259,7 +10611,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63032" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60243" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

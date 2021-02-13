@@ -1,4 +1,8 @@
 extends base
+
+block floating
+  .floating-button
+    a.edit-button.w-button(href=`/${pluralize(key)}/stats`) View Stats
   
 block content  
   .w-form
@@ -37,6 +41,7 @@ block content
           tbody
             //- Test Beginning
             each device in devices
+              - if (device.lastUser) grade = device.lastUser.grade === 0 ? "K" : ordinal(device.lastUser.grade);
               tr
                 td
                   img.device-logo(src=`/images/device-logos/${device.brand}-Logo.png`)
@@ -46,14 +51,17 @@ block content
                 td #{device.macAddress}
                 td(id=`status-${device.status.toLowerCase().split(" ").join("")}`)
                   div(class=`${device.status.toLowerCase().split(" ").join("")}-circle`)
-                  | #{device.status}
+                  if (device.dueDate)
+                    | Due #{moment(device.dueDate).fromNow()}
+                  else
+                    | #{device.status}
                 if device.status === 'Available'
                   td 
                     a.check-out(href=`/${pluralize(key)}/${device.slug}#check-out`)
                       b Check Out >
                 if device.status === 'Checked Out'
                   //- Come Back And Implement
-                  td= `${device.lastUser.fullName} (${device.lastUser.grade}th)`
+                  td= `${device.lastUser.fullName} (${grade})`
                 else
                   td
               //- Test

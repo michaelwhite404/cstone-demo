@@ -17,12 +17,10 @@ router
   .patch(deviceController.updateDevice)
   .delete(deviceController.deleteDevice);
 
-router
-  .route("/:id/check-out")
-  .patch(deviceController.checkOutDevice);
+router.route("/:id/check-out").patch(deviceController.checkOutDevice);
 
-router
-  .route("/:id/check-in")
-  .patch(deviceController.checkInDevice);
+router.route("/:id/check-in").patch(deviceController.checkInDevice);
+
+router.get("/test/group", deviceController.testStatusGroup);
 
 module.exports = router;
