@@ -94,7 +94,11 @@ block addEnd
       },
     };
     const pickers = ['#checkout-date', '#due-date', '#error-date']
-    if ($(".checkout-dates-wrapper").length > 0) {
-    pickers.forEach(picker => new Picker(document.querySelector(picker), pickerOptions));  
+    if ($(".date-wrapper").length > 0) {
+      pickers.forEach(picker => {
+        if ($(picker).length > 0) {
+          new Picker(document.querySelector(picker), pickerOptions);
+        }
+      });  
     }
     $("script").last().remove();
