@@ -30,7 +30,7 @@ exports.checkOutDevice = catchAsync(async (req, res, next) => {
   device.checkedOut = true;
   req.body.lastCheckOut
     ? (device.lastCheckOut = req.body.lastCheckOut)
-    : (device.lastCheckOut = Date.now());
+    : (device.lastCheckOut = now);
   device.lastUser = req.body.lastUser;
   device.teacherCheckOut = req.employee.id;
   device.status = "Checked Out";
@@ -39,7 +39,7 @@ exports.checkOutDevice = catchAsync(async (req, res, next) => {
   if (req.body.lastCheckOut) {
     // Check If Check Out Date is in the future
     if (moment(req.body.lastCheckOut).diff(now) > 0)
-      return next(new AppError("Due date cannot be in the future", 400));
+      return next(new AppError("Check out date cannot be in the future", 400));
     checkOutDate = req.body.lastCheckOut;
     device.lastCheckOut = req.body.lastCheckOut;
   }
@@ -52,7 +52,7 @@ exports.checkOutDevice = catchAsync(async (req, res, next) => {
   // If Due Date Is Set
   if (req.body.dueDate) {
     // Check If Due Date is in the past
-    if (moment(req.body.dueDate).diff(moment()) < 0) {
+    if (moment(req.body.dueDate).diff(now) < 0) {
       return next(new AppError("Due date cannot be in the past", 400));
     }
     device.dueDate = req.body.dueDate;
@@ -91,8 +91,21 @@ exports.checkInDevice = catchAsync(async (req, res, next) => {
     );
   }
 
+  if (req.body.checkInDate) {
+    if (moment(req.body.checkInDate).diff(moment(device.lastCheckOut)) <= 0)
+      return next(
+        new AppError(
+          `A ${req.device} cannot be checked in before it was checked out`,
+          400
+        )
+      );
+    // Check If Check Out Date is in the future
+    if (moment(req.body.checkInDate).diff(moment()) > 0)
+      return next(new AppError("Check in date cannot be in the future", 400));
+  }
+
   device.checkedOut = false;
-  device.lastCheckIn = Date.now();
+  device.lastCheckIn = req.body.checkInDate ? req.body.checkInDate : Date.now();
   device.teacherCheckOut = undefined;
   device.dueDate = undefined;
 
@@ -100,7 +113,7 @@ exports.checkInDevice = catchAsync(async (req, res, next) => {
     device: device._id,
     checkedIn: false,
   });
-  log.checkInDate = Date.now();
+  log.checkInDate = req.body.checkInDate ? req.body.checkInDate : Date.now();
   (log.teacherCheckIn = req.employee.id), (log.checkedIn = true);
 
   if (req.body.error) {
@@ -110,9 +123,9 @@ exports.checkInDevice = catchAsync(async (req, res, next) => {
       description,
       device: device._id,
       checkInInfo: log._id,
+      createdAt: req.body.checkInDate,
     };
     const errorLog = await ErrorLog.create(errorData);
-    console.log(errorLog._id);
     log.error = errorLog._id;
     device.status = "Broken";
   } else {

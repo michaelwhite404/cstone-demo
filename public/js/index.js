@@ -11,6 +11,7 @@ import {
   editDevice,
   updateError,
 } from "./device";
+import moment from "moment";
 
 // DOM ELEMENTS
 const loginForm = $("#login-form");
@@ -33,13 +34,21 @@ const fakeboxFormat = (el) => {
   const dateText = $(el).prev().find(".date-text");
   $(dateText).text(date);
   if ($(el).data("invalid") === "future")
-    if (new Date(dateStr).getTime() > new Date(Date.now()).getTime())
+    if (new Date(dateStr).getTime() > new Date(Date.now()).getTime()) {
       $(el).prev().css("color", "red");
-    else $(el).prev().css("color", "cornflowerblue");
+      return false;
+    } else {
+      $(el).prev().css("color", "cornflowerblue");
+      return true;
+    }
   if ($(el).data("invalid") === "past")
-    if (new Date(dateStr).getTime() < new Date(Date.now()).getTime())
+    if (new Date(dateStr).getTime() < new Date(Date.now()).getTime()) {
       $(el).prev().css("color", "red");
-    else $(el).prev().css("color", "cornflowerblue");
+      return false;
+    } else {
+      $(el).prev().css("color", "cornflowerblue");
+      return true;
+    }
 };
 
 const toggleDateHolder = (el) => {
@@ -281,7 +290,7 @@ if ($(checkOutForm)) {
     }
   );
 
-  $(".fakebox").on("click", function () {
+  $("#checkout-form .fakebox").on("click", function () {
     $(this).next().trigger("click");
   });
 
@@ -300,7 +309,6 @@ if ($(checkOutForm)) {
     if (data) {
       const { lastUser, lastCheckOut, dueDate } = data;
       const success = await checkOutDevice(lastUser, lastCheckOut, dueDate);
-      console.log(success);
       if (!success)
         checkOutForm.find("input[type='submit']").prop("disabled", false);
     }
@@ -309,18 +317,33 @@ if ($(checkOutForm)) {
 
 // Check In (DONE: 2021-02-12T22:51:29Z)
 if (checkInForm) {
+  Object.freeze($("#checkin-date").data());
+  const checkOutDate = $("#checkin-date").data("checkout-date");
   /**
    * Returns if submit button should be disabled
    */
-  const testErrorFields = (submit) => {
+  const testFields = (submit) => {
     let disable = false;
     const $button = $("#checkin-button");
-    $("#error-text-fields-checkin .form-text-field").each(function () {
-      if ($(this).val().length < 1) {
-        disable = true;
-        return;
-      }
-    });
+    if ($("input[name='Check In Status']:checked").val() === "Error")
+      $("#error-text-fields-checkin .form-text-field").each(function () {
+        if ($(this).val().length < 1) {
+          disable = true;
+          return;
+        }
+      });
+    else if ($("input[name='Check In Status']:checked").val() !== "Fine")
+      disable = true;
+    if ($("#checkin-date-checker").is(":checked")) {
+      if ($("#checkin-date").val()) {
+        const dateEl = $("#checkin-date");
+        const datePicked = new Date(dateEl.val()).toISOString();
+        if (
+          !moment(datePicked).isBetween(dateEl.data("checkout-date"), undefined)
+        )
+          disable = true;
+      } else disable = true;
+    }
     if (submit !== "submit")
       disable
         ? $button.prop("disabled", true)
@@ -337,19 +360,44 @@ if (checkInForm) {
   $("input[name='Check In Status']").on("change", function () {
     let $errorFields = $("#error-text-fields-checkin");
     // If error, show errror box
-    if ($("input[name='Check In Status']:checked").val() == "Error") {
+    if ($("input[name='Check In Status']:checked").val() == "Error")
       $errorFields.slideDown(750);
-      testErrorFields();
-    } else {
-      $errorFields.slideUp(750);
-      $(".checking-button").prop("disabled", false);
-    }
+    else $errorFields.slideUp(750);
+    testFields();
   });
 
   $("#error-text-fields-checkin .form-text-field").on("input", function () {
     if ($("input[name='Check In Status']:checked").val() == "Error") {
-      testErrorFields();
+      testFields();
     }
+  });
+
+  const afterCheckout = (el) => {
+    const setDate = new Date($(el).val()).toISOString();
+    if (moment(setDate).diff(checkOutDate) <= 0) {
+      $(el).prev().css("color", "red");
+      return false;
+    } else {
+      $(el).prev().css("color", "cornflowerblue");
+      return true;
+    }
+  };
+
+  $("#checkin-form .date-wrapper input[type='checkbox']").on(
+    "change",
+    function () {
+      toggleDateHolder($(this));
+      testFields();
+    }
+  );
+
+  $("#checkin-form .fakebox").on("click", function () {
+    $(this).next().trigger("click");
+  });
+
+  $("#checkin-form .date-wrapper input[type='text']").on("change", function () {
+    fakeboxFormat($(this)) && afterCheckout($(this));
+    testFields();
   });
 
   $(checkInForm).on("submit", async function (e) {
@@ -358,14 +406,16 @@ if (checkInForm) {
     const status = $("input[name='Check In Status']:checked").val();
     let success;
     if (status) {
+      let checkInDate;
+      if ($("#checkin-date-checker").is(":checked"))
+        checkInDate = new Date($("#checkin-date").val()).toISOString();
       if (status === "Error") {
-        if (!testErrorFields("submit")) {
+        if (!testFields("submit")) {
           const title = $("#checkin-error-title").val();
           const description = $("#checkin-error-description").val();
-          success = await checkInDevice(true, title, description);
+          success = await checkInDevice(true, checkInDate, title, description);
         }
-      } else success = await checkInDevice(false);
-      console.log(success);
+      } else success = await checkInDevice(false, checkInDate);
       if (!success)
         $(this).find("input[type='submit']").prop("disabled", false);
     }

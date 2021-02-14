@@ -23,5 +23,15 @@ if device.status === 'Checked Out'
                 p.text-counter 
                   span 0
                   | /500
+          .checkin-date-wrapper#checkin-date-wrapper
+            .date-wrapper
+              label.w-checkbox
+                input.w-checkbox-input#checkin-date-checker(type="checkbox")
+                | Manually set check in date/time
+              .date-holder
+                .fakebox
+                  span.material-icons(style="margin-right:10px") date_range
+                  span.date-text Pick a date...
+                input#checkin-date(type="text" data-invalid="future" data-checkout-date=`${new Date(device.lastCheckOut).toISOString()}`)
         #w-node-0358f8b77d5c-8dcbe826
           input#checkin-button.checking-button.w-button(type="submit" value=`Check In ${capitalize(device.deviceType)}` data-wait="Please wait..." disabled)

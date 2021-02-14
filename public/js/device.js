@@ -111,13 +111,13 @@ export const checkOutDevice = async (lastUser, lastCheckOut, dueDate) => {
   }
 };
 
-export const checkInDevice = async (error, title, description) => {
+export const checkInDevice = async (error, checkInDate, title, description) => {
   try {
     const { id, deviceType } = window.pageData;
     const res = await axios({
       method: "PATCH",
       url: `/api/v1/${pluralize(deviceType)}/${id}/check-in`,
-      data: { error, title, description },
+      data: { error, checkInDate, title, description },
     });
 
     if (res.data.status === "success") {
