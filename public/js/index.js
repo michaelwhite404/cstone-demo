@@ -61,6 +61,10 @@ const toggleDateHolder = (el) => {
 
 // Login (DONE: 2021-02-12T22:45:38Z)
 if (loginForm) {
+  $("#google-sign-in-button").on("click", () => {
+    location.assign("/auth/google");
+  });
+
   $(loginForm).on("submit", async function (e) {
     e.preventDefault();
     $(this).find("input[type='submit']").prop("disabled", true);

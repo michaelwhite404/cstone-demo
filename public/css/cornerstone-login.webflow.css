@@ -375,7 +375,6 @@ a {
 
 .add-button {
   margin-right: 20px;
-  margin-left: auto;
   padding-right: 25px;
   padding-left: 23px;
   border-radius: 7px;
@@ -1036,9 +1035,9 @@ a {
   left: 98px;
   z-index: 2;
   display: block;
-  width: 600px;
-  height: 460px;
-  padding: 60px 90px 90px;
+  width: 525px;
+  height: auto;
+  padding: 36px 90px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -1329,6 +1328,56 @@ button#new-error-button.add-button {
   display: flex;
   align-items: center;
   color: cornflowerblue;
+}
+
+/* Sign In With Google Button */
+.sso-button-wrapper {
+  width: fit-content;
+  margin: auto;
+  padding: 2.5px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #34a853 4%, #4285f4 0%) top/100% 34%
+      no-repeat,
+    linear-gradient(90deg, #fbbc04 50%, #4285f4 0%) top/100% 82% no-repeat,
+    linear-gradient(90deg, #fbbc04 10%, #ea4335 0%) top/100% 100%;
+
+  box-shadow: 0 1px 6px rgba(60, 64, 67, 0.3);
+}
+
+.sso-button-wrapper button {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  outline: none;
+  border: none;
+  box-shadow: 0 1px 6px rgba(60, 64, 67, 0.3);
+  padding: 9px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: "Google Sans Medium";
+}
+
+#google-logo {
+  padding-left: 10px;
+  border-left: solid 1px rgb(218, 225, 231);
+  width: 30px;
+}
+
+#cstone-logo {
+  margin-right: 10px;
+  width: 20px;
+  height: 24px;
+}
+
+#button-text {
+  margin-left: 30px;
+  font-size: 14px;
+}
+
+.sso-button-wrapper .vr {
+  height: 100%;
+  width: 2px;
+  color: black;
 }
 
 #status-available {

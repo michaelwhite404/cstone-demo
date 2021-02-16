@@ -37,9 +37,17 @@ const employeeSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: ["Super Admin", "Admin", "Development", "Instructor", "Maintenance"],
+    enum: [
+      "Super Admin",
+      "Admin",
+      "Development",
+      "Instructor",
+      "Intern",
+      "Maintenance",
+    ],
   },
   image: String,
+  googleId: String,
   password: {
     type: String,
     required: [true, "Please provide a password"],

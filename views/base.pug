@@ -143,12 +143,12 @@ html(data-wf-page="5f3b60e5a2fb7062154b8aea" data-wf-site="5f11b0f9a179803d92d0d
             .nav-active-line
         a.brand.w-nav-brand(href="#")
           img.brand-logo(src="/images/Cornerstone-Logo.png" alt="")
-    .top-nav
+    .top-nav 
       if employee
         .profile-wrapper.w-dropdown(data-hover="" data-delay="0")
           .profile-dropdown-toggle.w-dropdown-toggle
             a.profile-link-block.w-inline-block(href="#")
-              img.profile-image(src="/images/default.png" sizes="35px" alt="")
+              img.profile-image(src=`${employee.image || "/images/default.png"}` sizes="35px" alt=`${employee.firstName}'s Profile Picture`)
               .text-block
                 | Hello, 
                 strong= employee.firstName

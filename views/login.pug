@@ -39,8 +39,18 @@ html(data-wf-page="5f3ab6b5e9e5bc6b22edf153" data-wf-site="5f11b0f9a179803d92d0d
                     input#login-email.login-field.w-input(type="email" maxlength="256" name="email" data-name="email" required="")
                     label(for="password") Password
                     input#login-password.login-field.w-input(type="password" maxlength="256" name="password" data-name="password" required="")
-                    input.add-button.w-button(type="submit" value="Log In" data-wait="Please wait...")
-                    a.forgot-password-link(href="#") Forgot Password?
+                    div(style="display:flex;align-items:center;justify-content:center;")
+                      input.add-button.w-button(type="submit" value="Log In" data-wait="Please wait...")
+                      a.forgot-password-link(href="#") Forgot Password?
+                  div(style="width:45%;margin:20px auto;position:relative")
+                    hr(style="border:solid 1px #f6f6f6;")
+                    span(style="position:absolute;top:50%;left:50%;margin-top:-10px;margin-left:-10px") OR
+                  .sso-button-wrapper
+                    button#google-sign-in-button
+                      img#cstone-logo.button-logo(src='/images/Cornerstone-Logo.png')
+                      img#google-logo.button-logo(src='https://dashboard.steinhq.com/static/media/Google%20Logo.2bdc3f4f.svg')
+                      span#button-text
+                        | Sign In With Google
               .tab-pane-reset.w-tab-pane(data-w-tab="Reset")
                 .go-back-wrapper
                   .login-back-arrow.w-embed

@@ -15580,6 +15580,9 @@ var toggleDateHolder = function toggleDateHolder(el) {
 
 
 if (loginForm) {
+  $("#google-sign-in-button").on("click", function () {
+    location.assign("/auth/google");
+  });
   $(loginForm).on("submit", /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
       var email, password, success;

@@ -47,6 +47,19 @@ const createSendToken = (employee, statusCode, res) => {
   });
 };
 
+exports.createSendGoogleToken = (req, res, next) => {
+  const token = signToken(req.user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  res.cookie("jwt", token, cookieOptions);
+  res.redirect("/dashboard");
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   if (req.employee.role !== "Super Admin" && req.body.role === "Super Admin") {
     return next(
