@@ -23,7 +23,6 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       // Check if user exists
-      console.log(profile._json);
       const employee = await Employee.findOne({ email: profile._json.email });
       if (employee) {
         employee.lastLogin = Date.now();

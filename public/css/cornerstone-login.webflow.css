@@ -375,6 +375,7 @@ a {
 
 .add-button {
   margin-right: 20px;
+  margin-left: auto;
   padding-right: 25px;
   padding-left: 23px;
   border-radius: 7px;
@@ -386,6 +387,10 @@ a {
   font-size: 13px;
   font-weight: 500;
   outline: none;
+}
+
+.add-button {
+  margin-left: 0;
 }
 
 .add-button:hover {
