@@ -389,7 +389,7 @@ a {
   outline: none;
 }
 
-.add-button {
+.add-button.login {
   margin-left: 0;
 }
 

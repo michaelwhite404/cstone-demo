@@ -44,7 +44,7 @@ block content
               - if (device.lastUser) grade = device.lastUser.grade === 0 ? "K" : ordinal(device.lastUser.grade);
               tr
                 td
-                  img.device-logo(src=`/images/device-logos/${device.brand}-Logo.png`)
+                  img.device-logo(src=`/images/device-logos/${device.brand}-Logo.png` alt=`${device.brand} Logo`)
                   a.name(href=`/${pluralize(key)}/${device.slug}`) #{device.name}
                 td #{device.brand}
                 td #{device.serialNumber}
