@@ -1,6 +1,7 @@
-import { model, Schema, Types } from "mongoose";
+import { Model, model, Schema, Types } from "mongoose";
+import { CheckoutLogDocument } from "../types/models/checkoutLogTypes";
 
-const checkoutLogSchema = new Schema(
+const checkoutLogSchema: Schema<CheckoutLogDocument, Model<CheckoutLogDocument>> = new Schema(
   {
     device: {
       type: Types.ObjectId,
@@ -50,6 +51,6 @@ const checkoutLogSchema = new Schema(
 
 checkoutLogSchema.index({ device: 1 });
 
-const CheckoutLog = model("DeviceLog", checkoutLogSchema);
+const CheckoutLog = model<CheckoutLogDocument>("DeviceLog", checkoutLogSchema);
 
 export default CheckoutLog;

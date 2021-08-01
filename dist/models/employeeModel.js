@@ -99,7 +99,7 @@ employeeSchema.methods.correctPassword = async function (candidatePassword, user
 employeeSchema.pre("save", function (next) {
     if (!this.isModified("password") || this.isNew)
         return next();
-    this.passwordChangedAt = Date.now() - 1000;
+    this.passwordChangedAt = new Date(Date.now() - 1000);
     next();
 });
 employeeSchema.pre(/^find/, function (next) {
@@ -108,7 +108,7 @@ employeeSchema.pre(/^find/, function (next) {
 });
 employeeSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if (this.passwordChangedAt) {
-        const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        const changedTimeStamp = parseInt((this.passwordChangedAt.getTime() / 1000).toString(), 10);
         // console.log(changedTimeStamp, JWTTimestamp);
         return JWTTimestamp < changedTimeStamp;
     }
@@ -119,7 +119,7 @@ employeeSchema.methods.createPasswordResetToken = function () {
     const resetToken = crypto_1.default.randomBytes(32).toString("hex");
     this.passwordResetToken = crypto_1.default.createHash("sha256").update(resetToken).digest("hex");
     console.log({ resetToken }, this.passwordResetToken);
-    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
     return resetToken;
 };
 const Employee = mongoose_1.model("Employee", employeeSchema);

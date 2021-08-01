@@ -63,5 +63,6 @@ studentSchema.pre("save", function (next) {
     this.slug = slugify_1.default(this.fullName, { lower: true });
     next();
 });
+/** Student Model */
 const Student = mongoose_1.model("Student", studentSchema);
 exports.default = Student;

@@ -1,5 +1,6 @@
-import { Schema, model, Model, Types } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import slugify from "slugify";
+import { DeviceDocument } from "../types/models/deviceTypes";
 
 const deviceSchema = new Schema({
   name: {
@@ -61,11 +62,11 @@ const deviceSchema = new Schema({
   slug: String,
 });
 
-deviceSchema.pre("save", function (next) {
+deviceSchema.pre<DeviceDocument>("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-const Device = model("Device", deviceSchema);
+const Device = model<DeviceDocument>("Device", deviceSchema);
 
 export default Device;

@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
+import { StudentDocument } from "../types/models/studentTypes";
 
 const studentSchema = new Schema({
   firstName: {
@@ -55,12 +56,13 @@ const studentSchema = new Schema({
   slug: String,
 });
 
-studentSchema.pre("save", function (next) {
+studentSchema.pre<StudentDocument>("save", function (next) {
   this.fullName = `${this.firstName} ${this.lastName}`;
   this.slug = slugify(this.fullName, { lower: true });
   next();
 });
 
-const Student = model("Student", studentSchema);
+/** Student Model */
+const Student = model<StudentDocument>("Student", studentSchema);
 
 export default Student;

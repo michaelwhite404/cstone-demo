@@ -1,9 +1,10 @@
-import { Document, Schema, Model, model } from "mongoose";
+import { Model, model, Schema } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import slugify from "slugify";
+import { EmployeeDocument } from "../types/models/employeeTypes";
 
-const employeeSchema = new Schema({
+const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema({
   firstName: {
     type: String,
     required: [true, "An employee must have a first name"],
@@ -75,13 +76,13 @@ const employeeSchema = new Schema({
   slug: String,
 });
 
-employeeSchema.pre("save", function (next) {
+employeeSchema.pre<EmployeeDocument>("save", function (next) {
   this.fullName = `${this.firstName} ${this.lastName}`;
   this.slug = slugify(this.fullName, { lower: true });
   next();
 });
 
-employeeSchema.pre("save", async function (next) {
+employeeSchema.pre<EmployeeDocument>("save", async function (next) {
   // Only run if password is modified
   if (!this.isModified("password")) return next();
   // Hash the password with cost of 12
@@ -95,21 +96,21 @@ employeeSchema.methods.correctPassword = async function (candidatePassword, user
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-employeeSchema.pre("save", function (next) {
+employeeSchema.pre<EmployeeDocument>("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
 
-  this.passwordChangedAt = Date.now() - 1000;
+  this.passwordChangedAt = new Date(Date.now() - 1000);
   next();
 });
 
-employeeSchema.pre(/^find/, function (next) {
+employeeSchema.pre<Model<EmployeeDocument>>(/^find/, function (next) {
   this.find({ active: { $ne: false } });
   next();
 });
 
 employeeSchema.methods.changedPasswordAfter = function (JWTTimestamp: number): boolean {
   if (this.passwordChangedAt) {
-    const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+    const changedTimeStamp = parseInt((this.passwordChangedAt.getTime() / 1000).toString(), 10);
 
     // console.log(changedTimeStamp, JWTTimestamp);
     return JWTTimestamp < changedTimeStamp;
@@ -126,11 +127,11 @@ employeeSchema.methods.createPasswordResetToken = function () {
 
   console.log({ resetToken }, this.passwordResetToken);
 
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
 
   return resetToken;
 };
 
-const Employee = model("Employee", employeeSchema);
+const Employee = model<EmployeeDocument>("Employee", employeeSchema);
 
 export default Employee;

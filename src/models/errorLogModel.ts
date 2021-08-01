@@ -1,45 +1,60 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Model, Schema, Types } from "mongoose";
+import { ErrorLogDocument } from "../types/models/errorLogTypes";
 
-const checkoutLogSchema = new Schema(
+const errorLogSchema: Schema<ErrorLogDocument, Model<ErrorLogDocument>> = new Schema(
   {
+    title: {
+      type: String,
+      required: [true, "Each error must have a title"],
+      immutable: true,
+    },
     device: {
       type: Types.ObjectId,
       ref: "Device",
+      required: [true, "Each error must have a device."],
+      immutable: true,
     },
-    checkOutDate: {
-      type: Date,
-      required: true,
-      default: () => Date.now(),
-    },
-    checkInDate: {
-      type: Date,
-    },
-    dueDate: {
-      type: Date,
+    checkInInfo: {
+      type: Types.ObjectId,
+      ref: "DeviceLog",
       required: false,
+      immutable: true,
     },
-    deviceUser: {
-      type: Types.ObjectId,
-      ref: "Student",
-      required: true,
+    description: {
+      type: String,
+      required: [true, "Please describe the device's error."],
+      maxlength: 500,
+      immutable: true,
     },
-    teacherCheckOut: {
-      type: Types.ObjectId,
-      ref: "Employee",
-      required: true,
-    },
-    teacherCheckIn: {
-      type: Types.ObjectId,
-      ref: "Employee",
-    },
-    checkedIn: {
+    updates: [
+      {
+        description: {
+          type: String,
+          maxlength: 500,
+          required: [true, "Please describe the update to the device error"],
+        },
+        createdAt: {
+          type: Date,
+          default: () => Date.now(),
+        },
+        status: String,
+      },
+    ],
+    final: {
       type: Boolean,
       default: false,
     },
-    error: {
-      type: Types.ObjectId,
-      ref: "ErrorLog",
-      required: false,
+    status: {
+      type: String,
+      required: true,
+      default: "Broken",
+      enum: ["Broken", "In Repair", "Fixed", "Unfixable"],
+    },
+    createdAt: {
+      type: Date,
+      default: () => Date.now(),
+      required: true,
+      immutable: true,
     },
   },
   {
@@ -48,8 +63,9 @@ const checkoutLogSchema = new Schema(
   }
 );
 
-checkoutLogSchema.index({ device: 1 });
+errorLogSchema.index({ device: 1 });
 
-const CheckoutLog = model("DeviceLog", checkoutLogSchema);
+/** Error Log Model */
+const ErrorLog = model<ErrorLogDocument>("ErrorLog", errorLogSchema);
 
-export default CheckoutLog;
+export default ErrorLog;
