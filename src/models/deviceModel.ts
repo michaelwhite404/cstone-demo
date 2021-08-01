@@ -1,0 +1,71 @@
+import { Schema, model, Model, Types } from "mongoose";
+import slugify from "slugify";
+
+const deviceSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, "Each Device must have a name"],
+    unique: true,
+  },
+  brand: {
+    type: String,
+    required: [true, "Each Device has a brand"],
+    unique: false,
+  },
+  model: {
+    type: String,
+    required: [true, "Each Device has a model"],
+    unique: false,
+  },
+  serialNumber: {
+    type: String,
+    required: [true, "Each Device must have a serial number"],
+    unique: false,
+  },
+  dueDate: {
+    type: Date,
+    required: false,
+  },
+  macAddress: {
+    type: String,
+    required: [true, "Each Device must have a MAC Address"],
+  },
+  status: {
+    type: String,
+    required: [true, "Each Device must have a status"],
+    default: "Available",
+    enum: {
+      values: ["Available", "Checked Out", "Broken", "Not Available"],
+      message: "Status is either: Available, Not Available, Broken, Not Available",
+    },
+  },
+  deviceType: {
+    type: String,
+    required: [true, "Each Device must have a device type"],
+  },
+  autoUpdateExpiration: String,
+  checkedOut: {
+    type: Boolean,
+    default: false,
+  },
+  lastUser: {
+    type: Types.ObjectId,
+    ref: "Student",
+  },
+  teacherCheckOut: {
+    type: Types.ObjectId,
+    ref: "Employee",
+  },
+  lastCheckOut: Date,
+  lastCheckIn: Date,
+  slug: String,
+});
+
+deviceSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+const Device = model("Device", deviceSchema);
+
+export default Device;
