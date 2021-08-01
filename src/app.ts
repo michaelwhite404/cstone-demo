@@ -17,14 +17,17 @@ import employeeRouter from "./routes/employeeRoutes";
 import studentRouter from "./routes/studentRoutes";
 import viewRouter from "./routes/viewRoutes";
 import authRouter from "./routes/authRoutes";
-import "../config/passport-setup";
+import "./config/passport-setup";
 import CustomRequest from "./types/customRequest";
 
 const app = express();
 
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname.replace("\\dist", ""), "views"));
+
 // 1.) MIDDLEWARES
 // Serving static files
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname.replace("\\dist", ""), "public")));
 
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
