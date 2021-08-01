@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 import slugify from "slugify";
 import { DeviceDocument } from "../types/models/deviceTypes";
 
@@ -67,6 +67,6 @@ deviceSchema.pre<DeviceDocument>("save", function (next) {
   next();
 });
 
-const Device = model<DeviceDocument>("Device", deviceSchema);
+const Device: Model<DeviceDocument> = model<DeviceDocument>("Device", deviceSchema);
 
 export default Device;

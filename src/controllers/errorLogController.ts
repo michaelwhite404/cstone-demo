@@ -5,6 +5,8 @@ import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
 import * as factory from "./handlerFactory";
 import Device from "../models/deviceModel";
+import CustomRequest from "../types/customRequest";
+import { ErrorUpdate } from "../types/models/errorLogTypes";
 
 export const getAllErrorLogs = factory.getAll(ErrorLog);
 export const getErrorLog = factory.getOne(ErrorLog);
@@ -46,7 +48,7 @@ export const createErrorLog = catchAsync(
 );
 
 export const updateErrorLog = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     const errorLog = await ErrorLog.findById(req.params.id);
 
     if (!errorLog) {
@@ -59,19 +61,21 @@ export const updateErrorLog = catchAsync(
     const { description, status } = req.body;
     const update = { description, status };
 
-    errorLog.updates.push(update);
+    errorLog.updates.push(update as ErrorUpdate);
     errorLog.status = status;
 
     if (status == "Fixed" || status == "Unfixable") {
       errorLog.final = true;
       const device = await Device.findById(errorLog.device);
-      const unfinishedErrorsByDevice = await ErrorLog.find({
-        device: device._id,
-        final: false,
-      });
-      if (unfinishedErrorsByDevice.length === 1) {
-        status == "Fixed" ? (device.status = "Available") : (device.status = "Not Available");
-        await device.save({ validateBeforeSave: true });
+      if (device) {
+        const unfinishedErrorsByDevice = await ErrorLog.find({
+          device: device._id,
+          final: false,
+        });
+        if (unfinishedErrorsByDevice.length === 1) {
+          status == "Fixed" ? (device.status = "Available") : (device.status = "Not Available");
+          await device.save({ validateBeforeSave: true });
+        }
       }
     }
 

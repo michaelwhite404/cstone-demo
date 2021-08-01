@@ -7,7 +7,7 @@ export interface ErrorLogModel {
   device: DeviceModel;
   checkInInfo?: CheckoutLogModel;
   description: string;
-  updates: ErrorUpdate;
+  updates: ErrorUpdate[];
   final: boolean;
   status: ErrorStatus;
   createdAt: Date;
@@ -15,7 +15,7 @@ export interface ErrorLogModel {
 
 type ErrorStatus = "Broken" | "In Repair" | "Fixed" | "Unfixable";
 
-interface ErrorUpdate {
+export interface ErrorUpdate {
   description: string;
   createdAt: Date;
   status: ErrorStatus;

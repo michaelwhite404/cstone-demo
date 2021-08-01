@@ -17,7 +17,8 @@ import employeeRouter from "./routes/employeeRoutes";
 import studentRouter from "./routes/studentRoutes";
 import viewRouter from "./routes/viewRoutes";
 import authRouter from "./routes/authRoutes";
-import "./config/passport-setup";
+import "../config/passport-setup";
+import CustomRequest from "./types/customRequest";
 
 const app = express();
 
@@ -69,7 +70,7 @@ app.use(compression());
 app.use(
   "/api/v1/chromebooks",
   (req, _, next) => {
-    req.device = "chromebook";
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   deviceRouter
@@ -77,7 +78,7 @@ app.use(
 app.use(
   "/api/v1/tablets",
   (req, _, next) => {
-    req.device = "tablet";
+    (req as CustomRequest).device = "tablet";
     next();
   },
   deviceRouter
@@ -85,7 +86,7 @@ app.use(
 app.use(
   "/api/v1/error-logs",
   (req, _, next) => {
-    req.key = "error";
+    (req as CustomRequest).key = "error";
     next();
   },
   errorLogRouter
@@ -93,7 +94,7 @@ app.use(
 app.use(
   "/api/v1/logs",
   (req, _, next) => {
-    req.key = "log";
+    (req as CustomRequest).key = "log";
     next();
   },
   logRouter

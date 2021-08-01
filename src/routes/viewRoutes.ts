@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Router } from "express";
 
 import * as viewsController from "../controllers/viewsController";
 import { isLoggedIn, protect } from "../controllers/authController";
+import CustomRequest from "../types/customRequest";
 
 const router = Router();
 
@@ -21,8 +22,8 @@ router.get("/dashboard", viewsController.getDashboardPage);
 // All Chromebooks - "/chromebooks" (DONE!!)
 router.get(
   "/chromebooks",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "chromebook";
+  (req, _, next) => {
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   viewsController.getAllDevicesPage
@@ -31,8 +32,8 @@ router.get(
 // Add Chromebook - "/chromebooks/add" (DONE!!)
 router.get(
   "/chromebooks/add",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "chromebook";
+  (req, _, next) => {
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   viewsController.addDevicePage
@@ -41,8 +42,8 @@ router.get(
 // Chromebook Stats "/chromebooks/stats" (DONE!!)
 router.get(
   "/chromebooks/stats",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "chromebook";
+  (req, _, next) => {
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   viewsController.getDeviceStatsPage
@@ -51,8 +52,8 @@ router.get(
 // Edit Chromebook - "/chromebooks/:slug/edit" (DONE!!)
 router.get(
   "/chromebooks/:slug/edit",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "chromebook";
+  (req, _, next) => {
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   viewsController.editDevicePage
@@ -61,8 +62,8 @@ router.get(
 // One Chromebook "/chromebooks/:slug" (DONE!!)
 router.get(
   "/chromebooks/:slug",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "chromebook";
+  (req, _, next) => {
+    (req as CustomRequest).device = "chromebook";
     next();
   },
   viewsController.getDevicePage
@@ -71,8 +72,8 @@ router.get(
 // All Tablets - "/tablets" (DONE!!)
 router.get(
   "/tablets",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "tablet";
+  (req, _, next) => {
+    (req as CustomRequest).device = "tablet";
     next();
   },
   viewsController.getAllDevicesPage
@@ -81,8 +82,8 @@ router.get(
 // Add Tablet - "/tablets/add" (DONE!!)
 router.get(
   "/tablets/add",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "tablet";
+  (req, _, next) => {
+    (req as CustomRequest).device = "tablet";
     next();
   },
   viewsController.addDevicePage
@@ -91,8 +92,8 @@ router.get(
 // Tablet Stats "/tablets/stats" (DONE!!)
 router.get(
   "/tablets/stats",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "tablet";
+  (req, _, next) => {
+    (req as CustomRequest).device = "tablet";
     next();
   },
   viewsController.getDeviceStatsPage
@@ -101,8 +102,8 @@ router.get(
 // Edit Tablet - "/tablets/:slug/edit" (DONE!!)
 router.get(
   "/tablets/:slug/edit",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "tablet";
+  (req, _, next) => {
+    (req as CustomRequest).device = "tablet";
     next();
   },
   viewsController.editDevicePage
@@ -111,8 +112,8 @@ router.get(
 // One Tablet "/tablets/:slug" (DONE!!)
 router.get(
   "/tablets/:slug",
-  (req: Request, _: Response, next: NextFunction) => {
-    req.device = "tablet";
+  (req, _, next) => {
+    (req as CustomRequest).device = "tablet";
     next();
   },
   viewsController.getDevicePage

@@ -11,6 +11,7 @@ import CheckoutLog from "../models/checkoutLogModel";
 import ErrorLog from "../models/errorLogModel";
 import camelize from "../utils/camelize";
 import ordinal from "../utils/ordinal";
+import CustomRequest from "../types/customRequest";
 
 export const getHomePage = (_: Request, res: Response) => {
   if (res.locals.employee) {
@@ -26,16 +27,16 @@ export const getDashboardPage = catchAsync(async (_: Request, res: Response) => 
   });
 });
 
-export const addDevicePage = (req: Request, res: Response) => {
+export const addDevicePage = catchAsync((req: CustomRequest, res: Response) => {
   res.status(200).render("addDevice", {
-    title: `Add New ${capitalize(req.device)}`,
+    title: `Add New ${capitalize(req.device!)}`,
     deviceType: req.device,
     capitalize,
   });
-};
+});
 
 export const editDevicePage = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     const device = await Device.findOne({
       slug: req.params.slug,
       deviceType: req.device,
@@ -46,20 +47,20 @@ export const editDevicePage = catchAsync(
     }
 
     res.status(200).render("editDevice", {
-      title: `Edit ${capitalize(req.device)}`,
+      title: `Edit ${capitalize(req.device!)}`,
       device,
       key: req.device,
     });
   }
 );
 
-export const getAllDevicesPage = catchAsync(async (req: Request, res: Response) => {
+export const getAllDevicesPage = catchAsync(async (req: CustomRequest, res: Response) => {
   const devices = await Device.find({ deviceType: req.device }).sort({ name: 1 }).populate({
     path: "lastUser",
     fields: "fullName grade",
   });
   res.status(200).render("allDevices", {
-    title: pluralize(capitalize(req.device)),
+    title: pluralize(capitalize(req.device!)),
     key: req.device,
     devices,
     capitalize,
@@ -69,106 +70,110 @@ export const getAllDevicesPage = catchAsync(async (req: Request, res: Response) 
   });
 });
 
-export const getDevicePage = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const device = await Device.findOne({
-    slug: req.params.slug,
-    deviceType: req.device,
-  })
-    .populate({
-      path: "lastUser",
-      fields: "fullName grade",
+export const getDevicePage = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const device = await Device.findOne({
+      slug: req.params.slug,
+      deviceType: req.device,
     })
-    .populate({
-      path: "teacherCheckOut",
-      fields: "fullName email",
-    });
+      .populate({
+        path: "lastUser",
+        fields: "fullName grade",
+      })
+      .populate({
+        path: "teacherCheckOut",
+        fields: "fullName email",
+      });
 
-  if (!device) {
-    return next(new AppError(`No ${req.device} found with that ID`, 404));
+    if (!device) {
+      return next(new AppError(`No ${req.device} found with that ID`, 404));
+    }
+
+    const grades = await Student.aggregate([
+      {
+        $sort: { lastName: 1 },
+      },
+      {
+        $group: {
+          _id: "$grade",
+          count: { $sum: 1 },
+          students: { $push: { id: "$_id", fullName: "$fullName" } },
+        },
+      },
+      {
+        $project: {
+          grade: "$_id",
+          students: 1,
+          count: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: { grade: 1 },
+      },
+    ]);
+
+    const checkOutLog = await CheckoutLog.find({ device: device._id })
+      .sort({ checkOutDate: -1 })
+      .populate({
+        path: "deviceUser teacherCheckOut teacherCheckIn",
+        fields: "fullName",
+      });
+
+    const errorLogs = await ErrorLog.find({ device: device._id })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "checkInInfo",
+        populate: {
+          path: "deviceUser",
+          select: "fullName",
+        },
+      });
+
+    res.status(200).render("oneDevice", {
+      title: device.name,
+      device,
+      grades,
+      capitalize,
+      key: req.device,
+      checkOutLog,
+      errorLogs,
+      camelize,
+      ordinal,
+      moment,
+    });
   }
+);
 
-  const grades = await Student.aggregate([
-    {
-      $sort: { lastName: 1 },
-    },
-    {
-      $group: {
-        _id: "$grade",
-        count: { $sum: 1 },
-        students: { $push: { id: "$_id", fullName: "$fullName" } },
-      },
-    },
-    {
-      $project: {
-        grade: "$_id",
-        students: 1,
-        count: 1,
-        _id: 0,
-      },
-    },
-    {
-      $sort: { grade: 1 },
-    },
-  ]);
-
-  const checkOutLog = await CheckoutLog.find({ device: device._id })
-    .sort({ checkOutDate: -1 })
-    .populate({
-      path: "deviceUser teacherCheckOut teacherCheckIn",
-      fields: "fullName",
-    });
-
-  const errorLogs = await ErrorLog.find({ device: device._id })
-    .sort({ createdAt: -1 })
-    .populate({
-      path: "checkInInfo",
-      populate: {
-        path: "deviceUser",
-        select: "fullName",
-      },
-    });
-
-  res.status(200).render("oneDevice", {
-    title: device.name,
-    device,
-    grades,
-    capitalize,
-    key: req.device,
-    checkOutLog,
-    errorLogs,
-    camelize,
-    ordinal,
-    moment,
-  });
-});
-
-export const createUserPage = catchAsync(async (_: Request, res: Response) => {
+export const createUserPage = catchAsync(async (_: CustomRequest, res: Response) => {
   res.status(200).render("newUser", {
     title: "Create New User",
   });
 });
 
-export const editUserPage = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const editEmployee = await Employee.findOne({ slug: req.params.slug });
+export const editUserPage = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const editEmployee = await Employee.findOne({ slug: req.params.slug });
 
-  if (!editEmployee) {
-    return next(new AppError("No employee found with that ID", 404));
+    if (!editEmployee) {
+      return next(new AppError("No employee found with that ID", 404));
+    }
+
+    res.status(200).render("editUser", {
+      title: "Edit User",
+      editEmployee,
+    });
   }
+);
 
-  res.status(200).render("editUser", {
-    title: "Edit User",
-    editEmployee,
-  });
-});
-
-export const createStudentPage = catchAsync(async (_: Request, res: Response) => {
+export const createStudentPage = catchAsync(async (_: CustomRequest, res: Response) => {
   res.status(200).render("newStudent", {
     title: "Create New Student",
   });
 });
 
 export const editStudentPage = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     const student = await Student.findOne({ slug: req.params.slug });
 
     if (!student) {
@@ -182,13 +187,13 @@ export const editStudentPage = catchAsync(
   }
 );
 
-export const getNewPasswordPage = catchAsync(async (_: Request, res: Response) => {
+export const getNewPasswordPage = catchAsync(async (_: CustomRequest, res: Response) => {
   res.status(200).render("newPassword", {
     title: "Create Your New Password",
   });
 });
 
-export const testGroup = catchAsync(async (_: Request, res: Response) => {
+export const testGroup = catchAsync(async (_: CustomRequest, res: Response) => {
   const grades = await Student.aggregate([
     {
       $group: {
@@ -216,7 +221,7 @@ export const testGroup = catchAsync(async (_: Request, res: Response) => {
   });
 });
 
-export const getDeviceStatsPage = catchAsync(async (req: Request, res: Response) => {
+export const getDeviceStatsPage = catchAsync(async (req: CustomRequest, res: Response) => {
   const deviceType = req.device;
   const brands = await Device.aggregate([
     {
@@ -293,7 +298,7 @@ export const getDeviceStatsPage = catchAsync(async (req: Request, res: Response)
     },
   ]);
 
-  const totals = {};
+  const totals = <{ count: number; statuses: any[] }>{};
   const totalCount = await Device.countDocuments({
     deviceType,
     brand: { $ne: "Fake Inc." },
@@ -301,13 +306,13 @@ export const getDeviceStatsPage = catchAsync(async (req: Request, res: Response)
   totals.count = totalCount;
   totals.statuses = statuses;
 
-  const getModelStatusCount = (array, status) => {
+  const getModelStatusCount = (array: any[], status: string) => {
     const statusIndex = array.findIndex((x) => x.status === status);
     const nOfStatus = statusIndex === -1 ? 0 : array[statusIndex].count;
     return nOfStatus;
   };
 
-  const getBrandStatusCount = (array, status) => {
+  const getBrandStatusCount = (array: any[], status: string) => {
     let nOfStatus = 0;
     for (let i = 0; i < array.length; i++) {
       nOfStatus += getModelStatusCount(array[i].statuses, status);
@@ -316,7 +321,7 @@ export const getDeviceStatsPage = catchAsync(async (req: Request, res: Response)
   };
 
   res.status(200).render("deviceStats", {
-    title: `${capitalize(req.device)} Stats`,
+    title: `${capitalize(req.device!)} Stats`,
     brands,
     totals,
     getModelStatusCount,

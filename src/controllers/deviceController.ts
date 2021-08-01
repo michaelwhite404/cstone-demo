@@ -1,11 +1,12 @@
 import moment from "moment";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import Device from "../models/deviceModel";
 import AppError from "../utils/appError";
 import catchAsync from "../utils/catchAsync";
 import * as factory from "./handlerFactory";
 import CheckoutLog from "../models/checkoutLogModel";
 import ErrorLog from "../models/errorLogModel";
+import CustomRequest from "../types/customRequest";
 
 export const getAllDevices = factory.getAll(Device);
 export const getDevice = factory.getOne(Device);
@@ -14,9 +15,9 @@ export const updateDevice = factory.updateOne(Device);
 export const deleteDevice = factory.deleteOne(Device);
 
 export const checkOutDevice = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     const device = await Device.findById(req.params.id);
-    const now = moment();
+    const now = moment().toDate();
     // If no Device
     if (!device) {
       return next(new AppError(`No ${req.device} found with that ID`, 404));
@@ -32,7 +33,7 @@ export const checkOutDevice = catchAsync(
       ? (device.lastCheckOut = req.body.lastCheckOut)
       : (device.lastCheckOut = now);
     device.lastUser = req.body.lastUser;
-    device.teacherCheckOut = req.employee.id;
+    device.teacherCheckOut = req.employee!._id;
     device.status = "Checked Out";
 
     // If Check Out Date is set
@@ -64,7 +65,7 @@ export const checkOutDevice = catchAsync(
       device: device._id,
       checkOutDate,
       deviceUser: req.body.lastUser,
-      teacherCheckOut: req.employee.id,
+      teacherCheckOut: req.employee!._id,
       checkedIn: false,
       dueDate: req.body.dueDate,
     });
@@ -72,74 +73,77 @@ export const checkOutDevice = catchAsync(
     res.status(200).json({
       status: "success",
       data: {
-        [req.device]: device,
+        [req.device!]: device,
       },
     });
   }
 );
 
-export const checkInDevice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const device = await Device.findById(req.params.id);
-  // If no Device
-  if (!device) {
-    return next(new AppError(`No ${req.device} found with that ID`, 404));
-  }
+export const checkInDevice = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const device = await Device.findById(req.params.id);
+    // If no Device
+    if (!device) {
+      return next(new AppError(`No ${req.device} found with that ID`, 404));
+    }
 
-  // If Not Checked Out
-  if (device.status !== "Checked Out") {
-    return next(new AppError(`This ${req.device} is ${device.status.toLowerCase()}`, 400));
-  }
+    // If Not Checked Out
+    if (device.status !== "Checked Out") {
+      return next(new AppError(`This ${req.device} is ${device.status.toLowerCase()}`, 400));
+    }
 
-  if (req.body.checkInDate) {
-    if (moment(req.body.checkInDate).diff(moment(device.lastCheckOut)) <= 0)
-      return next(
-        new AppError(`A ${req.device} cannot be checked in before it was checked out`, 400)
-      );
-    // Check If Check Out Date is in the future
-    if (moment(req.body.checkInDate).diff(moment()) > 0)
-      return next(new AppError("Check in date cannot be in the future", 400));
-  }
+    if (req.body.checkInDate) {
+      if (moment(req.body.checkInDate).diff(moment(device.lastCheckOut)) <= 0)
+        return next(
+          new AppError(`A ${req.device} cannot be checked in before it was checked out`, 400)
+        );
+      // Check If Check Out Date is in the future
+      if (moment(req.body.checkInDate).diff(moment()) > 0)
+        return next(new AppError("Check in date cannot be in the future", 400));
+    }
 
-  device.checkedOut = false;
-  device.lastCheckIn = req.body.checkInDate ? req.body.checkInDate : Date.now();
-  device.teacherCheckOut = undefined;
-  device.dueDate = undefined;
+    device.checkedOut = false;
+    device.lastCheckIn = req.body.checkInDate ? req.body.checkInDate : Date.now();
+    device.teacherCheckOut = undefined;
+    device.dueDate = undefined;
 
-  const log = await CheckoutLog.findOne({
-    device: device._id,
-    checkedIn: false,
-  });
-  log.checkInDate = req.body.checkInDate ? req.body.checkInDate : Date.now();
-  (log.teacherCheckIn = req.employee.id), (log.checkedIn = true);
-
-  if (req.body.error) {
-    const { title, description } = req.body;
-    const errorData = {
-      title,
-      description,
+    const log = await CheckoutLog.findOne({
       device: device._id,
-      checkInInfo: log._id,
-      createdAt: req.body.checkInDate,
-    };
-    const errorLog = await ErrorLog.create(errorData);
-    log.error = errorLog._id;
-    device.status = "Broken";
-  } else {
-    device.status = "Available";
+      checkedIn: false,
+    });
+    if (log) {
+      log.checkInDate = req.body.checkInDate ? req.body.checkInDate : Date.now();
+      (log.teacherCheckIn = req.employee!._id), (log.checkedIn = true);
+
+      if (req.body.error === true) {
+        const { title, description } = req.body;
+        const errorData = {
+          title,
+          description,
+          device: device._id,
+          checkInInfo: log._id,
+          createdAt: req.body.checkInDate,
+        };
+        const errorLog = await ErrorLog.create(errorData);
+        log.error = errorLog._id;
+        device.status = "Broken";
+      } else {
+        device.status = "Available";
+      }
+
+      await device.save({ validateBeforeSave: false });
+      await log.save({ validateBeforeSave: false });
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        [req.device!]: device,
+      },
+    });
   }
+);
 
-  await device.save({ validateBeforeSave: false });
-  await log.save({ validateBeforeSave: false });
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      [req.device]: device,
-    },
-  });
-});
-
-export const testStatusGroup = catchAsync(async (req: Request, res: Response) => {
+export const testStatusGroup = catchAsync(async (req: CustomRequest, res: Response) => {
   const deviceType = req.device;
   const brands = await Device.aggregate([
     {
@@ -215,7 +219,7 @@ export const testStatusGroup = catchAsync(async (req: Request, res: Response) =>
     },
   ]);
 
-  const totals = {};
+  const totals = <{ count: number; statuses: any[] }>{};
   const totalCount = await Device.countDocuments({ deviceType });
   totals.count = totalCount;
   totals.statuses = statuses;

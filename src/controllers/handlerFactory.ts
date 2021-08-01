@@ -3,13 +3,15 @@ import AppError from "../utils/appError";
 import APIFeatures from "../utils/apiFeatures";
 import pluralize from "pluralize";
 import slugify from "slugify";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import { ParamsDictionary } from "express-serve-static-core";
 import { Mongoose } from "mongoose";
+import CustomRequest from "../types/customRequest";
 
-const preCheck = (req: Request) => {
+const preCheck = (req: CustomRequest) => {
   // Init
   let key = "doc";
-  let filter = {};
+  let filter = {} as ParamsDictionary;
 
   if (req.params) {
     filter = { ...req.params };
@@ -34,7 +36,7 @@ const preCheck = (req: Request) => {
 };
 
 export const deleteOne = (Model: Mongoose["Model"]) =>
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const { filter, key } = preCheck(req);
 
     const doc = await Model.findOneAndDelete(filter);
@@ -51,7 +53,7 @@ export const deleteOne = (Model: Mongoose["Model"]) =>
   });
 
 export const updateOne = (Model: Mongoose["Model"]) =>
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const { filter, key } = preCheck(req);
     if (req.body.name) req.body.slug = slugify(req.body.name, { lower: true });
     const doc = await Model.findOneAndUpdate(filter, req.body, {
@@ -73,7 +75,7 @@ export const updateOne = (Model: Mongoose["Model"]) =>
   });
 
 export const createOne = (Model: Mongoose["Model"]) =>
-  catchAsync(async (req: Request, res: Response) => {
+  catchAsync(async (req: CustomRequest, res: Response) => {
     if (req.device) req.body.deviceType = req.device;
     const newDoc = await Model.create(req.body);
 
@@ -87,7 +89,7 @@ export const createOne = (Model: Mongoose["Model"]) =>
   });
 
 export const getOne = (Model: Mongoose["Model"], popOptions?: {}) =>
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const { filter, key } = preCheck(req);
 
     let query = Model.findOne(filter);
@@ -108,7 +110,7 @@ export const getOne = (Model: Mongoose["Model"], popOptions?: {}) =>
   });
 
 export const getAll = (Model: Mongoose["Model"]) =>
-  catchAsync(async (req: Request, res: Response) => {
+  catchAsync(async (req: CustomRequest, res: Response) => {
     const { filter, key } = preCheck(req);
 
     const features = new APIFeatures(Model.find(filter), req.query)

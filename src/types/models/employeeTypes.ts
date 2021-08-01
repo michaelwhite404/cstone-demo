@@ -1,13 +1,15 @@
 import { Document } from "mongoose";
 
 export interface EmployeeModel {
+  /** Id of the user */
+  _id: any;
   firstName: string;
   lastName: string;
   fullName: string;
   email: string;
   homeroomGrade?: number;
   title: string;
-  role: string;
+  role: EmployeeRole;
   image?: String;
   googleId?: String;
   password: string;
@@ -15,9 +17,23 @@ export interface EmployeeModel {
   passwordChangedAt?: Date;
   passwordResetToken?: String;
   passwordResetExpires?: Date;
+  lastLogin?: Date;
   createdAt: Date;
   active: boolean;
   slug: string;
 }
 
-export interface EmployeeDocument extends EmployeeModel, Document {}
+type EmployeeRole =
+  | "Super Admin"
+  | "Admin"
+  | "Development"
+  | "Instructor"
+  | "Intern"
+  | "Maintenance";
+
+export interface EmployeeDocument extends EmployeeModel, Document {
+  _id: EmployeeModel["_id"];
+  correctPassword: (candidatePassword: any, userPassword: string) => Promise<boolean>;
+  changedPasswordAfter: (JWTTimestamp: number) => boolean;
+  createPasswordResetToken: () => string;
+}

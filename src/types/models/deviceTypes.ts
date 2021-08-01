@@ -20,4 +20,4 @@ export interface DeviceModel {
   slug: string;
 }
 
-export interface DeviceDocument extends DeviceModel, Document {}
+export interface DeviceDocument extends DeviceModel, Omit<Document, "model"> {}

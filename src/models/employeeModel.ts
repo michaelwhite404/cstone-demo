@@ -86,7 +86,7 @@ employeeSchema.pre<EmployeeDocument>("save", async function (next) {
   // Only run if password is modified
   if (!this.isModified("password")) return next();
   // Hash the password with cost of 12
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password!, 12);
   // Delete passwordConfirm field
   this.passwordConfirm = undefined;
   next();

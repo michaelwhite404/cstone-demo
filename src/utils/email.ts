@@ -1,3 +1,5 @@
+import { EmployeeDocument } from "../types/models/employeeTypes";
+
 const nodemailer = require("nodemailer");
 const pug = require("pug");
 const htmlToText = require("html-to-text");
@@ -11,7 +13,7 @@ export default class Email {
   url: string;
   password: string;
   from: string;
-  constructor(user, url: string) {
+  constructor(user: EmployeeDocument, url: string) {
     this.to = user.email;
     this.firstName = user.firstName.split(" ")[0];
     this.url = url;

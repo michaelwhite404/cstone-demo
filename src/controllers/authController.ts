@@ -5,6 +5,10 @@ import jwt from "jsonwebtoken";
 import catchAsync from "../utils/catchAsync";
 import AppError from "../utils/appError";
 import Employee from "../models/employeeModel";
+import { EmployeeDocument } from "../types/models/employeeTypes";
+import CustomRequest from "../types/customRequest";
+import DecodedPayload from "../types/decodedPayload";
+import Email from "../utils/email";
 // import Employee from "../models/employeeModel";
 // import catchAsync from "../utils/catchAsync";
 // import AppError from "../utils/appError";
@@ -20,13 +24,13 @@ function makePassword(length: number) {
   return result;
 }
 
-const signToken = (id) => {
+const signToken = (id: EmployeeDocument["_id"]) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-const createSendToken = (employee, statusCode: number, res: Response) => {
+const createSendToken = (employee: EmployeeDocument, statusCode: number, res: Response) => {
   const token = signToken(employee._id);
   const cookieOptions: CookieOptions = {
     expires: new Date(Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000),
@@ -37,7 +41,7 @@ const createSendToken = (employee, statusCode: number, res: Response) => {
   res.cookie("jwt", token, cookieOptions);
 
   // Remove password from output
-  employee.password = undefined;
+  employee.password = undefined as unknown as string;
 
   res.status(statusCode).json({
     status: "success",
@@ -48,7 +52,7 @@ const createSendToken = (employee, statusCode: number, res: Response) => {
   });
 };
 
-export const createSendGoogleToken = (req: Request, res: Response) => {
+export const createSendGoogleToken = catchAsync((req: CustomRequest, res: Response) => {
   const token = signToken(req.user._id);
   const cookieOptions = {
     expires: new Date(Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000),
@@ -57,9 +61,9 @@ export const createSendGoogleToken = (req: Request, res: Response) => {
 
   res.cookie("jwt", token, cookieOptions);
   res.redirect("/dashboard");
-};
+});
 
-export const signup = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const signup = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
   if (req.employee.role !== "Super Admin" && req.body.role === "Super Admin") {
     return next(new AppError("You are not authorized to create a user with that role", 403));
   }
@@ -69,7 +73,7 @@ export const signup = catchAsync(async (req: Request, res: Response, next: NextF
 });
 
 export const createEmployee = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
     if (req.employee.role !== "Super Admin" && req.body.role === "Super Admin") {
       return next(new AppError("You are not authorized to create a user with that role", 403));
     }
@@ -80,7 +84,7 @@ export const createEmployee = catchAsync(
     await new Email(req.body, url).sendWelcome();
 
     // Remove password from output
-    newEmployee.password = undefined;
+    newEmployee.password = undefined as unknown as string;
 
     res.status(200).json({
       status: "success",
@@ -105,7 +109,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
   }
 
   // 3. If everything is ok, send token to client
-  employee.lastLogin = Date.now();
+  employee.lastLogin = new Date(Date.now());
   await employee.save({ validateBeforeSave: false });
   createSendToken(employee, 200, res);
 });
@@ -118,7 +122,7 @@ export const logout = (_: Request, res: Response) => {
   res.status(200).json({ status: "success" });
 };
 
-export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const protect = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
   // 1) Getting token and check if it's there
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -131,7 +135,8 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
     return next(new AppError("You are not logged in", 401));
   }
   // 2.) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
+  // @ts-ignore
+  const decoded: DecodedPayload = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
   // console.log(decoded);
   // 3.) Check if employee still exists
   const freshEmployee = await Employee.findById(decoded.id);
@@ -153,7 +158,12 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
   if (req.cookies.jwt) {
     try {
       // 1.) Verification token
-      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+      // @ts-ignore
+      const decoded: DecodedPayload = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        // @ts-ignore
+        process.env.JWT_SECRET
+      );
       // 2.) Check if user still exists
       const freshEmployee = await Employee.findById(decoded.id);
       if (!freshEmployee) {
@@ -175,7 +185,7 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
 };
 
 export const restrictTo = (...roles: any[]) => {
-  return (req: Request, _: Response, next: NextFunction) => {
+  return (req: CustomRequest, _: Response, next: NextFunction) => {
     // roles ['admin','lead-guide]
     if (!roles.includes(req.employee.role)) {
       return next(new AppError("You do not have permission to perform this action", 403));
@@ -200,8 +210,8 @@ export const forgotPassword = catchAsync(
       "host"
     )}/api/v1/users/reset-password/${resetToken}`;
 
-    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.
-                    \nIf you didn't forget your password, please ignore this email!`;
+    // const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.
+    //                 \nIf you didn't forget your password, please ignore this email!`;
 
     try {
       // await sendEmail({
@@ -217,8 +227,8 @@ export const forgotPassword = catchAsync(
         message: "Token sent to email!",
       });
     } catch (err) {
-      employee.createPasswordResetToken = undefined;
-      employee.createPasswordResetExpires = undefined;
+      employee.passwordResetToken = undefined;
+      employee.passwordResetExpires = undefined;
       await employee.save({ validateBeforeSave: false });
 
       return next(new AppError("There was an error sending the email. Try again later!", 500));
@@ -232,7 +242,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response, next
 
   const employee = await Employee.findOne({
     passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+    passwordResetExpires: { $gt: new Date(Date.now()) },
   });
 
   // 2) If token has not expired, and there is employee, set the new password
@@ -251,22 +261,22 @@ export const resetPassword = catchAsync(async (req: Request, res: Response, next
   createSendToken(employee, 200, res);
 });
 
-export const updatePassword = catchAsync(async (req: Request, res: Response) => {
-  // 1.) Get employee from collection
-  const employee = await Employee.findById(req.employee.id).select("+password");
-  // 2.) Check if POSTed current password is correct
-  // if (
-  //   !(await employee.correctPassword(
-  //     req.body.passwordCurrent,
-  //     employee.password
-  //   ))
-  // ) {
-  //   return next(new AppError("Your current password is wrong", 401));
-  // }
-  // 3.) If so, update password
-  employee.password = req.body.password;
-  employee.passwordConfirm = req.body.passwordConfirm;
-  await employee.save();
-  // 4.) Log employee in, send JWT
-  createSendToken(employee, 200, res);
-});
+export const updatePassword = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    // 1.) Get employee from collection
+    const employee = await Employee.findById(req.employee._id).select("+password");
+    if (!employee) {
+      return next(new AppError("You are not logged in", 403));
+    }
+    // 2.) Check if POSTed current password is correct
+    if (!(await employee.correctPassword(req.body.passwordCurrent, employee.password))) {
+      return next(new AppError("Your current password is wrong", 401));
+    }
+    // 3.) If so, update password
+    employee.password = req.body.password;
+    employee.passwordConfirm = req.body.passwordConfirm;
+    await employee.save();
+    // 4.) Log employee in, send JWT
+    createSendToken(employee, 200, res);
+  }
+);

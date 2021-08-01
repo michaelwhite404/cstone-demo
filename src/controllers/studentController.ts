@@ -13,7 +13,7 @@ export const getAllStudents = catchAsync(async (req: Request, res: Response) => 
   // SEND RESPONSE
   res.status(200).json({
     status: "success",
-    requestedAt: req.requestTime,
+    requestedAt: new Date().toISOString(),
     results: students.length,
     data: {
       students,
