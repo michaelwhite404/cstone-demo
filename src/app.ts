@@ -10,15 +10,10 @@ import passport from "passport";
 
 import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
-import deviceRouter from "./routes/deviceRoutes";
-import logRouter from "./routes/logRoutes";
-import errorLogRouter from "./routes/errorLogRoutes";
-import employeeRouter from "./routes/employeeRoutes";
-import studentRouter from "./routes/studentRoutes";
+import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
-import CustomRequest from "./types/customRequest";
 
 const app = express();
 
@@ -70,40 +65,7 @@ app.use(xss());
 
 app.use(compression());
 
-app.use(
-  "/api/v1/chromebooks",
-  (req, _, next) => {
-    (req as CustomRequest).device = "chromebook";
-    next();
-  },
-  deviceRouter
-);
-app.use(
-  "/api/v1/tablets",
-  (req, _, next) => {
-    (req as CustomRequest).device = "tablet";
-    next();
-  },
-  deviceRouter
-);
-app.use(
-  "/api/v1/error-logs",
-  (req, _, next) => {
-    (req as CustomRequest).key = "error";
-    next();
-  },
-  errorLogRouter
-);
-app.use(
-  "/api/v1/logs",
-  (req, _, next) => {
-    (req as CustomRequest).key = "log";
-    next();
-  },
-  logRouter
-);
-app.use("/api/v1/users", employeeRouter);
-app.use("/api/v1/students", studentRouter);
+app.use("/api", apiRouter);
 app.use("/auth", authRouter);
 app.use("/", viewRouter);
 

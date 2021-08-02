@@ -1,6 +1,6 @@
-const { Router } = require("express");
-const logController = require("../controllers/logController");
-const authController = require("../controllers/authController");
+import { Router } from "express";
+import * as logController from "../../controllers/logController";
+import * as authController from "../../controllers/authController";
 
 const router = Router();
 
