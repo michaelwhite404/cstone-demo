@@ -1,12 +1,12 @@
 import moment from "moment";
 import { Response, NextFunction } from "express";
-import Device from "../models/deviceModel";
-import AppError from "../utils/appError";
-import catchAsync from "../utils/catchAsync";
+import Device from "../../models/deviceModel";
+import AppError from "../../utils/appError";
+import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
-import CheckoutLog from "../models/checkoutLogModel";
-import ErrorLog from "../models/errorLogModel";
-import CustomRequest from "../types/customRequest";
+import CheckoutLog from "../../models/checkoutLogModel";
+import ErrorLog from "../../models/errorLogModel";
+import CustomRequest from "../../types/customRequest";
 
 export const getAllDevices = factory.getAll(Device);
 export const getDevice = factory.getOne(Device);

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import slugify from "slugify";
-import Student from "../models/studentModel";
-import catchAsync from "../utils/catchAsync";
-import AppError from "../utils/appError";
-import APIFeatures from "../utils/apiFeatures";
+import Student from "../../models/studentModel";
+import catchAsync from "../../utils/catchAsync";
+import AppError from "../../utils/appError";
+import APIFeatures from "../../utils/apiFeatures";
 
 export const getAllStudents = catchAsync(async (req: Request, res: Response) => {
   const features = new APIFeatures(Student.find(), req.query).filter().limitFields().paginate();

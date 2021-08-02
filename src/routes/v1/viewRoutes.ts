@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import * as viewsController from "../controllers/viewsController";
-import { isLoggedIn, protect } from "../controllers/authController";
-import CustomRequest from "../types/customRequest";
+import * as viewsController from "../../controllers/v1/viewsController";
+import { isLoggedIn, protect } from "../../controllers/v1/authController";
+import CustomRequest from "../../types/customRequest";
 
 const router = Router();
 

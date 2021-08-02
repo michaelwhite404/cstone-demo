@@ -1,12 +1,12 @@
 import moment from "moment";
 import { Request, Response, NextFunction } from "express";
-import ErrorLog from "../models/errorLogModel";
-import AppError from "../utils/appError";
-import catchAsync from "../utils/catchAsync";
+import ErrorLog from "../../models/errorLogModel";
+import AppError from "../../utils/appError";
+import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
-import Device from "../models/deviceModel";
-import CustomRequest from "../types/customRequest";
-import { ErrorUpdate } from "../types/models/errorLogTypes";
+import Device from "../../models/deviceModel";
+import CustomRequest from "../../types/customRequest";
+import { ErrorUpdate } from "../../types/models/errorLogTypes";
 
 export const getAllErrorLogs = factory.getAll(ErrorLog);
 export const getErrorLog = factory.getOne(ErrorLog);

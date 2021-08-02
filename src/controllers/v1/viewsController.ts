@@ -1,17 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import moment from "moment";
-import catchAsync from "../utils/catchAsync";
-import Device from "../models/deviceModel";
-import AppError from "../utils/appError";
-import Employee from "../models/employeeModel";
-import Student from "../models/studentModel";
+import catchAsync from "../../utils/catchAsync";
+import Device from "../../models/deviceModel";
+import AppError from "../../utils/appError";
+import Employee from "../../models/employeeModel";
+import Student from "../../models/studentModel";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
-import CheckoutLog from "../models/checkoutLogModel";
-import ErrorLog from "../models/errorLogModel";
-import camelize from "../utils/camelize";
-import ordinal from "../utils/ordinal";
-import CustomRequest from "../types/customRequest";
+import CheckoutLog from "../../models/checkoutLogModel";
+import ErrorLog from "../../models/errorLogModel";
+import camelize from "../../utils/camelize";
+import ordinal from "../../utils/ordinal";
+import CustomRequest from "../../types/customRequest";
 
 export const getHomePage = (_: Request, res: Response) => {
   if (res.locals.employee) {

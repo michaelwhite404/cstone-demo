@@ -1,12 +1,12 @@
-import catchAsync from "../utils/catchAsync";
-import AppError from "../utils/appError";
-import APIFeatures from "../utils/apiFeatures";
+import catchAsync from "../../utils/catchAsync";
+import AppError from "../../utils/appError";
+import APIFeatures from "../../utils/apiFeatures";
 import pluralize from "pluralize";
 import slugify from "slugify";
 import { NextFunction, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { Mongoose } from "mongoose";
-import CustomRequest from "../types/customRequest";
+import CustomRequest from "../../types/customRequest";
 
 const preCheck = (req: CustomRequest) => {
   // Init

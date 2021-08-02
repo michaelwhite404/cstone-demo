@@ -11,7 +11,7 @@ import passport from "passport";
 import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
-import viewRouter from "./routes/viewRoutes";
+import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
 

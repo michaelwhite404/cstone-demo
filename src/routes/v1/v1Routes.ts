@@ -1,10 +1,10 @@
 import { Router } from "express";
-import deviceRouter from "./v1/deviceRoutes";
-import logRouter from "./v1/logRoutes";
-import errorLogRouter from "./v1/errorLogRoutes";
-import employeeRouter from "./v1/employeeRoutes";
-import studentRouter from "./v1/studentRoutes";
-import CustomRequest from "../types/customRequest";
+import deviceRouter from "../v1/deviceRoutes";
+import logRouter from "../v1/logRoutes";
+import errorLogRouter from "../v1/errorLogRoutes";
+import employeeRouter from "../v1/employeeRoutes";
+import studentRouter from "../v1/studentRoutes";
+import CustomRequest from "../../types/customRequest";
 
 const v1Router = Router();
 

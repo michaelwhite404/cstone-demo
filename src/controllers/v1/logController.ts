@@ -1,4 +1,4 @@
-import CheckoutLog from "../models/checkoutLogModel";
+import CheckoutLog from "../../models/checkoutLogModel";
 import * as factory from "./handlerFactory";
 
 export const getAllLogs = factory.getAll(CheckoutLog);

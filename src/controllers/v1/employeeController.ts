@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-
-import Employee from "../models/employeeModel";
-import catchAsync from "../utils/catchAsync";
-import AppError from "../utils/appError";
 import slugify from "slugify";
+import Employee from "../../models/employeeModel";
+import catchAsync from "../../utils/catchAsync";
+import AppError from "../../utils/appError";
 
 export const getAllEmployees = catchAsync(async (_: Request, res: Response) => {
   const employees = await Employee.find();
