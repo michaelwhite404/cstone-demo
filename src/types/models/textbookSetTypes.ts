@@ -11,7 +11,7 @@ export interface TextbookSetModel {
   grade: number;
   /** Number of active textbook set in this set  */
   numActiveBooks: number;
-  /** Textbook slug */
+  /** Textbook set slug */
   slug: string;
 }
 

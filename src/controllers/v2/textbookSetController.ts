@@ -13,4 +13,4 @@ export const createTextbookSet = factory.createOne(Model, key);
 /** `PATCH` - Updates a single textbook set */
 export const updateTextbookSet = factory.updateOne(Model, key);
 /** `DELETE` - Deletes textbook set */
-export const deleteTextbookSet = factory.deleteOne(Model, key);
+export const deleteTextbookSet = factory.deleteOne(Model, "Textbook Set");

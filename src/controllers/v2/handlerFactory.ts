@@ -98,6 +98,6 @@ export const deleteOne = (Model: Mongoose["Model"], key: string) =>
     res.status(200).json({
       status: "success",
       requestedAt: req.requestTime,
-      message: "",
+      message: `1 ${key} has been deleted`,
     });
   });

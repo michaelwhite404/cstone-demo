@@ -1,8 +1,10 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Model } from "mongoose";
 import { TextbookDocument } from "../types/models/textbookTypes";
+import AppError from "../utils/appError";
+import TextbookSet from "./textbookSetModel";
 
-const textbookSchema = new Schema({
-  setId: {
+const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Schema({
+  textbookSet: {
     type: Types.ObjectId,
     ref: "TextbookSet",
     required: true,
@@ -49,6 +51,14 @@ const textbookSchema = new Schema({
   },
 });
 
-const Textbook = model<TextbookDocument>("Textbook", textbookSchema);
+textbookSchema.index({ setId: 1, bookNumber: 1 }, { unique: true });
+
+textbookSchema.pre("save", async function (next) {
+  const set = await TextbookSet.findById(this.textbookSet);
+  if (!set) next(new AppError(`Foreign Key Constraint: text`, 400));
+  next();
+});
+
+const Textbook = model("Textbook", textbookSchema);
 
 export default Textbook;

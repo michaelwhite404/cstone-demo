@@ -6,7 +6,7 @@ import { EmployeeModel } from "./employeeTypes";
 export interface TextbookModel {
   /** Id of the textbook */
   _id: any;
-  setId: TextbookSetModel;
+  textbookSet: TextbookSetModel;
   bookNumber: number;
   quality: TextbookQuality;
   status: TextBookStatus;
