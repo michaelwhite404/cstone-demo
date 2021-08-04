@@ -88,7 +88,7 @@ export const createOne = (Model: Mongoose["Model"]) =>
     });
   });
 
-export const getOne = (Model: Mongoose["Model"], popOptions?: {}) =>
+export const getOne = (Model: Mongoose["Model"], popOptions?: { path: any; select?: any }) =>
   catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const { filter, key } = preCheck(req);
 
