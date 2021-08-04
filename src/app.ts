@@ -37,6 +37,11 @@ app.get("*", function (req, res, next) {
 // Set security HTTP headers
 // app.use(helmet());
 
+app.use((req, _, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 // Development Logging
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
