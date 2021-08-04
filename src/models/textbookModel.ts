@@ -7,7 +7,7 @@ const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Sc
   textbookSet: {
     type: Types.ObjectId,
     ref: "TextbookSet",
-    required: true,
+    required: [true, "Each textbook must have a textbookSet"],
   },
   bookNumber: {
     type: Number,
@@ -51,11 +51,11 @@ const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Sc
   },
 });
 
-textbookSchema.index({ setId: 1, bookNumber: 1 }, { unique: true });
+textbookSchema.index({ textbookSet: 1, bookNumber: 1 }, { unique: true });
 
 textbookSchema.pre("save", async function (next) {
   const set = await TextbookSet.findById(this.textbookSet);
-  if (!set) next(new AppError(`Foreign Key Constraint: text`, 400));
+  if (!set) next(new AppError(`Foreign Key Constraint: textbookSet ID is not valid`, 400));
   next();
 });
 
