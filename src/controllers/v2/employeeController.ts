@@ -17,7 +17,6 @@ export const getOneEmployee: RequestHandler = factory.getOne(Model, key);
 
 /** Adds current user id to params object */
 export const getMe: RequestHandler = (req, _, next) => {
-  console.log(req.employee);
   req.params.id = req.employee._id;
   next();
 };
