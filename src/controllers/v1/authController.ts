@@ -9,20 +9,11 @@ import { EmployeeDocument } from "../../types/models/employeeTypes";
 import CustomRequest from "../../types/customRequest";
 import DecodedPayload from "../../types/decodedPayload";
 import Email from "../../utils/email";
+import makePassword from "../../utils/makePassword";
 // import Employee from "../models/employeeModel";
 // import catchAsync from "../utils/catchAsync";
 // import AppError from "../utils/appError";
 // import Email from "../utils/email";
-
-function makePassword(length: number) {
-  var result = "";
-  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
 
 const signToken = (id: EmployeeDocument["_id"]) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
@@ -143,7 +134,7 @@ export const protect = catchAsync(async (req: CustomRequest, res: Response, next
   if (!freshEmployee) {
     return next(new AppError("The user belonging to this token no longer exists.", 401));
   }
-  // 4.) Check if used changed passsword after the token was issued
+  // 4.) Check if user changed passsword after the token was issued
   if (freshEmployee.changedPasswordAfter(decoded.iat)) {
     return next(new AppError("User recently changed password. Please log in again!", 401));
   }

@@ -37,14 +37,17 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
   role: {
     type: String,
     required: true,
-    enum: ["Super Admin", "Admin", "Development", "Instructor", "Intern", "Maintenance"],
+    enum: {
+      values: ["Super Admin", "Admin", "Development", "Instructor", "Intern", "Maintenance"],
+      message: "Role must be: Super Admin, Admin, Development, Instructor, Intern, or Maintenance",
+    },
   },
   image: String,
   googleId: String,
   password: {
     type: String,
     required: [true, "Please provide a password"],
-    minlength: 8,
+    minlength: [8, "Password must be at least 8 characters"],
     select: false,
   },
   passwordConfirm: {
@@ -65,7 +68,7 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
   lastLogin: Date,
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: () => new Date(),
     select: false,
   },
   active: {
