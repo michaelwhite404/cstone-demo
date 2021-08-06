@@ -1,6 +1,7 @@
 import { Schema, model, Model, Types } from "mongoose";
 import slugify from "slugify";
 import { DeviceDocument } from "../types/models/deviceTypes";
+import AppError from "../utils/appError";
 
 const deviceSchema = new Schema({
   name: {
@@ -63,6 +64,19 @@ const deviceSchema = new Schema({
 });
 
 deviceSchema.pre<DeviceDocument>("save", function (next) {
+  if (this.isModified("dueDate") && this.dueDate !== undefined) {
+    // If due date is valid
+    // @ts-ignore
+    var timestamp = Date.parse(this.dueDate);
+    if (isNaN(timestamp))
+      return next(new AppError("The value for 'dueDate' is not a valid date", 400));
+    const date = new Date(timestamp);
+    // Due Date can not be in the past
+    if (date <= new Date()) return next(new AppError("Due date cannot be in the past", 400));
+    // Due Date can not be more than a year in the future
+    if (date > new Date(new Date().setFullYear(new Date().getFullYear() + 1)))
+      return next(new AppError("Due Date can not be more than a year in the future", 400));
+  }
   this.slug = slugify(this.name, { lower: true });
   next();
 });

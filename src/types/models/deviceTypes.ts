@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, PopulatedDoc } from "mongoose";
 import { EmployeeModel } from "./employeeTypes";
 import { StudentModel } from "./studentTypes";
 
@@ -13,8 +13,8 @@ export interface DeviceModel {
   deviceType: string;
   autoUpdateExpiration?: string;
   checkedOut?: boolean;
-  lastUser?: StudentModel;
-  teacherCheckOut?: EmployeeModel;
+  lastUser?: PopulatedDoc<StudentModel>;
+  teacherCheckOut?: PopulatedDoc<EmployeeModel>;
   lastCheckOut?: Date;
   lastCheckIn?: Date;
   slug: string;

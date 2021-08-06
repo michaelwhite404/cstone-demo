@@ -20,10 +20,14 @@ const nonManualUpdateKeys = [
 deviceRouter.use(v1auth.protect);
 
 deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceController.createDevice);
+
 deviceRouter
   .route("/:id")
   .get(deviceController.getOneDevice)
   .patch(helpers.omitFromBody(...nonManualUpdateKeys), deviceController.updateDevice)
   .delete(deviceController.deleteDevice);
+
+deviceRouter.post("/:id/check-out/:student_id", deviceController.checkOutDevice);
+deviceRouter.post("/:id/check-in", deviceController.checkInDevice);
 
 export default deviceRouter;

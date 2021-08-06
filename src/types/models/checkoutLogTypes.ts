@@ -13,7 +13,7 @@ export interface CheckoutLogModel {
   teacherCheckOut: EmployeeModel;
   teacherCheckIn?: EmployeeModel;
   checkedIn: boolean;
-  error: ErrorLogModel;
+  error?: ErrorLogModel;
 }
 
 export interface CheckoutLogDocument extends CheckoutLogModel, Document {}
