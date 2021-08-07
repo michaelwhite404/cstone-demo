@@ -13,7 +13,7 @@ export const getAllEmployees: RequestHandler = factory.getAll(Model, key);
 /** `GET` - Gets a single employee
  *   - All authorized users can access this route
  */
-export const getOneEmployee: RequestHandler = factory.getOne(Model, key);
+export const getOneEmployee: RequestHandler = factory.getOneById(Model, key);
 
 /** Adds current user id to params object */
 export const getMe: RequestHandler = (req, _, next) => {

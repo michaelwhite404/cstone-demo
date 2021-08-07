@@ -19,7 +19,7 @@ export const getAllDevices: RequestHandler = factory.getAll(Model, `${key}s`);
 /** `GET` - Gets a single device
  *  - All authorized users can access this route
  */
-export const getOneDevice: RequestHandler = factory.getOne(Model, key);
+export const getOneDevice: RequestHandler = factory.getOneById(Model, key);
 /** `POST` - Creates a new device
  *  - Only users with the role `Super Admin` or `Admin` can access this route
  */

@@ -5,6 +5,9 @@ import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
 
+const Model = ErrorLog;
+const key = "errorLog";
+
 export const setCreateData: RequestHandler = (req, _, next) => {
   req.body.updates = undefined;
   req.body.final = false;
@@ -14,27 +17,11 @@ export const setCreateData: RequestHandler = (req, _, next) => {
   next();
 };
 
-export const getAllDeviceErrorLogs = factory.getAll(ErrorLog, "errorLogs");
+export const getAllDeviceErrorLogs = factory.getAll(Model, `${key}s`);
 
-export const getDeviceErrorLog = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    let errorLog = await ErrorLog.findOne(req.params);
+export const getDeviceErrorLog = factory.getOne(Model, key);
 
-    if (!errorLog) {
-      return next(new AppError("No error log found", 404));
-    }
-
-    res.status(200).json({
-      status: "success",
-      requestedAt: req.requestTime,
-      data: {
-        errorLog,
-      },
-    });
-  }
-);
-
-export const createErrorLog = factory.createOne(ErrorLog, "errorLog");
+export const createErrorLog = factory.createOne(Model, key);
 
 export const updateErrorLog = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {

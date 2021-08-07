@@ -7,7 +7,7 @@ const key = "student";
 /** `GET` - Gets all students */
 export const getAllStudents = factory.getAll(Student, `${key}s`);
 /** `GET` - Gets a single student */
-export const getOneStudent = factory.getOne(Model, key);
+export const getOneStudent = factory.getOneById(Model, key);
 /** `POST` - Creates a single student */
 export const createStudent = factory.createOne(Model, key);
 /** `PATCH` - Updates a single student */

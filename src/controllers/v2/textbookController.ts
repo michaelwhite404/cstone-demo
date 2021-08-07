@@ -7,7 +7,7 @@ const key = "textbook";
 /** `GET` - Gets all textbooks */
 export const getAllTextbooks = factory.getAll(Model, `${key}s`);
 /** `GET` - Gets a single textbook */
-export const getOneTextbook = factory.getOne(Model, key);
+export const getOneTextbook = factory.getOneById(Model, key);
 /** `POST` - Creates a single textbook */
 export const createTextbook = factory.createOne(Model, key);
 /** `PATCH` - Updates a single textbook */
