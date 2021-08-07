@@ -35,7 +35,7 @@ export const updateErrorLog = catchAsync(
     errorLog.updates.push({
       description,
       status,
-      createdAt: new Date(),
+      createdAt: req.requestTime,
     });
     errorLog.status = req.body.status;
     let saved = false;

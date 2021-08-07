@@ -1,11 +1,12 @@
 import { Schema, model, Model } from "mongoose";
+import slugify from "slugify";
 import { TextbookSetDocument } from "../types/models/textbookSetTypes";
 
 const textbookSetSchema: Schema<TextbookSetDocument, Model<TextbookSetDocument>> = new Schema({
   title: {
     type: String,
-    required: true,
-    unique: true,
+    required: [true, "Each textbook set must have a title"],
+    unique: [true, "Each textbook set must have its own title"],
     trim: true,
   },
   class: {
@@ -32,6 +33,7 @@ const textbookSetSchema: Schema<TextbookSetDocument, Model<TextbookSetDocument>>
 
 textbookSetSchema.pre("save", function (next) {
   if (this.isNew) this.numActiveBooks = 0;
+  this.slug = slugify(this.title, { lower: true });
   next();
 });
 

@@ -1,7 +1,8 @@
-import Textbook from "../../models/textbookModel";
+// import Textbook from "../../models/textbookModel";
+import TextbookSet from "../../models/textbookSetModel";
 import * as factory from "./handlerFactory";
 
-const Model = Textbook;
+const Model = TextbookSet;
 const key = "textbook";
 
 /** `GET` - Gets all textbooks */
