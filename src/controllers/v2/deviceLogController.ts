@@ -4,15 +4,10 @@ import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
 
-export const addDeviceToQuery: RequestHandler = (req, _, next) => {
-  if (req.params.device) req.query.device = req.params.device;
-  next();
-};
-
 /** `GET` - Gets all device logs
  *  - All authorized users can access this route
  */
-export const getAllLogs = factory.getAll(CheckoutLog, "deviceLogs");
+export const getAllLogs: RequestHandler = factory.getAll(CheckoutLog, "deviceLogs");
 
 /** `GET` - Gets a single device log
  *  - All authorized users can access this route

@@ -1,5 +1,7 @@
 import { model, Model, Schema, Types } from "mongoose";
 import { ErrorLogDocument } from "../types/models/errorLogTypes";
+import AppError from "../utils/appError";
+import Device from "./deviceModel";
 
 const errorLogSchema: Schema<ErrorLogDocument, Model<ErrorLogDocument>> = new Schema(
   {
@@ -64,6 +66,25 @@ const errorLogSchema: Schema<ErrorLogDocument, Model<ErrorLogDocument>> = new Sc
 );
 
 errorLogSchema.index({ device: 1 });
+
+errorLogSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    const device = await Device.findById(this.device);
+    if (!device) {
+      return next(new AppError("No device found with that ID", 404));
+    }
+    if (device.status === "Checked Out") {
+      return next(new AppError(`Create an error when checking in ${device.deviceType}`, 400));
+    }
+
+    device.status = "Broken";
+    this.$locals.wasNew = this.isNew;
+  }
+});
+
+errorLogSchema.post("save", async function () {
+  if (this.$locals.wasNew) await Device.findByIdAndUpdate(this.device, { status: "Broken" });
+});
 
 /** Error Log Model */
 const ErrorLog = model<ErrorLogDocument>("ErrorLog", errorLogSchema);

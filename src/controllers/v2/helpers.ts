@@ -7,3 +7,8 @@ export const omitFromBody = (...keys: string[]): RequestHandler => {
     next();
   };
 };
+
+export const addDeviceToQuery: RequestHandler = (req, _, next) => {
+  if (req.params.device) req.query.device = req.params.device;
+  next();
+};
