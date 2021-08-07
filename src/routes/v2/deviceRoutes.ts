@@ -1,4 +1,5 @@
 import { Router } from "express";
+import deviceLogRouter from "./deviceLogRoutes";
 import * as deviceController from "../../controllers/v2/deviceController";
 import * as v1auth from "../../controllers/v1/authController";
 import * as helpers from "../../controllers/v2/helpers";
@@ -16,6 +17,9 @@ const nonManualUpdateKeys = [
   "slug",
   "status",
 ];
+
+deviceRouter.use("/logs", deviceLogRouter);
+deviceRouter.use("/:device/logs", deviceLogRouter);
 
 deviceRouter.use(v1auth.protect);
 

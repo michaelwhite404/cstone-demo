@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import CheckoutLog from "../../models/checkoutLogModel";
 import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
+import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
@@ -52,21 +53,28 @@ export const deleteDevice: RequestHandler = factory.deleteOne(Model, "Device");
 
 export const checkOutDevice: RequestHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const device = await Device.findById(req.params.id);
+    const [device, student] = await Promise.all([
+      Device.findById(req.params.id),
+      Student.findById(req.params.student_id),
+    ]);
     // If no device
     if (!device) return next(new AppError("No device found with that ID", 404));
     // If Not Available
     if (device.status !== "Available")
       return next(new AppError(`This device is ${device.status.toLowerCase()}`, 400));
+    // No student
+    if (!student) return next(new AppError("No student found with that ID", 404));
+
     // Device can be checked out
     device.checkedOut = true;
     device.status = "Checked Out";
     device.lastCheckOut = new Date(req.requestTime);
     device.lastUser = new Types.ObjectId(req.params.student_id);
     device.teacherCheckOut = new Types.ObjectId(req.employee!._id);
+    device.dueDate = req.body.dueDate;
 
     // Save device
-    await device.save({ validateBeforeSave: false });
+    await device.save({ validateBeforeSave: true });
     // Create checkout log
     await CheckoutLog.create({
       device: device._id,
@@ -74,11 +82,12 @@ export const checkOutDevice: RequestHandler = catchAsync(
       deviceUser: device.lastUser,
       teacherCheckOut: req.employee._id,
       checkedIn: false,
-      dueDate: req.body.dueDate,
+      dueDate: device.dueDate,
     });
 
     res.status(200).json({
       status: "success",
+      requestedAt: req.requestTime,
       data: {
         device,
       },
@@ -136,6 +145,7 @@ export const checkInDevice = catchAsync(async (req: Request, res: Response, next
 
   res.status(200).json({
     status: "success",
+    requestedAt: req.requestTime,
     data: {
       device,
     },
