@@ -4,7 +4,7 @@ import * as helpers from "../../controllers/v2/helpers";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", helpers.addDeviceToQuery, deviceLogController.getAllLogs);
+router.get("/", helpers.addKeyToQuery("device"), deviceLogController.getAllLogs);
 router.get("/:_id", deviceLogController.getOneLog);
 
 export default router;
