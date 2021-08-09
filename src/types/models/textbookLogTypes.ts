@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, PopulatedDoc } from "mongoose";
 import { EmployeeModel } from "./employeeTypes";
 import { StudentModel } from "./studentTypes";
 import { TextbookModel } from "./textbookTypes";
@@ -8,7 +8,7 @@ export interface TextbookLogModel {
   _id: any;
   textbook: TextbookModel;
   checkedIn: boolean;
-  student: StudentModel;
+  student: PopulatedDoc<StudentModel>;
   checkOutDate: Date;
   teacherCheckOut: EmployeeModel;
   qualityOut: TextbookQuality;

@@ -30,11 +30,15 @@ export const getAll = <T extends Mongoose["Model"]>(
       },
     });
   });
-
+interface PopOptions {
+  path: any;
+  select?: any;
+  populate?: PopOptions;
+}
 export const getOneById = <T extends Mongoose["Model"]>(
   Model: T,
   key: string,
-  popOptions?: { path: any; select?: any }
+  popOptions?: PopOptions
 ) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     let query = Model.findById(req.params.id);

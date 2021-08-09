@@ -32,11 +32,6 @@ const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Sc
       message: "Status must be: Available, Checked Out, Replaced, or Not Available",
     },
   },
-  checkedOut: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
   lastUser: {
     type: Types.ObjectId,
     ref: "Student",

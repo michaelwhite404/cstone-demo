@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, PopulatedDoc } from "mongoose";
 import { TextbookSetModel } from "./textbookSetTypes";
 import { StudentModel } from "./studentTypes";
 import { EmployeeModel } from "./employeeTypes";
@@ -10,10 +10,9 @@ export interface TextbookModel {
   bookNumber: number;
   quality: TextbookQuality;
   status: TextBookStatus;
-  checkedOut: boolean;
   active: boolean;
-  lastUser?: StudentModel;
-  teacherCheckOut?: EmployeeModel;
+  lastUser?: PopulatedDoc<StudentModel>;
+  teacherCheckOut?: PopulatedDoc<EmployeeModel>;
 }
 
 export interface TextbookDocument extends TextbookModel, Document {

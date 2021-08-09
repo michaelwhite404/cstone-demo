@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { TextbookModel } from "./textbookTypes";
 
 export interface StudentModel {
   firstName: string;
@@ -15,4 +16,6 @@ export interface StudentModel {
   slug: string;
 }
 
-export interface StudentDocument extends StudentModel, Document {}
+export interface StudentDocument extends StudentModel, Document {
+  textbooksCheckedOut?: TextbookModel[];
+}
