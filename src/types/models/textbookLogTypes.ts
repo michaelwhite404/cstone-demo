@@ -13,7 +13,7 @@ export interface TextbookLogModel {
   teacherCheckOut: EmployeeModel;
   qualityOut: TextbookQuality;
   checkInDate?: Date;
-  teacherCheckIn?: EmployeeModel;
+  teacherCheckIn?: PopulatedDoc<EmployeeModel>;
   qualityIn?: TextbookQuality;
 }
 

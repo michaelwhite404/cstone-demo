@@ -12,7 +12,7 @@ export const getOneStudent = factory.getOneById(Model, key, {
   select: "textbookSet quality bookNumber teacherCheckOut -lastUser",
   populate: {
     path: "teacherCheckOut",
-    select: "fullName -_id",
+    select: "fullName -_id ",
   },
 });
 /** `POST` - Creates a single student */

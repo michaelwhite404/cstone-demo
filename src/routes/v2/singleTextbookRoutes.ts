@@ -10,6 +10,7 @@ router
   .post(helpers.addParamsToBody("textbookSet"), singleTextbookController.createBook);
 
 router.post("/check-out/:student_id", singleTextbookController.checkOutTextbook);
+router.patch("/check-in/:student_id", singleTextbookController.checkInTextbook);
 
 router
   .route("/:_id")

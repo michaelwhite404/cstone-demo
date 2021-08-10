@@ -1,10 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
+import { FilterQuery, Types, UpdateQuery } from "mongoose";
+import pluralize from "pluralize";
 import Student from "../../models/studentModel";
 import TextbookLog from "../../models/textbookLogModel";
 import Textbook from "../../models/textbookModel";
+import { TextbookLogModel } from "../../types/models/textbookLogTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
-// import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
 
 const Model = Textbook;
@@ -47,12 +49,15 @@ export const updateBook: RequestHandler = catchAsync(
 export const checkOutTextbook = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.books))
-      return next(new AppError("An array of book ids must be in a 'book' property", 400));
+      return next(new AppError("An array of book ids must be in a 'books' property", 400));
     const bodyBooks = req.body.books as any[];
-    const books = await Textbook.find({ _id: { $in: bodyBooks }, active: true }).populate({
-      path: "textbookSet",
-      select: "_id title",
-    });
+    const [books, student] = await Promise.all([
+      Textbook.find({ _id: { $in: bodyBooks }, active: true }).populate({
+        path: "textbookSet",
+        select: "_id title",
+      }),
+      Student.findById(req.params.student_id).populate("textbooksCheckedOut"),
+    ]);
     // Make sure there are no invalid IDs
     const mappedBookIds = books.map((b) => b._id.toString());
     const badIds = bodyBooks.filter((b) => !mappedBookIds.includes(b));
@@ -74,7 +79,6 @@ export const checkOutTextbook = catchAsync(
       );
     }
     // Make sure student exists
-    const student = await Student.findById(req.params.student_id).populate("textbooksCheckedOut");
     if (!student) return next(new AppError("There is no student with this ID", 404));
     // Student should not have multiple books from one textbook set
     const checkedSetIds = student.textbooksCheckedOut!.map((t) => t.textbookSet.toString());
@@ -100,15 +104,90 @@ export const checkOutTextbook = catchAsync(
       qualityOut: b.quality,
     }));
 
-    const createdLogs = await TextbookLog.create(createLogs);
-    const logs = await TextbookLog.populate(createdLogs, {
-      path: "student teacherCheckOut textbook",
-      select: "fullName textbookSet bookNumber",
-    });
+    await TextbookLog.create(createLogs);
+
     res.status(200).json({
       status: "success",
       requestedAt: req.requestTime,
-      data: { logs },
+      message: `${student.fullName} checked out ${pluralize("textbook", bodyBooks.length, true)}`,
     });
   }
 );
+
+export const checkInTextbook = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let errMsg: string;
+    if (!Array.isArray(req.body.books)) {
+      errMsg =
+        "An array of book ids must be in a 'books' property. Each index in the array should have an object with an `(id)` property for the id of the textbook and a `(quality)` property for the quality of each textbook";
+      return next(new AppError(errMsg, 400));
+    }
+    // Check if each array index has an object with `id` and `quality`
+    if (!allHaveIdandQuality(req.body.books)) {
+      errMsg =
+        "Each index in the array should have an object with an `(id)` property for the id of the textbook and a `(quality)` property for the quality of each textbook, which must be: Excellent, Good, Acceptable, or Poor";
+      return next(new AppError(errMsg, 400));
+    }
+    const bodyBooks = req.body.books as { id: string; quality: string }[];
+    // Make sure student exists
+    const student = await Student.findById(req.params.student_id)
+      .populate("textbooksCheckedOut")
+      .select("_id fullName textbooksCheckedOut");
+    if (!student) return next(new AppError("There is no student with this ID", 404));
+    // Get checked out book IDs
+    const checkedOutBooksIds: string[] = student.textbooksCheckedOut!.map((t) => t._id.toString());
+    // Get ids not checked out
+    const idsNotCheckedOut = bodyBooks.filter((b) => !checkedOutBooksIds.includes(b.id));
+    if (idsNotCheckedOut.length > 0) {
+      errMsg = `${student.fullName} has not checked out books with these ids: ${idsNotCheckedOut
+        .map((b) => b.id)
+        .join(", ")}`;
+      return next(new AppError(errMsg, 400));
+    }
+    // Good to go
+    const textbookBulkArr = bodyBooks.map((book) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(book.id) },
+        update: { status: "Available", quality: book.quality },
+      },
+    }));
+    await Textbook.bulkWrite(textbookBulkArr);
+
+    const logBulkArr = bodyBooks.map((book) => ({
+      updateOne: {
+        filter: {
+          textbook: new Types.ObjectId(book.id),
+          checkedIn: false,
+        } as FilterQuery<TextbookLogModel>,
+        update: {
+          checkedIn: true,
+          checkInDate: new Date(req.requestTime),
+          teacherCheckIn: req.employee._id,
+          qualityIn: book.quality,
+        } as UpdateQuery<TextbookLogModel>,
+      },
+    }));
+
+    await TextbookLog.bulkWrite(logBulkArr);
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      message: `${student.fullName} checked in ${pluralize("textbook", bodyBooks.length, true)}`,
+    });
+  }
+);
+
+const allHaveIdandQuality = (array: any[]): boolean => {
+  return (
+    array.filter((obj) => {
+      // Index must be an object
+      if (!(typeof obj === "object" || obj !== null || !Array.isArray(obj))) return true;
+      // Id must be a string
+      if (typeof obj.id !== "string") return true;
+      // Quality be a a TextbookQuality type
+      if (!["Excellent", "Good", "Acceptable", "Poor"].includes(obj.quality)) return true;
+      return false;
+    }).length === 0
+  );
+};
