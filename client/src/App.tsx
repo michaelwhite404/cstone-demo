@@ -1,6 +1,7 @@
 import "./App.scss";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Students from "./pages/Students/Students";
+import DeviceType from "./pages/DeviceType/DeviceType";
 // import ProfileButton from "./components/ProfileButton";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route exact path="/devices">
           <Devices />
         </Route>
+        <Route exact path="/devices/:deviceType" component={DeviceType} />
         <Route exact path="/textbooks">
           <Textbooks />
         </Route>

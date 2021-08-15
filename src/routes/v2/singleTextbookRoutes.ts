@@ -9,8 +9,8 @@ router
   .get(helpers.addKeyToQuery("textbookSet"), singleTextbookController.getAllBooks)
   .post(helpers.addParamsToBody("textbookSet"), singleTextbookController.createBook);
 
-router.post("/check-out/:student_id", singleTextbookController.checkOutTextbook);
-router.patch("/check-in/:student_id", singleTextbookController.checkInTextbook);
+router.post("/check-out/student/:student_id", singleTextbookController.checkOutTextbook);
+router.patch("/check-in/student/:student_id", singleTextbookController.checkInTextbook);
 
 router
   .route("/:_id")

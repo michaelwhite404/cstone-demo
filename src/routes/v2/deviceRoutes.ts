@@ -27,6 +27,8 @@ deviceRouter.use("/:device/errors", deviceErrorLogRouter);
 
 deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceController.createDevice);
 
+deviceRouter.get("/types", deviceController.getAllDeviceTypes);
+
 deviceRouter
   .route("/:id")
   .get(deviceController.getOneDevice)

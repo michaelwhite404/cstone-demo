@@ -151,3 +151,14 @@ export const checkInDevice = catchAsync(async (req: Request, res: Response, next
     },
   });
 });
+
+export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) => {
+  const result = await Device.aggregate([{ $group: { _id: "$deviceType" } }]);
+  const types = result.map((r) => r._id);
+
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    types,
+  });
+});
