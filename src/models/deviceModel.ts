@@ -61,6 +61,10 @@ const deviceSchema = new Schema({
   lastCheckOut: Date,
   lastCheckIn: Date,
   slug: String,
+  location: {
+    type: Types.ObjectId,
+    ref: "Student",
+  },
 });
 
 deviceSchema.pre<DeviceDocument>("save", function (next) {

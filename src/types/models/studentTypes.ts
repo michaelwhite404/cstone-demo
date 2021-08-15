@@ -2,6 +2,8 @@ import { Document } from "mongoose";
 import { TextbookModel } from "./textbookTypes";
 
 export interface StudentModel {
+  /** Id of the student */
+  _id: any;
   firstName: string;
   lastName: string;
   fullName: string;
@@ -17,5 +19,6 @@ export interface StudentModel {
 }
 
 export interface StudentDocument extends StudentModel, Document {
+  _id: any;
   textbooksCheckedOut?: TextbookModel[];
 }
