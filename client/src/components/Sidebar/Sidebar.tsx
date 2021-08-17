@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import ProfileButton from "../ProfileButton";
 import navigation from "../../navigation";
 import "./Sidebar.sass";
 
 export default function Sidebar() {
+  const match = useRouteMatch();
+  const matchesURL = (url: string) => match.url.startsWith(url);
   return (
     <div className="sidebar-container">
       <div className="sidebar">
@@ -26,10 +28,10 @@ export default function Sidebar() {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`navigation-item ${item.current ? "current" : ""}`}
-                    aria-current="true"
+                    className={`navigation-item${matchesURL(item.href) ? " current" : ""}`}
+                    aria-current={matchesURL(item.href)}
                   >
-                    <item.icon className="" aria-hidden="true" />
+                    <item.icon className="" aria-hidden="false" />
                     {item.name}
                   </Link>
                 ))}
