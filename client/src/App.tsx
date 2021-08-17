@@ -1,8 +1,9 @@
 import "./App.scss";
+import "./test.sass";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Students from "./pages/Students/Students";
 import DeviceType from "./pages/DeviceType/DeviceType";
-// import ProfileButton from "./components/ProfileButton";
+import ProfileButton from "./components/ProfileButton";
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
         <Route exact path="/students">
           <Students />
         </Route>
+        <Route exact path="/test">
+          <Test />
+        </Route>
       </Switch>
     </Router>
   );
@@ -50,6 +54,30 @@ function Devices() {
 
 function Textbooks() {
   return <div>Textbooks</div>;
+}
+
+function Test() {
+  return (
+    <div className="app-container">
+      <div className="sidebar-container">
+        <div className="sidebar">
+          <div className="sidebar-inner">
+            <div className="logo-wrapper">
+              <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
+            </div>
+            <div className="profile-button-wrapper">
+              <ProfileButton
+                imgSrc="https://lh3.google.com/u/2/ogw/ADea4I4RFSRQOD1HWLtwJOJmh8FdJvzy6Nmry3z-apgL=s32-c-mo"
+                name="Michael White"
+                title="Multi Purpose"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>Test 2</div>
+    </div>
+  );
 }
 
 export default App;

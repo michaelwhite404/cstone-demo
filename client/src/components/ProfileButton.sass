@@ -1,4 +1,4 @@
-@use "../variables" as *
+@import "../variables"
 
 @mixin truncate
   overflow: hidden
@@ -11,12 +11,11 @@
   background-color: rgba(255, 255, 255, 0)
   border: none
   cursor: pointer
-  width: 260px
+  width: 100%
   border-radius: 6px
-  margin-left: 10px
 
   &:hover
-    background-color: #efefef
+    background-color: $gray-200
 
   &:focus
     --tw-ring-offset-color: #fefefe
@@ -66,8 +65,8 @@
         &:first-child
           @include truncate
           font-weight: 500
-          color: gray-900
+          color: $gray-900
 
         &:last-child
           @include truncate
-          color: gray-500
+          color: $gray-500

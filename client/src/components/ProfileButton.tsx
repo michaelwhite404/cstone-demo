@@ -10,19 +10,17 @@ interface ProfileButtonProps {
 
 export default function ProfileButton({ imgSrc, name, title }: ProfileButtonProps) {
   return (
-    <div>
-      <button className="profile-button">
-        <span className="profile-button-inner">
-          <span className="profile-button-content">
-            <img src={imgSrc} alt="Profile" />
-            <span className="profile-button-text">
-              <span>{name}</span>
-              <span>{title}</span>
-            </span>
+    <button className="profile-button">
+      <span className="profile-button-inner">
+        <span className="profile-button-content">
+          <img src={imgSrc} alt="Profile" />
+          <span className="profile-button-text">
+            <span>{name}</span>
+            <span>{title}</span>
           </span>
-          <SelectorIcon color="gray" width={20} />
         </span>
-      </button>
-    </div>
+        <SelectorIcon color="gray" width={20} />
+      </span>
+    </button>
   );
 }
