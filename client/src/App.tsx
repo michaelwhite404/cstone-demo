@@ -1,40 +1,24 @@
 import "./App.scss";
-import "./test.sass";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Students from "./pages/Students/Students";
 import DeviceType from "./pages/DeviceType/DeviceType";
-import ProfileButton from "./components/ProfileButton";
+import Sidebar from "./components/Sidebar/Sidebar";
 
 function App() {
   return (
     <Router>
-      {/* <header className="App-header">Welcome to the Cornerstone App</header>
-    <br />
-    <ProfileButton
-      imgSrc="https://lh3.google.com/u/2/ogw/ADea4I4RFSRQOD1HWLtwJOJmh8FdJvzy6Nmry3z-apgL=s32-c-mo"
-      name="Michael White"
-      title="Multi Purpose"
-    /> */}
       <Switch>
         <Route exact path="/">
           <Home />
         </Route>
-        <Route exact path="/dashboard">
-          <Dashboard />
-        </Route>
+        <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/devices">
           <Devices />
         </Route>
         <Route exact path="/devices/:deviceType" component={DeviceType} />
-        <Route exact path="/textbooks">
-          <Textbooks />
-        </Route>
-        <Route exact path="/students">
-          <Students />
-        </Route>
-        <Route exact path="/test">
-          <Test />
-        </Route>
+        <Route exact path="/textbooks" component={Textbooks} />
+        <Route exact path="/students" component={Students} />
+        <Route exact path="/test" component={Test} />
       </Switch>
     </Router>
   );
@@ -59,23 +43,10 @@ function Textbooks() {
 function Test() {
   return (
     <div className="app-container">
-      <div className="sidebar-container">
-        <div className="sidebar">
-          <div className="sidebar-inner">
-            <div className="logo-wrapper">
-              <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
-            </div>
-            <div className="profile-button-wrapper">
-              <ProfileButton
-                imgSrc="https://lh3.google.com/u/2/ogw/ADea4I4RFSRQOD1HWLtwJOJmh8FdJvzy6Nmry3z-apgL=s32-c-mo"
-                name="Michael White"
-                title="Multi Purpose"
-              />
-            </div>
-          </div>
-        </div>
+      <Sidebar />
+      <div className="main-area-container" style={{ backgroundColor: "#f9fcff", width: "100%" }}>
+        Main Area
       </div>
-      <div>Test 2</div>
     </div>
   );
 }

@@ -1,4 +1,6 @@
-@font-face {
+@import "./_variables.sass";
+
+font-face {
   font-family: "Euclid Circular A";
   src: url("./fonts/EuclidCircularA-Bold.eot");
   src: local("Euclid Circular A Bold"), local("EuclidCircularA-Bold"),
@@ -127,4 +129,10 @@
 body {
   font-family: inherit;
   margin: 0;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+  color: $gray-600;
 }
