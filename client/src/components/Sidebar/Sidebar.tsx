@@ -1,5 +1,5 @@
 import { Link, useRouteMatch } from "react-router-dom";
-import ProfileButton from "../ProfileButton";
+import ProfileButton from "../ProfileButton/ProfileButton";
 import navigation from "../../navigation";
 import "./Sidebar.sass";
 

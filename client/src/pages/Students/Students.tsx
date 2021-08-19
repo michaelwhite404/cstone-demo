@@ -2,9 +2,8 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useMemo } from "react";
 import { useEffect } from "react";
-import { useTable } from "react-table";
 import { StudentModel } from "../../../../src/types/models/studentTypes";
-import Table from "../../components/Table";
+import Table from "../../components/Table/Table";
 import { APIError, APIStudentsResponse } from "../../types/apiResponses";
 import STUDENT_COLUMNS from "./StudentColumns";
 
@@ -31,8 +30,5 @@ export default function Students() {
     }
   }, []);
 
-  // @ts-ignore
-  const tableInstance = useTable({ columns, data });
-
-  return <Table tableInstance={tableInstance} />;
+  return <Table columns={columns} data={data} />;
 }

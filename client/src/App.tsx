@@ -19,7 +19,7 @@ const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => (
         <Sidebar />
         <div
           className="main-area-container"
-          style={{ backgroundColor: "#f9fcff", width: "100%", overflowY: "scroll" }}
+          style={{ backgroundColor: "#f9fcff", width: "100%", padding: "10px 25px 25px" }}
         >
           <Component {...props} />
         </div>

@@ -51,6 +51,8 @@
   "proxy": "http://localhost:8080",
   "devDependencies": {
     "@types/react-router-dom": "^5.1.8",
-    "@types/react-table": "^7.7.2"
+    "@types/react-scrollbar": "^0.5.2",
+    "@types/react-table": "^7.7.2",
+    "@types/react-window": "^1.8.5"
   }
 }
