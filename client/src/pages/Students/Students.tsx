@@ -5,11 +5,18 @@ import { useEffect } from "react";
 import { StudentModel } from "../../../../src/types/models/studentTypes";
 import Table from "../../components/Table/Table";
 import { APIError, APIStudentsResponse } from "../../types/apiResponses";
-import STUDENT_COLUMNS from "./StudentColumns";
 
 export default function Students() {
   const [students, setStudents] = useState<StudentModel[]>([]);
-  const columns = useMemo(() => STUDENT_COLUMNS, []);
+  const columns = useMemo(
+    () => [
+      { Header: "Name", accessor: "fullName" },
+      { Header: "Grade", accessor: "grade", Cell: ({ value }: any) => (value === 0 ? "K" : value) },
+      { Header: "RenWeb ID", accessor: "customID" },
+      { Header: "Email", accessor: "schoolEmail", width: 200 },
+    ],
+    []
+  );
   const data = useMemo(() => students, [students]);
   useEffect(() => {
     getStudents();

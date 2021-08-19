@@ -1,3 +1,4 @@
+import { InputGroup } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize from "pluralize";
 import React, { useEffect, useMemo, useState } from "react";
@@ -6,7 +7,6 @@ import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import Badge, { BadgeColor } from "../../components/Badge/Badge";
 import Table from "../../components/Table/Table";
 import useWindowSize from "../../hooks/useWindowSize";
-// import DEVICE_COLUMNS from "./DeviceColumns";
 
 export default function DeviceType() {
   const { deviceType } = useRouteMatch<{ deviceType: string }>().params;
@@ -27,7 +27,7 @@ export default function DeviceType() {
                 alt={`${original.brand} Logo`}
                 style={{ width: 30, marginRight: 10 }}
               />
-              <Link to={`devices/${deviceType}/${original.slug}`}>
+              <Link to={`/devices/${deviceType}/${original.slug}`}>
                 <span style={{ color: "black" }}>{original.name}</span>
               </Link>
             </span>
@@ -78,6 +78,9 @@ export default function DeviceType() {
         style={{ color: "lightblue", fontWeight: 500 }}
       >{`Check ${deviceType} in and out`}</span>
       <div className="table-wrapper" style={{ marginTop: "10px" }}>
+        <div className="table-toolbox">
+          <InputGroup className="search" leftIcon="search" placeholder="Search" />
+        </div>
         <Table columns={columns} data={data} />
       </div>
     </div>

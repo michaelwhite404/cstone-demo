@@ -1,10 +1,9 @@
 @import "../../_variables"
 
+$gray-border: 1px $gray-300 solid
+
 .table
-  border: 1px $gray-300 solid
   background-color: white
-  border-radius: 6px
-  overflow: hidden
 
   .tr
     div
@@ -12,7 +11,7 @@
         padding-left: 20px
 
   .header-row
-    border-bottom: 1px $gray-300 solid
+    border-bottom: $gray-border
     background-color: #f9f9fb
     border: 0px 0px 1px 0px
     .tr
@@ -30,9 +29,47 @@
     font-size: 15px
     color: $gray-400
     .tr
-      border-top: 1px $gray-300 solid
+      border-top: $gray-border
       align-items: center
       &:hover
         background-color: $blue-50
       &:first-child
         border-top-width: 0px
+    .td
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+
+.table-wrapper
+  // border: $gray-border
+  box-shadow: 0px 0px 20px -7px rgba(0, 0, 0, 0.15)
+  border-radius: 8px
+  overflow: hidden
+
+  .table-toolbox
+    width: 100%
+    height: 55px
+    background-color: white
+    border-bottom: $gray-border
+    display: flex
+    align-items: center
+
+  .bp3-input-group.search
+    margin-left: 20px
+    display: flex
+    align-items: center
+    border-radius: 8px
+    background-color: #e9effd
+    width: 225px
+    font-weight: 500
+    .bp3-input
+      padding: 8px 0 8px 12px
+      border: none
+      background-color: transparent
+      flex-grow: 1
+      font-weight: inherit
+    svg
+      fill: $gray-300
+      font-size: 12px
+      margin-left: 12px
+      margin-top: 5px
