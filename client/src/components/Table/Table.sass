@@ -7,14 +7,15 @@
   overflow: hidden
 
   .tr
-    border-bottom: 1px $gray-300 solid
     div
       &:first-child
         padding-left: 20px
 
   .header-row
+    border-bottom: 1px $gray-300 solid
+    background-color: #f9f9fb
+    border: 0px 0px 1px 0px
     .tr
-      background-color: #f9f9fb
       .th
         padding-top: 10px
         padding-bottom: 10px
@@ -27,6 +28,11 @@
   div[role="rowgroup"]
     font-weight: 500
     font-size: 15px
-    color: lightgray
+    color: $gray-400
     .tr
+      border-top: 1px $gray-300 solid
       align-items: center
+      &:hover
+        background-color: $blue-50
+      &:first-child
+        border-top-width: 0px

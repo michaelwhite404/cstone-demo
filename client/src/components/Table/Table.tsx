@@ -47,7 +47,7 @@ export default function Table({
           })}
           className="tr"
         >
-          {row.cells.map((cell) => {
+          {row.cells.map((cell, i) => {
             return (
               <div {...cell.getCellProps()} className="td">
                 {cell.render("Cell")}
