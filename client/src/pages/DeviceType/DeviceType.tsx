@@ -1,14 +1,17 @@
 import axios from "axios";
+import capitalize from "capitalize";
 import pluralize from "pluralize";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import Badge, { BadgeColor } from "../../components/Badge/Badge";
 import Table from "../../components/Table/Table";
-import useWindowSize from "../../hooks/useWindowSize";
+import { useDocTitle, useWindowSize } from "../../hooks";
 
 export default function DeviceType() {
   const { deviceType } = useRouteMatch<{ deviceType: string }>().params;
+  useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
+
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
 

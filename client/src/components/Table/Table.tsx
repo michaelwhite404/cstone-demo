@@ -12,7 +12,7 @@ import {
   UseGlobalFiltersState,
 } from "react-table";
 import { FixedSizeList } from "react-window";
-import useWindowSize from "../../hooks/useWindowSize";
+import { useWindowSize } from "../../hooks";
 import "./Table.sass";
 
 // const totalAvailableWidth = window.innerWidth - 258;

@@ -4,10 +4,12 @@ import { useMemo } from "react";
 import { useEffect } from "react";
 import { StudentModel } from "../../../../src/types/models/studentTypes";
 import Table from "../../components/Table/Table";
+import { useDocTitle } from "../../hooks";
 import { APIError, APIStudentsResponse } from "../../types/apiResponses";
 
 export default function Students() {
   const [students, setStudents] = useState<StudentModel[]>([]);
+  useDocTitle("Students | Cornerstone App");
   const columns = useMemo(
     () => [
       { Header: "Name", accessor: "fullName" },

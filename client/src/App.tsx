@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, RouteComponentProps, Switch } from "rea
 import Students from "./pages/Students/Students";
 import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
+import Textbooks from "./pages/Textbooks/Textbooks";
 
 interface NavRouteProps {
   exact: boolean;
@@ -38,7 +39,6 @@ function App() {
         <NavRoute exact path="/devices/:deviceType" component={DeviceType} />
         <NavRoute exact path="/textbooks" component={Textbooks} />
         <NavRoute exact path="/students" component={Students} />
-        <Route exact path="/test" component={Test} />
       </Switch>
     </Router>
   );
@@ -53,25 +53,10 @@ function Dashboard() {
 }
 
 function Devices() {
-  return <div>Devices</div>;
-}
-
-function Textbooks() {
   return (
     <div>
       <div className="page-header">
-        <h1 style={{ marginBottom: "10px" }}>Textbooks</h1>
-      </div>
-    </div>
-  );
-}
-
-function Test() {
-  return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-area-container" style={{ backgroundColor: "#f9fcff", width: "100%" }}>
-        Main Area
+        <h1 style={{ marginBottom: "10px" }}>Devices</h1>
       </div>
     </div>
   );
