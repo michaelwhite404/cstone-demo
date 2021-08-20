@@ -37,5 +37,12 @@ export default function Students() {
     }
   }, []);
 
-  return <Table columns={columns} data={data} />;
+  return (
+    <div>
+      <div className="page-header">
+        <h1 style={{ marginBottom: "10px" }}>Students</h1>
+      </div>
+      <Table columns={columns} data={data} />
+    </div>
+  );
 }

@@ -73,16 +73,10 @@ export default function DeviceType() {
 
   return (
     <div>
-      <h1 style={{ textTransform: "capitalize", marginBottom: "8px" }}>{deviceType}</h1>
-      <span
-        style={{ color: "lightblue", fontWeight: 500 }}
-      >{`Check ${deviceType} in and out`}</span>
-      <div className="table-wrapper" style={{ marginTop: "10px" }}>
-        <div className="table-toolbox">
-          <InputGroup className="search" leftIcon="search" placeholder="Search" />
-        </div>
-        <Table columns={columns} data={data} />
+      <div className="page-header">
+        <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>{deviceType}</h1>
       </div>
+      <Table columns={columns} data={data} />
     </div>
   );
 }

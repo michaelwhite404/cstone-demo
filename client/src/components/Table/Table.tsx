@@ -1,5 +1,14 @@
+import { InputGroup } from "@blueprintjs/core";
+import pluralize from "pluralize";
 import React from "react";
-import { useTable, useBlockLayout } from "react-table";
+import {
+  useTable,
+  useBlockLayout,
+  useGlobalFilter,
+  TableInstance,
+  UseGlobalFiltersInstanceProps,
+  UseGlobalFiltersState,
+} from "react-table";
 import { FixedSizeList } from "react-window";
 import useWindowSize from "../../hooks/useWindowSize";
 import "./Table.sass";
@@ -16,7 +25,7 @@ export default function Table({
   }[];
   data: any[];
 }) {
-  const [width] = useWindowSize();
+  const [width, height] = useWindowSize();
   /* const defaultColumn = React.useMemo(
     () => ({
       width: 150,
@@ -26,15 +35,26 @@ export default function Table({
 
   // const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, totalColumnsWidth, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-        // defaultColumn,
-      },
-      useBlockLayout
-    );
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    totalColumnsWidth,
+    prepareRow,
+    state,
+    setGlobalFilter,
+  } = useTable(
+    {
+      columns,
+      data,
+      // defaultColumn,
+    },
+    useBlockLayout,
+    useGlobalFilter
+  ) as TableInstance & UseGlobalFiltersInstanceProps<object>;
+
+  const { globalFilter } = state as UseGlobalFiltersState<object>;
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
@@ -62,23 +82,44 @@ export default function Table({
 
   // Render the UI for your table
   return (
-    <div {...getTableProps()} className="table" style={{ width: width - 308 }}>
-      <div className="header-row">
-        {headerGroups.map((headerGroup) => (
-          <div {...headerGroup.getHeaderGroupProps()} className="tr">
-            {headerGroup.headers.map((column) => (
-              <div {...column.getHeaderProps()} className="th">
-                {column.render("Header")}
-              </div>
-            ))}
-          </div>
-        ))}
+    <div className="table-wrapper">
+      <div className="table-toolbox">
+        <InputGroup
+          className="search"
+          leftIcon="search"
+          placeholder="Search"
+          value={globalFilter || ""}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        />
       </div>
+      <div {...getTableProps()} className="table" style={{ width: width - 308 }}>
+        <div className="header-row">
+          {headerGroups.map((headerGroup) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr">
+              {headerGroup.headers.map((column) => (
+                <div {...column.getHeaderProps()} className="th">
+                  {column.render("Header")}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
 
-      <div {...getTableBodyProps()}>
-        <FixedSizeList height={500} itemCount={rows.length} itemSize={42} width={width - 308}>
-          {RenderRow}
-        </FixedSizeList>
+        <div {...getTableBodyProps()}>
+          <FixedSizeList
+            height={height - 227}
+            itemCount={rows.length}
+            itemSize={42}
+            width={width - 308}
+          >
+            {RenderRow}
+          </FixedSizeList>
+        </div>
+      </div>
+      <div className="table-bottom">
+        <span className="table-footer-results">
+          Showing {pluralize("Result", rows.length, true)}
+        </span>
       </div>
     </div>
   );
