@@ -42,7 +42,7 @@ export default function Students() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Students</h1>
       </div>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} sortBy="grade" />
     </div>
   );
 }

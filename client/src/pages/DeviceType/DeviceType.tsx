@@ -1,7 +1,6 @@
-import { InputGroup } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize from "pluralize";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import Badge, { BadgeColor } from "../../components/Badge/Badge";
@@ -76,7 +75,7 @@ export default function DeviceType() {
       <div className="page-header">
         <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>{deviceType}</h1>
       </div>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} sortBy="name" />
     </div>
   );
 }

@@ -1,10 +1,12 @@
-import { InputGroup } from "@blueprintjs/core";
+// @ts-nocheck
+import { Icon, InputGroup } from "@blueprintjs/core";
 import pluralize from "pluralize";
 import React from "react";
 import {
   useTable,
   useBlockLayout,
   useGlobalFilter,
+  useSortBy,
   TableInstance,
   UseGlobalFiltersInstanceProps,
   UseGlobalFiltersState,
@@ -14,24 +16,19 @@ import useWindowSize from "../../hooks/useWindowSize";
 import "./Table.sass";
 
 // const totalAvailableWidth = window.innerWidth - 258;
-
 export default function Table({
   columns,
   data,
+  sortBy,
 }: {
   columns: {
     Header: string;
     accessor: string;
   }[];
   data: any[];
+  sortBy?: string;
 }) {
   const [width, height] = useWindowSize();
-  /* const defaultColumn = React.useMemo(
-    () => ({
-      width: 150,
-    }),
-    []
-  ); */
 
   // const scrollBarSize = React.useMemo(() => scrollbarWidth(), []);
 
@@ -40,7 +37,6 @@ export default function Table({
     getTableBodyProps,
     headerGroups,
     rows,
-    totalColumnsWidth,
     prepareRow,
     state,
     setGlobalFilter,
@@ -48,10 +44,19 @@ export default function Table({
     {
       columns,
       data,
+      initialState: {
+        sortBy: [
+          {
+            id: sortBy,
+            desc: false,
+          },
+        ],
+      },
       // defaultColumn,
     },
     useBlockLayout,
-    useGlobalFilter
+    useGlobalFilter,
+    useSortBy
   ) as TableInstance & UseGlobalFiltersInstanceProps<object>;
 
   const { globalFilter } = state as UseGlobalFiltersState<object>;
@@ -97,9 +102,28 @@ export default function Table({
           {headerGroups.map((headerGroup) => (
             <div {...headerGroup.getHeaderGroupProps()} className="tr">
               {headerGroup.headers.map((column) => (
-                <div {...column.getHeaderProps()} className="th">
-                  {column.render("Header")}
-                </div>
+                <>
+                  {/* @ts-ignore */}
+                  <div {...column.getHeaderProps(column.getSortByToggleProps())} className="th">
+                    {column.render("Header")}
+                    <span style={{ marginLeft: 10, marginTop: 4 }}>
+                      {/* @ts-ignore */}
+                      {column.isSorted ? (
+                        <>
+                          <Icon
+                            /* 
+                              //@ts-ignore */
+                            icon={`arrow-${column.isSortedDesc ? "down" : "up"}`}
+                            size={12}
+                            color="#3a8cd2"
+                          />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </div>
+                </>
               ))}
             </div>
           ))}
