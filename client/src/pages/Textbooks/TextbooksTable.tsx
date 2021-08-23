@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react'
-import { useExpanded, useGroupBy, UseGroupByState, useRowSelect, useSortBy, useTable } from 'react-table'
+import { useExpanded, useGroupBy, useRowSelect,useTable } from 'react-table'
 
 export default function TextbooksTable({
   columns,
@@ -44,12 +44,21 @@ export default function TextbooksTable({
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    flatRows,
     rows,
     prepareRow,
-    selectedFlatRows,
     // @ts-ignore
-    state: { groupBy, expanded, selectedRowIds}
+    state: { selectedRowIds}
   } = tableInstance
+
+  const getSelected = () => {
+    const arr = []
+    for (const id in selectedRowIds) {
+      arr.push(flatRows[id].original)
+    }
+    return arr
+  }
+
   return (
     <>
     <table {...getTableProps()}>
@@ -76,7 +85,6 @@ export default function TextbooksTable({
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map(cell => {
-                  console.log(cell)
                   return (
                     <td
                       // For educational purposes, let's color the
@@ -118,12 +126,6 @@ export default function TextbooksTable({
       </tbody>
     </table>
     <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      <pre>
-        <code>
-          {JSON.stringify({selectedRowIds},null,2
-          )}
-        </code>
-      </pre>
     </>
   )
 }
