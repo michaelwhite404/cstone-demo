@@ -56,11 +56,10 @@ $gray-border: 1px $gray-300 solid
     display: flex
     align-items: center
 
-  .bp3-input-group.search
+  .search
     margin-left: 20px
     display: flex
     align-items: center
-    border-radius: 8px
     background-color: #e9effd
     width: 225px
     font-weight: 500
@@ -70,11 +69,12 @@ $gray-border: 1px $gray-300 solid
       background-color: transparent
       flex-grow: 1
       font-weight: inherit
-    svg
-      fill: $gray-300
+    svg[data-icon="search"]
+      fill: $gray-400
       font-size: 12px
-      margin-left: 12px
-      margin-top: 5px
+
+  .bp3-input-group .bp3-input:not(:first-child)
+    padding-left: 35px
 
   .table-bottom
     border-top: $gray-border

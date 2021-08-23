@@ -4,6 +4,11 @@ import Students from "./pages/Students/Students";
 import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Textbooks from "./pages/Textbooks/Textbooks";
+import { Drawer } from "@blueprintjs/core";
+// using node-style package resolution in a CSS file: 
+import "normalize.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 interface NavRouteProps {
   exact: boolean;
@@ -45,11 +50,22 @@ function App() {
 }
 
 function Home() {
-  return <div>Home</div>;
+  return <div>
+    <form>
+      <a href="http://localhost:8080/auth/google">Click</a>
+    </form>
+  </div>;
 }
 
 function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+  <div>
+    <div>Dashboard</div>
+    <Drawer position="right" size="50%" usePortal isOpen hasBackdrop transitionDuration={600} title="Test" >
+      Wow
+    </Drawer>
+  </div>
+  );
 }
 
 function Devices() {

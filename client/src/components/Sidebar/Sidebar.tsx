@@ -31,7 +31,7 @@ export default function Sidebar() {
                     className={`navigation-item${matchesURL(item.href) ? " current" : ""}`}
                     aria-current={matchesURL(item.href)}
                   >
-                    <item.icon className="" aria-hidden="false" />
+                    <item.icon className="" aria-hidden="false" height={20} width={20} />
                     {item.name}
                   </Link>
                 ))}
