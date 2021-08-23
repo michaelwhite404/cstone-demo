@@ -6,14 +6,18 @@ import APIFeatures from "../../utils/apiFeatures";
 import catchAsync from "../../utils/catchAsync";
 import AppError from "../../utils/appError";
 import camelCaseToText from "../../utils/camelCaseToText";
+import PopOptions from "../../types/popOptions";
 
 export const getAll = <T extends Mongoose["Model"]>(
   Model: T,
   key: string,
-  filter: Partial<ExtractDocumentModel<T>> = {}
+  filter: Partial<ExtractDocumentModel<T>> = {},
+  populate?: PopOptions
 ) =>
   catchAsync(async (req: Request, res: Response) => {
-    const features = new APIFeatures(Model.find(filter), req.query)
+    const query = Model.find(filter)
+    if (populate) query.populate(populate);
+    const features = new APIFeatures(query, req.query)
       .filter()
       .limitFields()
       .sort()
@@ -30,11 +34,6 @@ export const getAll = <T extends Mongoose["Model"]>(
       },
     });
   });
-interface PopOptions {
-  path: any;
-  select?: any;
-  populate?: PopOptions;
-}
 export const getOneById = <T extends Mongoose["Model"]>(
   Model: T,
   key: string,
