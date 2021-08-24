@@ -1,0 +1,36 @@
+const colors = {
+  100: {
+    emerald: "rgba(209, 250, 229, 1)",
+    red: "rgba(254, 226, 226, 1)",
+    blue: "rgba(219, 234, 254, 1)",
+    yellow: "rgba(254, 243, 199, 1)",
+    teal: "rgba(204, 251, 241, 1)",
+    lime: "rgba(236, 252, 203, 1)",
+    sky: "rgba(224, 242, 254, 1)",
+    fuchsia: "rgba(250, 232, 255, 1)",
+    gray: "rgba(243, 244, 246, 1)",
+  },
+  400: {
+    emerald: "rgba(52, 211, 153, 1)",
+    red: "rgba(248, 113, 113, 1)",
+    blue: "rgba(96, 165, 250, 1)",
+    yellow: "rgba(251, 191, 36, 1)",
+    teal: "rgba(45, 212, 191, 1)",
+    lime: "rgba(163, 230, 53, 1)",
+    sky: "rgba(56, 189, 248, 1)",
+    fuchsia: "rgba(232, 121, 249, 1)",
+    gray: "rgba(156, 163, 175, 1)",
+  },
+  800: {
+    emerald: "rgba(6, 95, 70, 1)",
+    red: "rgba(153, 27, 27, 1)",
+    blue: "rgba(30, 64, 175, 1)",
+    yellow: "rgba(146, 64, 14, 1)",
+    teal: "rgba(17, 94, 89, 1)",
+    lime: "rgba(63, 98, 18, 1)",
+    sky: "rgba(7, 89, 133, 1)",
+    fuchsia: "rgba(134, 25, 143, 1)",
+    gray: "rgba(31, 41, 55, 1)",
+  },
+};
+export default colors;

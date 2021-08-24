@@ -4,7 +4,8 @@ import pluralize from "pluralize";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
-import Badge, { BadgeColor } from "../../components/Badge/Badge";
+import Badge from "../../components/Badge/Badge";
+import BadgeColor from "../../components/Badge/BadgeColor";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
 
@@ -46,7 +47,7 @@ export default function DeviceType() {
         Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
           const { status } = original;
           const statusColor: { [x: string]: BadgeColor } = {
-            Available: "green",
+            Available: "emerald",
             "Checked Out": "red",
             Broken: "yellow",
             "Not Available": "blue",

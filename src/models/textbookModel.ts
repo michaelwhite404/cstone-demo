@@ -19,8 +19,8 @@ const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Sc
     required: [true, "Each textbook must have a quality"],
     default: "Excellent",
     enum: {
-      values: ["Excellent", "Good", "Acceptable", "Poor"],
-      message: "Quality must be: Excellent, Good, Acceptable, or Poor",
+      values: ["Excellent", "Good", "Acceptable", "Poor", "Lost"],
+      message: "Quality must be: Excellent, Good, Acceptable, Poor or Lost",
     },
   },
   status: {
