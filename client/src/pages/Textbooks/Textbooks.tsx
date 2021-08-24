@@ -7,6 +7,9 @@ import { APIError } from "../../types/apiResponses";
 import CheckoutTable from "./CheckoutTable";
 import TextbooksTable from "./TextbooksTable";
 import "./Table.sass";
+import BadgeColor from "../../components/Badge/BadgeColor";
+import Badge from "../../components/Badge/Badge";
+import numberToGrade from "../../utils/numberToGrade";
 
 export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
@@ -26,13 +29,42 @@ export default function Textbooks() {
         },
       },
       { Header: "Book #", accessor: "bookNumber" },
-      { Header: "Quality", accessor: "quality" },
-      { Header: "Status", accessor: "status" },
+      {
+        Header: "Quality",
+        accessor: "quality",
+        Cell: ({ row: { original } }: { row: { original?: TextbookModel } }) => {
+          const quality = original?.quality;
+          const statusColor: { [x: string]: BadgeColor } = {
+            Excellent: "teal",
+            Good: "lime",
+            Acceptable: "sky",
+            Poor: "fuchsia",
+            Lost: "gray",
+          };
+          return quality ? <Badge color={statusColor[quality]} text={quality} /> || "" : null;
+        },
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        Cell: ({ row: { original } }: { row: { original?: TextbookModel } }) => {
+          const status = original?.status;
+          const statusColor: { [x: string]: BadgeColor } = {
+            Available: "emerald",
+            "Checked Out": "red",
+            Replaced: "yellow",
+            "Not Available": "blue",
+          };
+          return status ? <Badge color={statusColor[status]} text={status} /> || "" : null;
+        },
+      },
       {
         Header: "Student",
         accessor: "lastUser.fullName",
         Cell: ({ row: { original } }: { row: { original: TextbookModel } }) => {
-          return original?.status === "Checked Out" ? original.lastUser.fullName : "";
+          return original?.status === "Checked Out"
+            ? `${original.lastUser.fullName} (${numberToGrade(original.lastUser.grade)})`
+            : "";
         },
       },
     ],

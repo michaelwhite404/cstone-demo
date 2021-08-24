@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import { APIError } from "../../types/apiResponses";
+import "./Table.sass";
 
 interface Grades {
   count: number;
