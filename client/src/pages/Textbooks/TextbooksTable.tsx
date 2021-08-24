@@ -115,7 +115,10 @@ export default function TextbooksTable({
             prepareRow(row);
             console.log(row);
             return (
-              <tr {...row.getRowProps()} className={row.isGrouped ? "set" : "book"}>
+              <tr
+                {...row.getRowProps()}
+                className={`${row.isGrouped ? "set" : "book"} ${row.isSelected ? "selected" : ""}`}
+              >
                 {row.cells.map((cell) => {
                   return (
                     <td

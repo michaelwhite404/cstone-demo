@@ -9,7 +9,8 @@ import TextbooksTable from "./TextbooksTable";
 import "./Table.sass";
 import BadgeColor from "../../components/Badge/BadgeColor";
 import Badge from "../../components/Badge/Badge";
-import numberToGrade from "../../utils/numberToGrade";
+import { numberToGrade } from "../../utils/grades";
+import TableToolbox from "../../components/Table/TableToolbox";
 
 export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
@@ -96,6 +97,7 @@ export default function Textbooks() {
         <h1 style={{ marginBottom: "10px" }}>Textbooks</h1>
       </div>
       <div className="table-wrapper">
+        <TableToolbox></TableToolbox>
         <TextbooksTable
           columns={columns}
           data={data}
@@ -115,19 +117,7 @@ export default function Textbooks() {
         canOutsideClickClose={false}
         title="Check Out"
       >
-        <div
-          style={{
-            width: "100%",
-            height: "calc(100% - 30px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
-          <CheckoutTable data={canCheckOut} />
-        </div>
-        {/* {selected.map((t) => `${t.textbookSet.title} (Book ${t.bookNumber})`)} */}
+        <CheckoutTable data={canCheckOut} />
       </Drawer>
     </div>
   );

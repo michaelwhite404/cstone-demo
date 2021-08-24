@@ -50,6 +50,8 @@ table#textbooks-table
           padding-left: 15px
     &.book
       font-size: 14px
+      &.selected
+        background-color: $indigo-50
       td
         padding: 6px 0
         .set-name
@@ -63,3 +65,25 @@ table#textbooks-table
     td, th
       &:first-child
         width: 55px
+
+#textbook-checkout-table
+  tbody
+    td
+      padding: 4px 0
+
+  th
+    box-shadow: 0 -1px $gray-300 inset
+    border-bottom: 0
+
+.checkout-container
+  width: 100%
+  height: calc(100% - 135px)
+  display: flex
+  align-items: center
+  flex-direction: column
+
+.sticky-header
+  position: -webkit-sticky
+  position: sticky
+  top: 0
+  z-index: 2

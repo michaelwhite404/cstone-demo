@@ -149,3 +149,14 @@ input {
     outline: none;
   }
 }
+
+:focus {
+  outline: rgba(96, 93, 255, 0.44) auto 2px;
+  outline-offset: 1px !important;
+  -moz-outline-radius: 6px;
+}
+
+:-webkit-direct-focus {
+  outline-color: rgba(96, 93, 255, 0.44) auto 2px;
+  outline-offset: 1px !important;
+}
