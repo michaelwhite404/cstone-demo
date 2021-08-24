@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { Icon } from "@blueprintjs/core";
 import React, { useEffect } from "react";
 import { useExpanded, useGroupBy, useRowSelect, useTable } from "react-table";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
@@ -40,14 +41,14 @@ export default function TextbooksTable({
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
           Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
+            <div className="selection-wrapper">
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
             </div>
           ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
-            <div style={{ padding: row.canExpand ? "0 25px" : "0 15px 0 35px" }}>
+            <div className="selection-wrapper">
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             </div>
           ),
@@ -85,7 +86,7 @@ export default function TextbooksTable({
 
   return (
     <>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} id="textbooks-table">
         <thead>
           {
             // Loop over the header rows
@@ -112,31 +113,25 @@ export default function TextbooksTable({
         <tbody {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
+            console.log(row);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} className={row.isGrouped ? "set" : "book"}>
                 {row.cells.map((cell) => {
                   return (
                     <td
-                      // For educational purposes, let's color the
-                      // cell depending on what type it is given
-                      // from the useGroupBy hook
                       {...cell.getCellProps()}
-                      style={{
-                        background: cell.isGrouped
-                          ? "#0aff0082"
-                          : cell.isAggregated
-                          ? "#ffa50078"
-                          : cell.isPlaceholder
-                          ? "#ff000042"
-                          : "white",
-                      }}
                       // colSpan={cell.isGrouped ? headerGroups.headers.length -1 : undefined}
                     >
                       {cell.isGrouped ? (
                         // If it's a grouped cell, add an expander and row count
                         <>
                           <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? "👇" : "👉"}
+                            <Icon
+                              icon={`chevron-${row.isExpanded ? "down" : "right"}`}
+                              color="black"
+                              style={{ marginRight: 10 }}
+                            />
+                            {/* {row.isExpanded ? "👇" : "👉"} */}
                           </span>{" "}
                           {cell.render("Cell")} ({row.subRows.length})
                         </>

@@ -6,6 +6,7 @@ import { useDocTitle } from "../../hooks";
 import { APIError } from "../../types/apiResponses";
 import CheckoutTable from "./CheckoutTable";
 import TextbooksTable from "./TextbooksTable";
+import "./Table.sass";
 
 export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
@@ -17,7 +18,13 @@ export default function Textbooks() {
 
   const columns = useMemo(
     () => [
-      { Header: "Name", accessor: "textbookSet.title" },
+      {
+        Header: "Name",
+        accessor: "textbookSet.title",
+        Cell: ({ value }: any) => {
+          return <span className="set-name">{value}</span>;
+        },
+      },
       { Header: "Book #", accessor: "bookNumber" },
       { Header: "Quality", accessor: "quality" },
       { Header: "Status", accessor: "status" },
@@ -56,16 +63,18 @@ export default function Textbooks() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Textbooks</h1>
       </div>
-      <TextbooksTable
-        columns={columns}
-        data={data}
-        setSelected={setSelected}
-        setOpen={setOpen}
-        canCheckOut={canCheckOut}
-      />
+      <div className="table-wrapper">
+        <TextbooksTable
+          columns={columns}
+          data={data}
+          setSelected={setSelected}
+          setOpen={setOpen}
+          canCheckOut={canCheckOut}
+        />
+      </div>
       <Drawer
         position="bottom"
-        size="50%"
+        size="70%"
         usePortal
         isOpen={open}
         onClose={() => setOpen(false)}
