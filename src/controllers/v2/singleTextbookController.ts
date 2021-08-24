@@ -16,7 +16,7 @@ const key = "book";
  *  - All authorized users can access this route
  */
 export const getAllBooks: RequestHandler = factory.getAll(Model, `${key}s`, {}, {
-  path: "textbookSet"
+  path: "textbookSet lastUser"
 });
 
 export const getBook: RequestHandler = factory.getOne(Model, key);
