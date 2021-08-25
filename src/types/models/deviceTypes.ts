@@ -3,6 +3,8 @@ import { EmployeeModel } from "./employeeTypes";
 import { StudentModel } from "./studentTypes";
 
 export interface DeviceModel {
+  /** Id of the device */
+  _id: any;
   name: string;
   brand: string;
   model: string;
@@ -20,4 +22,6 @@ export interface DeviceModel {
   slug: string;
 }
 
-export interface DeviceDocument extends DeviceModel, Omit<Document, "model"> {}
+export interface DeviceDocument extends DeviceModel, Omit<Document, "model"> {
+  _id: any;
+}

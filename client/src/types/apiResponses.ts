@@ -1,3 +1,4 @@
+import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { StudentModel } from "../../../src/types/models/studentTypes";
 
 interface APIResponse<T> {
@@ -8,6 +9,8 @@ interface APIResponse<T> {
 
 export interface APIStudentsResponse extends APIResponse<{ students: StudentModel[] }> {}
 export interface APIStudentResponse extends APIResponse<{ student: StudentModel }> {}
+
+export interface APIDeviceResponse extends APIResponse<{ device: DeviceModel }> {}
 
 export interface APIError {
   status: "fail" | "error";

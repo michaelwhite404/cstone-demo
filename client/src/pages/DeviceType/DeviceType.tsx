@@ -1,20 +1,37 @@
+import { Drawer, Toaster } from "@blueprintjs/core";
 import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
-import { useEffect, useMemo, useState } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import Badge from "../../components/Badge/Badge";
 import BadgeColor from "../../components/Badge/BadgeColor";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
+import DeviceContent from "./DeviceContent";
 
 export default function DeviceType() {
   const { deviceType } = useRouteMatch<{ deviceType: string }>().params;
   useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
-
+  const toasterRef = useRef<Toaster>(null);
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<DeviceModel | undefined>(undefined);
+
+  const statusColor: { [x: string]: BadgeColor } = {
+    Available: "emerald",
+    "Checked Out": "red",
+    Broken: "yellow",
+    "Not Available": "blue",
+  };
+
+  const updateDevice = (id: string, newDevice: DeviceModel) => {
+    const copiedDevices = [...devices];
+    const index = copiedDevices.findIndex((device) => device._id === id);
+    copiedDevices[index] = newDevice;
+    setDevices(copiedDevices);
+  };
 
   const columns = useMemo(
     () => [
@@ -30,9 +47,9 @@ export default function DeviceType() {
                 alt={`${original.brand} Logo`}
                 style={{ width: 30, marginRight: 10 }}
               />
-              <Link to={`/devices/${deviceType}/${original.slug}`}>
-                <span style={{ color: "black" }}>{original.name}</span>
-              </Link>
+              <span className="device-name" onClick={() => setSelectedDevice(original)}>
+                {original.name}
+              </span>
             </span>
           );
         },
@@ -46,17 +63,13 @@ export default function DeviceType() {
         width: (width - 619) / 4,
         Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
           const { status } = original;
-          const statusColor: { [x: string]: BadgeColor } = {
-            Available: "emerald",
-            "Checked Out": "red",
-            Broken: "yellow",
-            "Not Available": "blue",
-          };
+
           return <Badge color={statusColor[status]} text={original.status} />;
         },
       },
     ],
-    [deviceType, width]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [width]
   );
   const data = useMemo(() => devices, [devices]);
   useEffect(() => {
@@ -80,6 +93,31 @@ export default function DeviceType() {
         <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>{deviceType}</h1>
       </div>
       <Table columns={columns} data={data} sortBy="name" />
+      <Drawer
+        isOpen={selectedDevice ? true : false}
+        onClose={() => setSelectedDevice(undefined)}
+        usePortal
+        size="70%"
+        hasBackdrop
+        canEscapeKeyClose={false}
+        canOutsideClickClose={false}
+        title={
+          <div>
+            {selectedDevice?.name}{" "}
+            {<Badge color={statusColor[selectedDevice?.status!]} text={selectedDevice?.status!} />}
+          </div>
+        }
+      >
+        {selectedDevice && (
+          <DeviceContent
+            device={selectedDevice}
+            setSelectedDevice={setSelectedDevice}
+            updateDevice={updateDevice}
+            toasterRef={toasterRef}
+          />
+        )}
+      </Drawer>
+      <Toaster position="top-right" ref={toasterRef} />
     </div>
   );
 }

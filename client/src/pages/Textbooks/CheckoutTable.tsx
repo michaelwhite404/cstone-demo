@@ -6,13 +6,8 @@ import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import TableToolbox from "../../components/Table/TableToolbox";
 import { APIError } from "../../types/apiResponses";
 import { grades } from "../../utils/grades";
+import Class from "../../types/class";
 import "./Table.sass";
-
-interface Class {
-  count: number;
-  students: { id: string; fullName: string }[];
-  grade: number;
-}
 
 const gradeValues = grades.map((value, i) => ({
   value: `${i}`,

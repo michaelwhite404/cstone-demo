@@ -35,7 +35,7 @@ deviceRouter
   .patch(helpers.omitFromBody(...nonManualUpdateKeys), deviceController.updateDevice)
   .delete(deviceController.deleteDevice);
 
-deviceRouter.post("/:id/check-out/:student_id", deviceController.checkOutDevice);
+deviceRouter.post("/:id/check-out/student/:student_id", deviceController.checkOutDevice);
 deviceRouter.post("/:id/check-in", deviceController.checkInDevice);
 
 export default deviceRouter;
