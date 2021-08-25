@@ -10,7 +10,7 @@ export interface StudentModel {
   grade?: number;
   schoolEmail: string;
   personalEmail?: string;
-  status: string;
+  status: "Active" | "Inactive" | "Graduate";
   customID?: string;
   mainPhoto?: string;
   createdAt: Date;

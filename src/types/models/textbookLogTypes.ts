@@ -6,7 +6,7 @@ import { TextbookModel } from "./textbookTypes";
 export interface TextbookLogModel {
   /** Id of textbook log */
   _id: any;
-  textbook: TextbookModel;
+  textbook: PopulatedDoc<TextbookModel>;
   checkedIn: boolean;
   student: PopulatedDoc<StudentModel>;
   checkOutDate: Date;

@@ -5,9 +5,11 @@ import Student from "../../models/studentModel";
 import TextbookLog from "../../models/textbookLogModel";
 import Textbook from "../../models/textbookModel";
 import { TextbookLogModel } from "../../types/models/textbookLogTypes";
+import { TextbookModel } from "../../types/models/textbookTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
+var isPlainObject = require("lodash.isplainobject");
 
 const Model = Textbook;
 const key = "book";
@@ -15,9 +17,14 @@ const key = "book";
 /** `GET` - Gets all books
  *  - All authorized users can access this route
  */
-export const getAllBooks: RequestHandler = factory.getAll(Model, `${key}s`, {}, {
-  path: "textbookSet lastUser"
-});
+export const getAllBooks: RequestHandler = factory.getAll(
+  Model,
+  `${key}s`,
+  {},
+  {
+    path: "textbookSet lastUser",
+  }
+);
 
 export const getBook: RequestHandler = factory.getOne(Model, key);
 
@@ -48,7 +55,7 @@ export const updateBook: RequestHandler = catchAsync(
   }
 );
 
-export const checkOutTextbook = catchAsync(
+export const checkOutTextbookByStudent = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.books))
       return next(new AppError("An array of book ids must be in a 'books' property", 400));
@@ -108,7 +115,7 @@ export const checkOutTextbook = catchAsync(
 
     await TextbookLog.create(createLogs);
 
-    res.status(200).json({
+    res.status(201).json({
       status: "success",
       requestedAt: req.requestTime,
       message: `${student.fullName} checked out ${pluralize("textbook", bodyBooks.length, true)}`,
@@ -116,7 +123,7 @@ export const checkOutTextbook = catchAsync(
   }
 );
 
-export const checkInTextbook = catchAsync(
+export const checkInTextbookByStudent = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     let errMsg: string;
     if (!Array.isArray(req.body.books)) {
@@ -180,6 +187,106 @@ export const checkInTextbook = catchAsync(
   }
 );
 
+export const checkOutTextbooks = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Data must be an array
+    if (!Array.isArray(req.body.data))
+      return next(new AppError("An array in a 'data' property", 400));
+    const { data }: { data: any[] } = req.body;
+    // Each item in the array must be an object with 'book' and 'student'
+    if (data.every((value) => !(isPlainObject(value) && value.book && value.student))) {
+      return next(
+        new AppError(
+          "Each index in the 'data' array must be an object with a 'book' and a 'student' value",
+          400
+        )
+      );
+    }
+    // Get book ids
+    const bookIds = data.map((obj) => obj.book);
+    // No book duplicates
+    if (checkIfDuplicateExists(bookIds))
+      return next(new AppError("All book values must be unique", 400));
+    // Remove student duplicates
+    const studentIds = [...new Set(data.map((obj) => obj.student))];
+    // Get books and students
+    const [books, students] = await Promise.all([
+      Textbook.find({ _id: { $in: bookIds }, active: true }).populate({
+        path: "textbookSet",
+        select: "_id title",
+      }),
+      Student.find({ _id: { $in: studentIds }, status: "Active" }).populate("textbooksCheckedOut"),
+    ]);
+    // Make sure all book ids are valid
+    const returnedBooksIds = books.map((b) => b._id.toString());
+    const invalidBooks = notInArray(returnedBooksIds, bookIds);
+    if (invalidBooks.length > 0)
+      return next(
+        new AppError(
+          `There are ${invalidBooks.length} invalid book ids: ${invalidBooks.join(", ")}`,
+          400
+        )
+      );
+    // All books can be checked out
+    const notAvailable = books.filter((b) => b.status !== "Available");
+    if (notAvailable.length > 0) {
+      const msgStart = notAvailable.length + ` book${notAvailable.length > 1 ? "s" : ""}`;
+      return next(
+        new AppError(
+          `${msgStart} cannot be checked out: ${notAvailable
+            .map((o) => o._id)
+            .join(", ")}. Please check the status for each book.`,
+          400
+        )
+      );
+    }
+    // Students are valid
+    const returnedStudentIds = students.map((s) => s._id.toString());
+    const invalidStudents = notInArray(returnedStudentIds, studentIds);
+    if (invalidStudents.length > 0)
+      return next(
+        new AppError(
+          `There are ${invalidStudents.length} invalid student ids: ${invalidStudents.join(", ")}`,
+          400
+        )
+      );
+    // TODO: Student textbook set restriction
+    // GOOD TO GO !!
+    const getBook = (id: string) => books.find((book) => book._id.toString() === id);
+    type Data = { book: string; student: string };
+    // Update textbooks' propertirs
+    const textbookBulkArr = (data as Data[]).map((obj) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(obj.book) } as FilterQuery<TextbookModel>,
+        update: {
+          status: "Checked Out",
+          lastUser: obj.student,
+          teacherCheckOut: req.employee._id,
+        } as UpdateQuery<TextbookModel>,
+      },
+    }));
+
+    // Create logs
+    const createLogs = (data as Data[]).map(
+      (obj) =>
+        ({
+          checkedIn: false,
+          textbook: obj.book,
+          student: obj.student,
+          checkOutDate: new Date(req.requestTime),
+          teacherCheckOut: req.employee._id,
+          qualityOut: getBook(obj.book)?.quality,
+        } as Omit<TextbookLogModel, "_id">)
+    );
+    await Promise.all([Textbook.bulkWrite(textbookBulkArr), TextbookLog.create(createLogs)]);
+    //-------------
+    res.status(200).json({
+      status: "sucess",
+      message: pluralize("textbooks", data.length, true) + " have been checked out",
+    });
+  }
+);
+
 const allHaveIdandQuality = (array: any[]): boolean => {
   return (
     array.filter((obj) => {
@@ -192,4 +299,18 @@ const allHaveIdandQuality = (array: any[]): boolean => {
       return false;
     }).length === 0
   );
+};
+
+const checkIfDuplicateExists = (arr: any[]) => {
+  return new Set(arr).size !== arr.length;
+};
+
+/**
+ *
+ * @param target The array of values being checked against
+ * @param arr The array of values being tested
+ * @returns The values in the second argument that are not in the first
+ */
+const notInArray = (target: any[], arr: any[]) => {
+  return arr.filter((value) => !target.includes(value));
 };

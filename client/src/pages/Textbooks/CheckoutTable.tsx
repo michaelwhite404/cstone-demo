@@ -8,7 +8,7 @@ import { APIError } from "../../types/apiResponses";
 import { grades } from "../../utils/grades";
 import "./Table.sass";
 
-interface Grades {
+interface Class {
   count: number;
   students: { id: string; fullName: string }[];
   grade: number;
@@ -21,26 +21,26 @@ const gradeValues = grades.map((value, i) => ({
 gradeValues.unshift({ value: "-1", label: "Select a grade" });
 
 export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
-  const [grades, setGrades] = useState<Grades[]>([]);
-  const [checkoutData, setCheckoutData] = useState<{ id: string; student: string | null }[]>(
-    data.map((t) => ({ id: t._id, student: null }))
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [checkoutData, setCheckoutData] = useState<{ book: string; student: string | null }[]>(
+    data.map((t) => ({ book: t._id, student: null }))
   );
   const [gradeSelect, setGradeSelect] = useState(checkoutData.map(() => -1));
   const checkoutsFinished = checkoutData.filter((row) => row.student !== null).length;
   const submittable = checkoutData.length - checkoutsFinished === 0;
 
-  const updateBookData = (id: string, student: string | null) => {
+  const updateBookData = (bookId: string, student: string | null) => {
     const data = [...checkoutData];
-    const index = data.findIndex((book) => book.id === id);
+    const index = data.findIndex((book) => book.book === bookId);
     if (index > -1) {
-      data[index] = { id, student };
+      data[index] = { book: bookId, student };
       setCheckoutData(data);
     }
   };
 
   const changeAllGrades = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const arr = Array(checkoutData.length).fill(+e.target.value);
-    setCheckoutData(checkoutData.map((d) => ({ id: d.id, student: null })));
+    setCheckoutData(checkoutData.map((d) => ({ book: d.book, student: null })));
     setGradeSelect(arr);
   };
 
@@ -50,7 +50,7 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
     async function getStudents() {
       try {
         const res = await axios.get("/api/v2/students/group");
-        setGrades(res.data.data.grades);
+        setClasses(res.data.data.grades);
       } catch (err) {
         console.log((err as AxiosError<APIError>).response!.data);
       }
@@ -104,7 +104,7 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
                 <CheckoutTableRow
                   key={`${t._id}-row-${i}`}
                   textbook={t}
-                  grades={grades}
+                  classes={classes}
                   updateBookData={updateBookData}
                   gradeSelect={gradeSelect}
                   setGradeSelect={setGradeSelect}
@@ -127,7 +127,7 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
 
 function CheckoutTableRow({
   textbook,
-  grades,
+  classes,
   updateBookData,
   gradeSelect,
   setGradeSelect,
@@ -135,20 +135,20 @@ function CheckoutTableRow({
   currentValue,
 }: {
   textbook: TextbookModel;
-  grades: Grades[];
+  classes: Class[];
   updateBookData: (id: string, student: string | null) => void;
   gradeSelect: number[];
   setGradeSelect: React.Dispatch<React.SetStateAction<number[]>>;
   index: number;
   currentValue: {
-    id: string;
+    book: string;
     student: string | null;
   };
 }) {
   const studentOptions =
     gradeSelect[index] === -1
       ? undefined
-      : grades[gradeSelect[index]].students.map((s) => ({
+      : classes[gradeSelect[index]].students.map((s) => ({
           label: s.fullName,
           value: s.id,
         }));
