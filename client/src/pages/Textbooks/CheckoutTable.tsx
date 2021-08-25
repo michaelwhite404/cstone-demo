@@ -1,4 +1,4 @@
-import { HTMLSelect } from "@blueprintjs/core";
+import { Button, HTMLSelect, ProgressBar } from "@blueprintjs/core";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
@@ -26,8 +26,8 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
     data.map((t) => ({ id: t._id, student: null }))
   );
   const [gradeSelect, setGradeSelect] = useState(checkoutData.map(() => -1));
-
-  const submittable = checkoutData.filter((row) => row.student === null).length === 0;
+  const checkoutsFinished = checkoutData.filter((row) => row.student !== null).length;
+  const submittable = checkoutData.length - checkoutsFinished === 0;
 
   const updateBookData = (id: string, student: string | null) => {
     const data = [...checkoutData];
@@ -39,7 +39,8 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
   };
 
   const changeAllGrades = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const arr = Array(grades.length).fill(+e.target.value);
+    const arr = Array(checkoutData.length).fill(+e.target.value);
+    setCheckoutData(checkoutData.map((d) => ({ id: d.id, student: null })));
     setGradeSelect(arr);
   };
 
@@ -59,10 +60,20 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
   return (
     <>
       <TableToolbox>
-        <span style={{ marginLeft: "25px" }}>
-          Change All Grades: {"  "}
-          <HTMLSelect options={gradeValues} onChange={changeAllGrades} />
-        </span>
+        <div className="w-h-full flex align-center justify-space-between">
+          <span style={{ marginLeft: "25px" }}>
+            Change All Grades: {"  "}
+            <HTMLSelect options={gradeValues} onChange={changeAllGrades} />
+          </span>
+          <span className="flex" style={{ width: "25%", marginRight: "25px" }}>
+            <ProgressBar
+              value={checkoutsFinished / checkoutData.length}
+              intent="success"
+              animate={false}
+              stripes={false}
+            />
+          </span>
+        </div>
       </TableToolbox>
       <div className="checkout-container">
         <div
@@ -91,6 +102,7 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
             <tbody>
               {data.map((t, i) => (
                 <CheckoutTableRow
+                  key={`${t._id}-row-${i}`}
                   textbook={t}
                   grades={grades}
                   updateBookData={updateBookData}
@@ -104,17 +116,11 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
           </table>
         </div>
       </div>
-      <div
-        style={{
-          justifyContent: "end",
-          minHeight: "40px",
-          boxShadow: "0 -1px 0 rgba(16, 22, 26, 0.15)",
-          marginTop: "auto",
-          backgroundColor: "white",
-          zIndex: 1,
-        }}
-      ></div>
-      {/* {submittable && <button>Check Out</button>} */}
+      <div className="checkout-table-footer">
+        <Button intent="primary" disabled={!submittable}>
+          Check Out
+        </Button>
+      </div>
     </>
   );
 }

@@ -113,7 +113,6 @@ export default function TextbooksTable({
         <tbody {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
-            console.log(row);
             return (
               <tr
                 {...row.getRowProps()}
