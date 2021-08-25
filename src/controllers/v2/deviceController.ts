@@ -11,15 +11,16 @@ import * as factory from "./handlerFactory";
 
 const Model = Device;
 const key = "device";
+const pop = { path: "lastUser teacherCheckOut", select: "fullName grade email" };
 
 /** `GET` - Gets all devices
  *  - All authorized users can access this route
  */
-export const getAllDevices: RequestHandler = factory.getAll(Model, `${key}s`);
+export const getAllDevices: RequestHandler = factory.getAll(Model, `${key}s`, {}, pop);
 /** `GET` - Gets a single device
  *  - All authorized users can access this route
  */
-export const getOneDevice: RequestHandler = factory.getOneById(Model, key);
+export const getOneDevice: RequestHandler = factory.getOneById(Model, key, pop);
 /** `POST` - Creates a new device
  *  - Only users with the role `Super Admin` or `Admin` can access this route
  */
@@ -84,6 +85,8 @@ export const checkOutDevice: RequestHandler = catchAsync(
       checkedIn: false,
       dueDate: device.dueDate,
     });
+
+    await Device.populate(device, pop);
 
     res.status(200).json({
       status: "success",

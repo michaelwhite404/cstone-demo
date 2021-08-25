@@ -42,6 +42,20 @@ export default function DeviceContent({
     { heading: "Management Type", value: "Cloud" },
     { heading: "Device Type", value: "Education Upgrade" },
     { heading: "Auto Update Expiration", value: device.autoUpdateExpiration },
+    {
+      heading: "Checked Out By",
+      value: device.checkedOut
+        ? `${device.lastUser.fullName} (${grades[device.lastUser.grade]})`
+        : undefined,
+    },
+    {
+      heading: "Teacher Check Out",
+      value: device.checkedOut ? device.teacherCheckOut.fullName : undefined,
+    },
+    {
+      heading: "Check Out Date",
+      value: device.checkedOut ? new Date(device.lastCheckOut!).toLocaleString() : undefined,
+    },
   ];
 
   return (
