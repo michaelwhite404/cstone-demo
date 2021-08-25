@@ -1,6 +1,6 @@
-import { Drawer } from "@blueprintjs/core";
+import { Drawer, Toaster } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import { useDocTitle } from "../../hooks";
 import { APIError } from "../../types/apiResponses";
@@ -17,6 +17,7 @@ export default function Textbooks() {
   const [textbooks, setTextbooks] = useState<TextbookModel[]>([]);
   const [selected, setSelected] = useState<TextbookModel[]>([]);
   const [open, setOpen] = useState(false);
+  const toasterRef = useRef<Toaster>(null);
 
   const canCheckOut = selected.filter((t) => t.status === "Available");
 
@@ -86,7 +87,11 @@ export default function Textbooks() {
         });
         setTextbooks(res.data.data.books);
       } catch (err) {
-        console.log((err as AxiosError<APIError>).response!.data);
+        toasterRef.current?.show({
+          message: `${(err as AxiosError<APIError>).response!.data}`,
+          intent: "danger",
+          icon: "cross",
+        });
       }
     }
   }, []);
@@ -117,8 +122,14 @@ export default function Textbooks() {
         canOutsideClickClose={false}
         title="Check Out"
       >
-        <CheckoutTable data={canCheckOut} />
+        <CheckoutTable
+          data={canCheckOut}
+          setOpen={setOpen}
+          setTextbooks={setTextbooks}
+          toasterRef={toasterRef}
+        />
       </Drawer>
+      <Toaster position="top-right" ref={toasterRef} />
     </div>
   );
 }

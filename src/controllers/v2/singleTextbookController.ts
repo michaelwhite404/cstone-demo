@@ -191,8 +191,9 @@ export const checkOutTextbooks = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // Data must be an array
     if (!Array.isArray(req.body.data))
-      return next(new AppError("An array in a 'data' property", 400));
-    const { data }: { data: any[] } = req.body;
+      return next(new AppError("The 'data' property must be an array", 400));
+    type Data = { book: string; student: string };
+    const { data }: { data: Data[] } = req.body;
     // Each item in the array must be an object with 'book' and 'student'
     if (data.every((value) => !(isPlainObject(value) && value.book && value.student))) {
       return next(
@@ -253,9 +254,8 @@ export const checkOutTextbooks = catchAsync(
     // TODO: Student textbook set restriction
     // GOOD TO GO !!
     const getBook = (id: string) => books.find((book) => book._id.toString() === id);
-    type Data = { book: string; student: string };
     // Update textbooks' propertirs
-    const textbookBulkArr = (data as Data[]).map((obj) => ({
+    const textbookBulkArr = data.map((obj) => ({
       updateOne: {
         filter: { _id: new Types.ObjectId(obj.book) } as FilterQuery<TextbookModel>,
         update: {
@@ -267,23 +267,41 @@ export const checkOutTextbooks = catchAsync(
     }));
 
     // Create logs
-    const createLogs = (data as Data[]).map(
-      (obj) =>
-        ({
-          checkedIn: false,
-          textbook: obj.book,
-          student: obj.student,
-          checkOutDate: new Date(req.requestTime),
-          teacherCheckOut: req.employee._id,
-          qualityOut: getBook(obj.book)?.quality,
-        } as Omit<TextbookLogModel, "_id">)
-    );
+    const createLogs = data.map<Omit<TextbookLogModel, "_id">>((obj) => ({
+      checkedIn: false,
+      textbook: obj.book,
+      student: obj.student,
+      checkOutDate: new Date(req.requestTime),
+      teacherCheckOut: req.employee._id,
+      qualityOut: getBook(obj.book)!.quality,
+    }));
     await Promise.all([Textbook.bulkWrite(textbookBulkArr), TextbookLog.create(createLogs)]);
     //-------------
+    const hasOrHave = (num: number) => (num > 1 ? "have" : "has");
     res.status(200).json({
       status: "sucess",
-      message: pluralize("textbooks", data.length, true) + " have been checked out",
+      message: `${pluralize("textbooks", data.length, true)} ${hasOrHave(
+        data.length
+      )} been checked out`,
     });
+  }
+);
+
+export const checkInTextbooks = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let errMsg: string;
+    if (!Array.isArray(req.body.books)) {
+      errMsg =
+        "An array of book ids must be in a 'books' property. Each index in the array should have an object with an `(id)` property for the id of the textbook and a `(quality)` property for the quality of each textbook";
+      return next(new AppError(errMsg, 400));
+    }
+    // Check if each array index has an object with `id` and `quality`
+    if (!allHaveIdandQuality(req.body.books)) {
+      errMsg =
+        "Each index in the array should have an object with an `(id)` property for the id of the textbook and a `(quality)` property for the quality of each textbook, which must be: Excellent, Good, Acceptable, or Poor";
+      return next(new AppError(errMsg, 400));
+    }
+    const data = req.body.books as { id: string; quality: string }[];
   }
 );
 

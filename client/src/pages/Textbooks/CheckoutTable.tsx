@@ -1,4 +1,4 @@
-import { Button, HTMLSelect, ProgressBar } from "@blueprintjs/core";
+import { Button, HTMLSelect, ProgressBar, Toaster } from "@blueprintjs/core";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
@@ -20,7 +20,17 @@ const gradeValues = grades.map((value, i) => ({
 }));
 gradeValues.unshift({ value: "-1", label: "Select a grade" });
 
-export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
+export default function CheckoutTable({
+  data,
+  setOpen,
+  setTextbooks,
+  toasterRef,
+}: {
+  data: TextbookModel[];
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
+  toasterRef: React.RefObject<Toaster>;
+}) {
   const [classes, setClasses] = useState<Class[]>([]);
   const [checkoutData, setCheckoutData] = useState<{ book: string; student: string | null }[]>(
     data.map((t) => ({ book: t._id, student: null }))
@@ -42,6 +52,35 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
     const arr = Array(checkoutData.length).fill(+e.target.value);
     setCheckoutData(checkoutData.map((d) => ({ book: d.book, student: null })));
     setGradeSelect(arr);
+  };
+
+  const completeCheckout = async () => {
+    if (submittable) {
+      try {
+        const result = await axios.post("/api/v2/textbooks/books/check-out", {
+          data: checkoutData,
+        });
+        try {
+          const res = await axios.get("/api/v2/textbooks/books", {
+            params: {
+              sort: "textbookSet,bookNumber",
+              active: true,
+            },
+          });
+          setTextbooks(res.data.data.books);
+          setOpen(false);
+          toasterRef.current!.show({
+            message: result.data.message,
+            intent: "success",
+            icon: "tick",
+          });
+        } catch (err) {
+          console.log((err as AxiosError<APIError>).response!.data);
+        }
+      } catch (err) {
+        console.log((err as AxiosError<APIError>).response?.data);
+      }
+    }
   };
 
   useEffect(() => {
@@ -117,7 +156,7 @@ export default function CheckoutTable({ data }: { data: TextbookModel[] }) {
         </div>
       </div>
       <div className="checkout-table-footer">
-        <Button intent="primary" disabled={!submittable}>
+        <Button intent="primary" disabled={!submittable} onClick={completeCheckout}>
           Check Out
         </Button>
       </div>
