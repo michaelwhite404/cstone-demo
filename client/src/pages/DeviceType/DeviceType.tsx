@@ -100,7 +100,7 @@ export default function DeviceType() {
         size="70%"
         hasBackdrop
         canEscapeKeyClose={false}
-        canOutsideClickClose={false}
+        canOutsideClickClose={true}
         title={
           <div>
             {selectedDevice?.name}{" "}

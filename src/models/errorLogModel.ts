@@ -73,9 +73,9 @@ errorLogSchema.pre("save", async function (next) {
     if (!device) {
       return next(new AppError("No device found with that ID", 404));
     }
-    if (device.status === "Checked Out") {
-      return next(new AppError(`Create an error when checking in ${device.deviceType}`, 400));
-    }
+    // if (device.status === "Checked Out") {
+    //   return next(new AppError(`Create an error when checking in ${device.deviceType}`, 400));
+    // }
 
     device.status = "Broken";
     this.$locals.wasNew = this.isNew;
