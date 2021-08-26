@@ -1,4 +1,4 @@
-import { Drawer, Toaster } from "@blueprintjs/core";
+import { Button, Drawer, Toaster } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
@@ -11,15 +11,23 @@ import BadgeColor from "../../components/Badge/BadgeColor";
 import Badge from "../../components/Badge/Badge";
 import { numberToGrade } from "../../utils/grades";
 import TableToolbox from "../../components/Table/TableToolbox";
+import CheckinTable from "./CheckinTable";
 
 export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
   const [textbooks, setTextbooks] = useState<TextbookModel[]>([]);
   const [selected, setSelected] = useState<TextbookModel[]>([]);
   const [open, setOpen] = useState(false);
+  const [pageStatus, setPageStatus] = useState<"Viewing" | "Check In" | "Check Out">("Viewing");
   const toasterRef = useRef<Toaster>(null);
 
   const canCheckOut = selected.filter((t) => t.status === "Available");
+  const canCheckIn = selected.filter((t) => t.status === "Checked Out");
+
+  const handleClose = () => {
+    setOpen(false);
+    setPageStatus("Viewing");
+  };
 
   const columns = useMemo(
     () => [
@@ -102,32 +110,60 @@ export default function Textbooks() {
         <h1 style={{ marginBottom: "10px" }}>Textbooks</h1>
       </div>
       <div className="table-wrapper">
-        <TableToolbox></TableToolbox>
-        <TextbooksTable
-          columns={columns}
-          data={data}
-          setSelected={setSelected}
-          setOpen={setOpen}
-          canCheckOut={canCheckOut}
-        />
+        <TableToolbox>
+          {canCheckOut.length > 0 && (
+            <Button
+              onClick={() => {
+                setPageStatus("Check Out");
+                setOpen(true);
+              }}
+              intent="primary"
+              style={{ margin: "0 15px" }}
+            >
+              Check Out {canCheckOut.length} Textbooks
+            </Button>
+          )}
+          {canCheckIn.length > 0 && (
+            <Button
+              onClick={() => {
+                setPageStatus("Check In");
+                setOpen(true);
+              }}
+              intent="primary"
+            >
+              Check In {canCheckIn.length} Textbooks
+            </Button>
+          )}
+        </TableToolbox>
+        <TextbooksTable columns={columns} data={data} setSelected={setSelected} />
       </div>
       <Drawer
         position="bottom"
         size="70%"
         usePortal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         hasBackdrop
         canEscapeKeyClose={false}
         canOutsideClickClose={false}
-        title="Check Out"
+        title={pageStatus}
       >
-        <CheckoutTable
-          data={canCheckOut}
-          setOpen={setOpen}
-          setTextbooks={setTextbooks}
-          toasterRef={toasterRef}
-        />
+        {pageStatus === "Check Out" && (
+          <CheckoutTable
+            data={canCheckOut}
+            setOpen={setOpen}
+            setTextbooks={setTextbooks}
+            toasterRef={toasterRef}
+          />
+        )}
+        {pageStatus === "Check In" && (
+          <CheckinTable
+            data={canCheckIn}
+            setOpen={setOpen}
+            setTextbooks={setTextbooks}
+            toasterRef={toasterRef}
+          />
+        )}
       </Drawer>
       <Toaster position="top-right" ref={toasterRef} />
     </div>

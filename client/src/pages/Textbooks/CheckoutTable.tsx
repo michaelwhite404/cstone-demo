@@ -15,17 +15,19 @@ const gradeValues = grades.map((value, i) => ({
 }));
 gradeValues.unshift({ value: "-1", label: "Select a grade" });
 
+interface CheckoutTableProps {
+  data: TextbookModel[];
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
+  toasterRef: React.RefObject<Toaster>;
+}
+
 export default function CheckoutTable({
   data,
   setOpen,
   setTextbooks,
   toasterRef,
-}: {
-  data: TextbookModel[];
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
-  toasterRef: React.RefObject<Toaster>;
-}) {
+}: CheckoutTableProps) {
   const [classes, setClasses] = useState<Class[]>([]);
   const [checkoutData, setCheckoutData] = useState<{ book: string; student: string | null }[]>(
     data.map((t) => ({ book: t._id, student: null }))

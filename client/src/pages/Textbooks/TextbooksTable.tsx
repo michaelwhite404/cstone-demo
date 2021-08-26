@@ -8,8 +8,6 @@ export default function TextbooksTable({
   columns,
   data,
   setSelected,
-  setOpen,
-  canCheckOut,
 }: {
   columns: {
     Header: string;
@@ -17,8 +15,6 @@ export default function TextbooksTable({
   }[];
   data: any[];
   setSelected: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  canCheckOut: TextbookModel[];
 }) {
   const tableInstance = useTable(
     {
@@ -152,10 +148,9 @@ export default function TextbooksTable({
           })}
         </tbody>
       </table>
-      <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      {canCheckOut.length > 0 && (
-        <button onClick={() => setOpen(true)}>Check Out {canCheckOut.length} Textbooks</button>
-      )}
+      <p style={{ margin: "10px 0 10px 20px" }}>
+        Selected Rows: {Object.keys(selectedRowIds).length}
+      </p>
     </>
   );
 }

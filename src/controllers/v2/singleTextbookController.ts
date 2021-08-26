@@ -302,6 +302,38 @@ export const checkInTextbooks = catchAsync(
       return next(new AppError(errMsg, 400));
     }
     const data = req.body.books as { id: string; quality: string }[];
+    // HANDLE REST ON FRONT END
+    // Update Textbooks
+    const textbookBulkArr = data.map((book) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(book.id) },
+        update: { status: "Available", quality: book.quality },
+      },
+    }));
+    // Update Logs
+    const logBulkArr = data.map((book) => ({
+      updateOne: {
+        filter: {
+          textbook: new Types.ObjectId(book.id),
+          checkedIn: false,
+        } as FilterQuery<TextbookLogModel>,
+        update: {
+          checkedIn: true,
+          checkInDate: new Date(req.requestTime),
+          teacherCheckIn: req.employee._id,
+          qualityIn: book.quality,
+        } as UpdateQuery<TextbookLogModel>,
+      },
+    }));
+
+    await Textbook.bulkWrite(textbookBulkArr);
+    await TextbookLog.bulkWrite(logBulkArr);
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      message: `${pluralize("textbook", data.length, true)} checked in!`,
+    });
   }
 );
 
