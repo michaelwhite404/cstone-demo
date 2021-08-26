@@ -51,6 +51,14 @@ export default function CheckoutTable({
     setGradeSelect(arr);
   };
 
+  const showToaster = (message: string, intent: "success" | "danger") => {
+    toasterRef.current!.show({
+      message,
+      intent,
+      icon: intent === "success" ? "tick" : "cross",
+    });
+  };
+
   const completeCheckout = async () => {
     if (submittable) {
       try {
@@ -66,16 +74,12 @@ export default function CheckoutTable({
           });
           setTextbooks(res.data.data.books);
           setOpen(false);
-          toasterRef.current!.show({
-            message: result.data.message,
-            intent: "success",
-            icon: "tick",
-          });
+          showToaster(result.data.message, "success");
         } catch (err) {
-          console.log((err as AxiosError<APIError>).response!.data);
+          showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
         }
       } catch (err) {
-        console.log((err as AxiosError<APIError>).response?.data);
+        showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
       }
     }
   };

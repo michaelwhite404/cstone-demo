@@ -235,7 +235,7 @@ export const checkOutTextbooks = catchAsync(
       return next(
         new AppError(
           `${msgStart} cannot be checked out: ${notAvailable
-            .map((o) => o._id)
+            .map((o) => `${o.textbookSet.title} (Book ${o.bookNumber})`)
             .join(", ")}. Please check the status for each book.`,
           400
         )
