@@ -5,10 +5,11 @@ import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Textbooks from "./pages/Textbooks/Textbooks";
 import { Drawer } from "@blueprintjs/core";
-// using node-style package resolution in a CSS file: 
+// using node-style package resolution in a CSS file:
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import Devices from "./pages/Devices/Devices";
 
 interface NavRouteProps {
   exact: boolean;
@@ -50,30 +51,30 @@ function App() {
 }
 
 function Home() {
-  return <div>
-    <form>
-      <a href="http://localhost:8080/auth/google">Click</a>
-    </form>
-  </div>;
+  return (
+    <div>
+      <form>
+        <a href="http://localhost:8080/auth/google">Click</a>
+      </form>
+    </div>
+  );
 }
 
 function Dashboard() {
   return (
-  <div>
-    <div>Dashboard</div>
-    <Drawer position="right" size="50%" usePortal isOpen hasBackdrop transitionDuration={600} title="Test" >
-      Wow
-    </Drawer>
-  </div>
-  );
-}
-
-function Devices() {
-  return (
     <div>
-      <div className="page-header">
-        <h1 style={{ marginBottom: "10px" }}>Devices</h1>
-      </div>
+      <div>Dashboard</div>
+      <Drawer
+        position="right"
+        size="50%"
+        usePortal
+        isOpen
+        hasBackdrop
+        transitionDuration={600}
+        title="Test"
+      >
+        Wow
+      </Drawer>
     </div>
   );
 }

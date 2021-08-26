@@ -1,90 +1,30 @@
-// @ts-nocheck
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useMemo, useState } from "react";
-import { APIError } from "../../types/apiResponses";
+import { Link } from "react-router-dom";
+import "./Devices.sass";
 
 export default function Devices() {
-  const [students, setStudents] = useState<StudentModel[]>([]);
-  const columns = useMemo(() => STUDENT_COLUMNS, []);
-  const data = useMemo(() => students, [students]);
-  useEffect(() => {
-    getStudents();
-
-    async function getStudents() {
-      try {
-        const res = await axios.get<APIStudentsResponse>("/api/v2/students", {
-          params: {
-            sort: "grade,lastName",
-            limit: 1000,
-            status: "Active",
-          },
-        });
-        setStudents(res.data.data.students);
-      } catch (err) {
-        console.log((err as AxiosError<APIError>).response!.data);
-      }
-    }
-  }, []);
-
-  // @ts-ignore
-  const tableInstance = useTable({ columns, data });
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
-
   return (
-    // apply the table props
-    <table {...getTableProps()}>
-      <thead>
-        {
-          // Loop over the header rows
-          headerGroups.map((headerGroup) => (
-            // Apply the header row props
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {
-                // Loop over the headers in each row
-                headerGroup.headers.map((column) => (
-                  // Apply the header cell props
-                  <th {...column.getHeaderProps()}>
-                    {
-                      // Render the header
-                      column.render("Header")
-                    }
-                  </th>
-                ))
-              }
-            </tr>
-          ))
-        }
-      </thead>
-      {/* Apply the table body props */}
-      <tbody {...getTableBodyProps()}>
-        {
-          // Loop over the table rows
-          rows.map((row) => {
-            // Prepare the row for display
-            prepareRow(row);
-            return (
-              // Apply the row props
-              <tr {...row.getRowProps()}>
-                {
-                  // Loop over the rows cells
-                  row.cells.map((cell) => {
-                    // Apply the cell props
-                    return (
-                      <td {...cell.getCellProps()}>
-                        {
-                          // Render the cell contents
-                          cell.render("Cell")
-                        }
-                      </td>
-                    );
-                  })
-                }
-              </tr>
-            );
-          })
-        }
-      </tbody>
-    </table>
+    <div>
+      <div className="page-header">
+        <h1 style={{ marginBottom: "10px" }}>Devices</h1>
+      </div>
+      <div className="device-wrapper">
+        <div className="device-grid-container">
+          <Link className="device-item" to="/devices/chromebooks">
+            <img src="/icons/chrome-icon.png" alt="Chrome Icon" />
+            <div>
+              <div className="device-heading">Chromebooks</div>
+              <div>View, edit, check in and check out Chromebooks</div>
+            </div>
+          </Link>
+          <Link className="device-item" to="/devices/tablets">
+            <img src="/icons/tablet-icon.png" alt="Tablet Icon" />
+            <div>
+              <div className="device-heading">Tablets</div>
+              <div>View, edit, check in and check out tablets</div>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
