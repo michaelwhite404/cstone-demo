@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
+import { OAuth2Client } from "google-auth-library";
 import Employee from "../../models/employeeModel";
 import { EmployeeModel } from "../../types/models/employeeTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import makePassword from "../../utils/makePassword";
+import { createSendToken } from "../v1/authController";
 
 /**
  * `POST` - Creates new employee
@@ -40,3 +42,20 @@ export const createEmployee = catchAsync(
     });
   }
 );
+
+export const googleLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+  const { token } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const { email, picture } = ticket.getPayload()!;
+  const employee = await Employee.findOne({ email, active: true });
+  if (!employee) return next(new AppError("You are not authorized to use this app", 403));
+  employee.lastLogin = new Date(req.requestTime);
+  employee.image = picture;
+  await employee.save();
+  createSendToken(employee, 200, res);
+});

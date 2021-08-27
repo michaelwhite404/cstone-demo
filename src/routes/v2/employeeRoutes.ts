@@ -7,11 +7,12 @@ const employeeRouter = Router();
 
 employeeRouter.post("/login", v1auth.login);
 employeeRouter.post("/logout", v1auth.logout);
+employeeRouter.post("/google", v2auth.googleLogin);
 // employeeRouter.post("/forgot-password", v1auth.forgotPassword); // TODO: Re-do method
 // router.patch("/reset-password/:token", v1auth.resetPassword);  // TODO: Re-do method
-employeeRouter.patch("/update-password", v1auth.protect, v1auth.updatePassword);
 
 employeeRouter.use(v1auth.protect);
+employeeRouter.patch("/update-password", v1auth.updatePassword);
 
 employeeRouter.route("/").get(employeeController.getAllEmployees).post(v2auth.createEmployee);
 employeeRouter.route("/me").get(employeeController.getMe, employeeController.getOneEmployee);

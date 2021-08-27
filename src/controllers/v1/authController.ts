@@ -21,7 +21,7 @@ const signToken = (id: EmployeeDocument["_id"]) => {
   });
 };
 
-const createSendToken = (employee: EmployeeDocument, statusCode: number, res: Response) => {
+export const createSendToken = (employee: EmployeeDocument, statusCode: number, res: Response) => {
   const token = signToken(employee._id);
   const cookieOptions: CookieOptions = {
     expires: new Date(Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN! * 24 * 60 * 60 * 1000),
