@@ -16,8 +16,9 @@ import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import Devices from "./pages/Devices/Devices";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./components/Login";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { EmployeeModel } from "../../src/types/models/employeeTypes";
 
 interface NavRouteProps {
   exact: boolean;
@@ -62,9 +63,12 @@ function ProtectedNavRoute({
   );
 }
 
+export const UserContext = createContext<EmployeeModel>({} as EmployeeModel);
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [user, setUser] = useState<EmployeeModel | null>(null);
 
   useEffect(() => {
     fetchMe();
@@ -74,6 +78,7 @@ function App() {
         const res = await axios.get("api/v2/users/me");
         if (res.data.status === "success") {
           setIsAuthenticated(true);
+          setUser(res.data.data.user);
         }
       } catch (err) {
       } finally {
@@ -90,26 +95,33 @@ function App() {
             <Route exact path="/">
               <Home setIsAuthenticated={setIsAuthenticated} />
             </Route>
-            <ProtectedNavRoute
-              exact
-              path="/dashboard"
-              component={Dashboard}
-              auth={isAuthenticated}
-            />
-            <ProtectedNavRoute exact path="/devices" component={Devices} auth={isAuthenticated} />
-            <ProtectedNavRoute
-              exact
-              path="/devices/:deviceType"
-              component={DeviceType}
-              auth={isAuthenticated}
-            />
-            <ProtectedNavRoute
-              exact
-              path="/textbooks"
-              component={Textbooks}
-              auth={isAuthenticated}
-            />
-            <ProtectedNavRoute exact path="/students" component={Students} auth={isAuthenticated} />
+            <UserContext.Provider value={user!}>
+              <ProtectedNavRoute
+                exact
+                path="/dashboard"
+                component={Dashboard}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute exact path="/devices" component={Devices} auth={isAuthenticated} />
+              <ProtectedNavRoute
+                exact
+                path="/devices/:deviceType"
+                component={DeviceType}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute
+                exact
+                path="/textbooks"
+                component={Textbooks}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute
+                exact
+                path="/students"
+                component={Students}
+                auth={isAuthenticated}
+              />
+            </UserContext.Provider>
           </Switch>
         </Router>
       )}

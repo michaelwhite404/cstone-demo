@@ -10,8 +10,8 @@ export interface EmployeeModel {
   homeroomGrade?: number;
   title: string;
   role: EmployeeRole;
-  image?: String;
-  googleId?: String;
+  image?: string;
+  googleId?: string;
   password: string;
   passwordConfirm?: string;
   passwordChangedAt?: Date;

@@ -2,9 +2,13 @@ import { Link, useRouteMatch } from "react-router-dom";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import navigation from "../../navigation";
 import "./Sidebar.sass";
+import { useContext } from "react";
+import { UserContext } from "../../App";
 
 export default function Sidebar() {
   const match = useRouteMatch();
+  const user = useContext(UserContext);
+  console.log(user);
   const matchesURL = (url: string) => match.url.startsWith(url);
   return (
     <div className="sidebar-container">
@@ -14,11 +18,7 @@ export default function Sidebar() {
             <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
           </div>
           <div className="profile-button-wrapper">
-            <ProfileButton
-              imgSrc="https://lh3.googleusercontent.com/a/AATXAJwfzVPyqOq3qpphoGTXMNIhNDf1GREai2PAzRCN"
-              name="Michael White"
-              title="Multi Purpose"
-            />
+            <ProfileButton imgSrc={user.image!} name={user.fullName} title={user.title} />
           </div>
           <div className="navigation-wrapper">
             <nav>
