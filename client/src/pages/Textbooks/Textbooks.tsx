@@ -72,7 +72,7 @@ export default function Textbooks() {
         Header: "Student",
         accessor: "lastUser.fullName",
         Cell: ({ row: { original } }: { row: { original: TextbookModel } }) => {
-          return original?.status === "Checked Out"
+          return original?.status === "Checked Out" && original.lastUser
             ? `${original.lastUser.fullName} (${numberToGrade(original.lastUser.grade)})`
             : "";
         },

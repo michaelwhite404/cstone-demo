@@ -37,13 +37,15 @@ export default function Login({
 
   return (
     <>
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
-        buttonText="Log in with Google"
-        onSuccess={handleLogin}
-        onFailure={handleLogin}
-        cookiePolicy={"single_host_origin"}
-      />
+      <div style={{ border: "2px lightgray solid" }}>
+        <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
+          buttonText="Log in with Google"
+          onSuccess={handleLogin}
+          onFailure={handleLogin}
+          cookiePolicy={"single_host_origin"}
+        />
+      </div>
       <Toaster position="top-right" ref={toasterRef} />
     </>
   );
