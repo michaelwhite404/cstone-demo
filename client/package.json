@@ -53,7 +53,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080",
   "devDependencies": {
     "@types/react-router-dom": "^5.1.8",
     "@types/react-scrollbar": "^0.5.2",
