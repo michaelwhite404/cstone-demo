@@ -17,11 +17,17 @@ import "./config/passport-setup";
 
 const app = express();
 
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "../views"));
+// app.set("view engine", "pug");
+// app.set("views", path.join(__dirname, "../views"));
 
 // 1.) MIDDLEWARES
 // Serving static files
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/buid"));
+  app.get("*", (_, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 app.use(express.static(path.join(__dirname, "../public")));
 
 /* Redirect http to https */

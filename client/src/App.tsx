@@ -169,14 +169,12 @@ function Home({
               width: "100%",
               height: "100%",
               borderRadius: "15px",
-              // backgroundImage: "url(login-image.jpeg)",
               background:
                 "linear-gradient(251deg, rgba(23, 48, 204, 0.76), rgba(25, 104, 177, 0.91)), url(login-image.jpeg)",
               backgroundRepeat: "no-repeat",
               backgroundSize: "100% 100%",
             }}
           ></div>
-          {/* <img src="login-image.jpeg" alt="login" style={{ width: "100%" }} /> */}
         </div>
       </div>
     </div>

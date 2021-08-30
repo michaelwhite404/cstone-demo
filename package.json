@@ -11,7 +11,8 @@
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --public-url /js --out-file bundle.js",
     "client": "cd client && npm start",
     "server": "nodemon dist/server.js",
-    "both": "concurrently -n 'server,client' -c 'green,blue' \"npm run server\" \"npm run client\""
+    "both": "concurrently -n 'server,client' -c 'green,blue' \"npm run server\" \"npm run client\"",
+    "heroku": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix cilent"
   },
   "author": "Michael White",
   "license": "MIT",
@@ -22,6 +23,7 @@
     "bcryptjs": "^2.4.3",
     "capitalize": "^2.0.3",
     "compression": "^1.7.4",
+    "concurrently": "^6.2.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
