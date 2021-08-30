@@ -18,11 +18,12 @@ import "./config/passport-setup";
 const app = express();
 
 app.set("view engine", "pug");
-app.set("views", path.join(__dirname.replace("\\dist", ""), "views"));
+app.set("views", path.join(__dirname, "../views"));
+console.log(app.get("views"));
 
 // 1.) MIDDLEWARES
 // Serving static files
-app.use(express.static(path.join(__dirname.replace("\\dist", ""), "public")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
