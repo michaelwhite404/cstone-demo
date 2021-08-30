@@ -23,9 +23,9 @@ const app = express();
 // 1.) MIDDLEWARES
 // Serving static files
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(path.resolve(__dirname, "./client/build"))));
+  app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));
   app.get("*", (_, res) => {
-    res.sendFile(path.resolve(__dirname, "./client/build/index.html"));
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
   });
 } else {
   app.use(express.static(path.join(__dirname, "../public")));

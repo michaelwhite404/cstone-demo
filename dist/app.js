@@ -19,11 +19,19 @@ const viewRoutes_1 = __importDefault(require("./routes/v1/viewRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 require("./config/passport-setup");
 const app = express_1.default();
-app.set("view engine", "pug");
-app.set("views", path_1.default.join(__dirname, "../views"));
+// app.set("view engine", "pug");
+// app.set("views", path.join(__dirname, "../views"));
 // 1.) MIDDLEWARES
 // Serving static files
-app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
+if (process.env.NODE_ENV === "production") {
+    app.use(express_1.default.static(path_1.default.resolve(path_1.default.resolve(__dirname, "../client/build"))));
+    app.get("*", (_, res) => {
+        res.sendFile(path_1.default.resolve(__dirname, "../client/build/index.html"));
+    });
+}
+else {
+    app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
+}
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
     if ("https" !== req.headers["x-forwarded-proto"] && "production" === process.env.NODE_ENV) {
