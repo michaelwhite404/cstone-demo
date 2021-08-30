@@ -63,7 +63,7 @@ function ProtectedNavRoute({
   );
 }
 
-export const UserContext = createContext<EmployeeModel>({} as EmployeeModel);
+export const UserContext = createContext<EmployeeModel | null>({} as EmployeeModel);
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -95,7 +95,7 @@ function App() {
             <Route exact path="/">
               <Home setIsAuthenticated={setIsAuthenticated} />
             </Route>
-            <UserContext.Provider value={user!}>
+            <UserContext.Provider value={user}>
               <ProtectedNavRoute
                 exact
                 path="/dashboard"

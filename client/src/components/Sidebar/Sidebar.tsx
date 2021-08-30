@@ -18,7 +18,7 @@ export default function Sidebar() {
             <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
           </div>
           <div className="profile-button-wrapper">
-            <ProfileButton imgSrc={user.image!} name={user.fullName} title={user.title} />
+            {user && <ProfileButton imgSrc={user.image!} name={user.fullName} title={user.title} />}
           </div>
           <div className="navigation-wrapper">
             <nav>

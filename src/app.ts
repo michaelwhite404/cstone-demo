@@ -22,12 +22,7 @@ app.set("views", path.join(__dirname.replace("\\dist", ""), "views"));
 
 // 1.) MIDDLEWARES
 // Serving static files
-// Step 1:
-app.use(express.static(path.resolve(__dirname, "./client/build")));
-
-app.get("*", function (_, response) {
-  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
-});
+app.use(express.static(path.join(__dirname.replace("\\dist", ""), "public")));
 
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
