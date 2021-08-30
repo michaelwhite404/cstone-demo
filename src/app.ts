@@ -19,7 +19,6 @@ const app = express();
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "../views"));
-console.log(app.get("views"));
 
 // 1.) MIDDLEWARES
 // Serving static files

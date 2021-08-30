@@ -21,7 +21,6 @@ require("./config/passport-setup");
 const app = express_1.default();
 app.set("view engine", "pug");
 app.set("views", path_1.default.join(__dirname, "../views"));
-console.log(app.get("views"));
 // 1.) MIDDLEWARES
 // Serving static files
 app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));

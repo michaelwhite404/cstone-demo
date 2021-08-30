@@ -3,11 +3,14 @@ import axios from "axios";
 import { Toaster } from "@blueprintjs/core";
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 import { useHistory } from "react-router";
+import { EmployeeModel } from "../../../src/types/models/employeeTypes";
 
 export default function Login({
   setIsAuthenticated,
+  setUser,
 }: {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<EmployeeModel | null>>;
 }) {
   const history = useHistory();
   const toasterRef = useRef<Toaster>(null);
@@ -26,11 +29,13 @@ export default function Login({
     // @ts-ignore
     if (data.error === "popup_closed_by_user") return;
     try {
-      await axios.post("/api/v2/users/google", { token: data.tokenId });
+      const res = await axios.post("/api/v2/users/google", { token: data.tokenId });
       setIsAuthenticated(true);
+      setUser(res.data.data.employee);
       showToaster("Log in successful!", "success");
       setTimeout(() => history.push("/dashboard"), 800);
     } catch (err) {
+      console.log(err);
       showToaster(err.response.data.message, "danger");
     }
   };

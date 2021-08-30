@@ -93,7 +93,7 @@ function App() {
         <Router>
           <Switch>
             <Route exact path="/">
-              <Home setIsAuthenticated={setIsAuthenticated} />
+              <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
             </Route>
             <UserContext.Provider value={user}>
               <ProtectedNavRoute
@@ -131,8 +131,10 @@ function App() {
 
 function Home({
   setIsAuthenticated,
+  setUser,
 }: {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<EmployeeModel | null>>;
 }) {
   return (
     <div>
@@ -159,7 +161,7 @@ function Home({
             alt="Cornerstone Logo"
             style={{ position: "absolute", top: 50, width: "100px" }}
           />
-          <Login setIsAuthenticated={setIsAuthenticated} />
+          <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
         </div>
         <div style={{ width: "70%", height: "100%", padding: "15px" }}>
           <div
