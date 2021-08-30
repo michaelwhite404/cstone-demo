@@ -23,15 +23,6 @@ const app = express_1.default();
 // app.set("views", path.join(__dirname, "../views"));
 // 1.) MIDDLEWARES
 // Serving static files
-if (process.env.NODE_ENV === "production") {
-    app.use(express_1.default.static(path_1.default.resolve(path_1.default.resolve(__dirname, "../client/build"))));
-    app.get("*", (_, res) => {
-        res.sendFile(path_1.default.resolve(__dirname, "../client/build/index.html"));
-    });
-}
-else {
-    app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
-}
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
     if ("https" !== req.headers["x-forwarded-proto"] && "production" === process.env.NODE_ENV) {
@@ -72,6 +63,15 @@ app.use(compression_1.default());
 app.use("/api", apiRoutes_1.default);
 app.use("/auth", authRoutes_1.default);
 app.use("/", viewRoutes_1.default);
+if (process.env.NODE_ENV === "production") {
+    app.use(express_1.default.static(path_1.default.resolve(path_1.default.resolve(__dirname, "../client/build"))));
+    app.get("*", (_, res) => {
+        res.sendFile(path_1.default.resolve(__dirname, "../client/build/index.html"));
+    });
+}
+else {
+    app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
+}
 app.all("*", (req, _, next) => {
     next(new appError_1.default(`Can't find ${req.originalUrl} on this server!`, 404));
 });

@@ -22,14 +22,6 @@ const app = express();
 
 // 1.) MIDDLEWARES
 // Serving static files
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));
-  app.get("*", (_, res) => {
-    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
-  });
-} else {
-  app.use(express.static(path.join(__dirname, "../public")));
-}
 
 /* Redirect http to https */
 app.get("*", function (req, res, next) {
@@ -80,6 +72,15 @@ app.use(compression());
 app.use("/api", apiRouter);
 app.use("/auth", authRouter);
 app.use("/", viewRouter);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));
+  app.get("*", (_, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+  });
+} else {
+  app.use(express.static(path.join(__dirname, "../public")));
+}
 
 app.all("*", (req, _, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
