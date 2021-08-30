@@ -15,7 +15,7 @@ const passport_1 = __importDefault(require("passport"));
 const appError_1 = __importDefault(require("./utils/appError"));
 const errorController_1 = __importDefault(require("./controllers/errorController"));
 const apiRoutes_1 = __importDefault(require("./routes/apiRoutes"));
-const viewRoutes_1 = __importDefault(require("./routes/v1/viewRoutes"));
+// import viewRouter from "./routes/v1/viewRoutes";
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 require("./config/passport-setup");
 const app = express_1.default();
@@ -62,7 +62,7 @@ app.use(xss_clean_1.default());
 app.use(compression_1.default());
 app.use("/api", apiRoutes_1.default);
 app.use("/auth", authRoutes_1.default);
-app.use("/", viewRoutes_1.default);
+// app.use("/", viewRouter);
 if (process.env.NODE_ENV === "production") {
     app.use(express_1.default.static(path_1.default.resolve(path_1.default.resolve(__dirname, "../client/build"))));
     app.get("*", (_, res) => {
