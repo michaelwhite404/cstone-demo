@@ -9,6 +9,7 @@ import Badge from "../../components/Badge/Badge";
 import BadgeColor from "../../components/Badge/BadgeColor";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
+import { grades } from "../../utils/grades";
 import DeviceContent from "./DeviceContent";
 
 export default function DeviceType() {
@@ -38,7 +39,7 @@ export default function DeviceType() {
       {
         Header: "Name",
         accessor: "name",
-        width: (width - 619) / 4,
+        width: (width - 619) / 5,
         Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
           return (
             <span style={{ display: "flex", alignItems: "center" }}>
@@ -54,17 +55,27 @@ export default function DeviceType() {
           );
         },
       },
-      { Header: "Brand", accessor: "brand", width: (width - 619) / 4 },
+      { Header: "Brand", accessor: "brand", width: (width - 619) / 5 },
       { Header: "Serial Number", accessor: "serialNumber", width: 275, minWidth: 275 },
-      { Header: "MAC Address", accessor: "macAddress", width: (width - 619) / 4 },
+      { Header: "MAC Address", accessor: "macAddress", width: (width - 619) / 5 },
       {
         Header: "Status",
         accessor: "status",
-        width: (width - 619) / 4,
+        width: (width - 619) / 5,
         Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
           const { status } = original;
 
           return <Badge color={statusColor[status]} text={original.status} />;
+        },
+      },
+      {
+        Header: "Student",
+        accessor: "lastUser",
+        width: (width - 619) / 5,
+        Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
+          return original.status === "Checked Out" && original.lastUser
+            ? `${original.lastUser?.fullName} (${grades[original.lastUser?.grade]})`
+            : "";
         },
       },
     ],

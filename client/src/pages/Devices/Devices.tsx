@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { useDocTitle } from "../../hooks";
 import "./Devices.sass";
 
 export default function Devices() {
+  useDocTitle("Devices | Cornerstone App");
   return (
     <div>
       <div className="page-header">

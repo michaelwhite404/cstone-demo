@@ -11,14 +11,14 @@ import passport from "passport";
 import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
-// import viewRouter from "./routes/v1/viewRoutes";
+import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
 
 const app = express();
 
-// app.set("view engine", "pug");
-// app.set("views", path.join(__dirname, "../views"));
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "../views"));
 
 // 1.) MIDDLEWARES
 // Serving static files
@@ -48,15 +48,15 @@ if (process.env.NODE_ENV === "development") {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 100,
+  max: 300,
   windowMs: 60000,
   message: "To many requests from this IP, please try again in one minute",
 });
 app.use("/api", limiter);
 
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.json({ limit: "25kb" }));
+app.use(express.urlencoded({ extended: true, limit: "25kb" }));
 app.use(cookieParser());
 
 app.use(passport.initialize());
@@ -71,7 +71,7 @@ app.use(compression());
 
 app.use("/api", apiRouter);
 app.use("/auth", authRouter);
-// app.use("/", viewRouter);
+app.use("/", viewRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));

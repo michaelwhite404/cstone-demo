@@ -8,7 +8,6 @@ import { UserContext } from "../../App";
 export default function Sidebar() {
   const match = useRouteMatch();
   const user = useContext(UserContext);
-  console.log(user);
   const matchesURL = (url: string) => match.url.startsWith(url);
   return (
     <div className="sidebar-container">

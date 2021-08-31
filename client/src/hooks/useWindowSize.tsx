@@ -1,7 +1,13 @@
-import React, { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
-export default function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
+type WindowSize = [number, number];
+
+/**
+ *
+ * @returns An array where the first argument is the window width and the second which is the window height
+ */
+export default function useWindowSize(): WindowSize {
+  const [size, setSize] = useState<WindowSize>([0, 0]);
   useLayoutEffect(() => {
     function updateSize() {
       setSize([window.innerWidth, window.innerHeight]);
@@ -13,11 +19,11 @@ export default function useWindowSize() {
   return size;
 }
 
-function ShowWindowDimensions() {
-  const [width, height] = useWindowSize();
-  return (
-    <span>
-      Window size: {width} x {height}
-    </span>
-  );
-}
+// function ShowWindowDimensions() {
+//   const [width, height] = useWindowSize();
+//   return (
+//     <span>
+//       Window size: {width} x {height}
+//     </span>
+//   );
+// }

@@ -119,7 +119,7 @@ export default function CheckoutTable({
         <div
           style={{
             width: "100%",
-            overflow: "scroll",
+            overflow: "auto",
           }}
         >
           <table style={{ width: "100%" }} id="textbook-checkout-table">

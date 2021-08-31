@@ -4,20 +4,26 @@ import { useMemo } from "react";
 import { useEffect } from "react";
 import { StudentModel } from "../../../../src/types/models/studentTypes";
 import Table from "../../components/Table/Table";
-import { useDocTitle } from "../../hooks";
+import { useDocTitle, useWindowSize } from "../../hooks";
 import { APIError, APIStudentsResponse } from "../../types/apiResponses";
 
 export default function Students() {
   const [students, setStudents] = useState<StudentModel[]>([]);
+  const [width] = useWindowSize();
   useDocTitle("Students | Cornerstone App");
   const columns = useMemo(
     () => [
-      { Header: "Name", accessor: "fullName" },
-      { Header: "Grade", accessor: "grade", Cell: ({ value }: any) => (value === 0 ? "K" : value) },
-      { Header: "RenWeb ID", accessor: "customID" },
-      { Header: "Email", accessor: "schoolEmail", width: 200 },
+      { Header: "Name", accessor: "fullName", width: (width - 344) / 4 },
+      {
+        Header: "Grade",
+        accessor: "grade",
+        Cell: ({ value }: any) => (value === 0 ? "K" : value),
+        width: (width - 344) / (20 / 3),
+      },
+      { Header: "RenWeb ID", accessor: "customID", width: (width - 344) / (20 / 3) },
+      { Header: "Email", accessor: "schoolEmail", width: (width - 344) / (20 / 9) },
     ],
-    []
+    [width]
   );
   const data = useMemo(() => students, [students]);
   useEffect(() => {

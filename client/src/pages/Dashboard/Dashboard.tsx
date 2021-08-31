@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDocTitle } from "../../hooks";
 
 export default function Dashboard() {
+  useDocTitle("Dashboard | Cornerstone App");
   return (
     <div>
       <div className="page-header">

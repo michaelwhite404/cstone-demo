@@ -15,12 +15,12 @@ const passport_1 = __importDefault(require("passport"));
 const appError_1 = __importDefault(require("./utils/appError"));
 const errorController_1 = __importDefault(require("./controllers/errorController"));
 const apiRoutes_1 = __importDefault(require("./routes/apiRoutes"));
-// import viewRouter from "./routes/v1/viewRoutes";
+const viewRoutes_1 = __importDefault(require("./routes/v1/viewRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 require("./config/passport-setup");
 const app = express_1.default();
-// app.set("view engine", "pug");
-// app.set("views", path.join(__dirname, "../views"));
+app.set("view engine", "pug");
+app.set("views", path_1.default.join(__dirname, "../views"));
 // 1.) MIDDLEWARES
 // Serving static files
 /* Redirect http to https */
@@ -45,14 +45,14 @@ if (process.env.NODE_ENV === "development") {
 }
 // Limit requests from same API
 const limiter = express_rate_limit_1.default({
-    max: 100,
+    max: 300,
     windowMs: 60000,
     message: "To many requests from this IP, please try again in one minute",
 });
 app.use("/api", limiter);
 // Body parser, reading data from body into req.body
-app.use(express_1.default.json({ limit: "10kb" }));
-app.use(express_1.default.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express_1.default.json({ limit: "25kb" }));
+app.use(express_1.default.urlencoded({ extended: true, limit: "25kb" }));
 app.use(cookie_parser_1.default());
 app.use(passport_1.default.initialize());
 // Data Sanitization angainst NoSQL query injection
@@ -62,7 +62,7 @@ app.use(xss_clean_1.default());
 app.use(compression_1.default());
 app.use("/api", apiRoutes_1.default);
 app.use("/auth", authRoutes_1.default);
-// app.use("/", viewRouter);
+app.use("/", viewRoutes_1.default);
 if (process.env.NODE_ENV === "production") {
     app.use(express_1.default.static(path_1.default.resolve(path_1.default.resolve(__dirname, "../client/build"))));
     app.get("*", (_, res) => {
