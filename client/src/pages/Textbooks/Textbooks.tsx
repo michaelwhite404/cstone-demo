@@ -12,13 +12,14 @@ import Badge from "../../components/Badge/Badge";
 import { numberToGrade } from "../../utils/grades";
 import TableToolbox from "../../components/Table/TableToolbox";
 import CheckinTable from "./CheckinTable";
+import AddTable from "./AddTable";
 
 export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
   const [textbooks, setTextbooks] = useState<TextbookModel[]>([]);
   const [selected, setSelected] = useState<TextbookModel[]>([]);
-  const [open, setOpen] = useState(false);
-  const [pageStatus, setPageStatus] = useState<"Viewing" | "Check In" | "Check Out">("Viewing");
+  const [open, setOpen] = useState(true);
+  const [pageStatus, setPageStatus] = useState<"Viewing" | "Check In" | "Check Out" | "Add">("Add");
   const toasterRef = useRef<Toaster>(null);
 
   const canCheckOut = selected.filter((t) => t.status === "Available");
@@ -146,7 +147,7 @@ export default function Textbooks() {
         hasBackdrop
         canEscapeKeyClose={false}
         canOutsideClickClose={false}
-        title={pageStatus}
+        title={`${pageStatus} Textbooks`}
       >
         {pageStatus === "Check Out" && (
           <CheckoutTable
@@ -162,6 +163,14 @@ export default function Textbooks() {
             setOpen={setOpen}
             setTextbooks={setTextbooks}
             toasterRef={toasterRef}
+          />
+        )}
+        {pageStatus === "Add" && (
+          <AddTable
+          // data={canCheckIn}
+          // setOpen={setOpen}
+          // setTextbooks={setTextbooks}
+          // toasterRef={toasterRef}
           />
         )}
       </Drawer>
