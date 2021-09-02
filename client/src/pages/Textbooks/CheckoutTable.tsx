@@ -107,7 +107,7 @@ export default function CheckoutTable({
           </span>
         </div>
       </TableToolbox>
-      <div className="checkout-container">
+      <div className="textbooks-drawer-container" id="checkout-table-container">
         <div
           style={{
             width: "100%",

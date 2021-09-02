@@ -57,11 +57,11 @@ export default function CheckinTable({
 
   return (
     <>
-      <div className="checkin-container">
+      <div className="textbooks-drawer-container" id="checkin-table-container">
         <div
           style={{
             width: "100%",
-            overflow: "scroll",
+            overflow: "auto",
           }}
         >
           <table style={{ width: "100%" }} id="textbook-checkout-table">

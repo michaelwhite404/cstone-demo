@@ -76,12 +76,15 @@ table#textbooks-table
     box-shadow: 0 -1px $gray-300 inset
     border-bottom: 0
 
-.checkout-container
+.textbooks-drawer-container
   width: 100%
-  height: calc(100% - 145px)
   display: flex
   align-items: center
   flex-direction: column
+  &#checkout-table-container, &#add-table-container
+    height: calc(100% - 145px)
+  &#checkin-table-container
+    height: calc(100% - 90px)
 
 .sticky-header
   position: -webkit-sticky

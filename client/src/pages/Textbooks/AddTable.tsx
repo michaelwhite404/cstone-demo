@@ -111,98 +111,100 @@ export default function AddTable({ setOpen, setTextbooks, showToaster }: AddTabl
   };
   return (
     <>
-      <div>
-        <div className="add-textbook-info">
-          <TableToolbox>
-            <div
-              className="flex justify-space-between"
-              style={{ width: "100%", padding: "0 25px" }}
-            >
-              <div className="w-h-full flex align-center">
-                <div className="table-toolbox-item">
-                  <span>Name of Textbook</span>
-                  <InputGroup
-                    type="text"
-                    value={data.title}
-                    name="title"
-                    onChange={handleDataChange}
-                    disabled={dataLocked}
-                  />
-                </div>
-                <div className="table-toolbox-item">
-                  <span>Class</span>
-                  <InputGroup
-                    type="text"
-                    value={data.class}
-                    name="class"
-                    onChange={handleDataChange}
-                    disabled={dataLocked}
-                  />
-                </div>
-                <div className="table-toolbox-item">
-                  <span>Grade</span>
-                  <HTMLSelect
-                    options={grades.map((g, i) => ({ label: g, value: i }))}
-                    value={data.grade}
-                    name="grade"
-                    onChange={handleDataChange}
-                    style={{ width: 100 }}
-                    disabled={dataLocked}
-                  />
-                </div>
-                <div className="table-toolbox-item">
-                  <span>Number of Textbooks</span>
-                  <NumericInput
-                    value={data.num.toString()}
-                    name="num"
-                    onValueChange={handleNumberChange}
-                    min={1}
-                    style={{ width: 50 }}
-                    allowNumericCharactersOnly
-                    disabled={dataLocked}
-                  />
-                </div>
-              </div>
-              <div>
-                <Button
-                  intent={dataLocked ? "warning" : "primary"}
-                  icon={dataLocked ? "edit" : "lock"}
-                  onClick={toggleLock}
-                  disabled={!dataPassed}
-                >
-                  {dataLocked ? "Edit" : "Lock"}
-                </Button>
-              </div>
-            </div>
-          </TableToolbox>
-        </div>
-        <table id="add-textbook-table">
-          <colgroup>
-            <col span={1} style={{ width: "10%" }} />
-            <col span={1} style={{ width: "30%" }} />
-            <col span={1} style={{ width: "30%" }} />
-            <col span={1} style={{ width: "30%" }} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Book Number</th>
-              <th>Quality</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {books.map((book, index) => (
-              <TableRow
-                book={book}
-                key={`book-index-${index}`}
-                dataLocked={dataLocked}
-                index={index}
-                changeBook={changeBook}
+      <TableToolbox>
+        <div className="flex justify-space-between" style={{ width: "100%", padding: "0 25px" }}>
+          <div className="w-h-full flex align-center">
+            <div className="table-toolbox-item">
+              <span>Name of Textbook</span>
+              <InputGroup
+                type="text"
+                value={data.title}
+                name="title"
+                onChange={handleDataChange}
+                disabled={dataLocked}
               />
-            ))}
-          </tbody>
-        </table>
+            </div>
+            <div className="table-toolbox-item">
+              <span>Class</span>
+              <InputGroup
+                type="text"
+                value={data.class}
+                name="class"
+                onChange={handleDataChange}
+                disabled={dataLocked}
+              />
+            </div>
+            <div className="table-toolbox-item">
+              <span>Grade</span>
+              <HTMLSelect
+                options={grades.map((g, i) => ({ label: g, value: i }))}
+                value={data.grade}
+                name="grade"
+                onChange={handleDataChange}
+                style={{ width: 100 }}
+                disabled={dataLocked}
+              />
+            </div>
+            <div className="table-toolbox-item">
+              <span>Number of Textbooks</span>
+              <NumericInput
+                value={data.num.toString()}
+                name="num"
+                onValueChange={handleNumberChange}
+                min={1}
+                style={{ width: 50 }}
+                allowNumericCharactersOnly
+                disabled={dataLocked}
+              />
+            </div>
+          </div>
+          <div>
+            <Button
+              intent={dataLocked ? "warning" : "primary"}
+              icon={dataLocked ? "edit" : "lock"}
+              onClick={toggleLock}
+              disabled={!dataPassed}
+            >
+              {dataLocked ? "Edit" : "Lock"}
+            </Button>
+          </div>
+        </div>
+      </TableToolbox>
+      <div className="textbooks-drawer-container" id="add-table-container">
+        <div
+          style={{
+            width: "100%",
+            overflow: "auto",
+          }}
+        >
+          <table id="add-textbook-table">
+            <colgroup>
+              <col span={1} style={{ width: "10%" }} />
+              <col span={1} style={{ width: "30%" }} />
+              <col span={1} style={{ width: "30%" }} />
+              <col span={1} style={{ width: "30%" }} />
+            </colgroup>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Book Number</th>
+                <th>Quality</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {books.map((book, index) => (
+                <TableRow
+                  book={book}
+                  key={`book-index-${index}`}
+                  dataLocked={dataLocked}
+                  index={index}
+                  changeBook={changeBook}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="checkout-table-footer">
         <Button intent="primary" disabled={!submittable} onClick={submit}>
