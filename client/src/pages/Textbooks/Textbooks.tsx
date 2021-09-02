@@ -121,9 +121,34 @@ export default function Textbooks() {
     setOpen(true);
   };
 
+  const showCheckOutTextbook = () => {
+    setPageStatus("Check Out");
+    setOpen(true);
+  };
+
+  const showCheckInTextbook = () => {
+    setPageStatus("Check In");
+    setOpen(true);
+  };
+
   const ActionsMenu = (
     <Menu className="custom-pop">
       <MenuItem icon="add" text="Add Textbooks" onClick={showAddTextbook} />
+
+      {canCheckIn.length > 0 && (
+        <MenuItem
+          icon="log-in"
+          text={`Check In ${canCheckIn.length} Textbooks`}
+          onClick={showCheckInTextbook}
+        />
+      )}
+      {canCheckOut.length > 0 && (
+        <MenuItem
+          icon="log-out"
+          text={`Check Out ${canCheckOut.length} Textbooks`}
+          onClick={showCheckOutTextbook}
+        />
+      )}
     </Menu>
   );
 
@@ -136,31 +161,7 @@ export default function Textbooks() {
         </Popover2>
       </div>
       <div className="table-wrapper">
-        <TableToolbox>
-          {canCheckOut.length > 0 && (
-            <Button
-              onClick={() => {
-                setPageStatus("Check Out");
-                setOpen(true);
-              }}
-              intent="primary"
-              style={{ margin: "0 15px" }}
-            >
-              Check Out {canCheckOut.length} Textbooks
-            </Button>
-          )}
-          {canCheckIn.length > 0 && (
-            <Button
-              onClick={() => {
-                setPageStatus("Check In");
-                setOpen(true);
-              }}
-              intent="primary"
-            >
-              Check In {canCheckIn.length} Textbooks
-            </Button>
-          )}
-        </TableToolbox>
+        <TableToolbox></TableToolbox>
         <TextbooksTable columns={columns} data={data} setSelected={setSelected} />
       </div>
       <Drawer

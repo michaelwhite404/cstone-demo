@@ -82,75 +82,84 @@ export default function TextbooksTable({
 
   return (
     <>
-      <table {...getTableProps()} id="textbooks-table">
-        <thead>
-          {
-            // Loop over the header rows
-            headerGroups.map((headerGroup) => (
-              // Apply the header row props
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {
-                  // Loop over the headers in each row
-                  headerGroup.headers.map((column) => (
-                    // Apply the header cell props
-                    <th {...column.getHeaderProps()}>
-                      {
-                        // Render the header
-                        column.render("Header")
-                      }
-                    </th>
-                  ))
-                }
-              </tr>
-            ))
-          }
-        </thead>
-        {/* Apply the table body props */}
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={`${row.isGrouped ? "set" : "book"} ${row.isSelected ? "selected" : ""}`}
-              >
-                {row.cells.map((cell) => {
-                  return (
-                    <td
-                      {...cell.getCellProps()}
-                      // colSpan={cell.isGrouped ? headerGroups.headers.length -1 : undefined}
-                    >
-                      {cell.isGrouped ? (
-                        // If it's a grouped cell, add an expander and row count
-                        <>
-                          <span {...row.getToggleRowExpandedProps()}>
-                            <Icon
-                              icon={`chevron-${row.isExpanded ? "down" : "right"}`}
-                              color="black"
-                              style={{ marginRight: 10 }}
-                            />
-                            {/* {row.isExpanded ? "👇" : "👉"} */}
-                          </span>{" "}
-                          {cell.render("Cell")} ({row.subRows.length})
-                        </>
-                      ) : cell.isAggregated ? (
-                        // If the cell is aggregated, use the Aggregated
-                        // renderer for cell
-                        cell.render("Aggregated")
-                      ) : (
-                        cell.render("Cell")
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <p style={{ margin: "10px 0 10px 20px" }}>
-        Selected Rows: {Object.keys(selectedRowIds).length}
-      </p>
+      <div
+        className="textbooks-table-container"
+        style={{ overflow: "auto", maxHeight: "calc(100vh - 195px)" }}
+      >
+        <table {...getTableProps()} id="textbooks-table">
+          <thead>
+            {
+              // Loop over the header rows
+              headerGroups.map((headerGroup) => (
+                // Apply the header row props
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {
+                    // Loop over the headers in each row
+                    headerGroup.headers.map((column) => (
+                      // Apply the header cell props
+                      <th {...column.getHeaderProps()} className="sticky-header">
+                        {
+                          // Render the header
+                          column.render("Header")
+                        }
+                      </th>
+                    ))
+                  }
+                </tr>
+              ))
+            }
+          </thead>
+          {/* Apply the table body props */}
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={`${row.isGrouped ? "set" : "book"} ${
+                    row.isSelected ? "selected" : ""
+                  }`}
+                >
+                  {row.cells.map((cell) => {
+                    return (
+                      <td
+                        {...cell.getCellProps()}
+                        // colSpan={cell.isGrouped ? headerGroups.headers.length -1 : undefined}
+                      >
+                        {cell.isGrouped ? (
+                          // If it's a grouped cell, add an expander and row count
+                          <>
+                            <span {...row.getToggleRowExpandedProps()}>
+                              <Icon
+                                icon={`chevron-${row.isExpanded ? "down" : "right"}`}
+                                color="black"
+                                style={{ marginRight: 10 }}
+                              />
+                              {/* {row.isExpanded ? "👇" : "👉"} */}
+                            </span>{" "}
+                            {cell.render("Cell")} ({row.subRows.length})
+                          </>
+                        ) : cell.isAggregated ? (
+                          // If the cell is aggregated, use the Aggregated
+                          // renderer for cell
+                          cell.render("Aggregated")
+                        ) : (
+                          cell.render("Cell")
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div class="table-bottom">
+        <span class="table-footer-results">
+          Selected Rows: {Object.keys(selectedRowIds).length}
+        </span>
+      </div>
     </>
   );
 }
