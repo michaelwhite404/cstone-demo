@@ -22,10 +22,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTextbook = exports.updateTextbook = exports.createTextbook = exports.getOneTextbook = exports.getAllTextbooks = void 0;
+exports.createSetAndBooks = exports.deleteTextbook = exports.updateTextbook = exports.createTextbook = exports.getOneTextbook = exports.getAllTextbooks = void 0;
 // import Textbook from "../../models/textbookModel";
 const textbookSetModel_1 = __importDefault(require("../../models/textbookSetModel"));
+const appError_1 = __importDefault(require("../../utils/appError"));
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const factory = __importStar(require("./handlerFactory"));
+const textbookModel_1 = __importDefault(require("../../models/textbookModel"));
+const pluralize_1 = __importDefault(require("pluralize"));
+var isPlainObject = require("lodash.isplainobject");
 const Model = textbookSetModel_1.default;
 const key = "textbook";
 /** `GET` - Gets all textbooks */
@@ -38,3 +43,26 @@ exports.createTextbook = factory.createOne(Model, key);
 exports.updateTextbook = factory.updateOne(Model, key);
 /** `DELETE` - Deletes textbook */
 exports.deleteTextbook = factory.deleteOne(Model, "Textbook");
+exports.createSetAndBooks = catchAsync_1.default(async (req, res, next) => {
+    if (!Array.isArray(req.body.books))
+        return next(new appError_1.default("The 'books' property must be an array", 400));
+    const books = req.body.books;
+    if (books.every((value) => !(isPlainObject(value) && value.bookNumber && value.quality && value.status))) {
+        return next(new appError_1.default("Each index in the 'books' array must be an object with a 'bookNumber', 'quality' and 'status' value", 400));
+    }
+    const setData = {
+        title: req.body.title,
+        class: req.body.class,
+        grade: req.body.grade,
+    };
+    const set = await textbookSetModel_1.default.create(setData);
+    const mappedBooks = books.map((b) => ({
+        ...b,
+        textbookSet: set._id,
+    }));
+    const textbooks = await textbookModel_1.default.create(mappedBooks);
+    res.status(200).json({
+        status: "success",
+        message: `${pluralize_1.default("textbook", textbooks.length, true)} added!`,
+    });
+});

@@ -31,6 +31,7 @@ router.use(authController_1.protect);
 router.use("/books", singleTextbookRoutes_1.default);
 router.use("/:textbookSet/books", singleTextbookRoutes_1.default);
 router.route("/").get(textbookController.getAllTextbooks).post(textbookController.createTextbook);
+router.post("/books/both", textbookController.createSetAndBooks);
 router
     .route("/:id")
     .get(textbookController.getOneTextbook)

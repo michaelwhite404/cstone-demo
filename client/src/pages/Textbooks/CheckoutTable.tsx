@@ -1,4 +1,4 @@
-import { Button, HTMLSelect, ProgressBar, Toaster } from "@blueprintjs/core";
+import { Button, HTMLSelect, ProgressBar } from "@blueprintjs/core";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
@@ -19,14 +19,14 @@ interface CheckoutTableProps {
   data: TextbookModel[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
-  toasterRef: React.RefObject<Toaster>;
+  showToaster: (message: string, intent: "success" | "danger") => void;
 }
 
 export default function CheckoutTable({
   data,
   setOpen,
   setTextbooks,
-  toasterRef,
+  showToaster,
 }: CheckoutTableProps) {
   const [classes, setClasses] = useState<Class[]>([]);
   const [checkoutData, setCheckoutData] = useState<{ book: string; student: string | null }[]>(
@@ -49,14 +49,6 @@ export default function CheckoutTable({
     const arr = Array(checkoutData.length).fill(+e.target.value);
     setCheckoutData(checkoutData.map((d) => ({ book: d.book, student: null })));
     setGradeSelect(arr);
-  };
-
-  const showToaster = (message: string, intent: "success" | "danger") => {
-    toasterRef.current!.show({
-      message,
-      intent,
-      icon: intent === "success" ? "tick" : "cross",
-    });
   };
 
   const completeCheckout = async () => {

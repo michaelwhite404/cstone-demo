@@ -1,6 +1,13 @@
 // import Textbook from "../../models/textbookModel";
 import TextbookSet from "../../models/textbookSetModel";
+import AppError from "../../utils/appError";
+import catchAsync from "../../utils/catchAsync";
+import { Request, Response, NextFunction } from "express";
 import * as factory from "./handlerFactory";
+import Textbook from "../../models/textbookModel";
+import { TextbookDocument } from "../../types/models/textbookTypes";
+import pluralize from "pluralize";
+var isPlainObject = require("lodash.isplainobject");
 
 const Model = TextbookSet;
 const key = "textbook";
@@ -15,3 +22,40 @@ export const createTextbook = factory.createOne(Model, key);
 export const updateTextbook = factory.updateOne(Model, key);
 /** `DELETE` - Deletes textbook */
 export const deleteTextbook = factory.deleteOne(Model, "Textbook");
+
+export const createSetAndBooks = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!Array.isArray(req.body.books))
+      return next(new AppError("The 'books' property must be an array", 400));
+    const books = req.body.books as any[];
+    if (
+      books.every(
+        (value) => !(isPlainObject(value) && value.bookNumber && value.quality && value.status)
+      )
+    ) {
+      return next(
+        new AppError(
+          "Each index in the 'books' array must be an object with a 'bookNumber', 'quality' and 'status' value",
+          400
+        )
+      );
+    }
+
+    const setData = {
+      title: req.body.title,
+      class: req.body.class,
+      grade: req.body.grade,
+    };
+    const set = await TextbookSet.create(setData);
+    const mappedBooks = books.map((b) => ({
+      ...b,
+      textbookSet: set._id,
+    }));
+    const textbooks = await Textbook.create<TextbookDocument[]>(mappedBooks);
+
+    res.status(200).json({
+      status: "success",
+      message: `${pluralize("textbook", textbooks.length, true)} added!`,
+    });
+  }
+);

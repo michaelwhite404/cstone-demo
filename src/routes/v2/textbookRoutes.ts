@@ -12,6 +12,8 @@ router.use("/:textbookSet/books", singleTextbookRouter);
 
 router.route("/").get(textbookController.getAllTextbooks).post(textbookController.createTextbook);
 
+router.post("/books/both", textbookController.createSetAndBooks);
+
 router
   .route("/:id")
   .get(textbookController.getOneTextbook)

@@ -1,15 +1,16 @@
-import { Button, HTMLSelect, InputGroup, NumericInput, Toaster } from "@blueprintjs/core";
+import { Button, HTMLSelect, InputGroup, NumericInput } from "@blueprintjs/core";
 import { XCircleIcon } from "@heroicons/react/solid";
+import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import TableToolbox from "../../components/Table/TableToolbox";
+import { APIError } from "../../types/apiResponses";
 import { grades } from "../../utils/grades";
 
-interface CheckoutTableProps {
-  data: TextbookModel[];
+interface AddTableProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
-  toasterRef: React.RefObject<Toaster>;
+  showToaster: (message: string, intent: "success" | "danger") => void;
 }
 
 interface PreBook {
@@ -19,14 +20,21 @@ interface PreBook {
   status: "Available" | "Checked Out" | "Replaced" | "Not Available";
 }
 
-export default function AddTable() {
-  const [data, setData] = useState({ title: "", class: 0, num: 0 });
+export default function AddTable({ setOpen, setTextbooks, showToaster }: AddTableProps) {
+  const [data, setData] = useState({ title: "", class: "", grade: 0, num: 1 });
   const [dataLocked, setDataLocked] = useState(false);
-  const [books, setBooks] = useState<PreBook[]>([]);
+  const [books, setBooks] = useState<PreBook[]>([
+    {
+      passed: true,
+      bookNumber: 1,
+      quality: "Excellent",
+      status: "Available",
+    },
+  ]);
 
   const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let { name, value }: any = e.target;
-    if (name === "class") value = +value;
+    if (name === "grade") value = +value;
     setData({ ...data, [name]: value });
   };
 
@@ -42,9 +50,7 @@ export default function AddTable() {
     );
   };
 
-  const toggleLock = () => {
-    setDataLocked(!dataLocked);
-  };
+  const toggleLock = () => setDataLocked(!dataLocked);
 
   const changeBook = (index: number, key: keyof PreBook, value: string) => {
     const copiedBooks = books.map((book) => ({ ...book, passed: true }));
@@ -76,9 +82,33 @@ export default function AddTable() {
     );
   };
 
-  const dataPassed = data.title.length > 0 && data.class > -1 && data.num > 0;
+  const dataPassed =
+    data.title.length > 0 && data.class.length > 0 && data.grade > -1 && data.num > 0;
   const booksPassed = books.filter((book) => book.passed === false).length === 0;
   const submittable = dataPassed && dataLocked && booksPassed;
+
+  const submit = async () => {
+    if (submittable) {
+      try {
+        const result = await axios.post("/api/v2/textbooks/books/both", { ...data, books });
+        try {
+          const res = await axios.get("/api/v2/textbooks/books", {
+            params: {
+              sort: "textbookSet,bookNumber",
+              active: true,
+            },
+          });
+          setTextbooks(res.data.data.books);
+          setOpen(false);
+          showToaster(result.data.message, "success");
+        } catch (err) {
+          showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+        }
+      } catch (err) {
+        showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+      }
+    }
+  };
   return (
     <>
       <div>
@@ -100,11 +130,21 @@ export default function AddTable() {
                   />
                 </div>
                 <div className="table-toolbox-item">
+                  <span>Class</span>
+                  <InputGroup
+                    type="text"
+                    value={data.class}
+                    name="class"
+                    onChange={handleDataChange}
+                    disabled={dataLocked}
+                  />
+                </div>
+                <div className="table-toolbox-item">
                   <span>Grade</span>
                   <HTMLSelect
                     options={grades.map((g, i) => ({ label: g, value: i }))}
-                    value={data.class}
-                    name="class"
+                    value={data.grade}
+                    name="grade"
                     onChange={handleDataChange}
                     style={{ width: 100 }}
                     disabled={dataLocked}
@@ -116,7 +156,7 @@ export default function AddTable() {
                     value={data.num.toString()}
                     name="num"
                     onValueChange={handleNumberChange}
-                    min={0}
+                    min={1}
                     style={{ width: 50 }}
                     allowNumericCharactersOnly
                     disabled={dataLocked}
@@ -165,7 +205,7 @@ export default function AddTable() {
         </table>
       </div>
       <div className="checkout-table-footer">
-        <Button intent="primary" disabled={!submittable}>
+        <Button intent="primary" disabled={!submittable} onClick={submit}>
           Add Textbooks
         </Button>
       </div>

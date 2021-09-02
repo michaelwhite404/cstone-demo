@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, HTMLSelect, Toaster } from "@blueprintjs/core";
+import { Button, HTMLSelect } from "@blueprintjs/core";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import axios, { AxiosError } from "axios";
 import { APIError } from "../../types/apiResponses";
@@ -8,14 +8,14 @@ interface CheckoutTableProps {
   data: TextbookModel[];
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setTextbooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
-  toasterRef: React.RefObject<Toaster>;
+  showToaster: (message: string, intent: "success" | "danger") => void;
 }
 
 export default function CheckinTable({
   data,
   setOpen,
   setTextbooks,
-  toasterRef,
+  showToaster,
 }: CheckoutTableProps) {
   const [checkinData, setCheckinData] = useState<{ id: string; quality: string }[]>(
     data.map((t) => ({ id: t._id, quality: t.quality }))
@@ -30,13 +30,6 @@ export default function CheckinTable({
       data[index] = { id: bookId, quality };
       setCheckinData(data);
     }
-  };
-  const showToaster = (message: string, intent: "success" | "danger") => {
-    toasterRef.current!.show({
-      message,
-      intent,
-      icon: intent === "success" ? "tick" : "cross",
-    });
   };
 
   const completeCheckout = async () => {

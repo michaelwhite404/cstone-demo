@@ -30,6 +30,14 @@ export default function Textbooks() {
     setPageStatus("Viewing");
   };
 
+  const showToaster = (message: string, intent: "success" | "danger") => {
+    toasterRef.current?.show({
+      message,
+      intent,
+      icon: intent === "success" ? "tick" : "cross",
+    });
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -154,7 +162,7 @@ export default function Textbooks() {
             data={canCheckOut}
             setOpen={setOpen}
             setTextbooks={setTextbooks}
-            toasterRef={toasterRef}
+            showToaster={showToaster}
           />
         )}
         {pageStatus === "Check In" && (
@@ -162,16 +170,11 @@ export default function Textbooks() {
             data={canCheckIn}
             setOpen={setOpen}
             setTextbooks={setTextbooks}
-            toasterRef={toasterRef}
+            showToaster={showToaster}
           />
         )}
         {pageStatus === "Add" && (
-          <AddTable
-          // data={canCheckIn}
-          // setOpen={setOpen}
-          // setTextbooks={setTextbooks}
-          // toasterRef={toasterRef}
-          />
+          <AddTable setOpen={setOpen} setTextbooks={setTextbooks} showToaster={showToaster} />
         )}
       </Drawer>
       <Toaster position="top-right" ref={toasterRef} />
