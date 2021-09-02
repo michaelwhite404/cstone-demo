@@ -103,6 +103,7 @@ export default function Textbooks() {
           params: {
             sort: "textbookSet,bookNumber",
             active: true,
+            limit: 100000,
           },
         });
         setTextbooks(res.data.data.books);
