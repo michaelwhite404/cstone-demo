@@ -1,6 +1,7 @@
-import { Button, Drawer, Toaster } from "@blueprintjs/core";
+import { Button, Drawer, Menu, MenuItem, Toaster } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Popover2 } from "@blueprintjs/popover2";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import { useDocTitle } from "../../hooks";
 import { APIError } from "../../types/apiResponses";
@@ -18,8 +19,10 @@ export default function Textbooks() {
   useDocTitle("Textbooks | Cornerstone App");
   const [textbooks, setTextbooks] = useState<TextbookModel[]>([]);
   const [selected, setSelected] = useState<TextbookModel[]>([]);
-  const [open, setOpen] = useState(true);
-  const [pageStatus, setPageStatus] = useState<"Viewing" | "Check In" | "Check Out" | "Add">("Add");
+  const [open, setOpen] = useState(false);
+  const [pageStatus, setPageStatus] = useState<"Viewing" | "Check In" | "Check Out" | "Add">(
+    "Viewing"
+  );
   const toasterRef = useRef<Toaster>(null);
 
   const canCheckOut = selected.filter((t) => t.status === "Available");
@@ -113,10 +116,24 @@ export default function Textbooks() {
     }
   }, []);
 
+  const showAddTextbook = () => {
+    setPageStatus("Add");
+    setOpen(true);
+  };
+
+  const ActionsMenu = (
+    <Menu className="custom-pop">
+      <MenuItem icon="add" text="Add Textbooks" onClick={showAddTextbook} />
+    </Menu>
+  );
+
   return (
     <div>
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Textbooks</h1>
+        <Popover2 content={ActionsMenu} placement="bottom-end" className="menu-popover">
+          <Button icon="settings" text="Actions" large />
+        </Popover2>
       </div>
       <div className="table-wrapper">
         <TableToolbox>

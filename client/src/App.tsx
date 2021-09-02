@@ -19,6 +19,7 @@ import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { EmployeeModel } from "../../src/types/models/employeeTypes";
 import Home from "./pages/Home/Home";
+import { FocusStyleManager } from "@blueprintjs/core";
 
 interface NavRouteProps {
   exact: boolean;
@@ -69,6 +70,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [user, setUser] = useState<EmployeeModel | null>(null);
+
+  FocusStyleManager.onlyShowFocusOnTabs();
 
   useEffect(() => {
     fetchMe();
