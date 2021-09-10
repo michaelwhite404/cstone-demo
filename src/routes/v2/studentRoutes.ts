@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { protect } from "../../controllers/v1/authController";
-import { groupTest } from "../../controllers/v1/studentController";
 import * as studentController from "../../controllers/v2/studentController";
 
 const studentRouter = Router();
@@ -12,7 +11,7 @@ studentRouter
   .get(studentController.getAllStudents)
   .post(studentController.createStudent);
 
-studentRouter.get("/group", groupTest);
+studentRouter.get("/group", studentController.groupSudentsByGrade);
 
 studentRouter
   .route("/:id")

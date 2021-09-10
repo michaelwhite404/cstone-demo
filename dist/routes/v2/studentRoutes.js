@@ -21,7 +21,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authController_1 = require("../../controllers/v1/authController");
-const studentController_1 = require("../../controllers/v1/studentController");
 const studentController = __importStar(require("../../controllers/v2/studentController"));
 const studentRouter = express_1.Router();
 studentRouter.use(authController_1.protect);
@@ -29,7 +28,7 @@ studentRouter
     .route("/")
     .get(studentController.getAllStudents)
     .post(studentController.createStudent);
-studentRouter.get("/group", studentController_1.groupTest);
+studentRouter.get("/group", studentController.groupSudentsByGrade);
 studentRouter
     .route("/:id")
     .get(studentController.getOneStudent)

@@ -22,8 +22,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStudent = exports.updateStudent = exports.createStudent = exports.getOneStudent = exports.getAllStudents = void 0;
+exports.groupSudentsByGrade = exports.deleteStudent = exports.updateStudent = exports.createStudent = exports.getOneStudent = exports.getAllStudents = void 0;
 const studentModel_1 = __importDefault(require("../../models/studentModel"));
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const factory = __importStar(require("./handlerFactory"));
 const Model = studentModel_1.default;
 const key = "student";
@@ -44,3 +45,35 @@ exports.createStudent = factory.createOne(Model, key);
 exports.updateStudent = factory.updateOne(Model, key);
 /** `DELETE` - Deletes student */
 exports.deleteStudent = factory.deleteOne(Model, "Student");
+exports.groupSudentsByGrade = catchAsync_1.default(async (_, res) => {
+    const grades = await studentModel_1.default.aggregate([
+        { $match: { status: "Active" } },
+        {
+            $sort: { lastName: 1 },
+        },
+        {
+            $group: {
+                _id: "$grade",
+                count: { $sum: 1 },
+                students: { $push: { id: "$_id", fullName: "$fullName" } },
+            },
+        },
+        {
+            $project: {
+                grade: "$_id",
+                students: 1,
+                count: 1,
+                _id: 0,
+            },
+        },
+        {
+            $sort: { grade: 1 },
+        },
+    ]);
+    res.status(200).json({
+        status: "success",
+        data: {
+            grades,
+        },
+    });
+});
