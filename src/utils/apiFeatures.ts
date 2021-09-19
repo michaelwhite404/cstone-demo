@@ -5,7 +5,7 @@ class APIFeatures<T extends Document> {
   query: Query<T[], any>;
   private queryString: ParsedQueryString;
 
-  constructor(query: Query<T[], any>, queryString: ParsedQueryString) {
+  constructor(query: Query<T[], any>, queryString: ParsedQueryString = {}) {
     this.query = query;
     this.queryString = queryString;
   }

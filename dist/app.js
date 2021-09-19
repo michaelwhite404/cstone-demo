@@ -12,12 +12,15 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
 const compression_1 = __importDefault(require("compression"));
 const passport_1 = __importDefault(require("passport"));
+const express_graphql_1 = require("express-graphql");
 const appError_1 = __importDefault(require("./utils/appError"));
 const errorController_1 = __importDefault(require("./controllers/errorController"));
 const apiRoutes_1 = __importDefault(require("./routes/apiRoutes"));
 // import viewRouter from "./routes/v1/viewRoutes";
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 require("./config/passport-setup");
+// import { buildSchema } from "graphql";
+const schema_1 = __importDefault(require("./graphql/schema"));
 const app = express_1.default();
 // app.set("view engine", "pug");
 // app.set("views", path.join(__dirname, "../views"));
@@ -61,6 +64,14 @@ app.use(express_mongo_sanitize_1.default());
 app.use(xss_clean_1.default());
 app.use(compression_1.default());
 app.use("/api", apiRoutes_1.default);
+app.use("/graphql", express_graphql_1.graphqlHTTP({
+    schema: schema_1.default,
+    graphiql: true,
+})
+/* (req, res) => {
+  res.status(200);
+} */
+);
 app.use("/auth", authRoutes_1.default);
 // app.use("/", viewRouter);
 if (process.env.NODE_ENV === "production") {

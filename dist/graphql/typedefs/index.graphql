@@ -1,0 +1,14 @@
+# Custom Scalars
+scalar Date
+
+type Query {
+  "The list of students at Cornerstone"
+  students(sort: String, limit: Int, page: Int, filter: StudentFilter): [Student!]!
+  student(id: ID!): Student
+}
+
+input MultipleQuery {
+  sort: String
+  limit: Int
+  page: Int
+}

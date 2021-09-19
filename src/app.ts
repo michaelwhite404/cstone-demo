@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import compression from "compression";
 import passport from "passport";
+import { graphqlHTTP } from "express-graphql";
 
 import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
@@ -14,6 +15,8 @@ import apiRouter from "./routes/apiRoutes";
 // import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
+// import { buildSchema } from "graphql";
+import schema from "./graphql/schema";
 
 const app = express();
 
@@ -70,6 +73,16 @@ app.use(xss());
 app.use(compression());
 
 app.use("/api", apiRouter);
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+  /* (req, res) => {
+    res.status(200);
+  } */
+);
 app.use("/auth", authRouter);
 // app.use("/", viewRouter);
 

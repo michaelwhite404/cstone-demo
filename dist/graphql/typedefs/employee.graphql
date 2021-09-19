@@ -1,0 +1,26 @@
+type Employee {
+  # The ID of the employee
+  _id: ID!
+  # The employee's first name
+  firstName: String!
+  # The employee's last name
+  lastName: String!
+  # The employee's full name
+  fullName: String!
+  # The employee's email
+  email: String!
+  homeroomGrade: Int
+  title: String!
+  role: String
+  image: String
+  googleId: String
+  password: String
+  passwordConfirm: String
+  passwordChangedAt: Date
+  passwordResetToken: String
+  passwordResetExpires: Date
+  lastLogin: Date
+  createdAt: Date
+  active: Boolean!
+  slug: String!
+}
