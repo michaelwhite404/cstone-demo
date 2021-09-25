@@ -1,17 +1,26 @@
+enum EmployeeRole {
+  SuperAdmin
+  Admin
+  Development
+  Instructor
+  Intern
+  Maintenance
+}
+
 type Employee {
-  # The ID of the employee
+  "The ID of the employee"
   _id: ID!
-  # The employee's first name
+  "The employee's first name"
   firstName: String!
-  # The employee's last name
+  "The employee's last name"
   lastName: String!
-  # The employee's full name
+  "The employee's full name"
   fullName: String!
-  # The employee's email
+  "The employee's email"
   email: String!
   homeroomGrade: Int
   title: String!
-  role: String
+  role: EmployeeRole!
   image: String
   googleId: String
   password: String

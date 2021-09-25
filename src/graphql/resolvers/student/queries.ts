@@ -13,7 +13,6 @@ interface StudentsArgs {
 
 const studentQueries = {
   students: async (_: any, args: StudentsArgs) => {
-    if (!args.sort) args.sort = "grade,lastName";
     const { filter = {}, ...rest } = args;
     const newArgs = Object.assign(filter, rest);
     const pqs = { ...newArgs } as ParsedQueryString;

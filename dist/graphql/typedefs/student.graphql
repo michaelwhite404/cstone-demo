@@ -31,6 +31,8 @@ type Student {
 }
 
 input StudentFilter {
+  "The ID of the student"
+  _id: ID
   "The student's first name"
   firstName: String
   "The student's last name"

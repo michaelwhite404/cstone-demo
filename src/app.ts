@@ -15,7 +15,7 @@ import apiRouter from "./routes/apiRoutes";
 // import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
-// import { buildSchema } from "graphql";
+import { buildSchema } from "graphql";
 import schema from "./graphql/schema";
 
 const app = express();
@@ -77,7 +77,7 @@ app.use(
   "/graphql",
   graphqlHTTP({
     schema,
-    graphiql: true,
+    graphiql: process.env.NODE_ENV === "development",
   })
   /* (req, res) => {
     res.status(200);

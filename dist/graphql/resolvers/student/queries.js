@@ -8,8 +8,6 @@ const studentModel_1 = __importDefault(require("../../../models/studentModel"));
 const apiFeatures_1 = __importDefault(require("../../../utils/apiFeatures"));
 const studentQueries = {
     students: async (_, args) => {
-        if (!args.sort)
-            args.sort = "grade,lastName";
         const { filter = {}, ...rest } = args;
         const newArgs = Object.assign(filter, rest);
         const pqs = { ...newArgs };

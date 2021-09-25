@@ -19,7 +19,6 @@ const apiRoutes_1 = __importDefault(require("./routes/apiRoutes"));
 // import viewRouter from "./routes/v1/viewRoutes";
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 require("./config/passport-setup");
-// import { buildSchema } from "graphql";
 const schema_1 = __importDefault(require("./graphql/schema"));
 const app = express_1.default();
 // app.set("view engine", "pug");
@@ -66,7 +65,7 @@ app.use(compression_1.default());
 app.use("/api", apiRoutes_1.default);
 app.use("/graphql", express_graphql_1.graphqlHTTP({
     schema: schema_1.default,
-    graphiql: true,
+    graphiql: process.env.NODE_ENV === "development",
 })
 /* (req, res) => {
   res.status(200);

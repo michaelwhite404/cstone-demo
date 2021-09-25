@@ -2,13 +2,13 @@
 scalar Date
 
 type Query {
-  "The list of students at Cornerstone"
-  students(sort: String, limit: Int, page: Int, filter: StudentFilter): [Student!]!
+  "A list of students at that have ever attended Cornerstone"
+  students(
+    sort: String = "grade,lastName"
+    limit: Int = 100
+    page: Int = 1
+    filter: StudentFilter
+  ): [Student!]!
+  "A student queried by ID"
   student(id: ID!): Student
-}
-
-input MultipleQuery {
-  sort: String
-  limit: Int
-  page: Int
 }
