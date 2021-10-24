@@ -68,6 +68,6 @@ textbookSchema.post("save", async function () {
   }
 });
 
-const Textbook = model("Textbook", textbookSchema);
+const Textbook = model<TextbookDocument>("Textbook", textbookSchema);
 
 export default Textbook;

@@ -37,6 +37,6 @@ textbookSetSchema.pre("save", function (next) {
   next();
 });
 
-const TextbookSet = model("TextbookSet", textbookSetSchema);
+const TextbookSet = model<TextbookSetDocument>("TextbookSet", textbookSetSchema);
 
 export default TextbookSet;
