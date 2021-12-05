@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
+import { google } from "googleapis";
 import { Types } from "mongoose";
 import CheckoutLog from "../../models/checkoutLogModel";
 import Device from "../../models/deviceModel";
@@ -163,5 +164,31 @@ export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) 
     status: "success",
     requestedAt: req.requestTime,
     types,
+  });
+});
+
+export const getDevicesFromGoogle = catchAsync(async (req: Request, res: Response) => {
+  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+  const authEmail = req.employee.email;
+  const auth = new google.auth.JWT(
+    process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    undefined,
+    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    scopes,
+    authEmail
+  );
+
+  const admin = google.admin({
+    version: "directory_v1",
+    auth,
+  });
+  const result = await admin.chromeosdevices.list({
+    customerId: process.env.GOOGLE_CUSTOMER_ID,
+  });
+
+  const devices = result.data.chromeosdevices;
+
+  res.status(200).json({
+    devices,
   });
 });

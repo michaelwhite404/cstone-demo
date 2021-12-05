@@ -5,6 +5,7 @@ declare namespace Express {
 
     employee: {
       _id: any;
+      email: string;
       role: string;
     };
   }

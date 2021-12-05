@@ -47,6 +47,7 @@ deviceRouter.use("/errors", deviceErrorLogRoutes_1.default);
 deviceRouter.use("/:device/errors", deviceErrorLogRoutes_1.default);
 deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceController.createDevice);
 deviceRouter.get("/types", deviceController.getAllDeviceTypes);
+deviceRouter.get("/from-google", deviceController.getDevicesFromGoogle);
 deviceRouter
     .route("/:id")
     .get(deviceController.getOneDevice)

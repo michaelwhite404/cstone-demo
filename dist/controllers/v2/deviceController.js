@@ -22,7 +22,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllDeviceTypes = exports.checkInDevice = exports.checkOutDevice = exports.deleteDevice = exports.updateDevice = exports.createDevice = exports.getOneDevice = exports.getAllDevices = void 0;
+exports.getDevicesFromGoogle = exports.getAllDeviceTypes = exports.checkInDevice = exports.checkOutDevice = exports.deleteDevice = exports.updateDevice = exports.createDevice = exports.getOneDevice = exports.getAllDevices = void 0;
+const googleapis_1 = require("googleapis");
 const mongoose_1 = require("mongoose");
 const checkoutLogModel_1 = __importDefault(require("../../models/checkoutLogModel"));
 const deviceModel_1 = __importDefault(require("../../models/deviceModel"));
@@ -168,5 +169,22 @@ exports.getAllDeviceTypes = catchAsync_1.default(async (req, res) => {
         status: "success",
         requestedAt: req.requestTime,
         types,
+    });
+});
+exports.getDevicesFromGoogle = catchAsync_1.default(async (req, res) => {
+    var _a;
+    const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+    const authEmail = req.employee.email;
+    const auth = new googleapis_1.google.auth.JWT(process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL, undefined, (_a = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) === null || _a === void 0 ? void 0 : _a.replace(/\\n/g, "\n"), scopes, authEmail);
+    const admin = googleapis_1.google.admin({
+        version: "directory_v1",
+        auth,
+    });
+    const result = await admin.chromeosdevices.list({
+        customerId: process.env.GOOGLE_CUSTOMER_ID,
+    });
+    const devices = result.data.chromeosdevices;
+    res.status(200).json({
+        devices,
     });
 });
