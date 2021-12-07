@@ -31,6 +31,7 @@ const errorLogModel_1 = __importDefault(require("../../models/errorLogModel"));
 const studentModel_1 = __importDefault(require("../../models/studentModel"));
 const appError_1 = __importDefault(require("../../utils/appError"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const authController_1 = require("./authController");
 const factory = __importStar(require("./handlerFactory"));
 const Model = deviceModel_1.default;
 const key = "device";
@@ -172,16 +173,14 @@ exports.getAllDeviceTypes = catchAsync_1.default(async (req, res) => {
     });
 });
 exports.getDevicesFromGoogle = catchAsync_1.default(async (req, res) => {
-    var _a;
     const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-    const authEmail = req.employee.email;
-    const auth = new googleapis_1.google.auth.JWT(process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL, undefined, (_a = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) === null || _a === void 0 ? void 0 : _a.replace(/\\n/g, "\n"), scopes, authEmail);
     const admin = googleapis_1.google.admin({
         version: "directory_v1",
-        auth,
+        auth: authController_1.googleAuthJWT(scopes, req.employee.email),
     });
     const result = await admin.chromeosdevices.list({
         customerId: process.env.GOOGLE_CUSTOMER_ID,
+        projection: "BASIC",
     });
     const devices = result.data.chromeosdevices;
     res.status(200).json({

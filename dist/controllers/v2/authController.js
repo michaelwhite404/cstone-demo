@@ -3,8 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.googleLogin = exports.createEmployee = void 0;
+exports.googleAuthJWT = exports.googleLogin = exports.createEmployee = void 0;
 const google_auth_library_1 = require("google-auth-library");
+const googleapis_1 = require("googleapis");
 const employeeModel_1 = __importDefault(require("../../models/employeeModel"));
 const appError_1 = __importDefault(require("../../utils/appError"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -55,3 +56,14 @@ exports.googleLogin = catchAsync_1.default(async (req, res, next) => {
     await employee.save();
     authController_1.createSendToken(employee, 200, res);
 });
+/**
+ *
+ * @param scopes list of requested scopes or a single scope.
+ * @param imperonatedEmail impersonated account's email address.
+ */
+const googleAuthJWT = (scopes, imperonatedEmail) => {
+    var _a;
+    const auth = new googleapis_1.google.auth.JWT(process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL, undefined, (_a = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) === null || _a === void 0 ? void 0 : _a.replace(/\\n/g, "\n"), scopes, imperonatedEmail);
+    return auth;
+};
+exports.googleAuthJWT = googleAuthJWT;

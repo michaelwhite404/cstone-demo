@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { OAuth2Client } from "google-auth-library";
+import { JWT, OAuth2Client } from "google-auth-library";
+import { google } from "googleapis";
 import Employee from "../../models/employeeModel";
 import { EmployeeModel } from "../../types/models/employeeTypes";
 import AppError from "../../utils/appError";
@@ -59,3 +60,19 @@ export const googleLogin = catchAsync(async (req: Request, res: Response, next: 
   await employee.save();
   createSendToken(employee, 200, res);
 });
+
+/**
+ *
+ * @param scopes list of requested scopes or a single scope.
+ * @param imperonatedEmail impersonated account's email address.
+ */
+export const googleAuthJWT = (scopes?: string | string[], imperonatedEmail?: string): JWT => {
+  const auth = new google.auth.JWT(
+    process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    undefined,
+    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    scopes,
+    imperonatedEmail
+  );
+  return auth;
+};

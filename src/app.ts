@@ -15,7 +15,6 @@ import apiRouter from "./routes/apiRoutes";
 // import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import "./config/passport-setup";
-import { buildSchema } from "graphql";
 import schema from "./graphql/schema";
 
 const app = express();

@@ -8,6 +8,7 @@ import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
+import { googleAuthJWT } from "./authController";
 import * as factory from "./handlerFactory";
 
 const Model = Device;
@@ -169,25 +170,16 @@ export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) 
 
 export const getDevicesFromGoogle = catchAsync(async (req: Request, res: Response) => {
   const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-  const authEmail = req.employee.email;
-  const auth = new google.auth.JWT(
-    process.env.GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL,
-    undefined,
-    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    scopes,
-    authEmail
-  );
-
   const admin = google.admin({
     version: "directory_v1",
-    auth,
+    auth: googleAuthJWT(scopes, req.employee.email),
   });
   const result = await admin.chromeosdevices.list({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
+    projection: "BASIC",
   });
 
   const devices = result.data.chromeosdevices;
-
   res.status(200).json({
     devices,
   });
