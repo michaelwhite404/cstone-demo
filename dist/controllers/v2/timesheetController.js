@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTimeSheetEntry = exports.getOneTimeSheetEntry = exports.getAllTimeSheetEntries = void 0;
+exports.deleteTimesheetEntry = exports.createTimeSheetEntry = exports.getOneTimeSheetEntry = exports.getAllTimeSheetEntries = void 0;
 const timesheetEntryModel_1 = __importDefault(require("../../models/timesheetEntryModel"));
 const appError_1 = __importDefault(require("../../utils/appError"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -38,7 +38,7 @@ exports.getAllTimeSheetEntries = factory.getAll(Model, key);
  */
 exports.getOneTimeSheetEntry = factory.getOneById(Model, key);
 /** `POST` - Creates a new timesheet entry
- *  - Only users with the role `Super Admin` or `Admin` can access this route
+ *  - Only users with timesheet enabled can use this
  */
 exports.createTimeSheetEntry = catchAsync_1.default(async (req, res, next) => {
     if (!req.employee.timesheetEnabled)
@@ -55,5 +55,18 @@ exports.createTimeSheetEntry = catchAsync_1.default(async (req, res, next) => {
         data: {
             timesheetEntry,
         },
+    });
+});
+exports.deleteTimesheetEntry = catchAsync_1.default(async (req, res, next) => {
+    const timesheetEntry = await timesheetEntryModel_1.default.findById(req.params.id);
+    if (!timesheetEntry)
+        return next(new appError_1.default("No timesheet entry found with that ID", 404));
+    if (timesheetEntry.approved)
+        return next(new appError_1.default("Approved timesheet entries cannot be deleted", 403));
+    await timesheetEntry.remove();
+    res.status(200).json({
+        status: "success",
+        requestedAt: req.requestTime,
+        message: "1 timesheet entry has been deleted",
     });
 });

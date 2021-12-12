@@ -2,7 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import TimesheetEntry from "../../models/timesheetEntryModel";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
-import datesAreOnSameDay from "../../utils/datesAreOnSameDay";
 
 import * as factory from "./handlerFactory";
 
@@ -20,7 +19,7 @@ export const getAllTimeSheetEntries: RequestHandler = factory.getAll(Model, key)
 export const getOneTimeSheetEntry: RequestHandler = factory.getOneById(Model, key);
 
 /** `POST` - Creates a new timesheet entry
- *  - Only users with the role `Super Admin` or `Admin` can access this route
+ *  - Only users with timesheet enabled can use this
  */
 export const createTimeSheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +39,25 @@ export const createTimeSheetEntry = catchAsync(
       data: {
         timesheetEntry,
       },
+    });
+  }
+);
+
+export const deleteTimesheetEntry = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const timesheetEntry = await TimesheetEntry.findById(req.params.id);
+
+    if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
+
+    if (timesheetEntry.approved)
+      return next(new AppError("Approved timesheet entries cannot be deleted", 403));
+
+    await timesheetEntry.remove();
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      message: "1 timesheet entry has been deleted",
     });
   }
 );
