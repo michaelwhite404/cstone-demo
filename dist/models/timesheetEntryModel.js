@@ -11,10 +11,19 @@ const timesheetEntrySchema = new mongoose_1.Schema({
         type: mongoose_1.Types.ObjectId,
         ref: "Employee",
         required: [true, "Each timesheet entry must have an employee id"],
+        immutable: true,
     },
     timeStart: {
         type: Date,
         required: [true, "Each timesheet entry must have a start time"],
+        validate: {
+            validator: function (timeStart) {
+                // @ts-ignore
+                const timeEnd = this.timeEnd;
+                return timeStart.getTime() < timeEnd.getTime();
+            },
+            message: "Start time must be before end time",
+        },
     },
     timeEnd: {
         type: Date,

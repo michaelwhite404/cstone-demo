@@ -5,6 +5,7 @@ import {
   deleteTimesheetEntry,
   getAllTimeSheetEntries,
   getOneTimeSheetEntry,
+  updateTimesheetEntry,
 } from "../../controllers/v2/timesheetController";
 
 const router = Router();
@@ -13,6 +14,10 @@ router.use(protect);
 
 router.route("/").get(getAllTimeSheetEntries).post(createTimeSheetEntry);
 
-router.route("/:id").get(getOneTimeSheetEntry).patch().delete(deleteTimesheetEntry);
+router
+  .route("/:id")
+  .get(getOneTimeSheetEntry)
+  .patch(updateTimesheetEntry)
+  .delete(deleteTimesheetEntry);
 
 export default router;

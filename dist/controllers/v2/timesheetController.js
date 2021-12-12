@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTimesheetEntry = exports.createTimeSheetEntry = exports.getOneTimeSheetEntry = exports.getAllTimeSheetEntries = void 0;
+exports.deleteTimesheetEntry = exports.updateTimesheetEntry = exports.createTimeSheetEntry = exports.getOneTimeSheetEntry = exports.getAllTimeSheetEntries = void 0;
 const timesheetEntryModel_1 = __importDefault(require("../../models/timesheetEntryModel"));
 const appError_1 = __importDefault(require("../../utils/appError"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
@@ -54,6 +54,24 @@ exports.createTimeSheetEntry = catchAsync_1.default(async (req, res, next) => {
         requestedAt: req.requestTime,
         data: {
             timesheetEntry,
+        },
+    });
+});
+exports.updateTimesheetEntry = catchAsync_1.default(async (req, res, next) => {
+    const timesheetEntry = await timesheetEntryModel_1.default.findById(req.params.id);
+    if (!timesheetEntry)
+        return next(new appError_1.default("No timesheet entry found with that ID", 404));
+    if (timesheetEntry.approved)
+        return next(new appError_1.default("Approved timesheet entries cannot be updated", 403));
+    req.body.timeStart ? (timesheetEntry.timeStart = req.body.timeStart) : "";
+    req.body.timeEnd ? (timesheetEntry.timeEnd = req.body.timeEnd) : "";
+    req.body.description ? (timesheetEntry.description = req.body.description) : "";
+    await timesheetEntry.save({ validateBeforeSave: true });
+    res.status(200).json({
+        status: "success",
+        requestedAt: req.requestTime,
+        data: {
+            timesheetEntry: timesheetEntry,
         },
     });
 });

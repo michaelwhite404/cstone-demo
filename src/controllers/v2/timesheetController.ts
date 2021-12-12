@@ -43,6 +43,31 @@ export const createTimeSheetEntry = catchAsync(
   }
 );
 
+export const updateTimesheetEntry = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const timesheetEntry = await TimesheetEntry.findById(req.params.id);
+
+    if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
+
+    if (timesheetEntry.approved)
+      return next(new AppError("Approved timesheet entries cannot be updated", 403));
+
+    req.body.timeStart ? (timesheetEntry.timeStart = req.body.timeStart) : "";
+    req.body.timeEnd ? (timesheetEntry.timeEnd = req.body.timeEnd) : "";
+    req.body.description ? (timesheetEntry.description = req.body.description) : "";
+
+    await timesheetEntry.save({ validateBeforeSave: true });
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        timesheetEntry: timesheetEntry,
+      },
+    });
+  }
+);
+
 export const deleteTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const timesheetEntry = await TimesheetEntry.findById(req.params.id);
