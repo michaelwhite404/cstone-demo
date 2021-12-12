@@ -176,7 +176,7 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
 };
 
 export const restrictTo = (...roles: any[]) => {
-  return (req: CustomRequest, _: Response, next: NextFunction) => {
+  return (req: Request, _: Response, next: NextFunction) => {
     // roles ['admin','lead-guide]
     if (!roles.includes(req.employee.role)) {
       return next(new AppError("You do not have permission to perform this action", 403));

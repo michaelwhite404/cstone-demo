@@ -77,6 +77,10 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
     select: false,
   },
   slug: String,
+  timesheetEnabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 employeeSchema.pre<EmployeeDocument>("save", function (next) {

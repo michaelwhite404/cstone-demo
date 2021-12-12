@@ -80,6 +80,10 @@ const employeeSchema = new mongoose_1.Schema({
         select: false,
     },
     slug: String,
+    timesheetEnabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 employeeSchema.pre("save", function (next) {
     this.fullName = `${this.firstName} ${this.lastName}`;
