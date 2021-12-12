@@ -7,6 +7,7 @@ declare namespace Express {
       _id: any;
       email: string;
       role: string;
+      timesheetEnabled: boolean;
     };
   }
 }

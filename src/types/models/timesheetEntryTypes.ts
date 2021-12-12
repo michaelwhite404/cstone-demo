@@ -8,11 +8,11 @@ export interface TimesheetModel {
   timeStart: Date;
   timeEnd: Date;
   description: string;
-  hours: number;
+  hours?: number;
   approved: boolean;
-  approvedBy: PopulatedDoc<EmployeeModel>;
+  approvedBy?: PopulatedDoc<EmployeeModel>;
 }
 
-export interface EmployeeDocument extends TimesheetModel, Document {
+export interface TimesheetEntryDocument extends TimesheetModel, Document {
   _id: TimesheetModel["_id"];
 }

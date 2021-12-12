@@ -21,6 +21,7 @@ export interface EmployeeModel {
   createdAt: Date;
   active: boolean;
   slug: string;
+  timesheetEnabled: boolean;
 }
 
 type EmployeeRole =
