@@ -62,7 +62,7 @@ export const updateTimesheetEntry = catchAsync(
       status: "success",
       requestedAt: req.requestTime,
       data: {
-        timesheetEntry: timesheetEntry,
+        timesheetEntry,
       },
     });
   }
