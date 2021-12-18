@@ -5,6 +5,7 @@ import employeeRouter from "./employeeRoutes";
 import deviceRouter from "./deviceRoutes";
 import roomRouter from "./roomRoutes";
 import timesheetRouter from "./timesheetRoutes";
+import departmentRouter from "./departmentRoutes";
 
 const v2Router = Router();
 
@@ -14,6 +15,7 @@ v2Router.use("/devices", deviceRouter);
 v2Router.use("/textbooks", textbookRouter);
 v2Router.use("/rooms", roomRouter);
 v2Router.use("/timesheets", timesheetRouter);
+v2Router.use("/departments", departmentRouter);
 // v2Router.use("/employee-leave" /*, employeeLeaveRouter */);
 // v2Router.use("/reimbursement" /* , reimbursementRouter */);
 // v2Router.use("/ideas" /* ,ideaRouter */);
