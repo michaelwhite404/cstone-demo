@@ -4,6 +4,7 @@ import {
   createDepartment,
   getAllDepartments,
   getOneDepartment,
+  updateDepartment,
 } from "../../controllers/v2/departmentController";
 
 const router = Router();
@@ -16,9 +17,9 @@ router
   .post(v1auth.restrictTo("Super Admin", "Admin"), createDepartment);
 
 router.route("/:id").get(getOneDepartment).patch().delete();
-
-// router.route("/:id/add-leader")
-
-// router.route("/:id/add-approver");
+const updateRoutes: string[] = [];
+// prettier-ignore
+["leaders", "approvers", "employees"].forEach(function (key) {["add", "remove"].forEach(function (op) {updateRoutes.push(`/:id/${op}-${key}`);});});
+router.patch(updateRoutes, updateDepartment);
 
 export default router;
