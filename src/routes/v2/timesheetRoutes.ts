@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect } from "../../controllers/v1/authController";
+import { protect } from "../../controllers/v2/authController";
 import {
   createTimeSheetEntry,
   deleteTimesheetEntry,

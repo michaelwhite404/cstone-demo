@@ -11,6 +11,12 @@ import {
 import { TimesheetEntryDocument } from "../types/models/timesheetEntryTypes";
 import AppError from "../utils/appError";
 import datesAreOnSameDay from "../utils/datesAreOnSameDay";
+import Department from "./DepartmentModel";
+import FKHelper from "./helpers/foreignKeyHelper";
+
+const validDepartmentValidation = {
+  validator: async (id: ObjectId) => FKHelper(Department, id),
+};
 
 const timesheetEntrySchema: Schema<
   TimesheetEntryDocument,
@@ -37,6 +43,13 @@ const timesheetEntrySchema: Schema<
   timeEnd: {
     type: Date,
     required: [true, "Each timesheet entry must have a end time"],
+  },
+  department: {
+    type: Types.ObjectId,
+    ref: "Department",
+    required: [true, "Each timesheet must belong to a department"],
+    immutable: true,
+    validate: validDepartmentValidation,
   },
   description: {
     type: String,

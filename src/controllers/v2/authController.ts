@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { JWT, OAuth2Client } from "google-auth-library";
+import jwt from "jsonwebtoken";
 import { google } from "googleapis";
+import { promisify } from "util";
 import Employee from "../../models/employeeModel";
+import DecodedPayload from "../../types/decodedPayload";
 import { EmployeeModel } from "../../types/models/employeeTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
@@ -76,3 +79,37 @@ export const googleAuthJWT = (scopes?: string | string[], imperonatedEmail?: str
   );
   return auth;
 };
+
+export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  // 1) Getting token and check if it's there
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
+    return next(new AppError("You are not logged in", 401));
+  }
+  // 2.) Verification token
+  // @ts-ignore
+  const decoded: DecodedPayload = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
+  // console.log(decoded);
+  // 3.) Check if employee still exists
+  const freshEmployee = await Employee.findById(decoded.id).populate({
+    path: "approverOf leaderOf employeeOf",
+    select: "name",
+  });
+  if (!freshEmployee) {
+    return next(new AppError("The user belonging to this token no longer exists.", 401));
+  }
+  // 4.) Check if user changed passsword after the token was issued
+  if (freshEmployee.changedPasswordAfter(decoded.iat)) {
+    return next(new AppError("User recently changed password. Please log in again!", 401));
+  }
+  req.employee = freshEmployee;
+  res.locals.employee = freshEmployee;
+  // GRANT ACCESS TO PROTECTED ROUTE
+  next();
+});

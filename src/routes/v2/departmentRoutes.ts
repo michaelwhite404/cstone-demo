@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as v1auth from "../../controllers/v1/authController";
+import * as v2auth from "../../controllers/v1/authController";
 import {
   createDepartment,
   getAllDepartments,
@@ -9,7 +10,7 @@ import {
 
 const router = Router();
 
-router.use(v1auth.protect);
+router.use(v2auth.protect);
 
 router
   .route("/")

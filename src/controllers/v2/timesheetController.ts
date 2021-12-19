@@ -26,10 +26,19 @@ export const createTimeSheetEntry = catchAsync(
     if (!req.employee.timesheetEnabled)
       return next(new AppError("You are not authorized to create timesheet entries", 403));
 
+    const { employeeOf } = req.employee!;
+    if (employeeOf) {
+      const dept = employeeOf.find((dept) => dept._id.toString() === req.body.department);
+      if (!dept) {
+        next(new AppError("You are not a member of this department", 403));
+      }
+    }
+
     const timesheetEntry = await Model.create({
       employeeId: req.employee._id,
       timeStart: req.body.timeStart,
       timeEnd: req.body.timeEnd,
+      department: req.body.department,
       description: req.body.description,
     });
 
