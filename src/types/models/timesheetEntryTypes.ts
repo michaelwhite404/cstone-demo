@@ -9,7 +9,7 @@ export interface TimesheetModel {
   timeEnd: Date;
   description: string;
   hours?: number;
-  approved: boolean;
+  status: "Pending" | "Approved" | "Rejected";
   approvedBy?: PopulatedDoc<EmployeeModel>;
 }
 

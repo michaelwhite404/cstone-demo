@@ -47,7 +47,7 @@ const timesheetEntrySchema: Schema<
   department: {
     type: Types.ObjectId,
     ref: "Department",
-    required: [true, "Each timesheet must belong to a department"],
+    required: [true, "Each timesheet entry must belong to a department"],
     immutable: true,
     validate: validDepartmentValidation,
   },
@@ -56,9 +56,13 @@ const timesheetEntrySchema: Schema<
     required: [true, "Each timesheet entry must have a description"],
   } as SchemaTypeOptions<string>,
   hours: Number,
-  approved: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    enum: {
+      values: ["Pending", "Approved", "Rejected"],
+      message: "Status values can only be 'Pending', 'Approved' or 'Rejected'",
+    },
+    default: "Pending",
   },
   approvedBy: {
     type: Types.ObjectId,

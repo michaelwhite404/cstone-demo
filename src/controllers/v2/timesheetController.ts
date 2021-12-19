@@ -58,7 +58,7 @@ export const updateTimesheetEntry = catchAsync(
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
 
-    if (timesheetEntry.approved)
+    if (timesheetEntry.status === "Approved")
       return next(new AppError("Approved timesheet entries cannot be updated", 403));
 
     req.body.timeStart ? (timesheetEntry.timeStart = req.body.timeStart) : "";
@@ -83,7 +83,7 @@ export const deleteTimesheetEntry = catchAsync(
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
 
-    if (timesheetEntry.approved)
+    if (timesheetEntry.status === "Approved")
       return next(new AppError("Approved timesheet entries cannot be deleted", 403));
 
     await timesheetEntry.remove();

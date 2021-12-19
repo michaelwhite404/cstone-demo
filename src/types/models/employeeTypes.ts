@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { DepartmentModel } from "./departmentTypes";
 
 export interface EmployeeModel {
   /** Id of the user */
@@ -22,6 +23,9 @@ export interface EmployeeModel {
   active: boolean;
   slug: string;
   timesheetEnabled: boolean;
+  employeeOf?: DepartmentModel[];
+  leaderOf?: DepartmentModel[];
+  approverOf?: DepartmentModel[];
 }
 
 type EmployeeRole =
