@@ -4,83 +4,111 @@ import bcrypt from "bcryptjs";
 import slugify from "slugify";
 import { EmployeeDocument } from "../types/models/employeeTypes";
 
-const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema({
-  firstName: {
-    type: String,
-    required: [true, "An employee must have a first name"],
-    trim: true,
-  },
-  lastName: {
-    type: String,
-    required: [true, "An employee must have a last name"],
-    trim: true,
-  },
-  fullName: {
-    type: String,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: [true, "An employee must have an email address"],
-    unique: true,
-  },
-  homeroomGrade: {
-    type: Number,
-    required: false,
-    min: 0,
-    max: 12,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    enum: {
-      values: ["Super Admin", "Admin", "Development", "Instructor", "Intern", "Maintenance"],
-      message: "Role must be: Super Admin, Admin, Development, Instructor, Intern, or Maintenance",
+const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, "An employee must have a first name"],
+      trim: true,
     },
-  },
-  image: String,
-  googleId: String,
-  password: {
-    type: String,
-    required: [true, "Please provide a password"],
-    minlength: [8, "Password must be at least 8 characters"],
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: false /* [true, "Please confirm your password"], */,
-    validate: {
-      // This only works on CREATE or SAVE
-      validator: function (val: string): boolean {
-        // @ts-ignore
-        return val === this.password;
+    lastName: {
+      type: String,
+      required: [true, "An employee must have a last name"],
+      trim: true,
+    },
+    fullName: {
+      type: String,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "An employee must have an email address"],
+      unique: true,
+    },
+    homeroomGrade: {
+      type: Number,
+      required: false,
+      min: 0,
+      max: 12,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: {
+        values: ["Super Admin", "Admin", "Development", "Instructor", "Intern", "Maintenance"],
+        message:
+          "Role must be: Super Admin, Admin, Development, Instructor, Intern, or Maintenance",
       },
-      message: "Passwords are not the same!",
+    },
+    image: String,
+    googleId: String,
+    password: {
+      type: String,
+      required: [true, "Please provide a password"],
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: false /* [true, "Please confirm your password"], */,
+      validate: {
+        // This only works on CREATE or SAVE
+        validator: function (val: string): boolean {
+          // @ts-ignore
+          return val === this.password;
+        },
+        message: "Passwords are not the same!",
+      },
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    lastLogin: Date,
+    createdAt: {
+      type: Date,
+      default: () => new Date(),
+      select: false,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
+    slug: String,
+    timesheetEnabled: {
+      type: Boolean,
+      default: false,
     },
   },
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-  lastLogin: Date,
-  createdAt: {
-    type: Date,
-    default: () => new Date(),
-    select: false,
-  },
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
-  },
-  slug: String,
-  timesheetEnabled: {
-    type: Boolean,
-    default: false,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+employeeSchema.virtual("employeeOf", {
+  ref: "Department",
+  localField: "_id",
+  foreignField: "employees",
+  match: (doc: EmployeeDocument) => ({ employees: { $in: [doc._id] } }),
+});
+
+employeeSchema.virtual("leaderOf", {
+  ref: "Department",
+  localField: "_id",
+  foreignField: "leaders",
+  match: (doc: EmployeeDocument) => ({ leaders: { $in: [doc._id] } }),
+});
+
+employeeSchema.virtual("approverOf", {
+  ref: "Department",
+  localField: "_id",
+  foreignField: "approvers",
+  match: (doc: EmployeeDocument) => ({ approvers: { $in: [doc._id] } }),
 });
 
 employeeSchema.pre<EmployeeDocument>("save", function (next) {

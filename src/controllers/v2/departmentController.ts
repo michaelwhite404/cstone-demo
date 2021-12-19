@@ -52,10 +52,6 @@ export const updateDepartment = catchAsync(
     // @ts-ignore
     department[key] = keyArrayStrings;
     await department.save({ validateBeforeSave: true });
-    // const department = await Model.findByIdAndUpdate(req.params.id, update, {
-    //   new: true,
-    //   runValidators: op === "add" ? true : false,
-    // });
     res.status(200).json({
       status: "success",
       requestedAt: req.requestTime,
