@@ -12,7 +12,7 @@ import Employee from "./employeeModel";
 import FKHelper from "./helpers/foreignKeyHelper";
 
 const validEmployeeValidation = {
-  validator: async (id: ObjectId) => FKHelper(Employee, id, `No employee with id ${id.toString()}`),
+  validator: async (id: ObjectId) => FKHelper(Employee, id),
 };
 
 const approverValidation = {

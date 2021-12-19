@@ -14,7 +14,8 @@ export const getAllEmployees: RequestHandler = factory.getAll(Model, key);
  *   - All authorized users can access this route
  */
 export const getOneEmployee: RequestHandler = factory.getOneById(Model, key, {
-  path: "employeeOf",
+  path: "approverOf leaderOf employeeOf",
+  select: "name",
 });
 
 /** Adds current user id to params object */
