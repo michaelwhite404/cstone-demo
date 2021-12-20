@@ -10,7 +10,8 @@ export interface TimesheetModel {
   description: string;
   hours?: number;
   status: "Pending" | "Approved" | "Rejected";
-  approvedBy?: PopulatedDoc<EmployeeModel>;
+  finalizedBy?: PopulatedDoc<EmployeeModel>;
+  finalizedAt?: Date;
 }
 
 export interface TimesheetEntryDocument extends TimesheetModel, Document {

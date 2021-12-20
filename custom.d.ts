@@ -14,6 +14,11 @@ declare namespace Express {
         _id: ObjectId;
         name: string;
       }[];
+      approverOf?: {
+        employees: ObjectId[];
+        _id: ObjectId;
+        name: string;
+      }[];
     };
   }
 }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { protect } from "../../controllers/v2/authController";
 import {
+  approveTimesheets,
   createTimeSheetEntry,
   deleteTimesheetEntry,
   getAllTimeSheetEntries,
@@ -11,8 +12,10 @@ import {
 const router = Router();
 
 router.use(protect);
-
+// TODO: Restrict who can see what
 router.route("/").get(getAllTimeSheetEntries).post(createTimeSheetEntry);
+
+router.patch("/approve", approveTimesheets);
 
 router
   .route("/:id")

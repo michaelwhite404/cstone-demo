@@ -64,10 +64,11 @@ const timesheetEntrySchema: Schema<
     },
     default: "Pending",
   },
-  approvedBy: {
+  finalizedBy: {
     type: Types.ObjectId,
     ref: "Employee",
   },
+  finalizedAt: Date,
 } as SchemaDefinition);
 
 timesheetEntrySchema.pre<TimesheetEntryDocument>("save", function (next) {

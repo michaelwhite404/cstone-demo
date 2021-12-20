@@ -2,8 +2,11 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import TimesheetEntry from "../../models/timesheetEntryModel";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
-
 import * as factory from "./handlerFactory";
+import distinctArrays from "../../utils/distinctArrays";
+import { FilterQuery, UpdateQuery } from "mongoose";
+import { TimesheetModel } from "../../types/models/timesheetEntryTypes";
+import pluralize from "pluralize";
 
 const Model = TimesheetEntry;
 const key = "timesheetEntry";
@@ -92,6 +95,87 @@ export const deleteTimesheetEntry = catchAsync(
       status: "success",
       requestedAt: req.requestTime,
       message: "1 timesheet entry has been deleted",
+    });
+  }
+);
+
+export const approveTimesheets = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Get apprrover departments
+    const approverDepartments = req.employee.approverOf;
+    if (!approverDepartments || approverDepartments.length < 1)
+      return next(new AppError("You do not have access to approvals", 403));
+    const approverDepartmentsIds = approverDepartments.map((d) => d._id.toString());
+    // Destructure body approvals and rejections
+    const { approve: bodyApprove, reject: bodyReject } = req.body;
+    const approvalData = { exists: Boolean(bodyApprove), isArray: Array.isArray(bodyApprove) };
+    const rejectionData = { exists: Boolean(bodyReject), isArray: Array.isArray(bodyReject) };
+    // Approvals and rejections must be an array of object ids
+    if (approvalData.exists && !approvalData.isArray)
+      return next(new AppError("Approved timesheet entries must be an array", 400));
+    if (rejectionData.exists && !rejectionData.isArray)
+      return next(new AppError("Rejected timesheet entries must be an array", 400));
+    // If both arrays, test no duplicates
+    if (approvalData.isArray && rejectionData.isArray && !distinctArrays(bodyApprove, bodyReject))
+      return next(new AppError("Values cannot exist in both approve and reject arrays", 400));
+    // Push all ids into an array
+    const allBodyIds: any[] = [];
+    approvalData.isArray && allBodyIds.push(...bodyApprove);
+    rejectionData.isArray && allBodyIds.push(...bodyReject);
+
+    // Get approvable timesheets
+    const timesheets = await TimesheetEntry.find({
+      _id: { $in: allBodyIds },
+      department: { $in: approverDepartmentsIds },
+      status: "Pending",
+    });
+
+    const finalIds = {
+      approve: [] as any[],
+      reject: [] as any[],
+      all: timesheets.map((t) => t._id.toString()),
+    };
+
+    finalIds.all.forEach((t) =>
+      bodyApprove.includes(t) ? finalIds.approve.push(t) : finalIds.reject.push(t)
+    );
+
+    const writeArray = [
+      {
+        updateMany: {
+          filter: { _id: { $in: finalIds.approve } } as FilterQuery<TimesheetModel>,
+          update: {
+            status: "Approved",
+            finalizedBy: req.employee._id,
+            finalizedAt: new Date(req.requestTime),
+          } as UpdateQuery<TimesheetModel>,
+        },
+      },
+      {
+        updateMany: {
+          filter: { _id: { $in: finalIds.reject } } as FilterQuery<TimesheetModel>,
+          update: {
+            status: "Rejected",
+            finalizedBy: req.employee._id,
+            finalizedAt: new Date(req.requestTime),
+          } as UpdateQuery<TimesheetModel>,
+        },
+      },
+    ];
+
+    const result = await TimesheetEntry.bulkWrite(writeArray);
+
+    const hasOrHave = (num: number) => (num === 1 ? "has" : "have");
+    const message = `${pluralize("timesheet entries", result.modifiedCount, true)} ${hasOrHave(
+      result.modifiedCount || 0
+    )} been finalized`;
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        message,
+      },
     });
   }
 );
