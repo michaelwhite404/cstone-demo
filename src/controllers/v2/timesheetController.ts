@@ -138,11 +138,16 @@ export const updateTimesheetEntry = catchAsync(
   }
 );
 
+/** `DELETE` - Deletes a timesheet entry
+ * - Timesheet entry deletes are restricted to the employee that created the entry
+ */
 export const deleteTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
+    if (timesheetEntry.employeeId.toString() !== req.employee._id.toString())
+      return next(new AppError("You cannot delete this timesheet entry", 403));
 
     if (timesheetEntry.status === "Approved")
       return next(new AppError("Approved timesheet entries cannot be deleted", 403));
