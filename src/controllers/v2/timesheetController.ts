@@ -106,14 +106,21 @@ export const createTimeSheetEntry = catchAsync(
   }
 );
 
+/** `PATCH` - Updates a timesheet entry
+ * - Timesheet entry updates are restricted to the employee that created the entry
+ */
 export const updateTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
+    if (timesheetEntry.employeeId.toString() !== req.employee._id.toString())
+      return next(new AppError("You cannot update this timesheet entry", 403));
 
-    if (timesheetEntry.status === "Approved")
-      return next(new AppError("Approved timesheet entries cannot be updated", 403));
+    if (timesheetEntry.status !== "Pending")
+      return next(
+        new AppError(`${timesheetEntry.status} timesheet entries cannot be updated`, 403)
+      );
 
     req.body.timeStart ? (timesheetEntry.timeStart = req.body.timeStart) : "";
     req.body.timeEnd ? (timesheetEntry.timeEnd = req.body.timeEnd) : "";
