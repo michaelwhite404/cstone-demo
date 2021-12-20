@@ -20,6 +20,7 @@ import axios from "axios";
 import { EmployeeModel } from "../../src/types/models/employeeTypes";
 import Home from "./pages/Home/Home";
 import { FocusStyleManager } from "@blueprintjs/core";
+import Timesheet from "./pages/Timesheet/Timesheet";
 
 interface NavRouteProps {
   exact: boolean;
@@ -126,6 +127,12 @@ function App() {
                 exact
                 path="/students"
                 component={Students}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute
+                exact
+                path="/timesheet"
+                component={Timesheet}
                 auth={isAuthenticated}
               />
             </UserContext.Provider>
