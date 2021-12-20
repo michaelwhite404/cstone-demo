@@ -1,8 +1,7 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import TimesheetEntry from "../../models/timesheetEntryModel";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
-import * as factory from "./handlerFactory";
 import distinctArrays from "../../utils/distinctArrays";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import { TimesheetEntryDocument, TimesheetModel } from "../../types/models/timesheetEntryTypes";
@@ -10,7 +9,6 @@ import pluralize from "pluralize";
 import APIFeatures from "../../utils/apiFeatures";
 
 const Model = TimesheetEntry;
-const key = "timesheetEntry";
 
 /** `GET` - Gets all timesheet entries
  *  - Authenticated users can view their timesheet entries
@@ -41,12 +39,41 @@ export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Respo
 });
 
 /** `GET` - Gets a timesheet entry
- *  - TODO: Who can access this controller??
+ *  - Authenticated users can view their timesheet entry
+ *  - Department approvers can view the timesheet entry pertaining to that department
  */
-export const getOneTimeSheetEntry: RequestHandler = factory.getOneById(Model, key);
+export const getOneTimesheetEntry = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // prettier-ignore
+    let query: Query<TimesheetEntryDocument | null, TimesheetEntryDocument, {}, TimesheetEntryDocument>
+    if (req.employee.approverOf && req.employee.approverOf.length > 0) {
+      query = Model.findOne({
+        $or: [
+          { department: { $in: req.employee.approverOf }, _id: req.params.id },
+          { employeeId: req.employee._id, _id: req.params.id },
+        ],
+      });
+    } else {
+      query = Model.findOne({ employeeId: req.employee._id, _id: req.params.id });
+    }
+    const timesheetEntry = await query;
+
+    if (!timesheetEntry) {
+      return next(new AppError("No timesheet entry found with that ID", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        timesheetEntry,
+      },
+    });
+  }
+);
 
 /** `POST` - Creates a new timesheet entry
- *  - Only users with timesheet enabled can use this
+ *  - Restricted to users with timesheet enabled and an employee of a department
  */
 export const createTimeSheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -81,7 +108,7 @@ export const createTimeSheetEntry = catchAsync(
 
 export const updateTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const timesheetEntry = await TimesheetEntry.findById(req.params.id);
+    const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
 
@@ -106,7 +133,7 @@ export const updateTimesheetEntry = catchAsync(
 
 export const deleteTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const timesheetEntry = await TimesheetEntry.findById(req.params.id);
+    const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
 
@@ -148,7 +175,7 @@ export const approveTimesheets = catchAsync(
     rejectionData.isArray && allBodyIds.push(...bodyReject);
 
     // Get approvable timesheets
-    const timesheets = await TimesheetEntry.find({
+    const timesheets = await Model.find({
       _id: { $in: allBodyIds },
       department: { $in: approverDepartmentsIds },
       status: "Pending",
@@ -187,7 +214,7 @@ export const approveTimesheets = catchAsync(
       },
     ];
 
-    const result = await TimesheetEntry.bulkWrite(writeArray);
+    const result = await Model.bulkWrite(writeArray);
 
     const hasOrHave = (num: number) => (num === 1 ? "has" : "have");
     const message = `${pluralize("timesheet entries", result.modifiedCount, true)} ${hasOrHave(

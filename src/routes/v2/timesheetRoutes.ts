@@ -5,7 +5,7 @@ import {
   createTimeSheetEntry,
   deleteTimesheetEntry,
   getAllTimeSheetEntries,
-  getOneTimeSheetEntry,
+  getOneTimesheetEntry,
   updateTimesheetEntry,
 } from "../../controllers/v2/timesheetController";
 
@@ -19,7 +19,7 @@ router.patch("/approve", approveTimesheets);
 
 router
   .route("/:id")
-  .get(getOneTimeSheetEntry)
+  .get(getOneTimesheetEntry)
   .patch(updateTimesheetEntry)
   .delete(deleteTimesheetEntry);
 
