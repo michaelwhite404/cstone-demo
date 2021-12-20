@@ -12,7 +12,7 @@ import {
 const router = Router();
 
 router.use(protect);
-// TODO: Restrict who can see what
+
 router.route("/").get(getAllTimeSheetEntries).post(createTimeSheetEntry);
 
 router.patch("/approve", approveTimesheets);

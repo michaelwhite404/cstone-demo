@@ -4,17 +4,41 @@ import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import * as factory from "./handlerFactory";
 import distinctArrays from "../../utils/distinctArrays";
-import { FilterQuery, UpdateQuery } from "mongoose";
-import { TimesheetModel } from "../../types/models/timesheetEntryTypes";
+import { FilterQuery, Query, UpdateQuery } from "mongoose";
+import { TimesheetEntryDocument, TimesheetModel } from "../../types/models/timesheetEntryTypes";
 import pluralize from "pluralize";
+import APIFeatures from "../../utils/apiFeatures";
 
 const Model = TimesheetEntry;
 const key = "timesheetEntry";
 
 /** `GET` - Gets all timesheet entries
- *  - TODO: Who can access this controller??
+ *  - Authenticated users can view their timesheet entries
+ *  - Department approvers can view all timesheet entries pertaining to that department
  */
-export const getAllTimeSheetEntries: RequestHandler = factory.getAll(Model, key);
+export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Response) => {
+  let query: Query<TimesheetEntryDocument[], TimesheetEntryDocument, {}, TimesheetEntryDocument>;
+  if (req.employee.approverOf && req.employee.approverOf.length > 0) {
+    query = Model.find({
+      $or: [{ department: { $in: req.employee.approverOf } }, { employeeId: req.employee._id }],
+    });
+  } else {
+    query = Model.find({ employeeId: req.employee._id });
+  }
+
+  const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
+  const timesheetEntries = await features.query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    results: timesheetEntries.length,
+    data: {
+      timesheetEntries,
+    },
+  });
+});
 
 /** `GET` - Gets a timesheet entry
  *  - TODO: Who can access this controller??

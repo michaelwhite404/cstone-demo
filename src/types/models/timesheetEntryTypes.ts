@@ -1,4 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
+import { DepartmentModel } from "./departmentTypes";
 import { EmployeeModel } from "./employeeTypes";
 
 export interface TimesheetModel {
@@ -7,6 +8,7 @@ export interface TimesheetModel {
   employeeId: PopulatedDoc<EmployeeModel>;
   timeStart: Date;
   timeEnd: Date;
+  department: PopulatedDoc<DepartmentModel>;
   description: string;
   hours?: number;
   status: "Pending" | "Approved" | "Rejected";
