@@ -8,6 +8,7 @@ import Class from "../../types/class";
 import { grades } from "../../utils/grades";
 import Checkin from "./Checkin";
 import Checkout from "./Checkout";
+import CheckoutHistory from "./CheckoutHistory";
 import "./DeviceContent.sass";
 
 export default function DeviceContent({
@@ -90,6 +91,9 @@ export default function DeviceContent({
           />
         </div>
       )}
+      <div className="device-pane">
+        <CheckoutHistory device={device} />
+      </div>
     </div>
   );
 }

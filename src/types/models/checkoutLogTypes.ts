@@ -5,6 +5,7 @@ import { ErrorLogModel } from "./errorLogTypes";
 import { StudentModel } from "./studentTypes";
 
 export interface CheckoutLogModel {
+  _id: any;
   device: DeviceModel;
   checkOutDate: Date;
   checkInDate?: Date;
@@ -16,4 +17,6 @@ export interface CheckoutLogModel {
   error?: ErrorLogModel;
 }
 
-export interface CheckoutLogDocument extends CheckoutLogModel, Document {}
+export interface CheckoutLogDocument extends CheckoutLogModel, Document {
+  _id: CheckoutLogModel["_id"];
+}
