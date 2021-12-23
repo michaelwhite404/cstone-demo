@@ -73,16 +73,22 @@ export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
     []
   );
 
+  const data = useMemo(() => checkouts, [checkouts]);
+
   return (
     <div>
       <PaneHeader>Check Out History</PaneHeader>
-      <TablePaginate
-        data={checkouts}
-        columns={columns}
-        pageSize={5}
-        pageSizeOptions={[5, 10, 20]}
-        enableRowsPicker={false}
-      />
+      {checkouts.length > 0 ? (
+        <TablePaginate
+          data={data}
+          columns={columns}
+          pageSize={5}
+          pageSizeOptions={[5, 10, 20]}
+          enableRowsPicker={false}
+        />
+      ) : (
+        "There is no data to display"
+      )}
     </div>
   );
 }

@@ -34,6 +34,12 @@ export default function DeviceType() {
     setDevices(copiedDevices);
   };
 
+  const getLastUser = (device: DeviceModel) => {
+    return device.status === "Checked Out" && device.lastUser
+      ? `${device.lastUser?.fullName} (${grades[device.lastUser?.grade]})`
+      : "";
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -70,12 +76,12 @@ export default function DeviceType() {
       },
       {
         Header: "Student",
-        accessor: "lastUser",
+        accessor: (original: DeviceModel): string => {
+          return getLastUser(original);
+        },
         width: (width - 619) / 5,
-        Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
-          return original.status === "Checked Out" && original.lastUser
-            ? `${original.lastUser?.fullName} (${grades[original.lastUser?.grade]})`
-            : "";
+        Cell: ({ row: { original } }: { row: { original: DeviceModel } }): string => {
+          return getLastUser(original);
         },
       },
     ],
@@ -113,9 +119,9 @@ export default function DeviceType() {
         canEscapeKeyClose={false}
         canOutsideClickClose={true}
         title={
-          <div>
-            {selectedDevice?.name}{" "}
-            {<Badge color={statusColor[selectedDevice?.status!]} text={selectedDevice?.status!} />}
+          <div className="flex">
+            <span style={{ marginRight: 10 }}>{selectedDevice?.name}</span>
+            <Badge color={statusColor[selectedDevice?.status!]} text={selectedDevice?.status!} />
           </div>
         }
       >

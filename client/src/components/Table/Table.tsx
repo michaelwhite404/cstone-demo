@@ -23,7 +23,7 @@ export default function Table({
 }: {
   columns: {
     Header: string;
-    accessor: string;
+    accessor: string | ((original: any) => string);
   }[];
   data: any[];
   sortBy?: string;

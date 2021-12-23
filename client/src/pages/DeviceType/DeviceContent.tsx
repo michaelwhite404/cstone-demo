@@ -10,6 +10,7 @@ import Checkin from "./Checkin";
 import Checkout from "./Checkout";
 import CheckoutHistory from "./CheckoutHistory";
 import "./DeviceContent.sass";
+import ErrorHistory from "./ErrorHistory";
 
 export default function DeviceContent({
   device,
@@ -93,6 +94,9 @@ export default function DeviceContent({
       )}
       <div className="device-pane">
         <CheckoutHistory device={device} />
+      </div>
+      <div className="device-pane">
+        <ErrorHistory device={device} />
       </div>
     </div>
   );
