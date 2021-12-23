@@ -78,7 +78,7 @@ function App() {
 
     async function fetchMe() {
       try {
-        const res = await axios.get("api/v2/users/me");
+        const res = await axios.get("/api/v2/users/me");
         if (res.data.status === "success") {
           setIsAuthenticated(true);
           setUser(res.data.data.user);

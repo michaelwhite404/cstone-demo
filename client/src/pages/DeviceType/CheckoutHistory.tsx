@@ -76,7 +76,13 @@ export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
   return (
     <div>
       <PaneHeader>Check Out History</PaneHeader>
-      <TablePaginate data={checkouts} columns={columns} pageSize={20} />
+      <TablePaginate
+        data={checkouts}
+        columns={columns}
+        pageSize={5}
+        pageSizeOptions={[5, 10, 20]}
+        enableRowsPicker={false}
+      />
     </div>
   );
 }

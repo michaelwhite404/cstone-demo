@@ -19,7 +19,7 @@ import schema from "./graphql/schema";
 
 const app = express();
 
-// app.set("view engine", "pug");
+app.set("view engine", "pug");
 // app.set("views", path.join(__dirname, "../views"));
 
 // 1.) MIDDLEWARES
