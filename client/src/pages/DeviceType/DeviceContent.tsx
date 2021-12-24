@@ -62,43 +62,50 @@ export default function DeviceContent({
   ];
 
   return (
-    <div style={{ height: "calc(100% - 40px)", overflow: "scroll" }}>
-      <div className="device-pane">
-        <PaneHeader>Basic Info</PaneHeader>
-        <div className="basic-info-box-wrapper">
-          {values.map((box) => (
-            <DeviceBasicInfo heading={box.heading} value={box.value} key={box.heading} />
-          ))}
-        </div>
-      </div>
-      {device.status === "Available" && (
+    <>
+      <div style={{ height: "calc(100% - 80px)", overflow: "scroll" }}>
         <div className="device-pane">
-          <Checkout
-            classes={classes}
-            device={device}
-            setSelectedDevice={setSelectedDevice}
-            updateDevice={updateDevice}
-            toasterRef={toasterRef}
-          />
+          <PaneHeader>Basic Info</PaneHeader>
+          <div className="basic-info-box-wrapper">
+            {values.map((box) => (
+              <DeviceBasicInfo heading={box.heading} value={box.value} key={box.heading} />
+            ))}
+          </div>
         </div>
-      )}
-      {device.status === "Checked Out" && (
+        {device.status === "Available" && (
+          <div className="device-pane">
+            <Checkout
+              classes={classes}
+              device={device}
+              setSelectedDevice={setSelectedDevice}
+              updateDevice={updateDevice}
+              toasterRef={toasterRef}
+            />
+          </div>
+        )}
+        {device.status === "Checked Out" && (
+          <div className="device-pane">
+            <Checkin
+              device={device}
+              setSelectedDevice={setSelectedDevice}
+              updateDevice={updateDevice}
+              toasterRef={toasterRef}
+            />
+          </div>
+        )}
         <div className="device-pane">
-          <Checkin
-            device={device}
-            setSelectedDevice={setSelectedDevice}
-            updateDevice={updateDevice}
-            toasterRef={toasterRef}
-          />
+          <CheckoutHistory device={device} />
         </div>
-      )}
-      <div className="device-pane">
-        <CheckoutHistory device={device} />
+        <div className="device-pane">
+          <ErrorHistory device={device} />
+        </div>
       </div>
-      <div className="device-pane">
-        <ErrorHistory device={device} />
+      <div className="drawer-footer">
+        <div className="drawer-footer-inner">
+          <button>Edit</button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
