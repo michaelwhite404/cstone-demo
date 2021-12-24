@@ -1,6 +1,7 @@
 import { Column, useExpanded, useTable, UseTableRowProps } from "react-table";
+import "./TableExpanded.sass";
 
-interface TableExpandedProps<T> {
+interface TableExpandedProps<T> extends Pick<React.HTMLAttributes<HTMLTableElement>, "className"> {
   columns: Column[];
   data: T[];
   renderRowSubComponent: ({ original }: { original: any }) => JSX.Element;
@@ -14,6 +15,7 @@ export default function TableExpanded<T extends object = {}>({
   columns,
   data,
   renderRowSubComponent,
+  className = "",
 }: TableExpandedProps<T>) {
   const {
     getTableProps,
@@ -22,25 +24,21 @@ export default function TableExpanded<T extends object = {}>({
     rows: rs,
     prepareRow,
     visibleColumns,
-    // state /* : { expanded }, */,
+    // state
   } = useTable(
     {
       // @ts-ignore
       columns,
       data,
     },
-    useExpanded // We can useExpanded to track the expanded state
-    // for sub components too!
+    useExpanded
   );
 
   const rows: Row<T>[] = rs;
 
   return (
     <>
-      {/* <pre>
-        <code>{JSON.stringify({ expanded: expanded }, null, 2)}</code>
-      </pre> */}
-      <table className="table-wrapper" {...getTableProps()}>
+      <table className={"table-wrapper table-expanded " + className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -54,27 +52,15 @@ export default function TableExpanded<T extends object = {}>({
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              // Use a React.Fragment here so the table markup is still valid
               <>
-                <tr>
+                <tr className="normal-row">
                   {row.cells.map((cell) => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
                   })}
                 </tr>
-                {/*
-                    If the row is in an expanded state, render a row with a
-                    column that fills the entire length of the table.
-                  */}
                 {row.isExpanded ? (
-                  <tr>
+                  <tr className="expanded-row">
                     <td colSpan={visibleColumns.length}>
-                      {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
                       {renderRowSubComponent({ original: row.original })}
                     </td>
                   </tr>

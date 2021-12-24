@@ -1,3 +1,4 @@
+import { Icon } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { UseExpandedRowProps } from "react-table";
@@ -37,19 +38,15 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
       {
         Header: "Status",
         accessor: "status",
-        /* Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
-          let text = "";
-          original.checkedIn
-            ? original.error
-              ? (text = "Checked In /w Error")
-              : (text = "Checked In")
-            : (text = "Checked Out");
-          return <Badge color={statusColor[text]} text={text} />;
-        }, */
+        Cell: ({ row: { original } }: { row: { original: ErrorLogModel } }) => {
+          return <Badge color={statusColor[original.status]} text={original.status} />;
+        },
+        width: 40,
       },
       {
         Header: "Title",
         accessor: "title",
+        width: 40,
       },
       {
         Header: "Error Created Date",
@@ -57,10 +54,12 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
         Cell: ({ row: { original } }: { row: { original: ErrorLogModel } }) => {
           return new Date(original.createdAt).toLocaleString();
         },
+        width: 40,
       },
       {
         Header: "Description",
         accessor: "description",
+        width: 40,
       },
       {
         // Make an expander cell
@@ -70,10 +69,16 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
           // Use Cell to render an expander for each row.
           // We can use the getToggleRowExpandedProps prop-getter
           // to build the expander.
-          <span {...row.getToggleRowExpandedProps()}>{row.isExpanded ? "👇" : "👉"}</span>
+          <div>
+            <span {...row.getToggleRowExpandedProps()}>
+              <Icon icon={`chevron-${row.isExpanded ? "down" : "right"}`} size={18} color="black" />
+            </span>
+          </div>
         ),
+        width: 40,
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -95,19 +100,29 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
     ({ original }: { original: ErrorLogModel }) => (
       <div className="error-info">
         <div className="error-basic-info">
-          <div>Title: {original.title}</div>
-          <div>Description: {original.description}</div>
-          <Badge color={statusColor[original.status]} text={original.status} />
+          <div className="error-left">
+            <div>Title: {original.title}</div>
+            <div>Description: {original.description}</div>
+          </div>
+          <div className="error-right">
+            <Badge color={statusColor[original.status]} text={original.status} />
+          </div>
           <br />
         </div>
-        <div>Updates</div>
+        <div style={{ color: "black" }}>
+          {original.updates.length === 0 ? "There are no updates to show" : "Updates"}
+        </div>
         <br />
         <div className="error-updates">
           {original.updates.map((update, i) => (
             <div className="error-single-update">
-              <div> {`${updateText(original, i)}: ${update.description}`} </div>
-              <div>{new Date(update.createdAt).toLocaleString()}</div>
-              <Badge color={statusColor[update.status]} text={update.status} />
+              <div className="error-left">
+                <div> {`${updateText(original, i)}: ${update.description}`} </div>
+                <div>{new Date(update.createdAt).toLocaleString()}</div>
+              </div>
+              <div className="error-right">
+                <Badge color={statusColor[update.status]} text={update.status} />
+              </div>
             </div>
           ))}
         </div>
@@ -120,7 +135,16 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
   return (
     <div>
       <PaneHeader>Error History</PaneHeader>
-      <TableExpanded columns={columns} data={data} renderRowSubComponent={renderRowSubComponent} />
+      {errors.length > 0 ? (
+        <TableExpanded
+          columns={columns}
+          data={data}
+          renderRowSubComponent={renderRowSubComponent}
+          className="error-history-table"
+        />
+      ) : (
+        "There is no data to display"
+      )}
     </div>
   );
 }
