@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { APIError } from "../../../types/apiResponses";
-import { Brand } from "../../../types/brand";
+import { Brand, Totals } from "../../../types/brand";
 import StatsTable from "./StatsTable";
 
 export default function Stats() {
@@ -11,6 +11,7 @@ export default function Stats() {
     params: { deviceType },
   } = useRouteMatch<{ deviceType: string }>();
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [totals, setTotals] = useState<Totals>();
   useEffect(() => {
     getDevicesByModel();
 
@@ -18,6 +19,7 @@ export default function Stats() {
       try {
         const res = await axios.get(`/api/v1/${deviceType}/test/group`);
         setBrands(res.data.data.brands);
+        setTotals(res.data.data.totals);
       } catch (err) {
         console.log((err as AxiosError<APIError>).response!.data);
       }
@@ -31,7 +33,7 @@ export default function Stats() {
           style={{ textTransform: "capitalize", marginBottom: "10px" }}
         >{`${deviceType} Stats`}</h1>
       </div>
-      <StatsTable brands={brands} />
+      {totals && <StatsTable brands={brands} totals={totals} />}
     </>
   );
 }

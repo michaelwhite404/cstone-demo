@@ -21,3 +21,5 @@ export enum StatusEnum {
   CheckedOut = "Checked Out",
   NotAvailable = "Not Available",
 }
+
+export interface Totals extends Omit<Model, "model"> {}

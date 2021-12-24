@@ -1,8 +1,8 @@
-import { Brand, Model } from "../../../types/brand";
+import { Brand, Model, Totals } from "../../../types/brand";
 import "./StatsTable.sass";
 
 /* eslint-disable jsx-a11y/no-redundant-roles */
-export default function StatsTable({ brands }: { brands: Brand[] }) {
+export default function StatsTable({ brands, totals }: { brands: Brand[]; totals: Totals }) {
   const headings = ["Brand", "Total", "Available", "Checked Out", "Broken", "Not Available"];
 
   const rows = brands.map((brand) => (
@@ -30,6 +30,9 @@ export default function StatsTable({ brands }: { brands: Brand[] }) {
         </tr>
       </thead>
       <tbody role="rowgroup">{rows}</tbody>
+      <tfoot>
+        <TotalsRow totals={totals} />
+      </tfoot>
     </table>
   );
 }
@@ -65,6 +68,19 @@ const ModelRow = ({ model }: { model: Model }) => {
       <td>{getModelStatusCount(model.statuses, "Checked Out")}</td>
       <td>{getModelStatusCount(model.statuses, "Broken")}</td>
       <td>{getModelStatusCount(model.statuses, "Not Available")}</td>
+    </tr>
+  );
+};
+
+const TotalsRow = ({ totals }: { totals: Totals }) => {
+  return (
+    <tr className="totals-row">
+      <td>Total</td>
+      <td>{totals.count}</td>
+      <td>{getModelStatusCount(totals.statuses, "Available")}</td>
+      <td>{getModelStatusCount(totals.statuses, "Checked Out")}</td>
+      <td>{getModelStatusCount(totals.statuses, "Broken")}</td>
+      <td>{getModelStatusCount(totals.statuses, "Not Available")}</td>
     </tr>
   );
 };
