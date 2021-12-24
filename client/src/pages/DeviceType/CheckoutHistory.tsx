@@ -34,7 +34,7 @@ export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
         console.log((err as AxiosError<APIError>).response!.data);
       }
     }
-  }, [device._id]);
+  }, [device._id, device.status]);
 
   const columns = useMemo(
     () => [

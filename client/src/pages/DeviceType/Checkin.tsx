@@ -56,7 +56,7 @@ export default function Checkin({
         setSelectedDevice(updatedDevice);
         updateDevice(device._id, updatedDevice);
         toasterRef.current!.show({
-          message: `${device.name} successfully checked out`,
+          message: `${device.name} successfully checked in`,
           intent: "success",
           icon: "tick",
         });
