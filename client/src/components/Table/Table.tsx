@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { Icon, InputGroup } from "@blueprintjs/core";
 import pluralize from "pluralize";
-import React from "react";
+import React, { Fragment } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -74,7 +74,7 @@ export default function Table({
         >
           {row.cells.map((cell, i) => {
             return (
-              <div {...cell.getCellProps()} className="td">
+              <div {...cell.getCellProps()} className="td" key={"cell" + i}>
                 {cell.render("Cell")}
               </div>
             );
@@ -99,10 +99,10 @@ export default function Table({
       </div>
       <div {...getTableProps()} className="table" style={{ width: width - 308 }}>
         <div className="header-row">
-          {headerGroups.map((headerGroup) => (
-            <div {...headerGroup.getHeaderGroupProps()} className="tr">
-              {headerGroup.headers.map((column) => (
-                <>
+          {headerGroups.map((headerGroup, i) => (
+            <div {...headerGroup.getHeaderGroupProps()} className="tr" key={"headerGroup" + i}>
+              {headerGroup.headers.map((column, j) => (
+                <Fragment key={"column" + j}>
                   {/* @ts-ignore */}
                   <div {...column.getHeaderProps(column.getSortByToggleProps())} className="th">
                     {column.render("Header")}
@@ -123,7 +123,7 @@ export default function Table({
                       )}
                     </span>
                   </div>
-                </>
+                </Fragment>
               ))}
             </div>
           ))}

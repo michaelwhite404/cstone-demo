@@ -1,3 +1,4 @@
+//@ts-nocheck
 import "./App.scss";
 import {
   BrowserRouter as Router,
@@ -20,6 +21,7 @@ import axios from "axios";
 import { EmployeeModel } from "../../src/types/models/employeeTypes";
 import Home from "./pages/Home/Home";
 import { FocusStyleManager } from "@blueprintjs/core";
+import Stats from "./pages/DeviceType/Stats/Stats";
 
 interface NavRouteProps {
   exact: boolean;
@@ -114,6 +116,12 @@ function App() {
                 exact
                 path="/devices/:deviceType"
                 component={DeviceType}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute
+                exact
+                path="/devices/:deviceType/stats"
+                component={Stats}
                 auth={isAuthenticated}
               />
               <ProtectedNavRoute

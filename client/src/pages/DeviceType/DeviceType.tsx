@@ -13,7 +13,9 @@ import { grades } from "../../utils/grades";
 import DeviceContent from "./DeviceContent";
 
 export default function DeviceType() {
-  const { deviceType } = useRouteMatch<{ deviceType: string }>().params;
+  const {
+    params: { deviceType },
+  } = useRouteMatch<{ deviceType: string }>();
   useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
   const toasterRef = useRef<Toaster>(null);
   const [width] = useWindowSize();
