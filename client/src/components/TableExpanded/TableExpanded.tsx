@@ -1,12 +1,9 @@
-import { Fragment, useCallback } from "react";
 import { Column, useExpanded, useTable, UseTableRowProps } from "react-table";
 
 interface TableExpandedProps<T> {
   columns: Column[];
   data: T[];
-  pageSize?: number;
-  pageSizeOptions?: number[];
-  enableRowsPicker?: boolean;
+  renderRowSubComponent: ({ original }: { original: any }) => JSX.Element;
 }
 
 interface Row<D extends object = {}> extends UseTableRowProps<D> {
@@ -16,6 +13,7 @@ interface Row<D extends object = {}> extends UseTableRowProps<D> {
 export default function TableExpanded<T extends object = {}>({
   columns,
   data,
+  renderRowSubComponent,
 }: TableExpandedProps<T>) {
   const {
     getTableProps,
@@ -37,19 +35,6 @@ export default function TableExpanded<T extends object = {}>({
 
   const rows: Row<T>[] = rs;
 
-  const renderRowSubComponent = useCallback(
-    ({ original }) => (
-      <pre
-        style={{
-          fontSize: "10px",
-        }}
-      >
-        <code>{JSON.stringify({ values: original.updates }, null, 2)}</code>
-      </pre>
-    ),
-    []
-  );
-
   return (
     <>
       {/* <pre>
@@ -70,7 +55,7 @@ export default function TableExpanded<T extends object = {}>({
             prepareRow(row);
             return (
               // Use a React.Fragment here so the table markup is still valid
-              <Fragment {...row.getRowProps()}>
+              <>
                 <tr>
                   {row.cells.map((cell) => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
@@ -91,11 +76,10 @@ export default function TableExpanded<T extends object = {}>({
                           pass the row
                         */}
                       {renderRowSubComponent({ original: row.original })}
-                      {console.log(row.original)}
                     </td>
                   </tr>
                 ) : null}
-              </Fragment>
+              </>
             );
           })}
         </tbody>
