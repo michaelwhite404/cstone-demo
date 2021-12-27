@@ -1,4 +1,3 @@
-import { Icon } from "@blueprintjs/core";
 import {
   TableInstance,
   usePagination,
@@ -6,6 +5,7 @@ import {
   UsePaginationState,
   useTable,
 } from "react-table";
+import PaginationNumbers from "./PaginationNumbers";
 import "./TablePaginate.sass";
 
 interface Column {
@@ -105,47 +105,15 @@ export default function TablePaginate<T>({
           )}
         </div>
         <span className="showing-text pagination-toolbar-item">{showingText()}</span>
-        <div className="pagination-navigator pagination-toolbar-item">
-          {pageCount > 1 && (
-            <>
-              <div className="pagination-arrow-holder">
-                {canPreviousPage && (
-                  <button
-                    className="pagination-arrow"
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}
-                  >
-                    <Icon icon="chevron-left" />
-                  </button>
-                )}
-              </div>
-              <ul className="pagination-page-container">
-                {pageSizeOptions.map((_, i) => (
-                  <li
-                    key={`page-${i}`}
-                    className={`pagination-page-number ${
-                      cState.pageIndex === i ? "current-page" : ""
-                    }`}
-                    onClick={(e) => gotoPage(i)}
-                  >
-                    {i + 1}
-                  </li>
-                ))}
-              </ul>
-              <div className="pagination-arrow-holder">
-                {canNextPage && (
-                  <button
-                    className="pagination-arrow"
-                    onClick={() => nextPage()}
-                    disabled={!canNextPage}
-                  >
-                    <Icon icon="chevron-right" />
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+        <PaginationNumbers
+          currentPage={cState.pageIndex + 1}
+          pageCount={pageCount}
+          canPreviousPage={canPreviousPage}
+          canNextPage={canNextPage}
+          previousPage={previousPage}
+          nextPage={nextPage}
+          gotoPage={gotoPage}
+        />
       </div>
     </div>
   );
