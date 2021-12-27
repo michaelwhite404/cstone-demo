@@ -9,6 +9,7 @@ import PageHeader from "../../../components/PageHeader";
 import TablePaginate from "../../../components/TablePaginate/TablePaginate";
 import { useDocTitle, useWindowSize } from "../../../hooks";
 import { APICheckoutLogResponse, APIError } from "../../../types/apiResponses";
+import "./DeviceLogs.sass";
 
 const statusColor: { [x: string]: BadgeColor } = {
   "Checked In": "emerald",
@@ -94,7 +95,7 @@ export default function DeviceLogs() {
 
   return (
     <>
-      <PageHeader>{capitalize(deviceType) + " Logs"}</PageHeader>
+      <PageHeader text={`${deviceType} Logs`} />
       <TablePaginate
         data={data}
         columns={columns}
@@ -102,6 +103,7 @@ export default function DeviceLogs() {
         pageSizeOptions={[25, 50, 100]}
         enableRowsPicker
         height={windowHeight - 100}
+        id="device-logs-table"
       />
     </>
   );

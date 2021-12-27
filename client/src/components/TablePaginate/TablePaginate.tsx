@@ -22,11 +22,13 @@ interface TablePaginationProps<T> {
   pageSizeOptions?: number[];
   enableRowsPicker?: boolean;
   height?: number;
+  id?: string;
 }
 
 const defaultPageSizes = [10, 25, 50, 100];
 
 export default function TablePaginate<T>({
+  id,
   columns,
   data,
   pageSize = 10,
@@ -86,7 +88,7 @@ export default function TablePaginate<T>({
         style={{ height: height ? height - 37 : undefined }}
       >
         <div className="table-wrapper" style={{ width: "100%", overflow: "auto" }} ref={ref}>
-          <table className="table-paginate" {...getTableProps()}>
+          <table className="table-paginate" {...getTableProps()} id={id}>
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>

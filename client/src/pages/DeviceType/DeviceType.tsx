@@ -1,12 +1,14 @@
-import { Drawer, Toaster } from "@blueprintjs/core";
+import { Button, Drawer, Menu, MenuItem, Toaster } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import Badge from "../../components/Badge/Badge";
 import BadgeColor from "../../components/Badge/BadgeColor";
+import PageHeader from "../../components/PageHeader";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
@@ -15,8 +17,10 @@ import DeviceContent from "./DeviceContent";
 export default function DeviceType() {
   const {
     params: { deviceType },
+    url,
   } = useRouteMatch<{ deviceType: string }>();
   useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
+  const history = useHistory();
   const toasterRef = useRef<Toaster>(null);
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
@@ -106,11 +110,22 @@ export default function DeviceType() {
     }
   }, [deviceType]);
 
+  const goTo = (value: string) => history.push(`${url}/${value}`);
+
+  const ActionsMenu = (
+    <Menu className="custom-pop">
+      <MenuItem icon="th-list" text="Checkout Logs" onClick={() => goTo("logs")} />
+      <MenuItem icon="stacked-chart" text="Stats" onClick={() => goTo("stats")} />
+    </Menu>
+  );
+
   return (
     <div>
-      <div className="page-header">
-        <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>{deviceType}</h1>
-      </div>
+      <PageHeader text={deviceType}>
+        <Popover2 content={ActionsMenu} placement="bottom-end" className="menu-popover">
+          <Button icon="settings" text="Actions" large />
+        </Popover2>
+      </PageHeader>
       <Table columns={columns} data={data} sortBy="name" />
       <Drawer
         isOpen={selectedDevice ? true : false}
