@@ -1,0 +1,108 @@
+import axios, { AxiosError } from "axios";
+import capitalize from "capitalize";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouteMatch } from "react-router-dom";
+import { CheckoutLogModel } from "../../../../../src/types/models/checkoutLogTypes";
+import Badge from "../../../components/Badge/Badge";
+import BadgeColor from "../../../components/Badge/BadgeColor";
+import PageHeader from "../../../components/PageHeader";
+import TablePaginate from "../../../components/TablePaginate/TablePaginate";
+import { useDocTitle, useWindowSize } from "../../../hooks";
+import { APICheckoutLogResponse, APIError } from "../../../types/apiResponses";
+
+const statusColor: { [x: string]: BadgeColor } = {
+  "Checked In": "emerald",
+  "Checked Out": "red",
+  "Checked In /w Error": "yellow",
+};
+
+export default function DeviceLogs() {
+  const {
+    params: { deviceType },
+  } = useRouteMatch<{ deviceType: string }>();
+  useDocTitle(`${capitalize(deviceType)} Logs | Cornerstone App`);
+  const windowHeight = useWindowSize()[1];
+  const [deviceLogs, setDeviceLogs] = useState<CheckoutLogModel[]>([]);
+  useEffect(() => {
+    getDeviceLogs();
+  }, []);
+
+  async function getDeviceLogs() {
+    try {
+      const res = await axios.get<APICheckoutLogResponse>("/api/v2/devices/logs", {
+        params: {
+          sort: "-checkOutDate -checkInDate",
+          limit: 10000,
+        },
+      });
+      setDeviceLogs(res.data.data.deviceLogs);
+    } catch (err) {
+      console.log((err as AxiosError<APIError>).response!.data);
+    }
+  }
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Device",
+        accessor: "device.name",
+      },
+      {
+        Header: "Status",
+        accessor: "checkedIn",
+        Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
+          let text = "";
+          original.checkedIn
+            ? original.error
+              ? (text = "Checked In /w Error")
+              : (text = "Checked In")
+            : (text = "Checked Out");
+          return <Badge color={statusColor[text]} text={text} />;
+        },
+      },
+      {
+        Header: "Student",
+        accessor: "deviceUser.fullName",
+      },
+      {
+        Header: "Check Out Date",
+        accessor: "checkOutDate",
+        Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
+          return new Date(original.checkOutDate).toLocaleString();
+        },
+      },
+      {
+        Header: "Teacher Check Out",
+        accessor: "teacherCheckOut.fullName",
+      },
+      {
+        Header: "Check In",
+        accessor: "checkInDate",
+        Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
+          return original.checkInDate ? new Date(original.checkInDate).toLocaleString() : "-";
+        },
+      },
+      {
+        Header: "Teacher Check In",
+        accessor: "teacherCheckIn.fullName",
+      },
+    ],
+    []
+  );
+
+  const data = useMemo(() => deviceLogs, [deviceLogs]);
+
+  return (
+    <>
+      <PageHeader>{capitalize(deviceType) + " Logs"}</PageHeader>
+      <TablePaginate
+        data={data}
+        columns={columns}
+        pageSize={25}
+        pageSizeOptions={[25, 50, 100]}
+        enableRowsPicker
+        height={windowHeight - 100}
+      />
+    </>
+  );
+}

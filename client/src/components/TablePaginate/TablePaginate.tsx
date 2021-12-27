@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   TableInstance,
   usePagination,
@@ -20,6 +21,7 @@ interface TablePaginationProps<T> {
   pageSize?: number;
   pageSizeOptions?: number[];
   enableRowsPicker?: boolean;
+  height?: number;
 }
 
 const defaultPageSizes = [10, 25, 50, 100];
@@ -30,6 +32,7 @@ export default function TablePaginate<T>({
   pageSize = 10,
   pageSizeOptions = defaultPageSizes,
   enableRowsPicker = true,
+  height,
 }: TablePaginationProps<T>) {
   const {
     getTableProps,
@@ -44,7 +47,7 @@ export default function TablePaginate<T>({
     canNextPage,
     // pageOptions,
     pageCount,
-    gotoPage,
+    gotoPage: gtp,
     nextPage,
     previousPage,
     setPageSize,
@@ -66,31 +69,51 @@ export default function TablePaginate<T>({
     const end = Math.min((cState.pageIndex + 1) * cState.pageSize, data.length);
     return `Showing ${start} - ${end} of ${data.length}`;
   };
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const goToPage = (value: number) => {
+    // Index starts at 0, page 1
+    gtp(value - 1);
+    ref.current?.scrollTo({ top: 0 });
+  };
+
+  // .scrollTo(0,0)
   return (
-    <div>
-      <table className="table-wrapper table-paginate" {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+    <div className="pagination-table">
+      <div
+        className="pagination-table-wrapper"
+        style={{ height: height ? height - 37 : undefined }}
+      >
+        <div className="table-wrapper" style={{ width: "100%", overflow: "auto" }} ref={ref}>
+          <table className="table-paginate" {...getTableProps()}>
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()} className="sticky-header">
+                      {column.render("Header")}
+                    </th>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div className="table-pagination-toolbar">
         <div className="pagination-toolbar-item">
           {enableRowsPicker && (
@@ -112,7 +135,7 @@ export default function TablePaginate<T>({
           canNextPage={canNextPage}
           previousPage={previousPage}
           nextPage={nextPage}
-          gotoPage={gotoPage}
+          goToPage={goToPage}
         />
       </div>
     </div>

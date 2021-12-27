@@ -5,7 +5,10 @@ import * as factory from "./handlerFactory";
 
 const Model = CheckoutLog;
 const key = "deviceLog";
-const pop = { path: "deviceUser teacherCheckOut teacherCheckIn", select: "fullName" } as PopOptions;
+const pop = {
+  path: "device deviceUser teacherCheckOut teacherCheckIn",
+  select: "name brand fullName",
+} as PopOptions;
 
 /** `GET` - Gets all device logs
  *  - All authorized users can access this route

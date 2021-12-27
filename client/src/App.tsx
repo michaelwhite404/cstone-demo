@@ -1,4 +1,3 @@
-//@ts-nocheck
 import "./App.scss";
 import {
   BrowserRouter as Router,
@@ -22,6 +21,7 @@ import { EmployeeModel } from "../../src/types/models/employeeTypes";
 import Home from "./pages/Home/Home";
 import { FocusStyleManager } from "@blueprintjs/core";
 import Stats from "./pages/DeviceType/Stats/Stats";
+import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
 
 interface NavRouteProps {
   exact: boolean;
@@ -38,7 +38,12 @@ const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => (
         <Sidebar />
         <div
           className="main-area-container"
-          style={{ backgroundColor: "#f9fcff", width: "100%", padding: "10px 25px 25px" }}
+          style={{
+            backgroundColor: "#f9fcff",
+            width: "100%",
+            padding: "10px 25px 25px",
+            overflow: "scroll",
+          }}
         >
           <Component {...props} />
         </div>
@@ -122,6 +127,12 @@ function App() {
                 exact
                 path="/devices/:deviceType/stats"
                 component={Stats}
+                auth={isAuthenticated}
+              />
+              <ProtectedNavRoute
+                exact
+                path="/devices/:deviceType/logs"
+                component={DeviceLogs}
                 auth={isAuthenticated}
               />
               <ProtectedNavRoute

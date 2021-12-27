@@ -7,7 +7,7 @@ interface PaginationNumbersProps {
   canNextPage: boolean;
   previousPage: () => void;
   nextPage: () => void;
-  gotoPage: (updater: number | ((pageIndex: number) => number)) => void;
+  goToPage: (value: number) => void;
 }
 
 export default function PaginationNumbers({
@@ -17,7 +17,7 @@ export default function PaginationNumbers({
   canNextPage,
   previousPage,
   nextPage,
-  gotoPage,
+  goToPage,
 }: PaginationNumbersProps) {
   function getPaginationArray(current: number, pageCount: number) {
     const delta = 2;
@@ -72,7 +72,7 @@ export default function PaginationNumbers({
                 className={`pagination-page-number ${currentPage === value ? "current-page" : ""} ${
                   typeof value === "number" ? "" : "dots"
                 }`}
-                onClick={() => typeof value === "number" && gotoPage(value - 1)}
+                onClick={() => typeof value === "number" && goToPage(value)}
               >
                 {value}
               </li>

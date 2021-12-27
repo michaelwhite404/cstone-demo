@@ -139,7 +139,7 @@ employeeSchema.pre<EmployeeDocument>("save", function (next) {
 });
 
 employeeSchema.pre<Model<EmployeeDocument>>(/^find/, function (next) {
-  this.find({ active: { $ne: false } });
+  // this.find({ active: { $ne: false } });
   next();
 });
 

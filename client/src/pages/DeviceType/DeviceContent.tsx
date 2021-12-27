@@ -103,6 +103,7 @@ export default function DeviceContent({
       <div className="drawer-footer">
         <div className="drawer-footer-inner">
           <button>Edit</button>
+          <button>{"See All Data >"}</button>
         </div>
       </div>
     </>
