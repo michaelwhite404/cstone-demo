@@ -14,6 +14,7 @@ import globalErrorHandler from "./controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
+import pdfRouter from "./routes/pdfRoutes";
 import "./config/passport-setup";
 import schema from "./graphql/schema";
 
@@ -83,6 +84,7 @@ app.use(
   } */
 );
 app.use("/auth", authRouter);
+app.use("/pdf", pdfRouter);
 app.use("/", viewRouter);
 
 if (process.env.NODE_ENV === "production") {
