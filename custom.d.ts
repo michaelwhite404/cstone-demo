@@ -6,6 +6,7 @@ declare namespace Express {
 
     employee: {
       _id: any;
+      fullName: string;
       email: string;
       role: string;
       timesheetEnabled: boolean;

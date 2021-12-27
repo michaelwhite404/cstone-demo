@@ -8,7 +8,7 @@ export interface CheckoutLogModel {
   _id: any;
   device: DeviceModel;
   checkOutDate: Date;
-  checkInDate: Date;
+  checkInDate?: Date;
   dueDate?: Date;
   deviceUser: StudentModel;
   teacherCheckOut: EmployeeModel;
