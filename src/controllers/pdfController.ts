@@ -41,6 +41,7 @@ export const getDeviceLogsPDF = catchAsync(async (req: Request, res: Response) =
   );
 
   const docDefinitions = {} as TDocumentDefinitions;
+  docDefinitions.pageMargins = 25;
   // Document Content
   docDefinitions.content = [];
   const content = docDefinitions.content;
