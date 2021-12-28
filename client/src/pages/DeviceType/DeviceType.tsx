@@ -6,8 +6,7 @@ import pluralize from "pluralize";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
-import Badge from "../../components/Badge/Badge";
-import BadgeColor from "../../components/Badge/BadgeColor";
+import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../components/PageHeader";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
@@ -25,13 +24,6 @@ export default function DeviceType() {
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceModel | undefined>(undefined);
-
-  const statusColor: { [x: string]: BadgeColor } = {
-    Available: "emerald",
-    "Checked Out": "red",
-    Broken: "yellow",
-    "Not Available": "blue",
-  };
 
   const updateDevice = (id: string, newDevice: DeviceModel) => {
     const copiedDevices = [...devices];
@@ -74,11 +66,9 @@ export default function DeviceType() {
         Header: "Status",
         accessor: "status",
         width: (width - 619) / 5,
-        Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => {
-          const { status } = original;
-
-          return <Badge color={statusColor[status]} text={original.status} />;
-        },
+        Cell: ({ row: { original } }: { row: { original: DeviceModel } }) => (
+          <DeviceStatusBadge status={original.status} />
+        ),
       },
       {
         Header: "Student",
@@ -137,8 +127,12 @@ export default function DeviceType() {
         canOutsideClickClose={true}
         title={
           <div className="flex">
-            <span style={{ marginRight: 10 }}>{selectedDevice?.name}</span>
-            <Badge color={statusColor[selectedDevice?.status!]} text={selectedDevice?.status!} />
+            {selectedDevice && (
+              <>
+                <span style={{ marginRight: 10 }}>{selectedDevice?.name}</span>
+                <DeviceStatusBadge status={selectedDevice.status} />
+              </>
+            )}
           </div>
         }
       >

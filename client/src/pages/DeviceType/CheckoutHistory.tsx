@@ -5,18 +5,13 @@ import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import axios, { AxiosError } from "axios";
 import { APICheckoutLogResponse, APIError } from "../../types/apiResponses";
 import TablePaginate from "../../components/TablePaginate/TablePaginate";
-import Badge from "../../components/Badge/Badge";
-import BadgeColor from "../../components/Badge/BadgeColor";
+import DeviceCheckoutStatusBadge, {
+  CheckOutStatus,
+} from "../../components/Badges/DeviceCheckoutStatusBadge";
 
 interface CheckoutHistoryProps {
   device: DeviceModel;
 }
-
-const statusColor: { [x: string]: BadgeColor } = {
-  "Checked In": "emerald",
-  "Checked Out": "red",
-  "Checked In /w Error": "yellow",
-};
 
 export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
   const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
@@ -42,13 +37,13 @@ export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
         Header: "Status",
         accessor: "checkedIn",
         Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
-          let text = "";
+          let text: CheckOutStatus;
           original.checkedIn
             ? original.error
               ? (text = "Checked In /w Error")
               : (text = "Checked In")
             : (text = "Checked Out");
-          return <Badge color={statusColor[text]} text={text} />;
+          return <DeviceCheckoutStatusBadge status={text} />;
         },
       },
       {

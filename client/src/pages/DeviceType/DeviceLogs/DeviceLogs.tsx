@@ -3,19 +3,14 @@ import capitalize from "capitalize";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { CheckoutLogModel } from "../../../../../src/types/models/checkoutLogTypes";
-import Badge from "../../../components/Badge/Badge";
-import BadgeColor from "../../../components/Badge/BadgeColor";
+import DeviceCheckoutStatusBadge, {
+  CheckOutStatus,
+} from "../../../components/Badges/DeviceCheckoutStatusBadge";
 import PageHeader from "../../../components/PageHeader";
 import TablePaginate from "../../../components/TablePaginate/TablePaginate";
 import { useDocTitle, useWindowSize } from "../../../hooks";
 import { APICheckoutLogResponse, APIError } from "../../../types/apiResponses";
 import "./DeviceLogs.sass";
-
-const statusColor: { [x: string]: BadgeColor } = {
-  "Checked In": "emerald",
-  "Checked Out": "red",
-  "Checked In /w Error": "yellow",
-};
 
 export default function DeviceLogs() {
   const {
@@ -52,13 +47,13 @@ export default function DeviceLogs() {
         Header: "Status",
         accessor: "checkedIn",
         Cell: ({ row: { original } }: { row: { original: CheckoutLogModel } }) => {
-          let text = "";
+          let text: CheckOutStatus;
           original.checkedIn
             ? original.error
               ? (text = "Checked In /w Error")
               : (text = "Checked In")
             : (text = "Checked Out");
-          return <Badge color={statusColor[text]} text={text} />;
+          return <DeviceCheckoutStatusBadge status={text} />;
         },
       },
       {

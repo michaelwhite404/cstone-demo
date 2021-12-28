@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { UseExpandedRowProps } from "react-table";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
-import Badge from "../../components/Badge/Badge";
-import BadgeColor from "../../components/Badge/BadgeColor";
+import DeviceErrorStatusBadge from "../../components/Badges/DeviceErrorStatusBadge";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import TableExpanded from "../../components/TableExpanded/TableExpanded";
 import { APIError, APIErrorLogResponse } from "../../types/apiResponses";
@@ -39,7 +38,7 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
         Header: "Status",
         accessor: "status",
         Cell: ({ row: { original } }: { row: { original: ErrorLogModel } }) => {
-          return <Badge color={statusColor[original.status]} text={original.status} />;
+          return <DeviceErrorStatusBadge status={original.status} />;
         },
         width: 40,
       },
@@ -84,13 +83,6 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
 
   const data = useMemo(() => errors, [errors]);
 
-  const statusColor: { [x: string]: BadgeColor } = {
-    Fixed: "emerald",
-    Broken: "red",
-    "In Repair": "yellow",
-    Unfixable: "fuchsia",
-  };
-
   const updateText = (original: ErrorLogModel, index: number) =>
     original.final && index + 1 === original.updates.length
       ? "Final Update"
@@ -105,7 +97,7 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
             <div>Description: {original.description}</div>
           </div>
           <div className="error-right">
-            <Badge color={statusColor[original.status]} text={original.status} />
+            <DeviceErrorStatusBadge status={original.status} />
           </div>
           <br />
         </div>
@@ -121,7 +113,7 @@ export default function ErrorHistory({ device }: ErrorHistoryProps) {
                 <div>{new Date(update.createdAt).toLocaleString()}</div>
               </div>
               <div className="error-right">
-                <Badge color={statusColor[update.status]} text={update.status} />
+                <DeviceErrorStatusBadge status={update.status} />
               </div>
             </div>
           ))}
