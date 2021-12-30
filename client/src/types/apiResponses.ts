@@ -12,6 +12,7 @@ interface APIResponse<T> {
 export interface APIStudentsResponse extends APIResponse<{ students: StudentModel[] }> {}
 export interface APIStudentResponse extends APIResponse<{ student: StudentModel }> {}
 
+export interface APIDevicesResponse extends APIResponse<{ devices: DeviceModel[] }> {}
 export interface APIDeviceResponse extends APIResponse<{ device: DeviceModel }> {}
 
 export interface APICheckoutLogResponse extends APIResponse<{ deviceLogs: CheckoutLogModel[] }> {}

@@ -1,43 +1,21 @@
-import { Button, Toaster } from "@blueprintjs/core";
-import axios, { AxiosError } from "axios";
+import { Button } from "@blueprintjs/core";
 import capitalize from "capitalize";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
-import { APIError } from "../../types/apiResponses";
-import { APIDeviceResponse } from "../../types/apiResponses";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
-import useClasses from "../../hooks/useClasses";
+import { useClasses, useDevice } from "../../hooks";
 
 interface DeviceCheckoutProps {
   device: DeviceModel;
-  setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
-  updateDevice: (id: string, newDevice: DeviceModel) => void;
-  toasterRef: React.RefObject<Toaster>;
+  onCheckoutSuccess?: (updatedDevice: DeviceModel) => any;
 }
 
-export default function Checkout({
-  device,
-  setSelectedDevice,
-  updateDevice,
-  toasterRef,
-}: DeviceCheckoutProps) {
+export default function Checkout({ device, onCheckoutSuccess }: DeviceCheckoutProps) {
   const { GradeSelect, StudentSelect, studentPicked } = useClasses();
+  const { checkoutDevice } = useDevice();
 
-  const checkoutDevice = async () => {
-    try {
-      const res = await axios.post<APIDeviceResponse>(
-        `/api/v2/devices/${device._id}/check-out/student/${studentPicked}`
-      );
-      const newDevice = res.data.data.device;
-      setSelectedDevice(newDevice);
-      updateDevice(device._id, newDevice);
-      toasterRef.current!.show({
-        message: `${device.name} successfully checked out`,
-        intent: "success",
-        icon: "tick",
-      });
-    } catch (err) {
-      console.log((err as AxiosError<APIError>).response?.data);
-    }
+  const handleCheckout = async () => {
+    const updatedDevice = await checkoutDevice(device, studentPicked);
+    if (updatedDevice && onCheckoutSuccess) onCheckoutSuccess(updatedDevice);
   };
   return (
     <div>
@@ -52,7 +30,7 @@ export default function Checkout({
           <StudentSelect />
         </div>
         <div className="device-checkout-box button">
-          <Button intent="primary" disabled={studentPicked === "-1"} onClick={checkoutDevice}>
+          <Button intent="primary" disabled={studentPicked === "-1"} onClick={handleCheckout}>
             Check Out {capitalize(device.deviceType)}
           </Button>
         </div>

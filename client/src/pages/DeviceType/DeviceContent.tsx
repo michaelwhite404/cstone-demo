@@ -48,6 +48,11 @@ export default function DeviceContent({
     },
   ];
 
+  const onCheckoutSuccess = (updatedDevice: DeviceModel) => {
+    setSelectedDevice(updatedDevice);
+    updateDevice(device._id, updatedDevice);
+  };
+
   return (
     <>
       <div style={{ height: "calc(100% - 80px)", overflow: "scroll" }}>
@@ -61,12 +66,7 @@ export default function DeviceContent({
         </div>
         {device.status === "Available" && (
           <div className="device-pane">
-            <Checkout
-              device={device}
-              setSelectedDevice={setSelectedDevice}
-              updateDevice={updateDevice}
-              toasterRef={toasterRef}
-            />
+            <Checkout device={device} onCheckoutSuccess={onCheckoutSuccess} />
           </div>
         )}
         {device.status === "Checked Out" && (
