@@ -22,6 +22,8 @@ import Home from "./pages/Home/Home";
 import { FocusStyleManager } from "@blueprintjs/core";
 import Stats from "./pages/DeviceType/Stats/Stats";
 import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
+import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
+import { ToasterProvider } from "./context/ToasterContext";
 
 interface NavRouteProps {
   exact: boolean;
@@ -102,52 +104,65 @@ function App() {
       {loaded && (
         <Router>
           <Switch>
-            <Route exact path="/">
-              {isAuthenticated ? (
-                <Redirect to="/dashboard" />
-              ) : (
-                <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
-              )}
-            </Route>
-            <UserContext.Provider value={user}>
-              <ProtectedNavRoute
-                exact
-                path="/dashboard"
-                component={Dashboard}
-                auth={isAuthenticated}
-              />
-              <ProtectedNavRoute exact path="/devices" component={Devices} auth={isAuthenticated} />
-              <ProtectedNavRoute
-                exact
-                path="/devices/:deviceType"
-                component={DeviceType}
-                auth={isAuthenticated}
-              />
-              <ProtectedNavRoute
-                exact
-                path="/devices/:deviceType/stats"
-                component={Stats}
-                auth={isAuthenticated}
-              />
-              <ProtectedNavRoute
-                exact
-                path="/devices/:deviceType/logs"
-                component={DeviceLogs}
-                auth={isAuthenticated}
-              />
-              <ProtectedNavRoute
-                exact
-                path="/textbooks"
-                component={Textbooks}
-                auth={isAuthenticated}
-              />
-              <ProtectedNavRoute
-                exact
-                path="/students"
-                component={Students}
-                auth={isAuthenticated}
-              />
-            </UserContext.Provider>
+            <ToasterProvider>
+              <Route exact path="/">
+                {isAuthenticated ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+                )}
+              </Route>
+              <UserContext.Provider value={user}>
+                <ProtectedNavRoute
+                  exact
+                  path="/dashboard"
+                  component={Dashboard}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices"
+                  component={Devices}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices/:deviceType"
+                  component={DeviceType}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices/:deviceType/stats"
+                  component={Stats}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices/:deviceType/logs"
+                  component={DeviceLogs}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices/:deviceType/:slug"
+                  component={SingleDevice}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/textbooks"
+                  component={Textbooks}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/students"
+                  component={Students}
+                  auth={isAuthenticated}
+                />
+              </UserContext.Provider>
+            </ToasterProvider>
           </Switch>
         </Router>
       )}
