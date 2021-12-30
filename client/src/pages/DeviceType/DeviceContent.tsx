@@ -1,10 +1,8 @@
 import { Toaster } from "@blueprintjs/core";
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
-import { APIError } from "../../types/apiResponses";
-import Class from "../../types/class";
 import { grades } from "../../utils/grades";
 import Checkin from "./Checkin";
 import Checkout from "./Checkout";
@@ -23,20 +21,9 @@ export default function DeviceContent({
   updateDevice: (id: string, newDevice: DeviceModel) => void;
   toasterRef: React.RefObject<Toaster>;
 }) {
-  const [classes, setClasses] = useState<Class[]>([]);
-
-  useEffect(() => {
-    getStudents();
-
-    async function getStudents() {
-      try {
-        const res = await axios.get("/api/v2/students/group");
-        setClasses(res.data.data.grades);
-      } catch (err) {
-        console.log((err as AxiosError<APIError>).response!.data);
-      }
-    }
-  }, []);
+  const history = useHistory();
+  const { url } = useRouteMatch();
+  useEffect(() => {}, []);
 
   const values = [
     { heading: "Model", value: device.model },
@@ -75,7 +62,6 @@ export default function DeviceContent({
         {device.status === "Available" && (
           <div className="device-pane">
             <Checkout
-              classes={classes}
               device={device}
               setSelectedDevice={setSelectedDevice}
               updateDevice={updateDevice}
@@ -103,7 +89,7 @@ export default function DeviceContent({
       <div className="drawer-footer">
         <div className="drawer-footer-inner">
           <button>Edit</button>
-          <button>{"See All Data >"}</button>
+          <button onClick={() => history.push(`${url}/${device.slug}`)}>{"See All Data >"}</button>
         </div>
       </div>
     </>
