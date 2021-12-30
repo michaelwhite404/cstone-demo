@@ -5,16 +5,20 @@ import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import { useClasses, useDevice } from "../../hooks";
 
 interface DeviceCheckoutProps {
+  /** The device to checkout */
   device: DeviceModel;
+  /** A function to run directly after a checkout request is successful. The updated device is
+   * passed in as a parameter
+   */
   onCheckoutSuccess?: (updatedDevice: DeviceModel) => any;
 }
 
 export default function Checkout({ device, onCheckoutSuccess }: DeviceCheckoutProps) {
   const { GradeSelect, StudentSelect, studentPicked } = useClasses();
-  const { checkoutDevice } = useDevice();
+  const { checkoutDevice } = useDevice(device.deviceType, device.slug);
 
   const handleCheckout = async () => {
-    const updatedDevice = await checkoutDevice(device, studentPicked);
+    const updatedDevice = await checkoutDevice(studentPicked);
     if (updatedDevice && onCheckoutSuccess) onCheckoutSuccess(updatedDevice);
   };
   return (

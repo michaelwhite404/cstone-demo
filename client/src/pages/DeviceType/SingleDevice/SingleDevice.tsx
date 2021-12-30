@@ -1,16 +1,10 @@
-import axios, { AxiosError } from "axios";
-import pluralize from "pluralize";
-import { useEffect, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../../components/PageHeader";
 import PaneHeader from "../../../components/PaneHeader/PaneHeader";
-import { useDocTitle } from "../../../hooks";
-import useClasses from "../../../hooks/useClasses";
-import useToasterContext from "../../../hooks/useToasterContext";
-import { APIDevicesResponse, APIError } from "../../../types/apiResponses";
-import Checkin from "../Checkin";
+import { useDevice, useDocTitle } from "../../../hooks";
+// import useToasterContext from "../../../hooks/useToasterContext";
 import Checkout from "../Checkout";
 import CheckoutHistory from "../CheckoutHistory";
 import ErrorHistory from "../ErrorHistory";
@@ -22,33 +16,11 @@ interface SingleDeviceParams {
 
 export default function SingleDevice() {
   useDocTitle("TODO");
-  const { showToaster } = useToasterContext();
-  const [device, setDevice] = useState<DeviceModel>();
-  const {
-    params: { deviceType, slug },
-  } = useRouteMatch<SingleDeviceParams>();
+  // const { showToaster } = useToasterContext();
+  const { deviceType, slug } = useParams<SingleDeviceParams>();
+  const { device, setDevice } = useDevice(deviceType, slug);
 
-  useEffect(() => {
-    getSingleDevice();
-    async function getSingleDevice() {
-      try {
-        const res = await axios.get<APIDevicesResponse>("/api/v2/devices", {
-          params: {
-            deviceType: pluralize.singular(deviceType),
-            slug,
-          },
-        });
-        const { devices } = res.data.data;
-        if (devices.length === 1) setDevice(devices[0]);
-      } catch (err) {
-        showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
-      }
-    }
-  }, [deviceType, showToaster, slug]);
-
-  const onCheckoutSuccess = (device: DeviceModel) => {
-    setDevice(device);
-  };
+  const onCheckoutSuccess = (device: DeviceModel) => setDevice(device);
 
   return (
     <div>
