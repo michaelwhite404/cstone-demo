@@ -6,6 +6,8 @@ import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
 import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
+import PopOptions from "../../types/popOptions";
+import APIFeatures from "../../utils/apiFeatures";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import { googleAuthJWT } from "./authController";
@@ -18,7 +20,24 @@ const pop = { path: "lastUser teacherCheckOut", select: "fullName grade email" }
 /** `GET` - Gets all devices
  *  - All authorized users can access this route
  */
-export const getAllDevices: RequestHandler = factory.getAll(Model, `${key}s`, {}, pop);
+export const getAllDevices: RequestHandler = catchAsync(async (req: Request, res: Response) => {
+  const query = Model.find({});
+  const popArray: PopOptions[] = [pop];
+  req.query.populate === "checkouts" && popArray.push({ path: "checkouts" });
+  query.populate(popArray);
+  const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
+  const devices = await features.query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    results: devices.length,
+    data: {
+      devices,
+    },
+  });
+});
 /** `GET` - Gets a single device
  *  - All authorized users can access this route
  */

@@ -13,7 +13,7 @@ class APIFeatures<T extends Document> {
   filter() {
     // 1A) Filtering
     const queryObj = { ...this.queryString };
-    const excludeFields = ["page", "sort", "limit", "fields"];
+    const excludeFields = ["page", "sort", "limit", "fields", "populate"];
     excludeFields.forEach((el) => delete queryObj[el]);
 
     // 1B) Advanced Filtering
