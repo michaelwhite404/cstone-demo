@@ -24,7 +24,7 @@ export default function DeviceContent({
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { checkouts } = useDevice(device.deviceType, device.slug);
+  const { checkouts, errors } = useDevice(device.deviceType, device.slug);
   useEffect(() => {}, []);
 
   const values = [
@@ -85,7 +85,7 @@ export default function DeviceContent({
           <CheckoutHistory checkouts={checkouts} />
         </div>
         <div className="device-pane">
-          <ErrorHistory device={device} />
+          <ErrorHistory errors={errors} />
         </div>
       </div>
       <div className="drawer-footer">

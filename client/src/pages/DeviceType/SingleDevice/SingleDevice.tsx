@@ -1,4 +1,4 @@
-import { useParams, useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../../components/PageHeader";
@@ -18,7 +18,7 @@ export default function SingleDevice() {
   useDocTitle("TODO");
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
-  const { device, setDevice, checkouts } = useDevice(deviceType, slug);
+  const { device, setDevice, checkouts, errors } = useDevice(deviceType, slug);
 
   const onCheckoutSuccess = (device: DeviceModel) => setDevice(device);
 
@@ -57,7 +57,7 @@ export default function SingleDevice() {
             <CheckoutHistory checkouts={checkouts} />
           </div>
           <div>
-            <ErrorHistory device={device} />
+            <ErrorHistory errors={errors} />
           </div>
         </>
       )}

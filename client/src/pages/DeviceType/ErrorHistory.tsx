@@ -1,37 +1,18 @@
 import { Icon } from "@blueprintjs/core";
-import axios, { AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { UseExpandedRowProps } from "react-table";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
 import DeviceErrorStatusBadge from "../../components/Badges/DeviceErrorStatusBadge";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import TableExpanded from "../../components/TableExpanded/TableExpanded";
-import { APIError, APIErrorLogResponse } from "../../types/apiResponses";
 import "./ErrorHistory.sass";
 
 interface ErrorHistoryProps {
-  device: DeviceModel;
+  errors: ErrorLogModel[];
 }
 
-export default function ErrorHistory({ device }: ErrorHistoryProps) {
-  const [errors, setErrors] = useState<ErrorLogModel[]>([]);
-
-  useEffect(() => {
-    getErrors();
-
-    async function getErrors() {
-      try {
-        const res = await axios.get<APIErrorLogResponse>("/api/v2/devices/errors", {
-          params: { device: device._id },
-        });
-        setErrors(res.data.data.errorLogs);
-      } catch (err) {
-        console.log((err as AxiosError<APIError>).response!.data);
-      }
-    }
-  }, [device._id]);
-
+export default function ErrorHistory({ errors }: ErrorHistoryProps) {
   const columns = useMemo(
     () => [
       {
