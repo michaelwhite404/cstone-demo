@@ -1,12 +1,11 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { google } from "googleapis";
-import { Types } from "mongoose";
+import { PopulateOptions, Types } from "mongoose";
 import CheckoutLog from "../../models/checkoutLogModel";
 import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
 import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
-import PopOptions from "../../types/popOptions";
 import APIFeatures from "../../utils/apiFeatures";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
@@ -22,7 +21,7 @@ const pop = { path: "lastUser teacherCheckOut", select: "fullName grade email" }
  */
 export const getAllDevices: RequestHandler = catchAsync(async (req: Request, res: Response) => {
   const query = Model.find({});
-  const popArray: PopOptions[] = [pop];
+  const popArray: PopulateOptions[] = [pop];
   const queryPop = (req.query.populate as string)?.split(",") || [];
   queryPop.includes("checkouts") &&
     popArray.push({ path: "checkouts", populate: { path: "deviceUser", select: "fullName" } });

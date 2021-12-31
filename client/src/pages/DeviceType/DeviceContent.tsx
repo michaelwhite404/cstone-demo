@@ -21,7 +21,10 @@ export default function DeviceContent({
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { checkouts, errors, checkinDevice } = useDevice(device.deviceType, device.slug);
+  const { checkouts, errors, checkinDevice, checkoutDevice } = useDevice(
+    device.deviceType,
+    device.slug
+  );
   useEffect(() => {}, []);
 
   const values = [
@@ -70,7 +73,11 @@ export default function DeviceContent({
         </div>
         {device.status === "Available" && (
           <div className="device-pane">
-            <Checkout device={device} onCheckoutSuccess={onCheckoutSuccess} />
+            <Checkout
+              device={device}
+              checkoutDevice={checkoutDevice}
+              onCheckoutSuccess={onCheckoutSuccess}
+            />
           </div>
         )}
         {device.status === "Checked Out" && (

@@ -2,7 +2,7 @@ import { Button } from "@blueprintjs/core";
 import capitalize from "capitalize";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
-import { useClasses, useDevice } from "../../hooks";
+import { useClasses } from "../../hooks";
 
 interface DeviceCheckoutProps {
   /** The device to checkout */
@@ -11,11 +11,15 @@ interface DeviceCheckoutProps {
    * passed in as a parameter
    */
   onCheckoutSuccess?: (updatedDevice: DeviceModel) => any;
+  checkoutDevice: (studentId: string) => Promise<DeviceModel | undefined>;
 }
 
-export default function Checkout({ device, onCheckoutSuccess }: DeviceCheckoutProps) {
+export default function Checkout({
+  device,
+  onCheckoutSuccess,
+  checkoutDevice,
+}: DeviceCheckoutProps) {
   const { GradeSelect, StudentSelect, studentPicked } = useClasses();
-  const { checkoutDevice } = useDevice(device.deviceType, device.slug);
 
   const handleCheckout = async () => {
     const updatedDevice = await checkoutDevice(studentPicked);

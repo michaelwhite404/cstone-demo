@@ -77,12 +77,14 @@ deviceSchema.virtual("checkouts", {
   ref: "DeviceLog",
   foreignField: "device",
   localField: "_id",
+  options: { sort: { checkOutDate: -1 } },
 });
 
 deviceSchema.virtual("errorLogs", {
   ref: "ErrorLog",
   foreignField: "device",
   localField: "_id",
+  options: { sort: { createdAt: -1 } },
 });
 
 deviceSchema.pre<DeviceDocument>("save", function (next) {
