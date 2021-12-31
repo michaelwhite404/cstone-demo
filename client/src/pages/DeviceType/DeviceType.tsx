@@ -1,9 +1,9 @@
-import { Button, Drawer, Menu, MenuItem, Toaster } from "@blueprintjs/core";
+import { Button, Drawer, Menu, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
@@ -20,7 +20,6 @@ export default function DeviceType() {
   } = useRouteMatch<{ deviceType: string }>();
   useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
   const history = useHistory();
-  const toasterRef = useRef<Toaster>(null);
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceModel | undefined>(undefined);
@@ -141,11 +140,9 @@ export default function DeviceType() {
             device={selectedDevice}
             setSelectedDevice={setSelectedDevice}
             updateDevice={updateDevice}
-            toasterRef={toasterRef}
           />
         )}
       </Drawer>
-      <Toaster position="top-right" ref={toasterRef} />
     </div>
   );
 }

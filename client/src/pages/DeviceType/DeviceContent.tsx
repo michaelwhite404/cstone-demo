@@ -1,4 +1,3 @@
-import { Toaster } from "@blueprintjs/core";
 import React, { useEffect } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
@@ -15,16 +14,14 @@ export default function DeviceContent({
   device,
   setSelectedDevice,
   updateDevice,
-  toasterRef,
 }: {
   device: DeviceModel;
   setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
   updateDevice: (id: string, newDevice: DeviceModel) => void;
-  toasterRef: React.RefObject<Toaster>;
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { checkouts, errors } = useDevice(device.deviceType, device.slug);
+  const { checkouts, errors, checkinDevice } = useDevice(device.deviceType, device.slug);
   useEffect(() => {}, []);
 
   const values = [
@@ -55,6 +52,11 @@ export default function DeviceContent({
     updateDevice(device._id, updatedDevice);
   };
 
+  const onCheckinSuccess = (updatedDevice: DeviceModel) => {
+    setSelectedDevice(updatedDevice);
+    updateDevice(device._id, updatedDevice);
+  };
+
   return (
     <>
       <div style={{ height: "calc(100% - 80px)", overflow: "scroll" }}>
@@ -75,9 +77,8 @@ export default function DeviceContent({
           <div className="device-pane">
             <Checkin
               device={device}
-              setSelectedDevice={setSelectedDevice}
-              updateDevice={updateDevice}
-              toasterRef={toasterRef}
+              checkinDevice={checkinDevice}
+              onCheckinSuccess={onCheckinSuccess}
             />
           </div>
         )}

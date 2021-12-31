@@ -4,6 +4,7 @@ import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../../components/PageHeader";
 import PaneHeader from "../../../components/PaneHeader/PaneHeader";
 import { useDevice, useDocTitle } from "../../../hooks";
+import Checkin from "../Checkin";
 // import useToasterContext from "../../../hooks/useToasterContext";
 import Checkout from "../Checkout";
 import CheckoutHistory from "../CheckoutHistory";
@@ -18,7 +19,7 @@ export default function SingleDevice() {
   useDocTitle("TODO");
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
-  const { device, setDevice, checkouts, errors } = useDevice(deviceType, slug);
+  const { device, setDevice, checkouts, errors, checkinDevice } = useDevice(deviceType, slug);
 
   const onCheckoutSuccess = (device: DeviceModel) => setDevice(device);
 
@@ -42,17 +43,17 @@ export default function SingleDevice() {
               <Checkout device={device} onCheckoutSuccess={onCheckoutSuccess} />
             </div>
           )}
-          {/* 
-        {device.status === "Checked Out" && (
-          <div className="device-pane">
-            <Checkin
-              device={device}
-              setSelectedDevice={setSelectedDevice}
-              updateDevice={updateDevice}
-              toasterRef={toasterRef}
-            />
-          </div>
-        )} */}
+
+          {/* {device.status === "Checked Out" && (
+            <div className="device-pane">
+              <Checkin
+                device={device}
+                setSelectedDevice={setSelectedDevice}
+                updateDevice={updateDevice}
+                toasterRef={toasterRef}
+              />
+            </div>
+          )} */}
           <div>
             <CheckoutHistory checkouts={checkouts} />
           </div>

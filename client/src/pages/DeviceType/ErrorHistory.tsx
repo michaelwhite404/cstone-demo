@@ -1,7 +1,6 @@
 import { Icon } from "@blueprintjs/core";
 import { useCallback, useMemo } from "react";
 import { UseExpandedRowProps } from "react-table";
-import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
 import DeviceErrorStatusBadge from "../../components/Badges/DeviceErrorStatusBadge";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
