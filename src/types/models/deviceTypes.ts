@@ -24,6 +24,7 @@ export interface DeviceModel {
   slug: string;
   checkouts?: CheckoutLogModel[];
   errorLogs?: ErrorLogModel[];
+  directoryId: string;
 }
 
 export interface DeviceDocument extends DeviceModel, Omit<Document, "model"> {

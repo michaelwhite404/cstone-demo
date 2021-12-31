@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Column, useExpanded, useTable, UseTableRowProps } from "react-table";
 import "./TableExpanded.sass";
 
@@ -40,10 +41,12 @@ export default function TableExpanded<T extends object = {}>({
     <>
       <table className={"table-wrapper table-expanded " + className} {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+          {headerGroups.map((headerGroup, i) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={`header-row-${i}`}>
+              {headerGroup.headers.map((column, j) => (
+                <th {...column.getHeaderProps()} key={`header-${j}`}>
+                  {column.render("Header")}
+                </th>
               ))}
             </tr>
           ))}
@@ -52,10 +55,14 @@ export default function TableExpanded<T extends object = {}>({
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <>
+              <Fragment key={`row-${i}`}>
                 <tr className="normal-row">
-                  {row.cells.map((cell) => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                  {row.cells.map((cell, j) => {
+                    return (
+                      <td {...cell.getCellProps()} key={`cell-${j}`}>
+                        {cell.render("Cell")}
+                      </td>
+                    );
                   })}
                 </tr>
                 {row.isExpanded ? (
@@ -65,7 +72,7 @@ export default function TableExpanded<T extends object = {}>({
                     </td>
                   </tr>
                 ) : null}
-              </>
+              </Fragment>
             );
           })}
         </tbody>

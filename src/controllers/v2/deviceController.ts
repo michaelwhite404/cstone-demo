@@ -223,7 +223,9 @@ export const getOneDeviceFromGoogle = catchAsync(
       res.status(200).json({
         status: "success",
         requestedAt: req.requestTime,
-        device,
+        data: {
+          device,
+        },
       });
     } catch (err) {
       return next(new AppError(err.response.data.error.message, 500));

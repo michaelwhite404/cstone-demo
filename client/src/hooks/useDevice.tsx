@@ -11,6 +11,7 @@ export default function useDevice(deviceType: string, slug: string) {
   const [device, setDevice] = useState<DeviceModel>();
   const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
   const [errors, setErrors] = useState<ErrorLogModel[]>([]);
+  const [deviceLoaded, setDeviceLoaded] = useState(false);
 
   const { showToaster } = useToasterContext();
 
@@ -29,6 +30,7 @@ export default function useDevice(deviceType: string, slug: string) {
         setDevice(device);
         if (checkouts) setCheckouts(checkouts);
         if (errorLogs) setErrors(errorLogs);
+        setDeviceLoaded(true);
       }
     } catch (err) {}
   }, [deviceType, slug]);
@@ -64,5 +66,5 @@ export default function useDevice(deviceType: string, slug: string) {
     }
   };
 
-  return { device, setDevice, checkoutDevice, checkouts, errors, checkinDevice };
+  return { device, setDevice, checkoutDevice, checkouts, errors, checkinDevice, deviceLoaded };
 }
