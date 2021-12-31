@@ -3,12 +3,14 @@ import pluralize from "pluralize";
 import { useEffect, useState } from "react";
 import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
+import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
 import { APIDeviceResponse, APIDevicesResponse, APIError } from "../types/apiResponses";
 import useToasterContext from "./useToasterContext";
 
 export default function useDevice(deviceType: string, slug: string) {
   const [device, setDevice] = useState<DeviceModel>();
   const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
+  const [errors, setErrors] = useState<ErrorLogModel[]>([]);
 
   const { showToaster } = useToasterContext();
 
@@ -20,14 +22,15 @@ export default function useDevice(deviceType: string, slug: string) {
           params: {
             deviceType: pluralize.singular(deviceType),
             slug,
-            populate: "checkouts",
+            populate: "checkouts,errorLogs",
           },
         });
         const { devices } = res.data.data;
         if (devices.length === 1) {
-          const { checkouts, ...device } = devices[0];
+          const { checkouts, errorLogs, ...device } = devices[0];
           setDevice(device);
           if (checkouts) setCheckouts(checkouts);
+          if (errorLogs) setErrors(errorLogs);
         }
       } catch (err) {}
     }
@@ -47,5 +50,5 @@ export default function useDevice(deviceType: string, slug: string) {
 
   const checkinDevice = async () => {};
 
-  return { device, setDevice, checkoutDevice, checkouts };
+  return { device, setDevice, checkoutDevice, checkouts, errors };
 }

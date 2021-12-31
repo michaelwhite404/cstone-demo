@@ -23,7 +23,9 @@ const pop = { path: "lastUser teacherCheckOut", select: "fullName grade email" }
 export const getAllDevices: RequestHandler = catchAsync(async (req: Request, res: Response) => {
   const query = Model.find({});
   const popArray: PopOptions[] = [pop];
-  req.query.populate === "checkouts" && popArray.push({ path: "checkouts" });
+  const queryPop = (req.query.populate as string).split(",");
+  queryPop.includes("checkouts") && popArray.push({ path: "checkouts" });
+  queryPop.includes("errorLogs") && popArray.push({ path: "errorLogs" });
   query.populate(popArray);
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
   const devices = await features.query;

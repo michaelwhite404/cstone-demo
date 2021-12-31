@@ -79,6 +79,12 @@ deviceSchema.virtual("checkouts", {
   localField: "_id",
 });
 
+deviceSchema.virtual("errorLogs", {
+  ref: "ErrorLog",
+  foreignField: "device",
+  localField: "_id",
+});
+
 deviceSchema.pre<DeviceDocument>("save", function (next) {
   if (this.isModified("dueDate") && this.dueDate !== undefined) {
     // If due date is valid
