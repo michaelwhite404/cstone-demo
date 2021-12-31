@@ -29,6 +29,7 @@ deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceControlle
 
 deviceRouter.get("/types", deviceController.getAllDeviceTypes);
 deviceRouter.get("/from-google", deviceController.getDevicesFromGoogle);
+deviceRouter.get("/from-google/:id", deviceController.getOneDeviceFromGoogle);
 
 deviceRouter
   .route("/:id")

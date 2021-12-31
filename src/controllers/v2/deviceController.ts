@@ -205,3 +205,28 @@ export const getDevicesFromGoogle = catchAsync(async (req: Request, res: Respons
     devices,
   });
 });
+
+export const getOneDeviceFromGoogle = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+    const admin = google.admin({
+      version: "directory_v1",
+      auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+    });
+
+    try {
+      const { data: device } = await admin.chromeosdevices.get({
+        customerId: process.env.GOOGLE_CUSTOMER_ID,
+        deviceId: req.params.id,
+      });
+
+      res.status(200).json({
+        status: "success",
+        requestedAt: req.requestTime,
+        device,
+      });
+    } catch (err) {
+      return next(new AppError(err.response.data.error.message, 500));
+    }
+  }
+);
