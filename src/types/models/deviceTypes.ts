@@ -1,4 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
+import { CheckoutLogModel } from "./checkoutLogTypes";
 import { EmployeeModel } from "./employeeTypes";
 import { StudentModel } from "./studentTypes";
 
@@ -20,6 +21,7 @@ export interface DeviceModel {
   lastCheckOut?: Date;
   lastCheckIn?: Date;
   slug: string;
+  checkouts?: CheckoutLogModel[];
 }
 
 export interface DeviceDocument extends DeviceModel, Omit<Document, "model"> {

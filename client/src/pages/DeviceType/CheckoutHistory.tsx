@@ -1,36 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
-import { DeviceModel } from "../../../../src/types/models/deviceTypes";
+import { useMemo } from "react";
 import { CheckoutLogModel } from "../../../../src/types/models/checkoutLogTypes";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
-import axios, { AxiosError } from "axios";
-import { APICheckoutLogResponse, APIError } from "../../types/apiResponses";
 import TablePaginate from "../../components/TablePaginate/TablePaginate";
 import DeviceCheckoutStatusBadge, {
   CheckOutStatus,
 } from "../../components/Badges/DeviceCheckoutStatusBadge";
 
 interface CheckoutHistoryProps {
-  device: DeviceModel;
+  checkouts: CheckoutLogModel[];
 }
 
-export default function CheckoutHistory({ device }: CheckoutHistoryProps) {
-  const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
-
-  useEffect(() => {
-    getCheckouts();
-
-    async function getCheckouts() {
-      try {
-        const res = await axios.get<APICheckoutLogResponse>("/api/v2/devices/logs", {
-          params: { device: device._id, sort: "-checkOutDate" },
-        });
-        setCheckouts(res.data.data.deviceLogs);
-      } catch (err) {
-        console.log((err as AxiosError<APIError>).response!.data);
-      }
-    }
-  }, [device._id, device.status]);
-
+export default function CheckoutHistory({ checkouts }: CheckoutHistoryProps) {
   const columns = useMemo(
     () => [
       {

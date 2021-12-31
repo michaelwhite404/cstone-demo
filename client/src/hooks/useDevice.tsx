@@ -1,12 +1,15 @@
 import axios, { AxiosError } from "axios";
 import pluralize from "pluralize";
 import { useEffect, useState } from "react";
+import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { APIDeviceResponse, APIDevicesResponse, APIError } from "../types/apiResponses";
 import useToasterContext from "./useToasterContext";
 
 export default function useDevice(deviceType: string, slug: string) {
   const [device, setDevice] = useState<DeviceModel>();
+  const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
+
   const { showToaster } = useToasterContext();
 
   useEffect(() => {
@@ -17,13 +20,18 @@ export default function useDevice(deviceType: string, slug: string) {
           params: {
             deviceType: pluralize.singular(deviceType),
             slug,
+            populate: "checkouts",
           },
         });
         const { devices } = res.data.data;
-        if (devices.length === 1) setDevice(devices[0]);
+        if (devices.length === 1) {
+          const { checkouts, ...device } = devices[0];
+          setDevice(device);
+          if (checkouts) setCheckouts(checkouts);
+        }
       } catch (err) {}
     }
-  }, [deviceType, showToaster, slug]);
+  }, [deviceType, showToaster, slug, device?.status]);
 
   const checkoutDevice = async (studentId: string) => {
     try {
@@ -39,5 +47,5 @@ export default function useDevice(deviceType: string, slug: string) {
 
   const checkinDevice = async () => {};
 
-  return { device, setDevice, checkoutDevice };
+  return { device, setDevice, checkoutDevice, checkouts };
 }

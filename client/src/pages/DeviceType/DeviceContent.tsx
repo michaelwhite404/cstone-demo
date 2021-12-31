@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
+import { useDevice } from "../../hooks";
 import { grades } from "../../utils/grades";
 import Checkin from "./Checkin";
 import Checkout from "./Checkout";
@@ -23,6 +24,7 @@ export default function DeviceContent({
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
+  const { checkouts } = useDevice(device.deviceType, device.slug);
   useEffect(() => {}, []);
 
   const values = [
@@ -80,7 +82,7 @@ export default function DeviceContent({
           </div>
         )}
         <div className="device-pane">
-          <CheckoutHistory device={device} />
+          <CheckoutHistory checkouts={checkouts} />
         </div>
         <div className="device-pane">
           <ErrorHistory device={device} />

@@ -18,7 +18,7 @@ export default function SingleDevice() {
   useDocTitle("TODO");
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
-  const { device, setDevice } = useDevice(deviceType, slug);
+  const { device, setDevice, checkouts } = useDevice(deviceType, slug);
 
   const onCheckoutSuccess = (device: DeviceModel) => setDevice(device);
 
@@ -54,7 +54,7 @@ export default function SingleDevice() {
           </div>
         )} */}
           <div>
-            <CheckoutHistory device={device} />
+            <CheckoutHistory checkouts={checkouts} />
           </div>
           <div>
             <ErrorHistory device={device} />
