@@ -20,7 +20,7 @@ export default function PaginationNumbers({
   goToPage,
 }: PaginationNumbersProps) {
   function getPaginationArray(current: number, pageCount: number) {
-    const delta = 2;
+    const delta = 1;
     const left = current - delta;
     const right = current + delta + 1;
     const range = [];

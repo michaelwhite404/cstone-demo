@@ -64,8 +64,9 @@ const deviceSchema = new Schema(
     slug: String,
     location: {
       type: Types.ObjectId,
-      ref: "Student",
+      ref: "Room",
     },
+    directoryId: String,
   },
   {
     toJSON: { virtuals: true },

@@ -3,7 +3,7 @@ import { Popover2 } from "@blueprintjs/popover2";
 import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
@@ -11,6 +11,7 @@ import PageHeader from "../../components/PageHeader";
 import Table from "../../components/Table/Table";
 import { useDocTitle, useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
+import AddDevice from "./AddDevice";
 import DeviceContent from "./DeviceContent";
 
 export default function DeviceType() {
@@ -23,6 +24,7 @@ export default function DeviceType() {
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceModel | undefined>(undefined);
+  const [pageStatus, setPageStatus] = useState<"List" | "Single" | "Add">("List");
 
   const updateDevice = (id: string, newDevice: DeviceModel) => {
     const copiedDevices = [...devices];
@@ -35,6 +37,16 @@ export default function DeviceType() {
     return device.status === "Checked Out" && device.lastUser
       ? `${device.lastUser?.fullName} (${grades[device.lastUser?.grade]})`
       : "";
+  };
+
+  const handleDeviceNameClick = (original: DeviceModel) => {
+    setSelectedDevice(original);
+    setPageStatus("Single");
+  };
+
+  const handleDrawerClose = () => {
+    setPageStatus("List");
+    setSelectedDevice(undefined);
   };
 
   const columns = useMemo(
@@ -51,7 +63,7 @@ export default function DeviceType() {
                 alt={`${original.brand} Logo`}
                 style={{ width: 30, marginRight: 10 }}
               />
-              <span className="device-name" onClick={() => setSelectedDevice(original)}>
+              <span className="device-name" onClick={() => handleDeviceNameClick(original)}>
                 {original.name}
               </span>
             </span>
@@ -84,25 +96,73 @@ export default function DeviceType() {
     [width]
   );
   const data = useMemo(() => devices, [devices]);
+
+  const getDevicesByType = useCallback(async () => {
+    const res = await axios.get("/api/v2/devices", {
+      params: {
+        deviceType: pluralize.singular(deviceType),
+        sort: "name",
+        limit: 2000,
+      },
+    });
+    setDevices(res.data.data.devices);
+  }, [deviceType]);
+
   useEffect(() => {
     getDevicesByType();
-
-    async function getDevicesByType() {
-      const res = await axios.get("/api/v2/devices", {
-        params: {
-          deviceType: pluralize.singular(deviceType),
-          sort: "name",
-          limit: 2000,
-        },
-      });
-      setDevices(res.data.data.devices);
-    }
-  }, [deviceType]);
+  }, [getDevicesByType]);
 
   const goTo = (value: string) => history.push(`${url}/${value}`);
 
+  const drawerTitle = {
+    Single: (
+      <div className="flex">
+        {selectedDevice && (
+          <>
+            <span style={{ marginRight: 10 }}>{selectedDevice?.name}</span>
+            <DeviceStatusBadge status={selectedDevice.status} />
+          </>
+        )}
+      </div>
+    ),
+    List: "",
+    Add: `Add ${capitalize(pluralize.singular(deviceType))}`,
+  };
+  const drawerContent = {
+    Single: (
+      <>
+        {selectedDevice && (
+          <DeviceContent
+            device={selectedDevice!}
+            setSelectedDevice={setSelectedDevice}
+            updateDevice={updateDevice}
+          />
+        )}
+      </>
+    ),
+    List: "",
+    Add: (
+      <AddDevice
+        deviceType={deviceType}
+        setPageStatus={setPageStatus}
+        setSelectedDevice={setSelectedDevice}
+        getDevicesByType={getDevicesByType}
+      />
+    ),
+  };
+  const drawerSize = {
+    List: "0%",
+    Single: "70%",
+    Add: "40%",
+  };
+
   const ActionsMenu = (
     <Menu className="custom-pop">
+      <MenuItem
+        icon="add"
+        text={`Add ${capitalize(pluralize.singular(deviceType))}`}
+        onClick={() => setPageStatus("Add")}
+      />
       <MenuItem icon="th-list" text="Checkout Logs" onClick={() => goTo("logs")} />
       <MenuItem icon="stacked-chart" text="Stats" onClick={() => goTo("stats")} />
     </Menu>
@@ -117,31 +177,16 @@ export default function DeviceType() {
       </PageHeader>
       <Table columns={columns} data={data} sortBy="name" />
       <Drawer
-        isOpen={selectedDevice ? true : false}
-        onClose={() => setSelectedDevice(undefined)}
+        isOpen={pageStatus !== "List"}
+        onClose={handleDrawerClose}
         usePortal
-        size="70%"
+        size={drawerSize[pageStatus]}
         hasBackdrop
         canEscapeKeyClose={false}
-        canOutsideClickClose={true}
-        title={
-          <div className="flex">
-            {selectedDevice && (
-              <>
-                <span style={{ marginRight: 10 }}>{selectedDevice?.name}</span>
-                <DeviceStatusBadge status={selectedDevice.status} />
-              </>
-            )}
-          </div>
-        }
+        canOutsideClickClose={pageStatus === "Single"}
+        title={drawerTitle[pageStatus]}
       >
-        {selectedDevice && (
-          <DeviceContent
-            device={selectedDevice}
-            setSelectedDevice={setSelectedDevice}
-            updateDevice={updateDevice}
-          />
-        )}
+        {drawerContent[pageStatus]}
       </Drawer>
     </div>
   );

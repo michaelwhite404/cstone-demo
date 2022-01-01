@@ -54,6 +54,7 @@ export const createDevice: RequestHandler = catchAsync(async (req: Request, res:
     model: req.body.model,
     serialNumber: req.body.serialNumber,
     macAddress: req.body.macAddress,
+    directoryId: req.body.directoryId,
     deviceType: req.body.deviceType,
   });
 

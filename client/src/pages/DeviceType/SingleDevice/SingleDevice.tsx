@@ -26,8 +26,10 @@ type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 export default function SingleDevice() {
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
-  const { device, setDevice, checkouts, errors, checkoutDevice, checkinDevice, deviceLoaded } =
-    useDevice(deviceType, slug);
+  const { device, setDevice, checkouts, errors, checkoutDevice, checkinDevice } = useDevice(
+    deviceType,
+    slug
+  );
   const [, setDocTitle] = useDocTitle(`${device?.name || ""} | Cornerstone App`);
   const [googleDevice, setGoogleDevice] = useState<ChromeOsDevice>();
   const [currentOsVersion, setCurrentOsVersion] = useState<string>();
@@ -74,7 +76,7 @@ export default function SingleDevice() {
       value: device?.checkedOut ? new Date(device?.lastCheckOut!).toLocaleString() : undefined,
     },
     {
-      heading: "Last Sync",
+      heading: "Last Policy Sync",
       value: googleDevice?.lastSync ? new Date(googleDevice?.lastSync).toLocaleString() : undefined,
     },
     {
