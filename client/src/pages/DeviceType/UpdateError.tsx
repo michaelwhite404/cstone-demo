@@ -22,7 +22,7 @@ interface UpdateErrorProps {
     errorLog: ErrorLogModel;
     device: DeviceModel;
   }>;
-  onUpdateErrorSuccess?: (errorLog: { errorLog: ErrorLogModel; device: DeviceModel }) => any;
+  onUpdateErrorSuccess?: (data: { errorLog: ErrorLogModel; device: DeviceModel }) => any;
 }
 
 export default function UpdateError({

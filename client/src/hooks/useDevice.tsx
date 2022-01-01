@@ -89,6 +89,15 @@ export default function useDevice(deviceType: string, slug: string) {
     return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
   };
 
+  const createDeviceError = async (data: { title: string; description: string }) => {
+    const res = await axios.post<APIErrorLogResponse>(
+      `/api/v2/devices/${device?._id}/errors`,
+      data
+    );
+    const fetchedDevice = await fetchDevice();
+    return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
+  };
+
   const updateableErrors = errors.filter((e) => !e.final);
 
   return {
@@ -101,5 +110,6 @@ export default function useDevice(deviceType: string, slug: string) {
     deviceLoaded,
     updateableErrors,
     updateDeviceError,
+    createDeviceError,
   };
 }

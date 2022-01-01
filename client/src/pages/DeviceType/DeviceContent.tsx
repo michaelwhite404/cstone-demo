@@ -23,8 +23,15 @@ export default function DeviceContent({
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { checkouts, errors, checkinDevice, checkoutDevice, updateableErrors, updateDeviceError } =
-    useDevice(device.deviceType, device.slug);
+  const {
+    checkouts,
+    errors,
+    checkinDevice,
+    checkoutDevice,
+    updateableErrors,
+    updateDeviceError,
+    createDeviceError,
+  } = useDevice(device.deviceType, device.slug);
   useEffect(() => {}, []);
 
   const values = [
@@ -55,7 +62,7 @@ export default function DeviceContent({
     updateDevice(device._id, updatedDevice);
   };
 
-  const onUpdateErrorSuccess = (res: { errorLog: ErrorLogModel; device: DeviceModel }) => {
+  const onMakeErrorSuccess = (res: { errorLog: ErrorLogModel; device: DeviceModel }) => {
     setSelectedDevice(res.device);
     updateDevice(device._id, res.device);
   };
@@ -94,7 +101,7 @@ export default function DeviceContent({
             <UpdateError
               errors={updateableErrors}
               updateDeviceError={updateDeviceError}
-              onUpdateErrorSuccess={onUpdateErrorSuccess}
+              onUpdateErrorSuccess={onMakeErrorSuccess}
             />
           </div>
         )}
@@ -102,12 +109,15 @@ export default function DeviceContent({
           <CheckoutHistory checkouts={checkouts} />
         </div>
         <div className="device-pane">
-          <ErrorHistory errors={errors} />
+          <ErrorHistory
+            errors={errors}
+            createDeviceError={createDeviceError}
+            onCreateErrorSuccess={onMakeErrorSuccess}
+          />
         </div>
       </div>
       <div className="drawer-footer">
         <div className="drawer-footer-inner">
-          <button>Edit</button>
           <button onClick={() => history.push(`${url}/${device.slug}`)}>{"See All Data >"}</button>
         </div>
       </div>
