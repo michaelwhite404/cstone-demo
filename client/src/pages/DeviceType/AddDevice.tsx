@@ -106,7 +106,10 @@ export default function AddDevice({
           ))}
           <div style={{ marginBottom: 25 }}>
             <Label>
-              <span style={{ fontWeight: 500 }}>Device Type</span>
+              <span style={{ fontWeight: 500 }}>
+                Device Type
+                <span style={{ marginLeft: 5, color: "red" }}>*</span>
+              </span>
               <InputGroup value={singular(deviceType)} disabled />
             </Label>
           </div>

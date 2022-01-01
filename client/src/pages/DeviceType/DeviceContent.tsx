@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
+import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import { useDevice } from "../../hooks";
 import { grades } from "../../utils/grades";
@@ -9,6 +10,7 @@ import Checkout from "./Checkout";
 import CheckoutHistory from "./CheckoutHistory";
 import "./DeviceContent.sass";
 import ErrorHistory from "./ErrorHistory";
+import UpdateError from "./UpdateError";
 
 export default function DeviceContent({
   device,
@@ -21,10 +23,8 @@ export default function DeviceContent({
 }) {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { checkouts, errors, checkinDevice, checkoutDevice } = useDevice(
-    device.deviceType,
-    device.slug
-  );
+  const { checkouts, errors, checkinDevice, checkoutDevice, updateableErrors, updateDeviceError } =
+    useDevice(device.deviceType, device.slug);
   useEffect(() => {}, []);
 
   const values = [
@@ -50,14 +50,14 @@ export default function DeviceContent({
     },
   ];
 
-  const onCheckoutSuccess = (updatedDevice: DeviceModel) => {
+  const onCheckingSuccess = (updatedDevice: DeviceModel) => {
     setSelectedDevice(updatedDevice);
     updateDevice(device._id, updatedDevice);
   };
 
-  const onCheckinSuccess = (updatedDevice: DeviceModel) => {
-    setSelectedDevice(updatedDevice);
-    updateDevice(device._id, updatedDevice);
+  const onUpdateErrorSuccess = (res: { errorLog: ErrorLogModel; device: DeviceModel }) => {
+    setSelectedDevice(res.device);
+    updateDevice(device._id, res.device);
   };
 
   return (
@@ -76,7 +76,7 @@ export default function DeviceContent({
             <Checkout
               device={device}
               checkoutDevice={checkoutDevice}
-              onCheckoutSuccess={onCheckoutSuccess}
+              onCheckoutSuccess={onCheckingSuccess}
             />
           </div>
         )}
@@ -85,7 +85,16 @@ export default function DeviceContent({
             <Checkin
               device={device}
               checkinDevice={checkinDevice}
-              onCheckinSuccess={onCheckinSuccess}
+              onCheckinSuccess={onCheckingSuccess}
+            />
+          </div>
+        )}
+        {device.status === "Broken" && updateableErrors.length > 0 && (
+          <div className="device-pane">
+            <UpdateError
+              errors={updateableErrors}
+              updateDeviceError={updateDeviceError}
+              onUpdateErrorSuccess={onUpdateErrorSuccess}
             />
           </div>
         )}

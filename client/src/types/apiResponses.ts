@@ -16,7 +16,9 @@ export interface APIDevicesResponse extends APIResponse<{ devices: DeviceModel[]
 export interface APIDeviceResponse extends APIResponse<{ device: DeviceModel }> {}
 
 export interface APICheckoutLogResponse extends APIResponse<{ deviceLogs: CheckoutLogModel[] }> {}
-export interface APIErrorLogResponse extends APIResponse<{ errorLogs: ErrorLogModel[] }> {}
+
+export interface APIErrorLogResponse extends APIResponse<{ errorLog: ErrorLogModel }> {}
+export interface APIErrorLogsResponse extends APIResponse<{ errorLogs: ErrorLogModel[] }> {}
 
 export interface APIError {
   status: "fail" | "error";

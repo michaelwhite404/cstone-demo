@@ -4,7 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
-import { APIDeviceResponse, APIDevicesResponse, APIError } from "../types/apiResponses";
+import {
+  APIDeviceResponse,
+  APIDevicesResponse,
+  APIError,
+  APIErrorLogResponse,
+} from "../types/apiResponses";
 import useToasterContext from "./useToasterContext";
 
 export default function useDevice(deviceType: string, slug: string) {
@@ -17,27 +22,33 @@ export default function useDevice(deviceType: string, slug: string) {
 
   const getSingleDevice = useCallback(async () => {
     try {
-      const res = await axios.get<APIDevicesResponse>("/api/v2/devices", {
-        params: {
-          deviceType: pluralize.singular(deviceType),
-          slug,
-          populate: "checkouts,errorLogs",
-        },
-      });
-      const { devices } = res.data.data;
-      if (devices.length === 1) {
-        const { checkouts, errorLogs, ...device } = devices[0];
-        setDevice(device);
-        if (checkouts) setCheckouts(checkouts);
-        if (errorLogs) setErrors(errorLogs);
-        setDeviceLoaded(true);
-      }
+      fetchDevice();
     } catch (err) {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceType, slug]);
 
   useEffect(() => {
     getSingleDevice();
   }, [getSingleDevice]);
+
+  const fetchDevice = async () => {
+    const res = await axios.get<APIDevicesResponse>("/api/v2/devices", {
+      params: {
+        deviceType: pluralize.singular(deviceType),
+        slug,
+        populate: "checkouts,errorLogs",
+      },
+    });
+    const { devices } = res.data.data;
+    if (devices.length === 1) {
+      const { checkouts, errorLogs, ...device } = devices[0];
+      setDevice(device);
+      if (checkouts) setCheckouts(checkouts);
+      if (errorLogs) setErrors(errorLogs);
+      setDeviceLoaded(true);
+      return devices[0];
+    }
+  };
 
   const checkoutDevice = async (studentId: string) => {
     try {
@@ -66,5 +77,29 @@ export default function useDevice(deviceType: string, slug: string) {
     }
   };
 
-  return { device, setDevice, checkoutDevice, checkouts, errors, checkinDevice, deviceLoaded };
+  const updateDeviceError = async (
+    errorId: string,
+    data: { status: string; description: string }
+  ) => {
+    const res = await axios.patch<APIErrorLogResponse>(
+      `/api/v2/devices/${device?._id}/errors/${errorId}`,
+      data
+    );
+    const fetchedDevice = await fetchDevice();
+    return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
+  };
+
+  const updateableErrors = errors.filter((e) => !e.final);
+
+  return {
+    device,
+    setDevice,
+    checkoutDevice,
+    checkouts,
+    errors,
+    checkinDevice,
+    deviceLoaded,
+    updateableErrors,
+    updateDeviceError,
+  };
 }

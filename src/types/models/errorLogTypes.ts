@@ -3,6 +3,8 @@ import { DeviceModel } from "./deviceTypes";
 import { CheckoutLogModel } from "./checkoutLogTypes";
 
 export interface ErrorLogModel {
+  /** Id of the error log */
+  _id: any;
   title: string;
   device: DeviceModel;
   checkInInfo?: CheckoutLogModel;
@@ -13,7 +15,7 @@ export interface ErrorLogModel {
   createdAt: Date;
 }
 
-type ErrorStatus = "Broken" | "In Repair" | "Fixed" | "Unfixable";
+export type ErrorStatus = "Broken" | "In Repair" | "Fixed" | "Unfixable";
 
 export interface ErrorUpdate {
   description: string;
@@ -21,4 +23,6 @@ export interface ErrorUpdate {
   status: ErrorStatus;
 }
 
-export interface ErrorLogDocument extends ErrorLogModel, Document {}
+export interface ErrorLogDocument extends ErrorLogModel, Document {
+  _id: ErrorLogModel["_id"];
+}
