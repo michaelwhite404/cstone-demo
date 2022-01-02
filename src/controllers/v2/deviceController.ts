@@ -191,12 +191,13 @@ export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) 
   });
 });
 
-export const getDevicesFromGoogle = catchAsync(async (req: Request, res: Response) => {
-  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-  const admin = google.admin({
-    version: "directory_v1",
-    auth: googleAuthJWT(scopes, req.employee.email),
-  });
+const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+const admin = google.admin({
+  version: "directory_v1",
+  auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+});
+
+export const getDevicesFromGoogle = catchAsync(async (_, res) => {
   const result = await admin.chromeosdevices.list({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
     projection: "BASIC",
@@ -208,34 +209,26 @@ export const getDevicesFromGoogle = catchAsync(async (req: Request, res: Respons
   });
 });
 
-export const getOneDeviceFromGoogle = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-    const admin = google.admin({
-      version: "directory_v1",
-      auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+export const getOneDeviceFromGoogle = catchAsync(async (req, res, next) => {
+  try {
+    const { data: device } = await admin.chromeosdevices.get({
+      customerId: process.env.GOOGLE_CUSTOMER_ID,
+      deviceId: req.params.id,
     });
 
-    try {
-      const { data: device } = await admin.chromeosdevices.get({
-        customerId: process.env.GOOGLE_CUSTOMER_ID,
-        deviceId: req.params.id,
-      });
-
-      res.status(200).json({
-        status: "success",
-        requestedAt: req.requestTime,
-        data: {
-          device,
-        },
-      });
-    } catch (err) {
-      return next(new AppError(err.response.data.error.message, 500));
-    }
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        device,
+      },
+    });
+  } catch (err) {
+    return next(new AppError(err.response.data.error.message, 500));
   }
-);
+});
 
-export const resetDeviceFromGoogle = catchAsync(async (req: Request, res: Response) => {
+export const resetDeviceFromGoogle = catchAsync(async (req, res) => {
   let command = "";
   switch (req.params.reset) {
     case "wipe":
@@ -243,12 +236,6 @@ export const resetDeviceFromGoogle = catchAsync(async (req: Request, res: Respon
     case "powerwash":
       command = "REMOTE_POWERWASH";
   }
-
-  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-  const admin = google.admin({
-    version: "directory_v1",
-    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
-  });
 
   await admin.customer.devices.chromeos.issueCommand({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
@@ -267,13 +254,7 @@ export const resetDeviceFromGoogle = catchAsync(async (req: Request, res: Respon
   });
 });
 
-export const moveDeviceToOu = catchAsync(async (req: Request, res: Response) => {
-  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-  const admin = google.admin({
-    version: "directory_v1",
-    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
-  });
-
+export const moveDeviceToOu = catchAsync(async (req, res) => {
   await admin.chromeosdevices.moveDevicesToOu({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
     orgUnitPath: req.body.orgUnitPath,
@@ -291,13 +272,7 @@ export const moveDeviceToOu = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
-export const deviceAction = catchAsync(async (req: Request, res: Response) => {
-  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-  const admin = google.admin({
-    version: "directory_v1",
-    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
-  });
-
+export const deviceAction = catchAsync(async (req, res) => {
   await admin.chromeosdevices.action({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
     resourceId: req.params.id,
