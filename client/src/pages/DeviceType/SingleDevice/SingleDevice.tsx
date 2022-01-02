@@ -2,7 +2,6 @@ import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { admin_directory_v1 } from "googleapis";
-import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../../components/PageHeader";
 import PaneHeader from "../../../components/PaneHeader/PaneHeader";
@@ -15,6 +14,7 @@ import CheckoutHistory from "../CheckoutHistory";
 import ErrorHistory from "../ErrorHistory";
 import "./SingleDevice.sass";
 import Badge from "../../../components/Badge/Badge";
+import UpdateError from "../UpdateError";
 
 interface SingleDeviceParams {
   deviceType: string;
@@ -26,8 +26,16 @@ type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 export default function SingleDevice() {
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
-  const { device, setDevice, checkouts, errors, checkoutDevice, checkinDevice, createDeviceError } =
-    useDevice(deviceType, slug);
+  const {
+    device,
+    checkouts,
+    errors,
+    checkoutDevice,
+    checkinDevice,
+    createDeviceError,
+    updateableErrors,
+    updateDeviceError,
+  } = useDevice(deviceType, slug);
   const [, setDocTitle] = useDocTitle(`${device?.name || ""} | Cornerstone App`);
   const [googleDevice, setGoogleDevice] = useState<ChromeOsDevice>();
   const [currentOsVersion, setCurrentOsVersion] = useState<string>();
@@ -49,8 +57,6 @@ export default function SingleDevice() {
   useEffect(() => {
     getGoogleDevice();
   }, [getGoogleDevice]);
-
-  const onCheckoutSuccess = (device: DeviceModel) => setDevice(device);
 
   const values = [
     { heading: "Model", value: device?.model },
@@ -119,13 +125,14 @@ export default function SingleDevice() {
               ))}
             </div>
           </div>
+          {device.status === "Broken" && updateableErrors.length > 0 && (
+            <div className="single-device-pane">
+              <UpdateError errors={updateableErrors} updateDeviceError={updateDeviceError} />
+            </div>
+          )}
           {device.status === "Available" && (
             <div className="single-device-pane">
-              <Checkout
-                device={device}
-                checkoutDevice={checkoutDevice}
-                onCheckoutSuccess={onCheckoutSuccess}
-              />
+              <Checkout device={device} checkoutDevice={checkoutDevice} />
             </div>
           )}
           {device.status === "Checked Out" && (
@@ -138,6 +145,9 @@ export default function SingleDevice() {
           </div>
           <div className="single-device-pane">
             <ErrorHistory errors={errors} createDeviceError={createDeviceError} />
+          </div>
+          <div className="single-device-pane">
+            <PaneHeader>Actions</PaneHeader>
           </div>
         </>
       )}

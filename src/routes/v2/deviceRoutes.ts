@@ -28,8 +28,27 @@ deviceRouter.use("/:device/errors", deviceErrorLogRouter);
 deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceController.createDevice);
 
 deviceRouter.get("/types", deviceController.getAllDeviceTypes);
-deviceRouter.get("/from-google", deviceController.getDevicesFromGoogle);
-deviceRouter.get("/from-google/:id", deviceController.getOneDeviceFromGoogle);
+
+deviceRouter.get(
+  "/from-google",
+  v1auth.restrictTo("Super Admin", "Admin"),
+  deviceController.getDevicesFromGoogle
+);
+deviceRouter.get(
+  "/from-google/:id",
+  v1auth.restrictTo("Super Admin", "Admin"),
+  deviceController.getOneDeviceFromGoogle
+);
+deviceRouter.post(
+  "/from-google/:id/reset",
+  v1auth.restrictTo("Super Admin"),
+  deviceController.resetDeviceFromGoogle
+);
+deviceRouter.post(
+  "/from-google/:id/move",
+  v1auth.restrictTo("Super Admin"),
+  deviceController.moveDeviceToOu
+);
 
 deviceRouter
   .route("/:id")

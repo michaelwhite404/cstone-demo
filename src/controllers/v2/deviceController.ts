@@ -233,3 +233,51 @@ export const getOneDeviceFromGoogle = catchAsync(
     }
   }
 );
+
+export const resetDeviceFromGoogle = catchAsync(async (req: Request, res: Response) => {
+  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+  const admin = google.admin({
+    version: "directory_v1",
+    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+  });
+
+  const result = await admin.customer.devices.chromeos.issueCommand({
+    customerId: process.env.GOOGLE_CUSTOMER_ID,
+    deviceId: req.params.id,
+    requestBody: {
+      commandType: "WIPE_USERS",
+    },
+  });
+
+  res.status(200).json({
+    success: "success",
+    requestedAt: req.requestTime,
+    data: {
+      message: "Device has been reset",
+    },
+  });
+});
+
+export const moveDeviceToOu = catchAsync(async (req: Request, res: Response) => {
+  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+  const admin = google.admin({
+    version: "directory_v1",
+    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+  });
+
+  await admin.chromeosdevices.moveDevicesToOu({
+    customerId: process.env.GOOGLE_CUSTOMER_ID,
+    orgUnitPath: req.body.orgUnitPath,
+    requestBody: {
+      deviceIds: [req.params.id],
+    },
+  });
+
+  res.status(200).json({
+    success: "success",
+    requestedAt: req.requestTime,
+    data: {
+      message: `Device has been moved to ${req.body.orgUnitPath}`,
+    },
+  });
+});
