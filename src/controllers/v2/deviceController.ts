@@ -235,17 +235,25 @@ export const getOneDeviceFromGoogle = catchAsync(
 );
 
 export const resetDeviceFromGoogle = catchAsync(async (req: Request, res: Response) => {
+  let command = "";
+  switch (req.params.reset) {
+    case "wipe":
+      command = "WIPE_USERS";
+    case "powerwash":
+      command = "REMOTE_POWERWASH";
+  }
+
   const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
   const admin = google.admin({
     version: "directory_v1",
     auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
   });
 
-  const result = await admin.customer.devices.chromeos.issueCommand({
+  await admin.customer.devices.chromeos.issueCommand({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
     deviceId: req.params.id,
     requestBody: {
-      commandType: "WIPE_USERS",
+      commandType: command,
     },
   });
 

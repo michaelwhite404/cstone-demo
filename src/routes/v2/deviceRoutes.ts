@@ -40,7 +40,7 @@ deviceRouter.get(
   deviceController.getOneDeviceFromGoogle
 );
 deviceRouter.post(
-  "/from-google/:id/reset",
+  "/from-google/:id/:reset(wipe|powerwash)",
   v1auth.restrictTo("Super Admin"),
   deviceController.resetDeviceFromGoogle
 );
