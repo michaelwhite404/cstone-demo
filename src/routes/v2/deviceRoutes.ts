@@ -49,6 +49,11 @@ deviceRouter.post(
   v1auth.restrictTo("Super Admin"),
   deviceController.moveDeviceToOu
 );
+deviceRouter.post(
+  "/from-google/:id/:action(disable|reenable|deprovision)",
+  v1auth.restrictTo("Super Admin"),
+  deviceController.deviceAction
+);
 
 deviceRouter
   .route("/:id")

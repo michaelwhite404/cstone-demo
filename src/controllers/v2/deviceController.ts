@@ -1,3 +1,4 @@
+import capitalize from "capitalize";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { google } from "googleapis";
 import { PopulateOptions, Types } from "mongoose";
@@ -286,6 +287,30 @@ export const moveDeviceToOu = catchAsync(async (req: Request, res: Response) => 
     requestedAt: req.requestTime,
     data: {
       message: `Device has been moved to ${req.body.orgUnitPath}`,
+    },
+  });
+});
+
+export const deviceAction = catchAsync(async (req: Request, res: Response) => {
+  const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
+  const admin = google.admin({
+    version: "directory_v1",
+    auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+  });
+
+  await admin.chromeosdevices.action({
+    customerId: process.env.GOOGLE_CUSTOMER_ID,
+    resourceId: req.params.id,
+    requestBody: {
+      action: req.params.action,
+    },
+  });
+
+  res.status(200).json({
+    success: "success",
+    requestedAt: req.requestTime,
+    data: {
+      message: `${capitalize(req.params.action)} action completed suceessfully`,
     },
   });
 });
