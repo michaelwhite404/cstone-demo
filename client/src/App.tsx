@@ -127,25 +127,25 @@ function App() {
                 />
                 <ProtectedNavRoute
                   exact
-                  path="/devices/:deviceType"
+                  path="/devices/:deviceType(chromebooks|tablets)"
                   component={DeviceType}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
                   exact
-                  path="/devices/:deviceType/stats"
+                  path="/devices/:deviceType(chromebooks|tablets)/stats"
                   component={Stats}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
                   exact
-                  path="/devices/:deviceType/logs"
+                  path="/devices/:deviceType(chromebooks|tablets)/logs"
                   component={DeviceLogs}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
                   exact
-                  path="/devices/:deviceType/:slug"
+                  path={`/devices/:deviceType(chromebooks|tablets)/:slug([a-z]{2}-\\d{2,4})`}
                   component={SingleDevice}
                   auth={isAuthenticated}
                 />
