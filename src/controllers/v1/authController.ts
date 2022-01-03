@@ -2,7 +2,7 @@ import { CookieOptions, NextFunction, Request, Response } from "express";
 import crypto from "crypto";
 import { promisify } from "util";
 import jwt from "jsonwebtoken";
-import catchAsync from "../../utils/catchAsync";
+import catchAsync from "../../utils/v1/catchAsync";
 import AppError from "../../utils/appError";
 import Employee from "../../models/employeeModel";
 import { EmployeeDocument } from "../../types/models/employeeTypes";

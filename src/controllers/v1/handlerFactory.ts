@@ -1,4 +1,4 @@
-import catchAsync from "../../utils/catchAsync";
+import catchAsync from "../../utils/v1/catchAsync";
 import AppError from "../../utils/appError";
 import APIFeatures from "../../utils/apiFeatures";
 import pluralize from "pluralize";

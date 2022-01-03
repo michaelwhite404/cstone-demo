@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import moment from "moment";
-import catchAsync from "../../utils/catchAsync";
+import catchAsync from "../../utils/v1/catchAsync";
 import Device from "../../models/deviceModel";
 import AppError from "../../utils/appError";
 import Employee from "../../models/employeeModel";
