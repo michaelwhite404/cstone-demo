@@ -12,7 +12,7 @@ import { graphqlHTTP } from "express-graphql";
 import AppError from "./utils/appError";
 import globalErrorHandler from "./controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
-import viewRouter from "./routes/v1/viewRoutes";
+// import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import pdfRouter from "./routes/pdfRoutes";
 import csvRouter from "./routes/csvRoutes";
@@ -21,7 +21,7 @@ import schema from "./graphql/schema";
 
 const app = express();
 
-app.set("view engine", "pug");
+// app.set("view engine", "pug");
 // app.set("views", path.join(__dirname, "../views"));
 
 // 1.) MIDDLEWARES
@@ -87,7 +87,7 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/pdf", pdfRouter);
 app.use("/csv", csvRouter);
-app.use("/", viewRouter);
+// app.use("/", viewRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));
