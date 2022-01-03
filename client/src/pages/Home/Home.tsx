@@ -1,6 +1,10 @@
+import { Button, InputGroup, Label } from "@blueprintjs/core";
+import { useState } from "react";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
+import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
 import { useDocTitle } from "../../hooks";
+import "./Home.sass";
 
 export default function Home({
   setIsAuthenticated,
@@ -10,46 +14,48 @@ export default function Home({
   setUser: React.Dispatch<React.SetStateAction<EmployeeModel | null>>;
 }) {
   useDocTitle("Login Page | Cornerstone App");
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          width: "100vw",
-          height: "100vh",
-          backgroundImage: "url(education-icon-background.png)",
-          backgroundSize: "200px 200px",
-        }}
-      >
-        <div
-          style={{
-            width: "30%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-          }}
-        >
-          <img
-            src="Cornerstone-Logo.png"
-            alt="Cornerstone Logo"
-            style={{ position: "absolute", top: 50, width: "100px" }}
-          />
-          <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+      <div className="home-container">
+        <div className="login-main">
+          <div>
+            <CornerstoneLogo style={{ width: 50 }} />
+            <h1 style={{ fontWeight: 600 }}>Welcome Back</h1>
+            <p>Please login in to your account</p>
+          </div>
+          <div>
+            <Label>Sign in with Cornestone Gmail Account</Label>
+            <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+          </div>
+          <div>Or continue with</div>
+          <div>
+            <div style={{ padding: "5px 0" }}>
+              <Label>
+                <span style={{ fontWeight: 500 }}>Email Address</span>
+                <InputGroup fill value={credentials.email} onChange={handleChange} name="email" />
+              </Label>
+            </div>
+            <div style={{ padding: "5px 0" }}>
+              <Label>
+                <span style={{ fontWeight: 500 }}>Password</span>
+                <InputGroup
+                  fill
+                  value={credentials.password}
+                  onChange={handleChange}
+                  name="password"
+                />
+              </Label>
+            </div>
+            <Button text="Sign In" fill intent="primary" />
+          </div>
         </div>
-        <div style={{ width: "70%", height: "100%", padding: "15px" }}>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "15px",
-              background:
-                "linear-gradient(251deg, rgba(23, 48, 204, 0.76), rgba(25, 104, 177, 0.91)), url(login-image.jpeg)",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "100% 100%",
-            }}
-          ></div>
-        </div>
+        <div className="login-image-banner" style={{ backgroundImage: "url(Lions+Den_18.jpeg)" }} />
       </div>
     </div>
   );
