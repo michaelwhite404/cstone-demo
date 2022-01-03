@@ -3,6 +3,8 @@ import { useState } from "react";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
+import TextOverLine from "../../components/TextOverLine";
 import { useDocTitle } from "../../hooks";
 import "./Home.sass";
 
@@ -33,8 +35,10 @@ export default function Home({
             <Label>Sign in with Cornestone Gmail Account</Label>
             <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
           </div>
-          <div>Or continue with</div>
-          <div>
+          <span style={{ padding: "1rem 0" }}>
+            <TextOverLine text="Or continue with" />
+          </span>
+          <div className="sign-in-form">
             <div style={{ padding: "5px 0" }}>
               <Label>
                 <span style={{ fontWeight: 500 }}>Email Address</span>
@@ -49,10 +53,11 @@ export default function Home({
                   value={credentials.password}
                   onChange={handleChange}
                   name="password"
+                  type="password"
                 />
               </Label>
             </div>
-            <Button text="Sign In" fill intent="primary" />
+            <PrimaryButton text="Sign In" />
           </div>
         </div>
         <div className="login-image-banner" style={{ backgroundImage: "url(Lions+Den_18.jpeg)" }} />
