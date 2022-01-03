@@ -58,8 +58,12 @@ deviceRouter.post(
 deviceRouter
   .route("/:id")
   .get(deviceController.getOneDevice)
-  .patch(helpers.omitFromBody(...nonManualUpdateKeys), deviceController.updateDevice)
-  .delete(deviceController.deleteDevice);
+  .patch(
+    v1auth.restrictTo("Super Admin", "Admin"),
+    helpers.omitFromBody(...nonManualUpdateKeys),
+    deviceController.updateDevice
+  )
+  .delete(v1auth.restrictTo("Super Admin"), deviceController.deleteDevice);
 
 deviceRouter.post("/:id/check-out/student/:student_id", deviceController.checkOutDevice);
 deviceRouter.post("/:id/check-in", deviceController.checkInDevice);

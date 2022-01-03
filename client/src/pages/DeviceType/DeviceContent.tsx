@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import { Button } from "@blueprintjs/core";
+import React, { useContext, useEffect } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
+import { UserContext } from "../../App";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
 import { useDevice } from "../../hooks";
 import { grades } from "../../utils/grades";
@@ -32,6 +34,7 @@ export default function DeviceContent({
     updateDeviceError,
     createDeviceError,
   } = useDevice(device.deviceType, device.slug);
+  const user = useContext(UserContext);
   useEffect(() => {}, []);
 
   const values = [
@@ -69,7 +72,7 @@ export default function DeviceContent({
 
   return (
     <>
-      <div style={{ height: "calc(100% - 80px)", overflow: "scroll" }}>
+      <div style={{ height: "100%", overflow: "scroll" }}>
         <div className="device-pane">
           <PaneHeader>Basic Info</PaneHeader>
           <div className="basic-info-box-wrapper">
@@ -116,11 +119,15 @@ export default function DeviceContent({
           />
         </div>
       </div>
-      <div className="drawer-footer">
-        <div className="drawer-footer-inner">
-          <button onClick={() => history.push(`${url}/${device.slug}`)}>{"See All Data >"}</button>
+      {user && ["Super Admin", "Admin"].includes(user.role) && (
+        <div className="drawer-footer">
+          <div className="drawer-footer-inner">
+            <Button intent="warning" onClick={() => history.push(`${url}/${device.slug}`)}>
+              {"See All Data >"}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
