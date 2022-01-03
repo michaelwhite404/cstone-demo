@@ -54,7 +54,7 @@
     "xss-clean": "^0.1.1"
   },
   "engines": {
-    "node": ">10.0.0"
+    "node": "14"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
