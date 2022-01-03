@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { admin_directory_v1 } from "googleapis";
 import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
@@ -15,6 +15,10 @@ import ErrorHistory from "../ErrorHistory";
 import "./SingleDevice.sass";
 import Badge from "../../../components/Badge/Badge";
 import UpdateError from "../UpdateError";
+import { Button, Dialog, Menu, MenuItem } from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
+import ResetBody from "./ResetBody";
+import { UserContext } from "../../../App";
 
 interface SingleDeviceParams {
   deviceType: string;
@@ -24,6 +28,7 @@ interface SingleDeviceParams {
 type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 
 export default function SingleDevice() {
+  const user = useContext(UserContext);
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
   const {
@@ -35,6 +40,7 @@ export default function SingleDevice() {
     createDeviceError,
     updateableErrors,
     updateDeviceError,
+    resetDevice,
   } = useDevice(deviceType, slug);
   const [, setDocTitle] = useDocTitle(`${device?.name || ""} | Cornerstone App`);
   const [googleDevice, setGoogleDevice] = useState<ChromeOsDevice>();
@@ -42,6 +48,7 @@ export default function SingleDevice() {
   useEffect(() => {
     setDocTitle(`${device?.name || ""} | Cornerstone App`);
   }, [device?.name, setDocTitle]);
+  const [open, setOpen] = useState(false);
 
   const getGoogleDevice = useCallback(async () => {
     if (device?.directoryId) {
@@ -110,13 +117,24 @@ export default function SingleDevice() {
     },
   ];
 
+  const ActionsMenu = (
+    <Menu className="custom-pop">
+      {user && user.role === "Super Admin" && (
+        <MenuItem icon="reset" text="Reset" onClick={() => setOpen(true)} />
+      )}
+    </Menu>
+  );
+
   return (
     <div>
       {device && (
         <>
           <PageHeader text={device.name || ""}>
-            <DeviceStatusBadge status={device.status} />
+            <Popover2 content={ActionsMenu} placement="bottom-end" className="menu-popover">
+              <Button icon="settings" text="Actions" large />
+            </Popover2>
           </PageHeader>
+          <DeviceStatusBadge status={device.status} />
           <div className="single-device-pane">
             <PaneHeader>Basic Info</PaneHeader>
             <div className="basic-info-box-wrapper">
@@ -146,9 +164,14 @@ export default function SingleDevice() {
           <div className="single-device-pane">
             <ErrorHistory errors={errors} createDeviceError={createDeviceError} />
           </div>
-          <div className="single-device-pane">
-            <PaneHeader>Actions</PaneHeader>
-          </div>
+          <Dialog
+            isOpen={open}
+            title={"Reset 1 Device"}
+            onClose={() => setOpen(false)}
+            style={{ width: 400 }}
+          >
+            <ResetBody close={() => setOpen(false)} resetDevice={resetDevice} />
+          </Dialog>
         </>
       )}
     </div>

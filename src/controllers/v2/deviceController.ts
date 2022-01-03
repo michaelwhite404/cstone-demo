@@ -233,8 +233,10 @@ export const resetDeviceFromGoogle = catchAsync(async (req, res) => {
   switch (req.params.reset) {
     case "wipe":
       command = "WIPE_USERS";
+      break;
     case "powerwash":
       command = "REMOTE_POWERWASH";
+      break;
   }
 
   await admin.customer.devices.chromeos.issueCommand({

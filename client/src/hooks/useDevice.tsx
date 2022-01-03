@@ -98,6 +98,11 @@ export default function useDevice(deviceType: string, slug: string) {
     return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
   };
 
+  const resetDevice = async (action: "wipe" | "powerwash") => {
+    const res = await axios.post(`/api/v2/devices/from-google/${device?.directoryId}/${action}`);
+    return res.data.data.message as string;
+  };
+
   const updateableErrors = errors.filter((e) => !e.final);
 
   return {
@@ -111,5 +116,6 @@ export default function useDevice(deviceType: string, slug: string) {
     updateableErrors,
     updateDeviceError,
     createDeviceError,
+    resetDevice,
   };
 }
