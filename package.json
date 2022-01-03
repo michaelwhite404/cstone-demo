@@ -12,9 +12,7 @@
     "client": "cd client && npm start",
     "server": "nodemon dist/server.js",
     "dev": "concurrently -n 'server,client' -c 'green,blue' \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
-    "tsc": "tsc",
-    "postinstall": "npm run tsc"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Michael White",
   "license": "MIT",
