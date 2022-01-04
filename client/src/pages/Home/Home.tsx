@@ -1,4 +1,4 @@
-import { Button, InputGroup, Label } from "@blueprintjs/core";
+import { InputGroup, Label } from "@blueprintjs/core";
 import { useState } from "react";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import CornerstoneLogo from "../../components/CornerstoneLogo";
@@ -26,13 +26,15 @@ export default function Home({
     <div>
       <div className="home-container">
         <div className="login-main">
-          <div>
+          <div className="welcome-section">
             <CornerstoneLogo style={{ width: 50 }} />
-            <h1 style={{ fontWeight: 600 }}>Welcome Back</h1>
-            <p>Please login in to your account</p>
+            <h1 style={{ fontWeight: 600, margin: "5px 0" }}>Welcome Back</h1>
+            <p>Sign into your account</p>
           </div>
           <div>
-            <Label>Sign in with Cornestone Gmail Account</Label>
+            <Label>
+              <span style={{ fontWeight: 500 }}>Sign in with Cornestone Gmail Account</span>
+            </Label>
             <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
           </div>
           <span style={{ padding: "1rem 0" }}>
