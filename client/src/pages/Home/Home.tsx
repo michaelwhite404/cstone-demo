@@ -1,11 +1,12 @@
 import { InputGroup, Label } from "@blueprintjs/core";
+import axios from "axios";
 import { useState } from "react";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TextOverLine from "../../components/TextOverLine";
-import { useDocTitle } from "../../hooks";
+import { useDocTitle, useToasterContext } from "../../hooks";
 import "./Home.sass";
 
 export default function Home({
@@ -17,9 +18,22 @@ export default function Home({
 }) {
   useDocTitle("Login Page | Cornerstone App");
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const { showToaster } = useToasterContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/v2/users/login", credentials);
+      setUser(res.data.data.employee);
+      showToaster("Log in successful!", "success");
+      setTimeout(() => setIsAuthenticated(true), 1250);
+    } catch (err) {
+      showToaster(err.response.data.message, "danger");
+    }
   };
 
   return (
@@ -41,25 +55,34 @@ export default function Home({
             <TextOverLine text="Or continue with" />
           </span>
           <div className="sign-in-form">
-            <div style={{ padding: "5px 0" }}>
-              <Label>
-                <span style={{ fontWeight: 500 }}>Email Address</span>
-                <InputGroup fill value={credentials.email} onChange={handleChange} name="email" />
-              </Label>
-            </div>
-            <div style={{ padding: "5px 0" }}>
-              <Label>
-                <span style={{ fontWeight: 500 }}>Password</span>
-                <InputGroup
-                  fill
-                  value={credentials.password}
-                  onChange={handleChange}
-                  name="password"
-                  type="password"
-                />
-              </Label>
-            </div>
-            <PrimaryButton text="Sign In" />
+            <form onSubmit={handleSubmit}>
+              <div style={{ padding: "5px 0" }}>
+                <Label>
+                  <span style={{ fontWeight: 500 }}>Email Address</span>
+                  <InputGroup
+                    fill
+                    value={credentials.email}
+                    onChange={handleChange}
+                    name="email"
+                    required
+                  />
+                </Label>
+              </div>
+              <div style={{ padding: "5px 0" }}>
+                <Label>
+                  <span style={{ fontWeight: 500 }}>Password</span>
+                  <InputGroup
+                    fill
+                    value={credentials.password}
+                    onChange={handleChange}
+                    name="password"
+                    type="password"
+                    required
+                  />
+                </Label>
+              </div>
+              <PrimaryButton text="Sign In" type="submit" />
+            </form>
           </div>
           <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
