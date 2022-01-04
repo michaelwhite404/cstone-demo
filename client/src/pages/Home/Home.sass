@@ -10,13 +10,29 @@
   justify-content: center
   // align-items: center
   position: relative
-  padding: 0 40px
+  padding: 25px 40px
+  overflow: scroll
+  @media screen and (max-width: 991px)
+    width: 45%
+  @media screen and (max-width: 767px)
+    width: 55%
+  @media screen and (max-width: 640px)
+    display: block
+    width: 100%
+  @media screen and (max-height: 535px)
+    display: block
 
 .login-image-banner
   width: 65%
   height: 100%
   background-position: 50% 50%
   filter: contrast(0.5)
+  @media screen and (max-width: 991px)
+    width: 55%
+  @media screen and (max-width: 767px)
+    width: 45%
+  @media screen and (max-width: 640px)
+    display: none
 
 .bp3-input:focus
   box-shadow: 0 0 0px 2px #3b82f6
@@ -34,3 +50,5 @@
   right: 0
   text-align: center
   font-family: cursive
+  @media screen and (max-height: 535px)
+    display: none
