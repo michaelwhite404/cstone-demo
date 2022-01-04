@@ -1,8 +1,7 @@
-import { useRef } from "react";
 import axios from "axios";
-import { Toaster } from "@blueprintjs/core";
 import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 import { EmployeeModel } from "../../../src/types/models/employeeTypes";
+import { useToasterContext } from "../hooks";
 
 export default function Login({
   setIsAuthenticated,
@@ -11,15 +10,7 @@ export default function Login({
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<EmployeeModel | null>>;
 }) {
-  const toasterRef = useRef<Toaster>(null);
-  const showToaster = (message: string, intent: "success" | "danger") => {
-    toasterRef.current!.show({
-      message,
-      intent,
-      icon: intent === "success" ? "tick" : "cross",
-    });
-  };
-
+  const { showToaster } = useToasterContext();
   const handleLogin = async (
     googleData: GoogleLoginResponse | GoogleLoginResponseOffline
   ): Promise<void> => {
@@ -49,10 +40,6 @@ export default function Login({
         borderRadius: 5,
         cursor: "pointer",
         width: "100%",
-        //@ts-ignore
-        "&:hover": {
-          backgroundColor: "red",
-        },
       }}
     >
       <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

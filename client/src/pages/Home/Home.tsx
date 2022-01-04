@@ -28,7 +28,7 @@ export default function Home({
         <div className="login-main">
           <div className="welcome-section">
             <CornerstoneLogo style={{ width: 50 }} />
-            <h1 style={{ fontWeight: 600, margin: "5px 0" }}>Welcome Back</h1>
+            <h1 style={{ fontWeight: 600, margin: "5px 0" }}>Welcome Back!!</h1>
             <p>Sign into your account</p>
           </div>
           <div>
@@ -61,6 +61,7 @@ export default function Home({
             </div>
             <PrimaryButton text="Sign In" />
           </div>
+          <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
         <div className="login-image-banner" style={{ backgroundImage: "url(Lions+Den_18.jpeg)" }} />
       </div>
