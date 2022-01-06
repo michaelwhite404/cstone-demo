@@ -84,7 +84,7 @@ export default function TextbooksTable({
     <>
       <div
         className="textbooks-table-container"
-        style={{ overflow: "auto", maxHeight: "calc(100vh - 195px)" }}
+        style={{ overflow: "auto", maxHeight: "calc(100vh - 200px)" }}
       >
         <table {...getTableProps()} id="textbooks-table">
           <thead>

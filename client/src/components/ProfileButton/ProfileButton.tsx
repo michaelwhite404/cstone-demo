@@ -39,7 +39,7 @@ export default function ProfileButton({
           <span className="profile-button-content">
             <img src={imgSrc} alt="Profile" />
             <span className="profile-button-text">
-              <div>{name}</div>
+              <div className="profile-name">{name}</div>
               <span>{title}</span>
             </span>
           </span>

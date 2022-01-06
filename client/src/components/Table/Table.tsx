@@ -131,7 +131,7 @@ export default function Table({
 
         <div {...getTableBodyProps()}>
           <FixedSizeList
-            height={height - 227}
+            height={height - 240}
             itemCount={rows.length}
             itemSize={42}
             width={width - 308}
