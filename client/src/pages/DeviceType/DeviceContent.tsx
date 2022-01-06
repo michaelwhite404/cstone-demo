@@ -34,7 +34,7 @@ export default function DeviceContent({
     updateDeviceError,
     createDeviceError,
   } = useDevice(device.deviceType, device.slug);
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   useEffect(() => {}, []);
 
   const values = [

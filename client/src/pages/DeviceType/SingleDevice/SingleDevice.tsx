@@ -28,7 +28,7 @@ interface SingleDeviceParams {
 type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 
 export default function SingleDevice() {
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<SingleDeviceParams>();
   const {

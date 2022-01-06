@@ -44,7 +44,7 @@ const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => (
             backgroundColor: "#f9fcff",
             width: "100%",
             padding: "10px 25px 25px",
-            overflow: "scroll",
+            overflowY: "auto",
           }}
         >
           <Component {...props} />
@@ -73,7 +73,12 @@ function ProtectedNavRoute({
   );
 }
 
-export const UserContext = createContext<EmployeeModel | null>({} as EmployeeModel);
+interface UserContextProps {
+  user: EmployeeModel | null;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const UserContext = createContext<UserContextProps>({} as UserContextProps);
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -112,7 +117,7 @@ function App() {
                   <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
                 )}
               </Route>
-              <UserContext.Provider value={user}>
+              <UserContext.Provider value={{ user, setIsAuthenticated }}>
                 <ProtectedNavRoute
                   exact
                   path="/dashboard"

@@ -109,7 +109,7 @@ export default function Textbooks() {
         setTextbooks(res.data.data.books);
       } catch (err) {
         toasterRef.current?.show({
-          message: `${(err as AxiosError<APIError>).response!.data}`,
+          message: `${(err as AxiosError<APIError>).response!.data.message}`,
           intent: "danger",
           icon: "cross",
         });
