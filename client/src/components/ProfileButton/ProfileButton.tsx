@@ -3,8 +3,7 @@ import { SelectorIcon } from "@heroicons/react/solid";
 import { Popover2 } from "@blueprintjs/popover2";
 import { Menu, MenuItem } from "@blueprintjs/core";
 import "./ProfileButton.sass";
-import axios from "axios";
-import { useToasterContext } from "../../hooks";
+import { useAuth, useToasterContext } from "../../hooks";
 
 interface ProfileButtonProps {
   imgSrc: string;
@@ -20,20 +19,21 @@ export default function ProfileButton({
   setIsAuthenticated,
 }: ProfileButtonProps) {
   const { showToaster } = useToasterContext();
+  const { logout } = useAuth();
 
-  const logout = async () => {
-    await axios.post("api/v2/users/logout");
+  const handleLogout = async () => {
+    await logout().catch(() => showToaster("There was an error logging out", "danger"));
     showToaster("Logged out successfully", "success");
     setTimeout(() => setIsAuthenticated(false), 1000);
   };
-  const ActionsMenu = (
+  const ProfileMenu = (
     <Menu className="custom-pop">
-      <MenuItem text="Log Out" onClick={logout} />
+      <MenuItem text="Log Out" onClick={handleLogout} />
     </Menu>
   );
 
   return (
-    <Popover2 content={ActionsMenu} placement="bottom" className="menu-popover">
+    <Popover2 content={ProfileMenu} placement="bottom" className="menu-popover">
       <button className="profile-button">
         <span className="profile-button-inner">
           <span className="profile-button-content">
