@@ -6,3 +6,13 @@
 .bp3-menu-item {
   border-radius: 5px !important;
 }
+
+.app-container {
+  display: flex;
+  overflow: hidden;
+  height: 100vh;
+
+  @media screen and (max-width: 992px) {
+    flex-direction: column;
+  }
+}

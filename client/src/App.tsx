@@ -24,6 +24,8 @@ import Stats from "./pages/DeviceType/Stats/Stats";
 import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
 import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
 import { ToasterProvider } from "./context/ToasterContext";
+import { useWindowSize } from "./hooks";
+import Topbar from "./components/Topbar/Topbar";
 
 interface NavRouteProps {
   exact: boolean;
@@ -31,28 +33,33 @@ interface NavRouteProps {
   component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
 }
 
-const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => (
-  <Route
-    exact={exact}
-    path={path}
-    render={(props) => (
-      <div className="app-container">
-        <Sidebar />
-        <div
-          className="main-area-container"
-          style={{
-            backgroundColor: "#f9fcff",
-            width: "100%",
-            padding: "10px 25px 25px",
-            overflowY: "auto",
-          }}
-        >
-          <Component {...props} />
+const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => {
+  const [width] = useWindowSize();
+
+  return (
+    <Route
+      exact={exact}
+      path={path}
+      render={(props) => (
+        <div className="app-container">
+          {width > 992 ? <Sidebar /> : <Topbar />}
+          <div
+            className="main-area-container"
+            style={{
+              backgroundColor: "#f9fcff",
+              width: "100%",
+              height: "100%",
+              padding: "10px 25px 25px",
+              overflowY: "auto",
+            }}
+          >
+            <Component {...props} />
+          </div>
         </div>
-      </div>
-    )}
-  />
-);
+      )}
+    />
+  );
+};
 
 function ProtectedNavRoute({
   exact,

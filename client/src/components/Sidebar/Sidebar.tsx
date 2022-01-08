@@ -7,7 +7,7 @@ import "./Sidebar.sass";
 
 export default function Sidebar() {
   const match = useRouteMatch();
-  const { user, setIsAuthenticated } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const matchesURL = (url: string) => match.url.startsWith(url);
   return (
     <div className="sidebar-container">
@@ -16,16 +16,7 @@ export default function Sidebar() {
           <div className="logo-wrapper">
             <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
           </div>
-          <div className="profile-button-wrapper">
-            {user && (
-              <ProfileButton
-                imgSrc={user.image!}
-                name={user.fullName}
-                title={user.title}
-                setIsAuthenticated={setIsAuthenticated}
-              />
-            )}
-          </div>
+          <div className="profile-button-wrapper">{user && <ProfileButton user={user} />}</div>
           <div className="navigation-wrapper">
             <nav>
               <span className="idkyet">Navigation</span>
