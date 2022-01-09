@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import classnames from "classnames";
-import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
-import Badge from "../components/Badge/Badge";
-import PageHeader from "../components/PageHeader";
-import { APITextbookSetsResponse } from "../types/apiResponses";
+import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
+import Badge from "../../components/Badge/Badge";
+import PageHeader from "../../components/PageHeader";
+import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
 

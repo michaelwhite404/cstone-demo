@@ -1,7 +1,7 @@
 import { Panel, PanelStack2 } from "@blueprintjs/core";
 import React, { useEffect } from "react";
-import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
-import TextbooksTestContent from "./TextbooksTestContent";
+import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
+import TextbooksTestContent from "./Panels/TextbooksTestPanel";
 
 export default function ContentPanels({ textbook }: { textbook: TextbookSetModel }) {
   //--- PANEL STATES ---//

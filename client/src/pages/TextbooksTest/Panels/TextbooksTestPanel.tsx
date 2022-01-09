@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
-import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
-import { TextbookModel } from "../../../src/types/models/textbookTypes";
-import TextbookStatusBadge from "../components/Badges/TextbookStatusBadge";
-import TextbookQualityBadge from "../components/Badges/TextbookQualityBadge";
-import TablePaginate from "../components/TablePaginate/TablePaginate";
-import { APITextbooksResponse } from "../types/apiResponses";
-import { numberToGrade } from "../utils/grades";
-import PrimaryButton from "../components/PrimaryButton/PrimaryButton";
+import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
+import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
+import TextbookStatusBadge from "../../../components/Badges/TextbookStatusBadge";
+import TextbookQualityBadge from "../../../components/Badges/TextbookQualityBadge";
+import TablePaginate from "../../../components/TablePaginate/TablePaginate";
+import { APITextbooksResponse } from "../../../types/apiResponses";
+import { numberToGrade } from "../../../utils/grades";
+import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import AddBookPanel from "./AddBookPanel";
 
