@@ -1,15 +1,18 @@
-import { Icon } from "@blueprintjs/core";
+import { useContext, useState } from "react";
+import { Drawer, Icon } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
-import React, { useContext } from "react";
 import { UserContext } from "../../App";
 import ProfileMenu from "../ProfileMenu";
 import "./Topbar.sass";
+import Sidebar from "../Sidebar/Sidebar";
 
 export default function Topbar() {
   const { user } = useContext(UserContext);
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="topbar">
-      <button className="hamburger-button" type="button">
+      <button className="hamburger-button" type="button" onClick={() => setOpen(true)}>
         <Icon icon="menu" style={{ color: "#999999" }} />
       </button>
       <div className="profile-image-wrapper">
@@ -19,6 +22,17 @@ export default function Topbar() {
           </button>
         </Popover2>
       </div>
+      <Drawer
+        position="left"
+        size="256px"
+        usePortal
+        isOpen={open}
+        hasBackdrop
+        canOutsideClickClose={true}
+        onClose={() => setOpen(false)}
+      >
+        <Sidebar />
+      </Drawer>
     </div>
   );
 }
