@@ -7,8 +7,14 @@ import TextbookQualityBadge from "../components/Badges/TextbookQualityBadge";
 import TablePaginate from "../components/TablePaginate/TablePaginate";
 import { APITextbooksResponse } from "../types/apiResponses";
 import { numberToGrade } from "../utils/grades";
+import PrimaryButton from "../components/PrimaryButton/PrimaryButton";
+import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
+import AddBookPanel from "./AddBookPanel";
 
-export default function TextbooksTestContent({ textbook }: { textbook: TextbookSetModel }) {
+export default function TextbooksTestContent({
+  textbook,
+  ...props
+}: { textbook: TextbookSetModel } & PanelActions) {
   const [books, setBooks] = useState<TextbookModel[]>([]);
 
   useEffect(() => {
@@ -49,16 +55,22 @@ export default function TextbooksTestContent({ textbook }: { textbook: TextbookS
     ],
     []
   );
-
   const data = useMemo(() => books, [books]);
 
+  const addBookPanel = () =>
+    props.openPanel({
+      props: {},
+      renderPanel: AddBookPanel,
+      title: "Panel 2",
+    });
+
   return (
-    <div>
+    <div className="main-content-inner-wrapper">
       <div className="main-content-header">
-        {textbook.title}
-        {/* <PrimaryButton>{`+ Add ${selected.title} Book`}</PrimaryButton> */}
+        <span style={{ fontWeight: 500, fontSize: 16 }}>{textbook.title}</span>
+        <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
       </div>
-      <div style={{ padding: "2rem" }}>
+      <div style={{ overflowY: "scroll" }}>
         <TablePaginate columns={columns} data={data} pageSize={50} enableRowsPicker={false} />
       </div>
     </div>

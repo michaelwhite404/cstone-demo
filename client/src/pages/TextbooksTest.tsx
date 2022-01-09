@@ -6,7 +6,7 @@ import Badge from "../components/Badge/Badge";
 import PageHeader from "../components/PageHeader";
 import { APITextbookSetsResponse } from "../types/apiResponses";
 import "./TextbooksTest.sass";
-import TextbooksTestContent from "./TextbooksTestContent";
+import ContentPanels from "./ContentPanels";
 
 interface LetterGroup {
   letter: string;
@@ -16,6 +16,7 @@ interface LetterGroup {
 export default function TextbooksTest() {
   const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
   const [selected, setSelected] = useState<TextbookSetModel>();
+
   useEffect(() => {
     getTextbookSets();
 
@@ -75,9 +76,7 @@ export default function TextbooksTest() {
           ))}
         </div>
       </aside>
-      <main className="main-content">
-        {selected && <TextbooksTestContent textbook={selected} />}
-      </main>
+      <main className="main-content">{selected && <ContentPanels textbook={selected} />}</main>
     </div>
   );
 }
