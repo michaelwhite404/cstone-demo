@@ -53,19 +53,8 @@ textbookSchema.pre("save", async function (next) {
   if (this.isNew) {
     const set = await TextbookSet.findById(this.textbookSet);
     if (!set) return next(new AppError(`Foreign Key Constraint: textbookSet ID is not valid`, 400));
-    this.$locals.wasNew = true;
-    this.$locals.numActiveBooks = set.numActiveBooks;
   }
   next();
-});
-
-textbookSchema.post("save", async function () {
-  if (this.$locals.wasNew === true) {
-    const numActiveBooks = (this.$locals.numActiveBooks as number) + 1;
-    await TextbookSet.findByIdAndUpdate(this.textbookSet, {
-      numActiveBooks,
-    });
-  }
 });
 
 const Textbook = model<TextbookDocument>("Textbook", textbookSchema);

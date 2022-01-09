@@ -13,7 +13,7 @@ const Model = TextbookSet;
 const key = "textbook";
 
 /** `GET` - Gets all textbooks */
-export const getAllTextbooks = factory.getAll(Model, `${key}s`);
+export const getAllTextbooks = factory.getAll(Model, `${key}s`, {}, { path: "count" });
 /** `GET` - Gets a single textbook */
 export const getOneTextbook = factory.getOneById(Model, key);
 /** `POST` - Creates a single textbook */

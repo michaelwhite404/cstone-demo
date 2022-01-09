@@ -10,7 +10,7 @@ export interface TextbookSetModel {
   /** Array of grades the textbook set is used for */
   grade: number;
   /** Number of active textbook set in this set  */
-  numActiveBooks: number;
+  count: number;
   /** Textbook set slug */
   slug: string;
 }
