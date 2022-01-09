@@ -3,6 +3,7 @@ import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
 import { StudentModel } from "../../../src/types/models/studentTypes";
 import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
+import { TextbookModel } from "../../../src/types/models/textbookTypes";
 
 interface APIResponse<T> {
   status: "success";
@@ -22,6 +23,8 @@ export interface APIErrorLogResponse extends APIResponse<{ errorLog: ErrorLogMod
 export interface APIErrorLogsResponse extends APIResponse<{ errorLogs: ErrorLogModel[] }> {}
 
 export interface APITextbookSetsResponse extends APIResponse<{ textbooks: TextbookSetModel[] }> {}
+
+export interface APITextbooksResponse extends APIResponse<{ books: TextbookModel[] }> {}
 
 export interface APIError {
   status: "fail" | "error";

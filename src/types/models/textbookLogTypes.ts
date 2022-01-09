@@ -1,7 +1,7 @@
 import { Document, PopulatedDoc } from "mongoose";
 import { EmployeeModel } from "./employeeTypes";
 import { StudentModel } from "./studentTypes";
-import { TextbookModel } from "./textbookTypes";
+import { TextbookModel, TextbookQuality } from "./textbookTypes";
 
 export interface TextbookLogModel {
   /** Id of textbook log */
@@ -20,5 +20,3 @@ export interface TextbookLogModel {
 export interface TextbookLogDocument extends TextbookLogModel, Document {
   _id: any;
 }
-
-type TextbookQuality = "Excellent" | "Good" | "Acceptable" | "Poor";

@@ -52,6 +52,7 @@ const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => {
               height: "100%",
               padding: "10px 25px 25px",
               overflowY: "auto",
+              overflowX: "hidden",
             }}
           >
             <Component {...props} />

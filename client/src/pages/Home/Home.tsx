@@ -81,7 +81,7 @@ export default function Home({
                   />
                 </Label>
               </div>
-              <PrimaryButton text="Sign In" type="submit" />
+              <PrimaryButton text="Sign In" type="submit" fill />
             </form>
           </div>
           <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>

@@ -6,6 +6,7 @@ import Badge from "../components/Badge/Badge";
 import PageHeader from "../components/PageHeader";
 import { APITextbookSetsResponse } from "../types/apiResponses";
 import "./TextbooksTest.sass";
+import TextbooksTestContent from "./TextbooksTestContent";
 
 interface LetterGroup {
   letter: string;
@@ -74,6 +75,9 @@ export default function TextbooksTest() {
           ))}
         </div>
       </aside>
+      <main className="main-content">
+        {selected && <TextbooksTestContent textbook={selected} />}
+      </main>
     </div>
   );
 }

@@ -19,5 +19,5 @@ export interface TextbookDocument extends TextbookModel, Document {
   _id: any;
 }
 
-type TextbookQuality = "Excellent" | "Good" | "Acceptable" | "Poor";
-type TextBookStatus = "Available" | "Checked Out" | "Replaced" | "Not Available";
+export type TextbookQuality = "Excellent" | "Good" | "Acceptable" | "Poor" | "Lost";
+export type TextBookStatus = "Available" | "Checked Out" | "Replaced" | "Not Available";
