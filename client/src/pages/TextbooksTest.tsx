@@ -1,8 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import classnames from "classnames";
 import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
+import Badge from "../components/Badge/Badge";
 import PageHeader from "../components/PageHeader";
 import { APITextbookSetsResponse } from "../types/apiResponses";
+import "./TextbooksTest.sass";
 
 interface LetterGroup {
   letter: string;
@@ -11,6 +14,7 @@ interface LetterGroup {
 
 export default function TextbooksTest() {
   const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
+  const [selected, setSelected] = useState<TextbookSetModel>();
   useEffect(() => {
     getTextbookSets();
 
@@ -42,23 +46,33 @@ export default function TextbooksTest() {
 
   return (
     <div className="flex" style={{ height: "100%" }}>
-      <aside
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "24rem",
-          backgroundColor: "white",
-          borderRight: "1px #e5e7eb solid",
-          height: "100%",
-        }}
-      >
-        <div>
+      <aside className="side-table">
+        <div className="side-table-top">
           <PageHeader text="Textbooks" />
-          <p>
-            {/* Search directory of {textbookSets.map((s) => s.count).reduce((a, b) => a + b, 0)} books */}
-          </p>
+          <p>Search directory of many books</p>
         </div>
-        <div style={{ display: "flex" }}>Me</div>
+        <div className="side-table-content">
+          {letterGroup.map((group) => (
+            <div className="letter-group">
+              <div className="letter-header">{group.letter}</div>
+              <ul className="letter-list">
+                {group.children.map((set) => (
+                  <li onClick={() => setSelected(set)}>
+                    <div
+                      className={classnames("book-set", { selected: selected?._id === set._id })}
+                    >
+                      <span>
+                        <span style={{ fontWeight: 500, marginRight: "0.5rem" }}>{set.title}</span>
+                        <Badge text={set.count.toString()} color="blue" noDot />
+                      </span>
+                      <div className="book-subject">{set.class}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </aside>
     </div>
   );

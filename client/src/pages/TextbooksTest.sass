@@ -1,0 +1,51 @@
+@import "../_variables"
+
+.side-table
+  display: flex
+  flex-direction: column
+  width: 24rem
+  background-color: white
+  border-right: 1px #e5e7eb solid
+  height: 100%
+
+.side-table-top
+  padding: 1.5rem 1.5rem 1rem
+
+.side-table-content
+  display: flex
+  flex-direction: column
+  overflow-y: auto
+
+.letter-header
+  background-color: $gray-50
+  padding: 0.25rem 1.5rem
+  position: sticky
+  top: 0
+  border-top: 1px $gray-200 solid
+  border-bottom: 1px $gray-200 solid
+  color: $gray-400
+
+.letter-list
+  list-style-type: none
+  padding: 0
+  margin: 0
+
+  li
+    &:not(:last-child)
+      .book-set
+        border-bottom: 1px $gray-200 solid
+
+  .book-set
+    padding: 20px 24px
+    cursor: pointer
+    &.selected
+      background-color: #eff6ff
+      &:hover
+        background-color: #eff6ff
+
+    &:hover
+      background-color: $gray-50
+
+    .book-subject
+      color: $gray-400
+      font-size: 13px
