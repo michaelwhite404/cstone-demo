@@ -26,6 +26,7 @@ import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
 import { ToasterProvider } from "./context/ToasterContext";
 import { useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
+import TextbooksTest from "./pages/TextbooksTest";
 
 interface NavRouteProps {
   exact: boolean;
@@ -165,6 +166,12 @@ function App() {
                   exact
                   path="/textbooks"
                   component={Textbooks}
+                  auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/textbooks-test"
+                  component={TextbooksTest}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute

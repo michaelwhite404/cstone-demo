@@ -2,6 +2,7 @@ import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
 import { StudentModel } from "../../../src/types/models/studentTypes";
+import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
 
 interface APIResponse<T> {
   status: "success";
@@ -19,6 +20,8 @@ export interface APICheckoutLogResponse extends APIResponse<{ deviceLogs: Checko
 
 export interface APIErrorLogResponse extends APIResponse<{ errorLog: ErrorLogModel }> {}
 export interface APIErrorLogsResponse extends APIResponse<{ errorLogs: ErrorLogModel[] }> {}
+
+export interface APITextbookSetsResponse extends APIResponse<{ textbooks: TextbookSetModel[] }> {}
 
 export interface APIError {
   status: "fail" | "error";
