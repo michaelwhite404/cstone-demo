@@ -32,9 +32,10 @@ interface NavRouteProps {
   exact: boolean;
   path: string;
   component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
+  noPadding?: boolean;
 }
 
-const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => {
+const NavRoute = ({ exact, path, component: Component, noPadding = false }: NavRouteProps) => {
   const [width] = useWindowSize();
 
   return (
@@ -50,7 +51,7 @@ const NavRoute = ({ exact, path, component: Component }: NavRouteProps) => {
               backgroundColor: "#f9fcff",
               width: "100%",
               height: "100%",
-              padding: "10px 25px 25px",
+              padding: noPadding ? undefined : "10px 25px 25px",
               overflowY: "auto",
               overflowX: "hidden",
             }}
@@ -68,6 +69,7 @@ function ProtectedNavRoute({
   path,
   auth,
   component: Component,
+  noPadding,
   ...restOfProps
 }: NavRouteProps & { auth: boolean }) {
   const isAuthenticated = auth;
@@ -76,7 +78,11 @@ function ProtectedNavRoute({
     <Route
       {...restOfProps}
       render={() =>
-        isAuthenticated ? <NavRoute exact path={path} component={Component} /> : <Redirect to="/" />
+        isAuthenticated ? (
+          <NavRoute exact path={path} component={Component} noPadding={noPadding} />
+        ) : (
+          <Redirect to="/" />
+        )
       }
     />
   );
@@ -174,6 +180,7 @@ function App() {
                   path="/textbooks-test"
                   component={TextbooksTest}
                   auth={isAuthenticated}
+                  noPadding
                 />
                 <ProtectedNavRoute
                   exact

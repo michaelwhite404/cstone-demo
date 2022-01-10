@@ -59,7 +59,7 @@ export default function TextbooksTestContent({
 
   const addBookPanel = () =>
     props.openPanel({
-      props: {},
+      props: { textbook, books },
       renderPanel: AddBookPanel,
       title: "Panel 2",
     });
