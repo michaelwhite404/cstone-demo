@@ -7,6 +7,7 @@ import PageHeader from "../../components/PageHeader";
 import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
+import { Icon } from "@blueprintjs/core";
 
 interface LetterGroup {
   letter: string;
@@ -52,6 +53,10 @@ export default function TextbooksTest() {
         <div className="side-table-top">
           <PageHeader text="Textbooks" />
           <p>Search directory of many books</p>
+          <button className="create-textbook-button">
+            <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
+            <span style={{ fontWeight: 500 }}>Create New Textbook</span>
+          </button>
         </div>
         <div className="side-table-content">
           {letterGroup.map((group) => (
