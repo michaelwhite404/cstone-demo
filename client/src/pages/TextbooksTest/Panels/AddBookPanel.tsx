@@ -1,8 +1,7 @@
 import { Button, HTMLSelect, InputGroup } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import { XCircleIcon } from "@heroicons/react/solid";
-import Tooltip from "@mui/material/Tooltip";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
 
@@ -18,8 +17,8 @@ interface AddBookProps extends PanelActions {
   books: TextbookModel[];
 }
 
-const defaultPreBook = (bookNumber: number): PreBook => ({
-  passed: true,
+const defaultPreBook = (bookNumber: number, passed = true): PreBook => ({
+  passed,
   bookNumber,
   quality: "Excellent",
   status: "Available",
@@ -36,7 +35,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
     if (key === "bookNumber") {
       const castValue = Number(value);
       book.bookNumber = isNaN(castValue) ? 0 : castValue;
-      if (book.bookNumber === 0) book.passed = false;
+      if (book.bookNumber <= 0) book.passed = false;
     } else {
       // @ts-ignore
       book[key] = value;
@@ -52,14 +51,21 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       ...preBooks.map((b) => b.bookNumber),
     ];
     const dupes = mergedArray.filter((item, index) => mergedArray.indexOf(item) !== index);
-    preBooks.forEach((book) => (book.passed = !dupes.includes(book.bookNumber)));
+    preBooks.forEach((book) => {
+      if (book.bookNumber <= 0) book.passed = false;
+      book.passed = !dupes.includes(book.bookNumber) && book.passed === true;
+    });
   };
 
   const addRow = () => {
-    const add = [...booksToAdd, defaultPreBook(booksToAdd[booksToAdd.length - 1].bookNumber + 1)];
+    const number = booksToAdd[booksToAdd.length - 1].bookNumber + 1;
+    const add = [...booksToAdd, defaultPreBook(number, number > 0)];
     findDuplicateIndexes(books, add);
     setBooksToAdd(add);
   };
+
+  const deleteBook = (index: number) => setBooksToAdd((b) => b.filter((_, i) => i !== index));
+  const submittable = booksToAdd.filter((book) => book.passed === false).length === 0;
 
   return (
     <div className="main-content-inner-wrapper">
@@ -77,17 +83,15 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       >
         <table>
           <colgroup>
-            <col span={1} style={{ width: "10%" }} />
-            <col span={1} style={{ width: "30%" }} />
-            <col span={1} style={{ width: "30%" }} />
-            <col span={1} style={{ width: "30%" }} />
+            {[10, 20, 32, 32, 6].map((w) => (
+              <col span={1} style={{ width: `${w}%` }} />
+            ))}
           </colgroup>
           <thead>
             <tr>
-              <th className="sticky-header"></th>
-              <th className="sticky-header">Book Number</th>
-              <th className="sticky-header">Quality</th>
-              <th className="sticky-header">Status</th>
+              {["", "Book #", "Quality", "Status", ""].map((h) => (
+                <th className="sticky-header">{h}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -97,6 +101,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
                 key={`book-index-${index}`}
                 index={index}
                 changeBook={changeBook}
+                deleteBook={deleteBook}
               />
             ))}
           </tbody>
@@ -109,7 +114,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       <div className="main-content-footer">
         <div className="bp3-dialog-footer-actions">
           <Button text="Cancel" onClick={props.closePanel} />
-          <Button text="Submit" intent="primary" disabled />
+          <Button text="Submit" intent="primary" disabled={!submittable} />
         </div>
       </div>
     </div>
@@ -120,11 +125,15 @@ function TableRow({
   index,
   book,
   changeBook,
+  deleteBook,
 }: {
   index: number;
   book: PreBook;
   changeBook: (index: number, key: keyof PreBook, value: string) => void;
+  deleteBook: (index: number) => void;
 }) {
+  const handleDelete = () => deleteBook(index);
+
   return (
     <tr key={`book-index-${index}`}>
       <td style={{ textAlign: "center" }} className="add-input">
@@ -153,6 +162,9 @@ function TableRow({
           onChange={(e) => changeBook(index, "status", e.target.value)}
           className="add-input"
         />
+      </td>
+      <td className="add-input">
+        {index > 0 && <Button icon="trash" minimal intent="danger" onClick={handleDelete} />}
       </td>
     </tr>
   );
