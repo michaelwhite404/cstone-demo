@@ -1,7 +1,8 @@
 import { Button, HTMLSelect, InputGroup } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import { XCircleIcon } from "@heroicons/react/solid";
-import { useState } from "react";
+import Tooltip from "@mui/material/Tooltip";
+import { useEffect, useState } from "react";
 import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
 
@@ -33,34 +34,32 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
     const copiedBooks = booksToAdd.map((book) => ({ ...book, passed: true }));
     const book = copiedBooks.find((_, i) => i === index)!;
     if (key === "bookNumber") {
-      book.bookNumber = Number(value);
-      if (book.bookNumber === 0 || isNaN(book.bookNumber)) {
-        book.passed = false;
-      }
+      const castValue = Number(value);
+      book.bookNumber = isNaN(castValue) ? 0 : castValue;
+      if (book.bookNumber === 0) book.passed = false;
     } else {
       // @ts-ignore
       book[key] = value;
     }
     copiedBooks[index] = book;
-    findDuplicateIndexes(copiedBooks);
+    findDuplicateIndexes(books, copiedBooks);
     setBooksToAdd(copiedBooks);
   };
 
-  const findDuplicateIndexes = (preBooks: PreBook[]) => {
-    const obj: { [x: number]: number[] } = {};
-    const dupeIndexes: number[] = [];
-    preBooks.forEach((book, index) => {
-      obj[book.bookNumber] ? obj[book.bookNumber].push(index) : (obj[book.bookNumber] = [index]);
-    });
-
-    for (const num in obj) if (obj[num].length > 1) dupeIndexes.push(...obj[num]);
-    preBooks.forEach(
-      (book, index) => (book.passed = !dupeIndexes.includes(index) && book.passed === true)
-    );
+  const findDuplicateIndexes = (originalBooks: TextbookModel[], preBooks: PreBook[]) => {
+    const mergedArray = [
+      ...originalBooks.map((b) => b.bookNumber),
+      ...preBooks.map((b) => b.bookNumber),
+    ];
+    const dupes = mergedArray.filter((item, index) => mergedArray.indexOf(item) !== index);
+    preBooks.forEach((book) => (book.passed = !dupes.includes(book.bookNumber)));
   };
 
-  const addRow = () =>
-    setBooksToAdd((books) => [...books, defaultPreBook(books[books.length - 1].bookNumber + 1)]);
+  const addRow = () => {
+    const add = [...booksToAdd, defaultPreBook(booksToAdd[booksToAdd.length - 1].bookNumber + 1)];
+    findDuplicateIndexes(books, add);
+    setBooksToAdd(add);
+  };
 
   return (
     <div className="main-content-inner-wrapper">

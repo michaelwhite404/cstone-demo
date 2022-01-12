@@ -16,6 +16,7 @@ interface LetterGroup {
 
 export default function TextbooksTest() {
   const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
+  // const [pageState, setPageState] = useState("blank")
   const [selected, setSelected] = useState<TextbookSetModel>();
 
   useEffect(() => {
@@ -81,7 +82,10 @@ export default function TextbooksTest() {
           ))}
         </div>
       </aside>
-      <main className="main-content">{selected && <ContentPanels textbook={selected} />}</main>
+      <main className="main-content">
+        {selected && <ContentPanels textbook={selected} />}
+        {/* {pageState=== "add" && } */}
+      </main>
     </div>
   );
 }
