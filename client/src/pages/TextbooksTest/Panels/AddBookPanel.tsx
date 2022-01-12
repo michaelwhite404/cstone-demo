@@ -1,9 +1,14 @@
 import { Button, HTMLSelect, InputGroup } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import { XCircleIcon } from "@heroicons/react/solid";
-import { useState } from "react";
+import axios, { AxiosError } from "axios";
+import pluralize from "pluralize";
+import { useContext, useState } from "react";
 import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
+import { useToasterContext } from "../../../hooks";
+import { APIError, APITextbooksResponse } from "../../../types/apiResponses";
+import { TextbookContext } from "../TextbooksTest";
 
 interface PreBook {
   passed: boolean;
@@ -25,6 +30,8 @@ const defaultPreBook = (bookNumber: number, passed = true): PreBook => ({
 });
 
 export default function AddBookPanel({ textbook, books, ...props }: AddBookProps) {
+  const { showToaster } = useToasterContext();
+  const { getTextbookSets } = useContext(TextbookContext);
   const [booksToAdd, setBooksToAdd] = useState<PreBook[]>([
     defaultPreBook(books[books.length - 1].bookNumber + 1),
   ]);
@@ -66,6 +73,22 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
 
   const deleteBook = (index: number) => setBooksToAdd((b) => b.filter((_, i) => i !== index));
   const submittable = booksToAdd.filter((book) => book.passed === false).length === 0;
+
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.post<APITextbooksResponse>(
+        `/api/v2/textbooks/${textbook._id}/books/bulk`,
+        {
+          books: booksToAdd,
+        }
+      );
+      showToaster(pluralize("book", res.data.data.books.length, true) + " added", "success");
+      props.closePanel();
+      getTextbookSets();
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
+  };
 
   return (
     <div className="main-content-inner-wrapper">
@@ -114,7 +137,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       <div className="main-content-footer">
         <div className="bp3-dialog-footer-actions">
           <Button text="Cancel" onClick={props.closePanel} />
-          <Button text="Submit" intent="primary" disabled={!submittable} />
+          <Button text="Submit" intent="primary" disabled={!submittable} onClick={handleSubmit} />
         </div>
       </div>
     </div>
