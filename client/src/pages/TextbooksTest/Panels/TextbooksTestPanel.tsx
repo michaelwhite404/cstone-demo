@@ -10,11 +10,16 @@ import { numberToGrade } from "../../../utils/grades";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import AddBookPanel from "./AddBookPanel";
+import { Button } from "@blueprintjs/core";
 
 export default function TextbooksTestContent({
   textbook,
+  setSelected,
   ...props
-}: { textbook: TextbookSetModel } & PanelActions) {
+}: {
+  textbook: TextbookSetModel;
+  setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+} & PanelActions) {
   const [books, setBooks] = useState<TextbookModel[]>([]);
 
   useEffect(() => {
@@ -64,10 +69,21 @@ export default function TextbooksTestContent({
       title: "Panel 2",
     });
 
+  const handleBack = () => setSelected(undefined);
+
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
-        <span style={{ fontWeight: 500, fontSize: 16 }}>{textbook.title}</span>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Button
+            icon="chevron-left"
+            minimal
+            style={{ marginRight: 10 }}
+            small
+            onClick={handleBack}
+          />
+          <span style={{ fontWeight: 500, fontSize: 16 }}>{textbook.title}</span>
+        </div>
         <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
       </div>
       <div style={{ overflowY: "scroll" }}>

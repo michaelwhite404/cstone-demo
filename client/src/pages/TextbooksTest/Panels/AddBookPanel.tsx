@@ -93,7 +93,16 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
-        <span style={{ fontWeight: 500, fontSize: 16 }}>Add {textbook.title} Book</span>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Button
+            icon="chevron-left"
+            minimal
+            style={{ marginRight: 10 }}
+            small
+            onClick={props.closePanel}
+          />
+          <span style={{ fontWeight: 500, fontSize: 16 }}>Add {textbook.title} Book</span>
+        </div>
       </div>
       <div
         style={{
@@ -137,7 +146,12 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       <div className="main-content-footer">
         <div className="bp3-dialog-footer-actions">
           <Button text="Cancel" onClick={props.closePanel} />
-          <Button text="Submit" intent="primary" disabled={!submittable} onClick={handleSubmit} />
+          <Button
+            text={`Add ${pluralize("Book", booksToAdd.length, true)}`}
+            intent="primary"
+            disabled={!submittable}
+            onClick={handleSubmit}
+          />
         </div>
       </div>
     </div>

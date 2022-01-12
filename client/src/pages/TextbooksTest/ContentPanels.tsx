@@ -3,11 +3,21 @@ import React, { useEffect } from "react";
 import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
 import TextbooksTestContent from "./Panels/TextbooksTestPanel";
 
-export default function ContentPanels({ textbook }: { textbook: TextbookSetModel }) {
+export default function ContentPanels({
+  textbook,
+  setSelected,
+}: {
+  textbook: TextbookSetModel;
+  setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+}) {
   //--- PANEL STATES ---//
-  const initialPanel: Panel<{ textbook: TextbookSetModel }> = {
+  const initialPanel: Panel<{
+    textbook: TextbookSetModel;
+    setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+  }> = {
     props: {
       textbook,
+      setSelected,
     },
     renderPanel: TextbooksTestContent,
     title: "Panel 1",

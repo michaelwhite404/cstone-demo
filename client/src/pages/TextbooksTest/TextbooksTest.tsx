@@ -90,7 +90,7 @@ export default function TextbooksTest() {
           </div>
         </aside>
         <main className="main-content">
-          {selected && <ContentPanels textbook={selected} />}
+          {selected && <ContentPanels textbook={selected} setSelected={setSelected} />}
           {/* {pageState=== "add" && } */}
         </main>
       </div>
