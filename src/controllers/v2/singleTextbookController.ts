@@ -30,6 +30,31 @@ export const getBook: RequestHandler = factory.getOne(Model, key);
 
 export const createBook: RequestHandler = factory.createOne(Model, key);
 
+export const createBooks = catchAsync(async (req, res, next) => {
+  const books = req.body.books;
+  if (!books || !Array.isArray(books)) {
+    return next(
+      new AppError("There must be a books property, which contains an array of books to add", 400)
+    );
+  }
+  const mappedBooks = books.map((book) => ({
+    textbookSet: book.textbookSet || req.body.textbookSet,
+    bookNumber: book.bookNumber,
+    quality: book.quality,
+    status: book.status,
+  }));
+
+  const createdBooks = await Model.create(mappedBooks);
+
+  res.status(201).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    data: {
+      books: createdBooks,
+    },
+  });
+});
+
 export const updateBook: RequestHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.status === "Checked Out" || req.body.checkedOut)
@@ -336,6 +361,11 @@ export const checkInTextbooks = catchAsync(
     });
   }
 );
+
+export const addTextbookSetToBody: RequestHandler = (req, _, next) => {
+  if (req.params.textbookSet) req.body.textbookSet = req.params.textbookSet;
+  next();
+};
 
 const allHaveIdandQuality = (array: any[]): boolean => {
   return (
