@@ -4,13 +4,14 @@ import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTyp
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
 import TextbookStatusBadge from "../../../components/Badges/TextbookStatusBadge";
 import TextbookQualityBadge from "../../../components/Badges/TextbookQualityBadge";
-import TablePaginate from "../../../components/TablePaginate/TablePaginate";
 import { APITextbooksResponse } from "../../../types/apiResponses";
 import { numberToGrade } from "../../../utils/grades";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import AddBookPanel from "./AddBookPanel";
-import { Button } from "@blueprintjs/core";
+import { Button, Classes } from "@blueprintjs/core";
+import BooksTable from "../BooksTable/BooksTable";
+import pluralize from "pluralize";
 
 export default function TextbooksTestContent({
   textbook,
@@ -21,6 +22,10 @@ export default function TextbooksTestContent({
   setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
 } & PanelActions) {
   const [books, setBooks] = useState<TextbookModel[]>([]);
+  const [selectedBooks, setSelectedBooks] = useState<TextbookModel[]>([]);
+
+  const canCheckOut = selectedBooks.filter((t) => t.status === "Available");
+  const canCheckIn = selectedBooks.filter((t) => t.status === "Checked Out");
 
   useEffect(() => {
     getBooks();
@@ -68,6 +73,7 @@ export default function TextbooksTestContent({
       renderPanel: AddBookPanel,
       title: "Panel 2",
     });
+  const showFooter = canCheckOut.length > 0 || canCheckIn.length > 0;
 
   const handleBack = () => setSelected(undefined);
 
@@ -87,8 +93,20 @@ export default function TextbooksTestContent({
         <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
       </div>
       <div style={{ overflowY: "scroll" }}>
-        <TablePaginate columns={columns} data={data} pageSize={50} enableRowsPicker={false} />
+        <BooksTable columns={columns} data={data} setSelectedBooks={setSelectedBooks} />
       </div>
+      {showFooter && (
+        <div className="main-content-footer">
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            {canCheckIn.length > 0 && (
+              <Button>Check In {pluralize("Book", canCheckIn.length, true)}</Button>
+            )}
+            {canCheckOut.length > 0 && (
+              <Button>Check Out {pluralize("Book", canCheckOut.length, true)}</Button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
