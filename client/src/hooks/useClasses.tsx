@@ -10,24 +10,40 @@ interface IUseClasses {
   /** HTML Select component of all grades in the school. Selecting an grade option value
    * changes the options in the `GradeSelect` component and the gradePicked variable.
    */
-  GradeSelect: () => JSX.Element;
+  GradeSelect: ({
+    value,
+    onChange,
+  }: {
+    value?: number;
+    /**
+     * @param value - The changed value of the input
+     */
+    onChange?: (value: number) => any;
+  }) => JSX.Element;
   /** HTML Select component of all students in a given grade. Student options are
    * determined by the gradePicked variable.
    * */
-  StudentSelect: () => JSX.Element;
+  StudentSelect: ({
+    value,
+    onChange,
+  }: {
+    value?: string;
+    onChange?: (value: string) => any;
+  }) => JSX.Element;
   /** The current selected grade. -1 if no grade is selected  */
   gradePicked: number;
   /** The current selected sudent. "-1" if no student is selected  */
   studentPicked: string;
+  setGradePicked: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function useClasses(): IUseClasses {
+export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
   const [classes, setClasses] = useState<Class[]>([]);
   const [gradePicked, setGradePicked] = useState(-1);
   const [studentPicked, setStudentPicked] = useState<string>("-1");
 
   useEffect(() => {
-    getClasses();
+    fetchedClasses ? setClasses(fetchedClasses) : getClasses();
 
     async function getClasses() {
       try {
@@ -37,7 +53,7 @@ export default function useClasses(): IUseClasses {
         console.log((err as AxiosError<APIError>).response!.data);
       }
     }
-  }, []);
+  }, [fetchedClasses]);
 
   const gradeValues = grades.map((value, i) => ({
     value: `${i}`,
@@ -54,22 +70,56 @@ export default function useClasses(): IUseClasses {
         }));
   studentOptions?.unshift(selectAStudent);
 
-  const changeGrade = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeGrade = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    onChange?: (value: number) => any
+  ) => {
     setGradePicked(+e.target.value);
     setStudentPicked("-1");
+    onChange && onChange(+e.target.value);
   };
 
-  const GradeSelect = () => (
-    <HTMLSelect value={gradePicked} options={gradeValues} onChange={changeGrade} />
-  );
-  const StudentSelect = () => (
+  const GradeSelect = ({
+    value,
+    onChange,
+  }: {
+    value?: number;
+    onChange?: (value: number) => any;
+  }) => {
+    useEffect(() => {
+      value && setGradePicked(value);
+    }, [value]);
+    return (
+      <HTMLSelect
+        value={value ?? gradePicked}
+        options={gradeValues}
+        onChange={(e) => changeGrade(e, onChange)}
+      />
+    );
+  };
+
+  const changeStudent = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    onChange?: (value: string) => any
+  ) => {
+    setStudentPicked(e.target.value);
+    onChange && onChange(e.target.value);
+  };
+
+  const StudentSelect = ({
+    value,
+    onChange,
+  }: {
+    value?: string;
+    onChange?: (value: string) => any;
+  }) => (
     <HTMLSelect
       disabled={gradePicked < 0}
-      value={studentPicked}
+      value={value ?? studentPicked}
       options={studentOptions || [selectAStudent]}
-      onChange={(e) => setStudentPicked(e.target.value)}
+      onChange={(e) => changeStudent(e, onChange)}
     />
   );
 
-  return { classes, GradeSelect, StudentSelect, gradePicked, studentPicked };
+  return { classes, GradeSelect, StudentSelect, gradePicked, studentPicked, setGradePicked };
 }

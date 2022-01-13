@@ -6,6 +6,7 @@ import pluralize from "pluralize";
 import { useContext, useState } from "react";
 import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
+import BackButton from "../../../components/BackButton";
 import { useToasterContext } from "../../../hooks";
 import { APIError, APITextbooksResponse } from "../../../types/apiResponses";
 import { TextbookContext } from "../TextbooksTest";
@@ -94,13 +95,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Button
-            icon="chevron-left"
-            minimal
-            style={{ marginRight: 10 }}
-            small
-            onClick={props.closePanel}
-          />
+          <BackButton onClick={props.closePanel} />
           <span style={{ fontWeight: 500, fontSize: 16 }}>Add {textbook.title} Book</span>
         </div>
       </div>

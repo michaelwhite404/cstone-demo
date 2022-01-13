@@ -12,6 +12,8 @@ import AddBookPanel from "./AddBookPanel";
 import { Button, Classes } from "@blueprintjs/core";
 import BooksTable from "../BooksTable/BooksTable";
 import pluralize from "pluralize";
+import BackButton from "../../../components/BackButton";
+import CheckOutPanel from "./CheckOutPanel";
 
 export default function TextbooksTestContent({
   textbook,
@@ -71,23 +73,28 @@ export default function TextbooksTestContent({
     props.openPanel({
       props: { textbook, books },
       renderPanel: AddBookPanel,
-      title: "Panel 2",
     });
-  const showFooter = canCheckOut.length > 0 || canCheckIn.length > 0;
 
+  const checkOutBooksPanel = () =>
+    props.openPanel({
+      props: { data: canCheckOut },
+      renderPanel: CheckOutPanel,
+    });
+
+  const checkInBooksPanel = () => {};
+  // props.openPanel({
+  //   // props: { textbook, books },
+  //   // renderPanel: AddBookPanel,
+  // });
+
+  const showFooter = canCheckOut.length > 0 || canCheckIn.length > 0;
   const handleBack = () => setSelected(undefined);
 
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Button
-            icon="chevron-left"
-            minimal
-            style={{ marginRight: 10 }}
-            small
-            onClick={handleBack}
-          />
+          <BackButton onClick={handleBack} />
           <span style={{ fontWeight: 500, fontSize: 16 }}>{textbook.title}</span>
         </div>
         <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
@@ -102,7 +109,9 @@ export default function TextbooksTestContent({
               <Button>Check In {pluralize("Book", canCheckIn.length, true)}</Button>
             )}
             {canCheckOut.length > 0 && (
-              <Button>Check Out {pluralize("Book", canCheckOut.length, true)}</Button>
+              <Button onClick={checkOutBooksPanel}>
+                Check Out {pluralize("Book", canCheckOut.length, true)}
+              </Button>
             )}
           </div>
         </div>
