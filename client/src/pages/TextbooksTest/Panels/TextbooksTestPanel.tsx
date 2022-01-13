@@ -14,6 +14,7 @@ import BooksTable from "../BooksTable/BooksTable";
 import pluralize from "pluralize";
 import BackButton from "../../../components/BackButton";
 import CheckOutPanel from "./CheckOutPanel";
+import CheckInPanel from "./CheckInPanel";
 
 export default function TextbooksTestContent({
   textbook,
@@ -81,11 +82,11 @@ export default function TextbooksTestContent({
       renderPanel: CheckOutPanel,
     });
 
-  const checkInBooksPanel = () => {};
-  // props.openPanel({
-  //   // props: { textbook, books },
-  //   // renderPanel: AddBookPanel,
-  // });
+  const checkInBooksPanel = () =>
+    props.openPanel({
+      props: { data: canCheckIn },
+      renderPanel: CheckInPanel,
+    });
 
   const showFooter = canCheckOut.length > 0 || canCheckIn.length > 0;
   const handleBack = () => setSelected(undefined);
@@ -106,7 +107,9 @@ export default function TextbooksTestContent({
         <div className="main-content-footer">
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             {canCheckIn.length > 0 && (
-              <Button>Check In {pluralize("Book", canCheckIn.length, true)}</Button>
+              <Button onClick={checkInBooksPanel}>
+                Check In {pluralize("Book", canCheckIn.length, true)}
+              </Button>
             )}
             {canCheckOut.length > 0 && (
               <Button onClick={checkOutBooksPanel}>

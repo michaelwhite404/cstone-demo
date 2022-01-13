@@ -6,8 +6,16 @@ export default function useTextbook() {
     const res = await axios.post("/api/v2/textbooks/books/check-out", {
       data,
     });
-    return res.data.message;
+    return res.data.message as string;
   };
 
-  return { checkoutTextbook };
+  type CheckinData = { id: string; quality: string };
+  const checkinTextbook = async (data: CheckinData[]) => {
+    const res = await axios.patch("/api/v2/textbooks/books/check-in", {
+      books: data,
+    });
+    return res.data.message as string;
+  };
+
+  return { checkoutTextbook, checkinTextbook };
 }
