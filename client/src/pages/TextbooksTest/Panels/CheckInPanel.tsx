@@ -1,4 +1,4 @@
-import { Button, Classes, HTMLSelect } from "@blueprintjs/core";
+import { Button, Classes, HTMLSelect, OptionProps } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import { AxiosError } from "axios";
 import { useState } from "react";
@@ -44,17 +44,12 @@ export default function CheckInPanel({ data, ...props }: CheckInProps) {
       <div className="main-content-header">
         <div style={{ display: "flex", alignItems: "center" }}>
           <BackButton onClick={props.closePanel} />
-          <span style={{ fontWeight: 500, fontSize: 16 }}>Check Out Textbooks</span>
+          <span style={{ fontWeight: 500, fontSize: 16 }}>Check In Textbooks</span>
         </div>
       </div>
       <div style={{ overflowY: "scroll" }}>
         <div className="textbooks-drawer-container">
-          <div
-            style={{
-              width: "100%",
-              overflow: "auto",
-            }}
-          >
+          <div style={{ width: "100%" }}>
             <table style={{ width: "100%" }} id="textbook-checkout-table">
               <colgroup>
                 {[8, 23, 23, 23, 23].map((w) => (
@@ -83,7 +78,7 @@ export default function CheckInPanel({ data, ...props }: CheckInProps) {
       <div className="main-content-footer">
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button
-            text="Check Out"
+            text="Check In"
             intent="primary"
             disabled={!submittable}
             onClick={handleCheckin}
@@ -103,7 +98,13 @@ function CheckinTableRow({
   updateBook: (bookId: string, quality: string) => void;
   value: { id: string; quality: string };
 }) {
-  const QualityEnum = ["Excellent", "Good", "Acceptable", "Poor"];
+  const QualityEnum = ["Poor", "Acceptable", "Good", "Excellent"];
+  const options: OptionProps[] = [];
+  let flag = false;
+  QualityEnum.forEach((value) => {
+    options.unshift({ disabled: flag, value });
+    value === textbook.quality && (flag = true);
+  });
   return (
     <tr>
       <td></td>
@@ -112,7 +113,7 @@ function CheckinTableRow({
       <td>{textbook.lastUser!.fullName}</td>
       <td>
         <HTMLSelect
-          options={QualityEnum}
+          options={options}
           value={value.quality}
           onChange={(e) => updateBook(textbook._id, e.target.value)}
         />
