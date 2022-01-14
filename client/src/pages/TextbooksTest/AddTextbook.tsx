@@ -187,7 +187,7 @@ export default function AddTextbook(props: AddTextbookProps) {
         <div style={{ padding: 20 }}>
           <div className="flex flex-wrap">
             {inputs.map(({ label, Component, width, props }) => (
-              <div style={{ width: `${width}%`, padding: "0 15px" }}>
+              <div style={{ width: `${width}%`, padding: "0 15px" }} key={label}>
                 {/**@ts-ignore */}
                 <Component label={label} {...props} />
               </div>

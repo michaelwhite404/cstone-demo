@@ -19,14 +19,16 @@ export default function AddBooksTable({ booksToAdd, changeBook, deleteBook, data
   return (
     <table>
       <colgroup>
-        {[10, 20, 32, 32, 6].map((w) => (
-          <col span={1} style={{ width: `${w}%` }} />
+        {[10, 20, 32, 32, 6].map((w, i) => (
+          <col span={1} style={{ width: `${w}%` }} key={"col" + i} />
         ))}
       </colgroup>
       <thead>
         <tr>
-          {["", "Book #", "Quality", "Status", ""].map((h) => (
-            <th className="sticky-header">{h}</th>
+          {["", "Book #", "Quality", "Status", ""].map((h, i) => (
+            <th className="sticky-header" key={"header" + i}>
+              {h}
+            </th>
           ))}
         </tr>
       </thead>

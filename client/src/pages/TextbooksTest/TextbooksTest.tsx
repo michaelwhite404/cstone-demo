@@ -71,18 +71,22 @@ export default function TextbooksTest() {
           <div className="side-table-top">
             <PageHeader text="Textbooks" />
             <p>Search directory of many books</p>
-            <button className="create-textbook-button" onClick={handleAddTextbookClick}>
+            <button
+              className="create-textbook-button"
+              onClick={handleAddTextbookClick}
+              disabled={pageState === "add"}
+            >
               <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
               <span style={{ fontWeight: 500 }}>Create New Textbook</span>
             </button>
           </div>
           <div className="side-table-content">
             {letterGroup.map((group) => (
-              <div className="letter-group">
+              <div className="letter-group" key={group.letter}>
                 <div className="letter-header">{group.letter}</div>
                 <ul className="letter-list">
                   {group.children.map((set) => (
-                    <li onClick={() => handleSetClick(set)}>
+                    <li onClick={() => handleSetClick(set)} key={set.slug}>
                       <div
                         className={classnames("book-set", { selected: selected?._id === set._id })}
                       >

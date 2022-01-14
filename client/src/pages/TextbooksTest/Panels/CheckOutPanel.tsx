@@ -117,6 +117,7 @@ export default function CheckOutPanel({ data, ...props }: CheckOutProps) {
                     updateBook={updateBook}
                     updateGrade={updateGrade}
                     index={i}
+                    key={"table-row" + i}
                   />
                 ))}
               </tbody>

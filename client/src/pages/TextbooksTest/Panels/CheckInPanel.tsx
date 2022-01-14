@@ -52,14 +52,18 @@ export default function CheckInPanel({ data, ...props }: CheckInProps) {
           <div style={{ width: "100%" }}>
             <table style={{ width: "100%" }} id="textbook-checkout-table">
               <colgroup>
-                {[8, 23, 23, 23, 23].map((w) => (
-                  <col span={1} style={{ width: `${w}%` }} />
+                {[8, 23, 23, 23, 23].map((w, i) => (
+                  <col span={1} style={{ width: `${w}%` }} key={"col" + i} />
                 ))}
               </colgroup>
               <thead>
-                {["", "Book Name", "Number", "Student", "Quality"].map((h) => (
-                  <th className="sticky-header">{h}</th>
-                ))}
+                <tr>
+                  {["", "Book Name", "Number", "Student", "Quality"].map((h, i) => (
+                    <th className="sticky-header" key={"header" + i}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
               </thead>
               <tbody>
                 {data.map((t, i) => (
