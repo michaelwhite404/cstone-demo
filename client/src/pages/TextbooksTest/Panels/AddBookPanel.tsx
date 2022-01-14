@@ -1,6 +1,5 @@
-import { Button, HTMLSelect, InputGroup } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
-import { XCircleIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import pluralize from "pluralize";
 import { useContext, useState } from "react";
@@ -9,6 +8,7 @@ import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
 import BackButton from "../../../components/BackButton";
 import { useToasterContext } from "../../../hooks";
 import { APIError, APITextbooksResponse } from "../../../types/apiResponses";
+import AddBooksTable from "../AddBooksTable";
 import { TextbookContext } from "../TextbooksTest";
 
 interface PreBook {
@@ -108,31 +108,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
           overflowY: "auto",
         }}
       >
-        <table>
-          <colgroup>
-            {[10, 20, 32, 32, 6].map((w) => (
-              <col span={1} style={{ width: `${w}%` }} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {["", "Book #", "Quality", "Status", ""].map((h) => (
-                <th className="sticky-header">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {booksToAdd.map((book, index) => (
-              <TableRow
-                book={book}
-                key={`book-index-${index}`}
-                index={index}
-                changeBook={changeBook}
-                deleteBook={deleteBook}
-              />
-            ))}
-          </tbody>
-        </table>
+        <AddBooksTable booksToAdd={booksToAdd} changeBook={changeBook} deleteBook={deleteBook} />
         <div style={{ padding: 20 }}>
           <Button onClick={addRow} icon="add" text="Add Another Book" />
         </div>
@@ -150,54 +126,5 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
         </div>
       </div>
     </div>
-  );
-}
-
-function TableRow({
-  index,
-  book,
-  changeBook,
-  deleteBook,
-}: {
-  index: number;
-  book: PreBook;
-  changeBook: (index: number, key: keyof PreBook, value: string) => void;
-  deleteBook: (index: number) => void;
-}) {
-  const handleDelete = () => deleteBook(index);
-
-  return (
-    <tr key={`book-index-${index}`}>
-      <td style={{ textAlign: "center" }} className="add-input">
-        {!book.passed && <XCircleIcon color="#c50f0f" width={25} />}
-      </td>
-      <td className="add-input">
-        <InputGroup
-          value={`${book.bookNumber}`}
-          style={{ width: 50 }}
-          onChange={(e) => changeBook(index, "bookNumber", e.target.value)}
-          className="add-input"
-        />
-      </td>
-      <td className="add-input">
-        <HTMLSelect
-          options={["Excellent", "Good", "Acceptable", "Poor", "Lost"]}
-          value={book.quality}
-          onChange={(e) => changeBook(index, "quality", e.target.value)}
-          className="add-input"
-        />
-      </td>
-      <td className="add-input">
-        <HTMLSelect
-          options={["Available", "Replaced", "Not Available"]}
-          value={book.status}
-          onChange={(e) => changeBook(index, "status", e.target.value)}
-          className="add-input"
-        />
-      </td>
-      <td className="add-input">
-        {index > 0 && <Button icon="trash" minimal intent="danger" onClick={handleDelete} />}
-      </td>
-    </tr>
   );
 }

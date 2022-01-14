@@ -8,6 +8,7 @@ import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
 import { Icon } from "@blueprintjs/core";
+import AddTextbook from "./AddTextbook";
 
 interface LetterGroup {
   letter: string;
@@ -18,10 +19,11 @@ interface TextbookContextProps {
 }
 
 export const TextbookContext = createContext<TextbookContextProps>({} as TextbookContextProps);
+type PageState = "blank" | "view" | "add";
 
 export default function TextbooksTest() {
   const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
-  // const [pageState, setPageState] = useState("blank")
+  const [pageState, setPageState] = useState<PageState>("view");
   const [selected, setSelected] = useState<TextbookSetModel>();
 
   useEffect(() => {
@@ -52,6 +54,16 @@ export default function TextbooksTest() {
     setLetterGroup(letterGroup);
   }
 
+  const handleAddTextbookClick = () => {
+    setPageState("add");
+    setSelected(undefined);
+  };
+
+  const handleSetClick = (set: TextbookSetModel) => {
+    pageState !== "view" && setPageState("view");
+    setSelected(set);
+  };
+
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
       <div className="flex" style={{ height: "100%" }}>
@@ -59,7 +71,7 @@ export default function TextbooksTest() {
           <div className="side-table-top">
             <PageHeader text="Textbooks" />
             <p>Search directory of many books</p>
-            <button className="create-textbook-button">
+            <button className="create-textbook-button" onClick={handleAddTextbookClick}>
               <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
               <span style={{ fontWeight: 500 }}>Create New Textbook</span>
             </button>
@@ -70,7 +82,7 @@ export default function TextbooksTest() {
                 <div className="letter-header">{group.letter}</div>
                 <ul className="letter-list">
                   {group.children.map((set) => (
-                    <li onClick={() => setSelected(set)}>
+                    <li onClick={() => handleSetClick(set)}>
                       <div
                         className={classnames("book-set", { selected: selected?._id === set._id })}
                       >
@@ -90,8 +102,10 @@ export default function TextbooksTest() {
           </div>
         </aside>
         <main className="main-content">
-          {selected && <ContentPanels textbook={selected} setSelected={setSelected} />}
-          {/* {pageState=== "add" && } */}
+          {pageState === "view" && selected && (
+            <ContentPanels textbook={selected} setSelected={setSelected} />
+          )}
+          {pageState === "add" && <AddTextbook setPageState={setPageState} />}
         </main>
       </div>
     </TextbookContext.Provider>
