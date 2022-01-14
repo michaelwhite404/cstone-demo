@@ -1,4 +1,7 @@
 import axios from "axios";
+import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
+import { TextbookModel } from "../../../src/types/models/textbookTypes";
+import Prebook from "../types/Prebook";
 
 export default function useTextbook() {
   type CheckoutData = { book: string; student: string };
@@ -17,5 +20,16 @@ export default function useTextbook() {
     return res.data.message as string;
   };
 
-  return { checkoutTextbook, checkinTextbook };
+  type CreateSetAndBooksData = {
+    title: string;
+    class: string;
+    grade: number | string;
+    books: Prebook[];
+  };
+  const createSetAndBooks = async (data: CreateSetAndBooksData) => {
+    const res = await axios.post("/api/v2/textbooks/books/both", { ...data });
+    return res.data.data as { textbook: TextbookSetModel; books: TextbookModel[] };
+  };
+
+  return { checkoutTextbook, checkinTextbook, createSetAndBooks };
 }

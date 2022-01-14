@@ -105,7 +105,9 @@ export default function TextbooksTest() {
           {pageState === "view" && selected && (
             <ContentPanels textbook={selected} setSelected={setSelected} />
           )}
-          {pageState === "add" && <AddTextbook setPageState={setPageState} />}
+          {pageState === "add" && (
+            <AddTextbook setPageState={setPageState} setSelected={setSelected} />
+          )}
         </main>
       </div>
     </TextbookContext.Provider>

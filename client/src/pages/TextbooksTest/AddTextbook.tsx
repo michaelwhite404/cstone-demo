@@ -1,15 +1,23 @@
-import { Button, Label, Switch } from "@blueprintjs/core";
-import { useState } from "react";
+import { Button } from "@blueprintjs/core";
+import { AxiosError } from "axios";
+import pluralize from "pluralize";
+import { useContext, useState } from "react";
+import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import BackButton from "../../components/BackButton";
 import LabeledInput from "../../components/Inputs/LabeledInput";
 import LabeledNumbericInput from "../../components/Inputs/LabeledNumbericInput";
 import LabeledSelect from "../../components/Inputs/LabeledSelect";
+import { useToasterContext } from "../../hooks";
+import useTextbook from "../../hooks/useTextbook";
+import { APIError } from "../../types/apiResponses";
 import { grades } from "../../utils/grades";
 import AddBooksTable from "./AddBooksTable";
+import { TextbookContext } from "./TextbooksTest";
 
 interface AddTextbookProps {
   setPageState: React.Dispatch<React.SetStateAction<"blank" | "view" | "add">>;
+  setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
 }
 
 interface PreBook {
@@ -27,8 +35,14 @@ const defaultPreBook = (bookNumber: number, passed = true): PreBook => ({
 });
 
 export default function AddTextbook(props: AddTextbookProps) {
+  const { createSetAndBooks } = useTextbook();
+  const { showToaster } = useToasterContext();
+  const { getTextbookSets } = useContext(TextbookContext);
   const [data, setData] = useState({ title: "", class: "", grade: 0, num: 1 });
   const [booksToAdd, setBooksToAdd] = useState<PreBook[]>([defaultPreBook(1)]);
+  const [dataLocked, setDataLocked] = useState(false);
+
+  const toggleLock = () => setDataLocked(!dataLocked);
 
   const handleDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let { name, value }: any = e.target;
@@ -36,43 +50,61 @@ export default function AddTextbook(props: AddTextbookProps) {
     setData({ ...data, [name]: value });
   };
   const handleNumberChange = (valueAsNumber: number) => {
+    if (valueAsNumber < 0 || isNaN(valueAsNumber)) return;
     setData({ ...data, num: valueAsNumber });
-
-    const number = booksToAdd[booksToAdd.length - 1].bookNumber + 1;
-    const add = [...booksToAdd, defaultPreBook(number, number > 0)];
-    findDuplicateIndexes([], add);
-    setBooksToAdd(add);
+    setBooksToAdd((books) => {
+      if (valueAsNumber < books.length) return books.slice(0, valueAsNumber);
+      const lastBookNumber = books.slice(-1)[0]?.bookNumber || 0;
+      return books.concat(
+        Array.from({ length: valueAsNumber - books.length }).map((_, i) =>
+          defaultPreBook(i + lastBookNumber + 1)
+        )
+      );
+    });
   };
 
   const inputs = [
     {
       label: "Textbook Name",
       Component: LabeledInput,
-      width: 50,
-      props: { required: true, value: data.title, name: "title", onChange: handleDataChange },
+      width: 100,
+      props: {
+        required: true,
+        value: data.title,
+        name: "title",
+        onChange: handleDataChange,
+        disabled: dataLocked,
+      },
     },
     {
       label: "Class",
       Component: LabeledInput,
       width: 50,
-      props: { required: true, value: data.class, name: "class", onChange: handleDataChange },
+      props: {
+        required: true,
+        value: data.class,
+        name: "class",
+        onChange: handleDataChange,
+        disabled: dataLocked,
+      },
     },
     {
       label: "Grade",
       Component: LabeledSelect,
-      width: 23,
+      width: 50,
       props: {
         required: true,
         options: grades.map((g, i) => ({ label: g, value: i })),
         value: data.grade,
         name: "grade",
         onChange: handleDataChange,
+        disabled: dataLocked,
       },
     },
     {
       label: "# of Books To Add",
       Component: LabeledNumbericInput,
-      width: 47,
+      width: 50,
       props: {
         // style: { width: "100px" },
         required: true,
@@ -82,6 +114,7 @@ export default function AddTextbook(props: AddTextbookProps) {
         min: 1,
         allowNumericCharactersOnly: true,
         fill: true,
+        disabled: dataLocked,
       },
     },
   ];
@@ -114,10 +147,34 @@ export default function AddTextbook(props: AddTextbookProps) {
     });
   };
 
-  const deleteBook = (index: number) => setBooksToAdd((b) => b.filter((_, i) => i !== index));
-  const submittable = booksToAdd.filter((book) => book.passed === false).length === 0;
+  const deleteBook = (index: number) =>
+    setBooksToAdd((b) => {
+      const books = b.filter((_, i) => i !== index);
+      findDuplicateIndexes([], books);
+      setData((data) => ({ ...data, num: books.length }));
+      return books;
+    });
+
+  const dataPassed =
+    data.title.length > 0 && data.class.length > 0 && data.grade > -1 && data.num > 0;
+  const booksPassed = booksToAdd.filter((book) => book.passed === false).length === 0;
+  const submittable = dataPassed && dataLocked && booksPassed;
 
   const handleBack = () => props.setPageState("view");
+
+  const handleSubmit = () => {
+    createSetAndBooks({ ...data, books: booksToAdd })
+      .then((data) => {
+        showToaster(
+          `Textbook created with ${pluralize("book", data.books.length, true)} `,
+          "success"
+        );
+        getTextbookSets();
+        props.setSelected(data.textbook);
+        props.setPageState("view");
+      })
+      .catch((err) => showToaster((err as AxiosError<APIError>).response!.data.message, "danger"));
+  };
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
@@ -126,7 +183,7 @@ export default function AddTextbook(props: AddTextbookProps) {
           <span style={{ fontWeight: 500, fontSize: 16 }}>Create New Textbook</span>
         </div>
       </div>
-      <div>
+      <div style={{ overflowY: "scroll" }}>
         <div style={{ padding: 20 }}>
           <div className="flex flex-wrap">
             {inputs.map(({ label, Component, width, props }) => (
@@ -135,16 +192,26 @@ export default function AddTextbook(props: AddTextbookProps) {
                 <Component label={label} {...props} />
               </div>
             ))}
-            <div>
-              <Label>
-                <span style={{ fontWeight: 500 }}>Lock</span>
-                <Switch large />
-              </Label>
+            <div className="lock-button-wrapper">
+              <Button
+                intent={dataLocked ? "warning" : "success"}
+                icon={dataLocked ? "edit" : "lock"}
+                onClick={toggleLock}
+                disabled={!dataPassed}
+                fill
+              >
+                {dataLocked ? "Edit" : "Lock"}
+              </Button>
             </div>
           </div>
         </div>
         <div>
-          <AddBooksTable booksToAdd={booksToAdd} changeBook={changeBook} deleteBook={deleteBook} />
+          <AddBooksTable
+            booksToAdd={booksToAdd}
+            changeBook={changeBook}
+            deleteBook={deleteBook}
+            dataLocked={dataLocked}
+          />
         </div>
       </div>
       <div className="main-content-footer">
@@ -153,8 +220,8 @@ export default function AddTextbook(props: AddTextbookProps) {
           <Button
             text="Create Textbook"
             intent="primary"
-            disabled={true}
-            // onClick={handleSubmit}
+            disabled={!submittable}
+            onClick={handleSubmit}
           />
         </div>
       </div>

@@ -55,7 +55,12 @@ export const createSetAndBooks = catchAsync(
 
     res.status(200).json({
       status: "success",
-      message: `${pluralize("textbook", textbooks.length, true)} added!`,
+      requestedAt: req.requestTime,
+      data: {
+        textbook: set,
+        books: textbooks,
+      },
+      // message: `Textbook added with ${pluralize("book", textbooks.length, true)}!`,
     });
   }
 );

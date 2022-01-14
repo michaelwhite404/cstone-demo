@@ -12,9 +12,10 @@ interface Props {
   booksToAdd: PreBook[];
   changeBook: (index: number, key: keyof PreBook, value: string) => void;
   deleteBook: (index: number) => void;
+  dataLocked?: boolean;
 }
 
-export default function AddBooksTable({ booksToAdd, changeBook, deleteBook }: Props) {
+export default function AddBooksTable({ booksToAdd, changeBook, deleteBook, dataLocked }: Props) {
   return (
     <table>
       <colgroup>
@@ -37,6 +38,7 @@ export default function AddBooksTable({ booksToAdd, changeBook, deleteBook }: Pr
             index={index}
             changeBook={changeBook}
             deleteBook={deleteBook}
+            dataLocked={dataLocked}
           />
         ))}
       </tbody>
@@ -49,12 +51,15 @@ function TableRow({
   book,
   changeBook,
   deleteBook,
+  dataLocked,
 }: {
   index: number;
   book: PreBook;
   changeBook: (index: number, key: keyof PreBook, value: string) => void;
   deleteBook: (index: number) => void;
+  dataLocked?: boolean;
 }) {
+  if (dataLocked === undefined) dataLocked = true;
   const handleDelete = () => deleteBook(index);
 
   return (
@@ -68,6 +73,7 @@ function TableRow({
           style={{ width: 50 }}
           onChange={(e) => changeBook(index, "bookNumber", e.target.value)}
           className="add-input"
+          disabled={!dataLocked}
         />
       </td>
       <td className="add-input">
@@ -76,6 +82,7 @@ function TableRow({
           value={book.quality}
           onChange={(e) => changeBook(index, "quality", e.target.value)}
           className="add-input"
+          disabled={!dataLocked}
         />
       </td>
       <td className="add-input">
@@ -84,10 +91,19 @@ function TableRow({
           value={book.status}
           onChange={(e) => changeBook(index, "status", e.target.value)}
           className="add-input"
+          disabled={!dataLocked}
         />
       </td>
       <td className="add-input">
-        {index > 0 && <Button icon="trash" minimal intent="danger" onClick={handleDelete} />}
+        {index > 0 && (
+          <Button
+            icon="trash"
+            minimal
+            intent="danger"
+            onClick={handleDelete}
+            disabled={!dataLocked}
+          />
+        )}
       </td>
     </tr>
   );
