@@ -15,14 +15,17 @@ import pluralize from "pluralize";
 import BackButton from "../../../components/BackButton";
 import CheckOutPanel from "./CheckOut/CheckOutPanel";
 import CheckInPanel from "./CheckIn/CheckInPanel";
+import FadeIn from "../../../components/FadeIn";
 
 export default function TextbooksTestContent({
   textbook,
   setSelected,
+  setPageState,
   ...props
 }: {
   textbook: TextbookSetModel;
   setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+  setPageState: React.Dispatch<React.SetStateAction<"blank" | "view" | "add">>;
 } & PanelActions) {
   const [books, setBooks] = useState<TextbookModel[]>([]);
   const [selectedBooks, setSelectedBooks] = useState<TextbookModel[]>([]);
@@ -89,7 +92,10 @@ export default function TextbooksTestContent({
     });
 
   const showFooter = canCheckOut.length > 0 || canCheckIn.length > 0;
-  const handleBack = () => setSelected(undefined);
+  const handleBack = () => {
+    setSelected(undefined);
+    setPageState("blank");
+  };
 
   return (
     <div className="main-content-inner-wrapper">
@@ -111,7 +117,9 @@ export default function TextbooksTestContent({
         <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
       </div>
       <div style={{ overflowY: "scroll" }}>
-        <BooksTable columns={columns} data={data} setSelectedBooks={setSelectedBooks} />
+        <FadeIn>
+          <BooksTable columns={columns} data={data} setSelectedBooks={setSelectedBooks} />
+        </FadeIn>
       </div>
       {showFooter && (
         <div className="main-content-footer">

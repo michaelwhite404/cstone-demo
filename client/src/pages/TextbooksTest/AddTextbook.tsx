@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../../src/types/models/textbookTypes";
 import BackButton from "../../components/BackButton";
+import FadeIn from "../../components/FadeIn";
 import LabeledInput from "../../components/Inputs/LabeledInput";
 import LabeledNumbericInput from "../../components/Inputs/LabeledNumbericInput";
 import LabeledSelect from "../../components/Inputs/LabeledSelect";
@@ -160,7 +161,7 @@ export default function AddTextbook(props: AddTextbookProps) {
   const booksPassed = booksToAdd.filter((book) => book.passed === false).length === 0;
   const submittable = dataPassed && dataLocked && booksPassed;
 
-  const handleBack = () => props.setPageState("view");
+  const handleBack = () => props.setPageState("blank");
 
   const handleSubmit = () => {
     createSetAndBooks({ ...data, books: booksToAdd })
@@ -177,54 +178,56 @@ export default function AddTextbook(props: AddTextbookProps) {
   };
   return (
     <div className="main-content-inner-wrapper">
-      <div className="main-content-header">
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <BackButton onClick={handleBack} />
-          <span style={{ fontWeight: 500, fontSize: 16 }}>Create New Textbook</span>
-        </div>
-      </div>
-      <div style={{ overflowY: "scroll" }}>
-        <div className="create-textbook-data">
-          <div className="flex flex-wrap">
-            {inputs.map(({ label, Component, width, props }) => (
-              <div style={{ width: `${width}%`, padding: "0 15px" }} key={label}>
-                {/**@ts-ignore */}
-                <Component label={label} {...props} />
-              </div>
-            ))}
-            <div className="lock-button-wrapper">
-              <Button
-                intent={dataLocked ? "warning" : "success"}
-                icon={dataLocked ? "edit" : "lock"}
-                onClick={toggleLock}
-                disabled={!dataPassed}
-                fill
-              >
-                {dataLocked ? "Edit" : "Lock"}
-              </Button>
-            </div>
+      <FadeIn>
+        <div className="main-content-header">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <BackButton onClick={handleBack} />
+            <span style={{ fontWeight: 500, fontSize: 16 }}>Create New Textbook</span>
           </div>
         </div>
-        <div>
-          <AddBooksTable
-            booksToAdd={booksToAdd}
-            changeBook={changeBook}
-            deleteBook={deleteBook}
-            dataLocked={dataLocked}
-          />
+        <div style={{ overflowY: "scroll" }}>
+          <div className="create-textbook-data">
+            <div className="flex flex-wrap">
+              {inputs.map(({ label, Component, width, props }) => (
+                <div style={{ width: `${width}%`, padding: "0 15px" }} key={label}>
+                  {/**@ts-ignore */}
+                  <Component label={label} {...props} />
+                </div>
+              ))}
+              <div className="lock-button-wrapper">
+                <Button
+                  intent={dataLocked ? "warning" : "success"}
+                  icon={dataLocked ? "edit" : "lock"}
+                  onClick={toggleLock}
+                  disabled={!dataPassed}
+                  fill
+                >
+                  {dataLocked ? "Edit" : "Lock"}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <AddBooksTable
+              booksToAdd={booksToAdd}
+              changeBook={changeBook}
+              deleteBook={deleteBook}
+              dataLocked={dataLocked}
+            />
+          </div>
         </div>
-      </div>
-      <div className="main-content-footer">
-        <div className="bp3-dialog-footer-actions">
-          <Button text="Cancel" onClick={handleBack} />
-          <Button
-            text="Create Textbook"
-            intent="primary"
-            disabled={!submittable}
-            onClick={handleSubmit}
-          />
+        <div className="main-content-footer">
+          <div className="bp3-dialog-footer-actions">
+            <Button text="Cancel" onClick={handleBack} />
+            <Button
+              text="Create Textbook"
+              intent="primary"
+              disabled={!submittable}
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   );
 }

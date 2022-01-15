@@ -9,6 +9,8 @@ import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
 import { Icon } from "@blueprintjs/core";
 import AddTextbook from "./AddTextbook";
+import { useWindowSize } from "../../hooks";
+import FadeIn from "../../components/FadeIn";
 
 interface LetterGroup {
   letter: string;
@@ -23,8 +25,9 @@ type PageState = "blank" | "view" | "add";
 
 export default function TextbooksTest() {
   const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
-  const [pageState, setPageState] = useState<PageState>("view");
+  const [pageState, setPageState] = useState<PageState>("blank");
   const [selected, setSelected] = useState<TextbookSetModel>();
+  const [width] = useWindowSize();
 
   useEffect(() => {
     getTextbookSets();
@@ -67,56 +70,66 @@ export default function TextbooksTest() {
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
       <div className="flex" style={{ height: "100%" }}>
-        <aside className="side-table">
-          <div className="side-table-top">
-            <PageHeader text="Textbooks" />
-            <p>Search directory of many books</p>
-            <button
-              className="create-textbook-button"
-              onClick={handleAddTextbookClick}
-              disabled={pageState === "add"}
-            >
-              <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
-              <span style={{ fontWeight: 500 }}>Create New Textbook</span>
-            </button>
-          </div>
-          <div className="side-table-content">
-            {letterGroup.map((group) => (
-              <div className="letter-group" key={group.letter}>
-                <div className="letter-header">{group.letter}</div>
-                <ul className="letter-list">
-                  {group.children.map((set) => (
-                    <li onClick={() => handleSetClick(set)} key={set.slug}>
-                      <div
-                        className={classnames("book-set", { selected: selected?._id === set._id })}
-                      >
-                        <span className="flex">
-                          <span
-                            style={{
-                              fontWeight: 500,
-                              marginRight: "0.5rem",
-                              maxWidth: 230,
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
+        {!(width < 767 && pageState !== "blank") && (
+          <aside className="side-table">
+            <div className="side-table-top">
+              <PageHeader text="Textbooks" />
+              <p>Search directory of many books</p>
+              <button
+                className="create-textbook-button"
+                onClick={handleAddTextbookClick}
+                disabled={pageState === "add"}
+              >
+                <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
+                <span style={{ fontWeight: 500 }}>Create New Textbook</span>
+              </button>
+            </div>
+            <div className="side-table-content">
+              <FadeIn>
+                {letterGroup.map((group) => (
+                  <div className="letter-group" key={group.letter}>
+                    <div className="letter-header">{group.letter}</div>
+                    <ul className="letter-list">
+                      {group.children.map((set) => (
+                        <li onClick={() => handleSetClick(set)} key={set.slug}>
+                          <div
+                            className={classnames("book-set", {
+                              selected: selected?._id === set._id,
+                            })}
                           >
-                            {set.title}
-                          </span>
-                          <Badge text={set.count.toString()} color="blue" noDot />
-                        </span>
-                        <div className="book-subject">{set.class}</div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </aside>
+                            <span className="flex">
+                              <span
+                                style={{
+                                  fontWeight: 500,
+                                  marginRight: "0.5rem",
+                                  maxWidth: 230,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {set.title}
+                              </span>
+                              <Badge text={set.count.toString()} color="blue" noDot />
+                            </span>
+                            <div className="book-subject">{set.class}</div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </FadeIn>
+            </div>
+          </aside>
+        )}
         <main className="main-content">
           {pageState === "view" && selected && (
-            <ContentPanels textbook={selected} setSelected={setSelected} />
+            <ContentPanels
+              textbook={selected}
+              setSelected={setSelected}
+              setPageState={setPageState}
+            />
           )}
           {pageState === "add" && (
             <AddTextbook setPageState={setPageState} setSelected={setSelected} />

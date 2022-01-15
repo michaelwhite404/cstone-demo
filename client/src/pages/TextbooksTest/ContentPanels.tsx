@@ -6,18 +6,22 @@ import TextbooksTestContent from "./Panels/TextbooksTestPanel";
 export default function ContentPanels({
   textbook,
   setSelected,
+  setPageState,
 }: {
   textbook: TextbookSetModel;
   setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+  setPageState: React.Dispatch<React.SetStateAction<"blank" | "view" | "add">>;
 }) {
   //--- PANEL STATES ---//
   const initialPanel: Panel<{
     textbook: TextbookSetModel;
     setSelected: React.Dispatch<React.SetStateAction<TextbookSetModel | undefined>>;
+    setPageState: React.Dispatch<React.SetStateAction<"blank" | "view" | "add">>;
   }> = {
     props: {
       textbook,
       setSelected,
+      setPageState,
     },
     renderPanel: TextbooksTestContent,
     title: "Panel 1",
