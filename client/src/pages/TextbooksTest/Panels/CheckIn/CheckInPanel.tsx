@@ -2,11 +2,11 @@ import { Button, Classes, HTMLSelect, OptionProps } from "@blueprintjs/core";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
 import { AxiosError } from "axios";
 import { useState } from "react";
-import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
-import BackButton from "../../../components/BackButton";
-import { useToasterContext } from "../../../hooks";
-import useTextbook from "../../../hooks/useTextbook";
-import { APIError } from "../../../types/apiResponses";
+import { TextbookModel } from "../../../../../../src/types/models/textbookTypes";
+import BackButton from "../../../../components/BackButton";
+import { useToasterContext } from "../../../../hooks";
+import useTextbook from "../../../../hooks/useTextbook";
+import { APIError } from "../../../../types/apiResponses";
 
 interface CheckInProps extends PanelActions {
   data: TextbookModel[];
@@ -52,13 +52,13 @@ export default function CheckInPanel({ data, ...props }: CheckInProps) {
           <div style={{ width: "100%" }}>
             <table style={{ width: "100%" }} id="textbook-checkout-table">
               <colgroup>
-                {[8, 23, 23, 23, 23].map((w, i) => (
+                {[8, 23, 10, 23, 23].map((w, i) => (
                   <col span={1} style={{ width: `${w}%` }} key={"col" + i} />
                 ))}
               </colgroup>
               <thead>
                 <tr>
-                  {["", "Book Name", "Number", "Student", "Quality"].map((h, i) => (
+                  {["", "Book Name", "#", "Student", "Quality"].map((h, i) => (
                     <th className="sticky-header" key={"header" + i}>
                       {h}
                     </th>

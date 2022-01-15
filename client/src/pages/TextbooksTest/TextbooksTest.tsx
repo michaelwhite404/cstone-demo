@@ -90,8 +90,17 @@ export default function TextbooksTest() {
                       <div
                         className={classnames("book-set", { selected: selected?._id === set._id })}
                       >
-                        <span>
-                          <span style={{ fontWeight: 500, marginRight: "0.5rem" }}>
+                        <span className="flex">
+                          <span
+                            style={{
+                              fontWeight: 500,
+                              marginRight: "0.5rem",
+                              maxWidth: 230,
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
                             {set.title}
                           </span>
                           <Badge text={set.count.toString()} color="blue" noDot />

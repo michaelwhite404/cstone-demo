@@ -3,13 +3,14 @@ import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/
 import axios, { AxiosError } from "axios";
 import pluralize from "pluralize";
 import { useContext, useState } from "react";
-import { TextbookSetModel } from "../../../../../src/types/models/textbookSetTypes";
-import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
-import BackButton from "../../../components/BackButton";
-import { useToasterContext } from "../../../hooks";
-import { APIError, APITextbooksResponse } from "../../../types/apiResponses";
-import AddBooksTable from "../AddBooksTable";
-import { TextbookContext } from "../TextbooksTest";
+import { TextbookSetModel } from "../../../../../../src/types/models/textbookSetTypes";
+import { TextbookModel } from "../../../../../../src/types/models/textbookTypes";
+import BackButton from "../../../../components/BackButton";
+import { useToasterContext } from "../../../../hooks";
+import { APIError, APITextbooksResponse } from "../../../../types/apiResponses";
+import AddBooksTable from "../../AddBooksTable";
+import { TextbookContext } from "../../TextbooksTest";
+import "./AddBookPanel.sass";
 
 interface PreBook {
   passed: boolean;

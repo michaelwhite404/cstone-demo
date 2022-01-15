@@ -3,13 +3,14 @@ import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
-import BackButton from "../../../components/BackButton";
-import TableToolbox from "../../../components/Table/TableToolbox";
-import { useClasses, useToasterContext } from "../../../hooks";
-import useTextbook from "../../../hooks/useTextbook";
-import { APIError } from "../../../types/apiResponses";
-import Class from "../../../types/class";
+import { TextbookModel } from "../../../../../../src/types/models/textbookTypes";
+import BackButton from "../../../../components/BackButton";
+import TableToolbox from "../../../../components/Table/TableToolbox";
+import { useClasses, useToasterContext } from "../../../../hooks";
+import useTextbook from "../../../../hooks/useTextbook";
+import { APIError } from "../../../../types/apiResponses";
+import Class from "../../../../types/class";
+import "./CheckOutPanel.sass";
 
 interface CheckOutProps extends PanelActions {
   data: TextbookModel[];
@@ -94,7 +95,7 @@ export default function CheckOutPanel({ data, ...props }: CheckOutProps) {
               <colgroup>
                 <col span={1} style={{ width: "8%" }} />
                 <col span={1} style={{ width: "23%" }} />
-                <col span={1} style={{ width: "23%" }} />
+                <col span={1} style={{ width: "10%" }} />
                 <col span={1} style={{ width: "23%" }} />
                 <col span={1} style={{ width: "23%" }} />
               </colgroup>
@@ -102,7 +103,7 @@ export default function CheckOutPanel({ data, ...props }: CheckOutProps) {
                 <tr>
                   <th className="sticky-header"></th>
                   <th className="sticky-header">Book Name</th>
-                  <th className="sticky-header">Number</th>
+                  <th className="sticky-header">#</th>
                   <th className="sticky-header">Grade</th>
                   <th className="sticky-header">Student</th>
                 </tr>

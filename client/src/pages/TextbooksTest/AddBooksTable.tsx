@@ -17,7 +17,7 @@ interface Props {
 
 export default function AddBooksTable({ booksToAdd, changeBook, deleteBook, dataLocked }: Props) {
   return (
-    <table>
+    <table id="add-book-table">
       <colgroup>
         {[10, 20, 32, 32, 6].map((w, i) => (
           <col span={1} style={{ width: `${w}%` }} key={"col" + i} />
@@ -25,7 +25,7 @@ export default function AddBooksTable({ booksToAdd, changeBook, deleteBook, data
       </colgroup>
       <thead>
         <tr>
-          {["", "Book #", "Quality", "Status", ""].map((h, i) => (
+          {["", "#", "Quality", "Status", ""].map((h, i) => (
             <th className="sticky-header" key={"header" + i}>
               {h}
             </th>

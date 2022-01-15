@@ -50,6 +50,10 @@ export default function BooksTable({
           ),
         },
         ...columns,
+        {
+          id: "menu",
+          Cell: <div style={{ padding: "0 5px" }}></div>,
+        },
       ]);
     }
   );
@@ -79,6 +83,11 @@ export default function BooksTable({
   return (
     <div className="textbooks-table-container">
       <table {...getTableProps()} id="textbooks-table">
+        {/* <colgroup>
+          {[5, 5, 28, 28, 28, 6].map((w) => (
+            <col span={1} width={`${w}%`} />
+          ))}
+        </colgroup> */}
         <thead>
           {
             // Loop over the header rows

@@ -184,7 +184,7 @@ export default function AddTextbook(props: AddTextbookProps) {
         </div>
       </div>
       <div style={{ overflowY: "scroll" }}>
-        <div style={{ padding: 20 }}>
+        <div className="create-textbook-data">
           <div className="flex flex-wrap">
             {inputs.map(({ label, Component, width, props }) => (
               <div style={{ width: `${width}%`, padding: "0 15px" }} key={label}>

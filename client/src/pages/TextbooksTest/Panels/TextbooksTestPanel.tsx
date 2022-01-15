@@ -8,13 +8,13 @@ import { APITextbooksResponse } from "../../../types/apiResponses";
 import { numberToGrade } from "../../../utils/grades";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { PanelActions } from "@blueprintjs/core/lib/esm/components/panel-stack2/panelTypes";
-import AddBookPanel from "./AddBookPanel";
+import AddBookPanel from "./AddBook/AddBookPanel";
 import { Button, Classes } from "@blueprintjs/core";
 import BooksTable from "../BooksTable/BooksTable";
 import pluralize from "pluralize";
 import BackButton from "../../../components/BackButton";
-import CheckOutPanel from "./CheckOutPanel";
-import CheckInPanel from "./CheckInPanel";
+import CheckOutPanel from "./CheckOut/CheckOutPanel";
+import CheckInPanel from "./CheckIn/CheckInPanel";
 
 export default function TextbooksTestContent({
   textbook,
@@ -41,7 +41,7 @@ export default function TextbooksTestContent({
 
   const columns = useMemo(
     () => [
-      { Header: "Book #", accessor: "bookNumber" },
+      { Header: "#", accessor: "bookNumber" },
       {
         Header: "Quality",
         accessor: "quality",
@@ -94,9 +94,19 @@ export default function TextbooksTestContent({
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", width: "68%" }}>
           <BackButton onClick={handleBack} />
-          <span style={{ fontWeight: 500, fontSize: 16 }}>{textbook.title}</span>
+          <span
+            style={{
+              fontWeight: 500,
+              fontSize: 16,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {textbook.title}
+          </span>
         </div>
         <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
       </div>
