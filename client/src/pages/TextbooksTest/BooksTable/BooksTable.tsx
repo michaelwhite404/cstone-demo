@@ -1,8 +1,11 @@
 //@ts-nocheck
 
+import { DotsVerticalIcon } from "@heroicons/react/solid";
+import { Checkbox } from "@mui/material";
 import React, { useEffect } from "react";
-import { useGroupBy, useRowSelect, useTable } from "react-table";
+import { Cell, useGroupBy, useRowSelect, useTable } from "react-table";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
+import FadeIn from "../../../components/FadeIn";
 import "./BooksTable.sass";
 
 export default function BooksTable({
@@ -44,7 +47,7 @@ export default function BooksTable({
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
-            <div className="selection-wrapper">
+            <div className="selection-wrapper" style={{ alignSelf: "center" }}>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             </div>
           ),
@@ -52,7 +55,12 @@ export default function BooksTable({
         ...columns,
         {
           id: "menu",
-          Cell: <div style={{ padding: "0 5px" }}></div>,
+          Header: "",
+          Cell: (
+            <div style={{ padding: "0 5px" }}>
+              <DotsVerticalIcon color="#a1a1a1" width={20} />
+            </div>
+          ),
         },
       ]);
     }
@@ -80,14 +88,9 @@ export default function BooksTable({
     setSelectedBooks(getSelected());
   }, [flatRows, selectedRowIds, setSelectedBooks]);
 
-  return (
+  const table = (
     <div className="textbooks-table-container">
       <table {...getTableProps()} id="textbooks-table">
-        {/* <colgroup>
-          {[5, 5, 28, 28, 28, 6].map((w) => (
-            <col span={1} width={`${w}%`} />
-          ))}
-        </colgroup> */}
         <thead>
           {
             // Loop over the header rows
@@ -115,17 +118,28 @@ export default function BooksTable({
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                })}
-              </tr>
+              <FadeIn>
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                  })}
+                </tr>
+              </FadeIn>
             );
           })}
         </tbody>
       </table>
     </div>
   );
+
+  const mapped = rows.map((row, i) => {
+    prepareRow(row);
+    // const [checkbox, bookNumber, status, quality, student] = row.cells;
+    const array = row.cells.map((cell) => cell.render("Cell"));
+    return MobileRow(array);
+  });
+
+  return <div>{mapped}</div>;
 }
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -136,9 +150,23 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref)
     resolvedRef.current.indeterminate = indeterminate;
   }, [resolvedRef, indeterminate]);
 
-  return (
-    <>
-      <input type="checkbox" ref={resolvedRef} {...rest} />
-    </>
-  );
+  return <Checkbox ref={resolvedRef} {...rest} size="small" />;
 });
+
+const MobileRow = ([checkbox, bookNumber, status, quality, student, dots]: Cell<object, any>[]) => {
+  return (
+    <FadeIn>
+      <div className="flex" style={{ padding: "10px", borderBottom: "1px lightgray solid" }}>
+        <div style={{ display: "flex" }}>{checkbox}</div>
+        <div className="flex" style={{ flexDirection: "column" }}>
+          <div>Book Number {bookNumber}</div>
+          <div>
+            {status} {quality}{" "}
+          </div>
+          <div>{student}</div>
+        </div>
+        <div>{dots}</div>
+      </div>
+    </FadeIn>
+  );
+};

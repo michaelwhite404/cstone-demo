@@ -70,7 +70,7 @@ export default function TextbooksTest() {
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
       <div className="flex" style={{ height: "100%" }}>
-        {!(width < 767 && pageState !== "blank") && (
+        {!(width < 768 && pageState !== "blank") && (
           <aside className="side-table">
             <div className="side-table-top">
               <PageHeader text="Textbooks" />
