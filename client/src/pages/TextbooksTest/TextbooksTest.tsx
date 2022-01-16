@@ -7,10 +7,10 @@ import PageHeader from "../../components/PageHeader";
 import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
-import { Icon } from "@blueprintjs/core";
 import AddTextbook from "./AddTextbook";
 import { useWindowSize } from "../../hooks";
 import FadeIn from "../../components/FadeIn";
+import CreateTextbookButton from "./CreateTextbookButton";
 
 interface LetterGroup {
   letter: string;
@@ -75,14 +75,11 @@ export default function TextbooksTest() {
             <div className="side-table-top">
               <PageHeader text="Textbooks" />
               <p>Search directory of many books</p>
-              <button
-                className="create-textbook-button"
+              <CreateTextbookButton
                 onClick={handleAddTextbookClick}
                 disabled={pageState === "add"}
-              >
-                <Icon icon="plus" color="#0566c3" style={{ marginRight: "0.5rem" }} />
-                <span style={{ fontWeight: 500 }}>Create New Textbook</span>
-              </button>
+                fill
+              />
             </div>
             <div className="side-table-content">
               <FadeIn>
@@ -133,6 +130,16 @@ export default function TextbooksTest() {
           )}
           {pageState === "add" && (
             <AddTextbook setPageState={setPageState} setSelected={setSelected} />
+          )}
+          {pageState === "blank" && (
+            <div className="empty-state-container">
+              <div
+                style={{ padding: "4rem 6rem", border: "2px #d1d5db dashed", borderRadius: "16px" }}
+              >
+                <div style={{ fontWeight: 500, textAlign: "center" }}>Select a textbook OR</div>
+                <CreateTextbookButton onClick={handleAddTextbookClick} />
+              </div>
+            </div>
           )}
         </main>
       </div>

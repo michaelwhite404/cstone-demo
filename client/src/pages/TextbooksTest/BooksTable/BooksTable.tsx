@@ -155,7 +155,7 @@ export default function BooksTable({
     </>
   );
 
-  return width > 500 ? table : mobileTable;
+  return width > 540 ? table : mobileTable;
 }
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
