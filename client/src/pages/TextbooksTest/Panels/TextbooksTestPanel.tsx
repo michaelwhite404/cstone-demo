@@ -100,7 +100,7 @@ export default function TextbooksTestContent({
   return (
     <div className="main-content-inner-wrapper">
       <div className="main-content-header">
-        <div style={{ display: "flex", alignItems: "center", width: "68%" }}>
+        <div className="content-header-text">
           <BackButton onClick={handleBack} />
           <span
             style={{
@@ -114,7 +114,9 @@ export default function TextbooksTestContent({
             {textbook.title}
           </span>
         </div>
-        <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
+        <div className="button-wrapper">
+          <PrimaryButton onClick={addBookPanel}>+ Add Book</PrimaryButton>
+        </div>
       </div>
       <div style={{ overflowY: "scroll" }}>
         <FadeIn>

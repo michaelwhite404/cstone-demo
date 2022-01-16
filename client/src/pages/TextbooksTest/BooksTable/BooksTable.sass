@@ -1,10 +1,16 @@
+@import "../../../_variables"
+
 table#textbooks-table
   table-layout: fixed
   th,td
     &:first-child
       padding-left: 15px
+      padding-top: 2px
+      padding-bottom: 2px
     &:last-child
-      width: 30px
+      width: 60px
+      padding-top: 2px
+      padding-bottom: 2px
     &:nth-child(2)
       width: 50px
     &:nth-child(3)
@@ -32,3 +38,28 @@ table#textbooks-table
 
   .options-cell
     max-width: 20px
+
+.textbook-mobile-row
+  display: flex
+  padding: 10px
+  border-bottom: 1px $gray-200 solid
+
+  .textbook-mobile-row-data
+    display: flex
+    flex-direction: column
+    margin-left: 10px
+    color: $gray-500
+
+  .textbook-mobile-row-title
+    font-weight: 500
+    margin-bottom: 7px
+
+  .textbook-mobile-row-badges
+    margin-bottom: 5px
+
+.textbook-mobile-row-header
+  padding: 2px 10px
+  background-color: $gray-100
+  top: 0
+  position: sticky
+  border-bottom: 1px $gray-200 solid

@@ -1,11 +1,12 @@
 //@ts-nocheck
 
 import { DotsVerticalIcon } from "@heroicons/react/solid";
-import { Checkbox } from "@mui/material";
-import React, { useEffect } from "react";
-import { Cell, useGroupBy, useRowSelect, useTable } from "react-table";
+import { Checkbox, IconButton } from "@mui/material";
+import React, { ReactNode, useEffect } from "react";
+import { useGroupBy, useRowSelect, useTable } from "react-table";
 import { TextbookModel } from "../../../../../src/types/models/textbookTypes";
 import FadeIn from "../../../components/FadeIn";
+import { useWindowSize } from "../../../hooks";
 import "./BooksTable.sass";
 
 export default function BooksTable({
@@ -20,6 +21,7 @@ export default function BooksTable({
   data: any[];
   setSelectedBooks: React.Dispatch<React.SetStateAction<TextbookModel[]>>;
 }) {
+  const [width] = useWindowSize();
   const tableInstance = useTable(
     {
       columns,
@@ -57,9 +59,11 @@ export default function BooksTable({
           id: "menu",
           Header: "",
           Cell: (
-            <div style={{ padding: "0 5px" }}>
+            // <div style={{ padding: "0 5px" }}>
+            <IconButton aria-label="more">
               <DotsVerticalIcon color="#a1a1a1" width={20} />
-            </div>
+            </IconButton>
+            // </div>
           ),
         },
       ]);
@@ -132,14 +136,26 @@ export default function BooksTable({
     </div>
   );
 
-  const mapped = rows.map((row, i) => {
-    prepareRow(row);
-    // const [checkbox, bookNumber, status, quality, student] = row.cells;
-    const array = row.cells.map((cell) => cell.render("Cell"));
-    return MobileRow(array);
-  });
+  const mobileTable = (
+    <>
+      <div
+        className="textbook-mobile-row-header"
+        style={{ padding: "2px 10px", backgroundColor: "#f9f9fb" }}
+      >
+        {headerGroups.map((headerGroup) => {
+          const columnArray = headerGroup.headers.map((column) => column.render("Header"));
+          return MobileHeader(columnArray);
+        })}
+      </div>
+      {rows.map((row) => {
+        prepareRow(row);
+        const array = row.cells.map((cell) => cell.render("Cell"));
+        return MobileRow(array);
+      })}
+    </>
+  );
 
-  return <div>{mapped}</div>;
+  return width > 500 ? table : mobileTable;
 }
 
 const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -153,19 +169,23 @@ const IndeterminateCheckbox = React.forwardRef(({ indeterminate, ...rest }, ref)
   return <Checkbox ref={resolvedRef} {...rest} size="small" />;
 });
 
-const MobileRow = ([checkbox, bookNumber, status, quality, student, dots]: Cell<object, any>[]) => {
+const MobileHeader = ([checkbox]: ReactNode[]) => {
+  return checkbox;
+};
+
+const MobileRow = ([checkbox, bookNumber, status, quality, student, dots]: ReactNode[]) => {
   return (
     <FadeIn>
-      <div className="flex" style={{ padding: "10px", borderBottom: "1px lightgray solid" }}>
+      <div className="textbook-mobile-row">
         <div style={{ display: "flex" }}>{checkbox}</div>
-        <div className="flex" style={{ flexDirection: "column" }}>
-          <div>Book Number {bookNumber}</div>
-          <div>
-            {status} {quality}{" "}
+        <div className="textbook-mobile-row-data">
+          <div className="textbook-mobile-row-title">Book Number {bookNumber}</div>
+          <div className="textbook-mobile-row-badges">
+            {status} {quality}
           </div>
-          <div>{student}</div>
+          <div style={{ fontStyle: "italic" }}>{student}</div>
         </div>
-        <div>{dots}</div>
+        <div style={{ marginLeft: "auto" }}>{dots}</div>
       </div>
     </FadeIn>
   );
