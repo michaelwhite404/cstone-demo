@@ -11,6 +11,7 @@ import CreateTextbookButton from "./CreateTextbookButton";
 import SideTable from "../../components/SideTable/SideTable";
 import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 import PageHeader from "../../components/PageHeader";
+import "../Textbooks/Table.sass";
 
 interface TextbookContextProps {
   getTextbookSets: () => Promise<void>;
@@ -73,7 +74,7 @@ export default function TextbooksTest() {
 
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
-      <div className="flex" style={{ height: "100%" }}>
+      <div style={{ display: "flex", height: "100%" }}>
         {!(width < 768 && pageState !== "blank") && (
           <SideTable<TextbookSetModel>
             data={data}
@@ -86,7 +87,11 @@ export default function TextbooksTest() {
             <div className="side-table-top">
               <PageHeader text="Textbooks" />
               <p>Search directory of many books</p>
-              <CreateTextbookButton fill onClick={handleAddTextbookClick} />
+              <CreateTextbookButton
+                fill
+                onClick={handleAddTextbookClick}
+                disabled={pageState === "add"}
+              />
             </div>
           </SideTable>
         )}

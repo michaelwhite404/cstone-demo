@@ -9,7 +9,7 @@ import {
 import Students from "./pages/Students/Students";
 import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
-import Textbooks from "./pages/Textbooks/Textbooks";
+// import Textbooks from "./pages/Textbooks/Textbooks";
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -169,15 +169,15 @@ function App() {
                   component={SingleDevice}
                   auth={isAuthenticated}
                 />
-                <ProtectedNavRoute
+                {/* <ProtectedNavRoute
                   exact
                   path="/textbooks"
                   component={Textbooks}
                   auth={isAuthenticated}
-                />
+                /> */}
                 <ProtectedNavRoute
                   exact
-                  path="/textbooks-test"
+                  path="/textbooks"
                   component={TextbooksTest}
                   auth={isAuthenticated}
                   noPadding
