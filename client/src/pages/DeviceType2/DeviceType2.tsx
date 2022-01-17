@@ -1,9 +1,16 @@
+import { Button } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize from "pluralize";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
+import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
+import MainContent, {
+  MainContentFooter,
+  MainContentHeader,
+  MainContentInnerWrapper,
+} from "../../components/MainContent";
 import PageHeader from "../../components/PageHeader";
 import SideTable from "../../components/SideTable/SideTable";
 import { grades } from "../../utils/grades";
@@ -11,6 +18,7 @@ import { grades } from "../../utils/grades";
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const { deviceType } = useParams<{ deviceType: string }>();
+  const [pageState, setPageState] = useState<"blank">("blank");
 
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
@@ -35,7 +43,7 @@ export default function DeviceType2() {
         accessor: "name",
       },
       { Header: "Brand", accessor: "brand" },
-      { Header: "Serial Number", accessor: "serialNumber", width: 275, minWidth: 275 },
+      { Header: "Serial Number", accessor: "serialNumber" },
       { Header: "MAC Address", accessor: "macAddress" },
       {
         Header: "Status",
@@ -54,7 +62,7 @@ export default function DeviceType2() {
   return (
     <>
       <div style={{ display: "flex", height: "100%" }}>
-        <SideTable
+        <SideTable<DeviceModel>
           data={data}
           columns={columns}
           rowComponent={FakeComp}
@@ -67,6 +75,20 @@ export default function DeviceType2() {
             {/* <p>Search directory of many books</p> */}
           </div>
         </SideTable>
+        <MainContent>
+          <MainContentInnerWrapper>
+            <MainContentHeader>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <BackButton />
+                <span style={{ fontWeight: 500, fontSize: 16 }}>Test</span>
+              </div>
+            </MainContentHeader>
+
+            <MainContentFooter align="right">
+              <Button />
+            </MainContentFooter>
+          </MainContentInnerWrapper>
+        </MainContent>
       </div>
     </>
   );

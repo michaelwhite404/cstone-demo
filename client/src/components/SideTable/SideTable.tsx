@@ -21,7 +21,7 @@ export default function SideTable<T extends BasicDoc>({
     Header: string;
     accessor?: string | ((original: T) => string);
   }[];
-  data: any[];
+  data: T[];
   rowComponent: (props: any) => JSX.Element;
   groupBy: string | string[];
   onSelectionChange?: (original: T) => void;
