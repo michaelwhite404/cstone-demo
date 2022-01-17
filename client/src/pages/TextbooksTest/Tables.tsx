@@ -7,7 +7,6 @@ import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 
 export default function Tables() {
   const [selected, setSelected] = useState("");
-
   const [textbookSets, setTextbookSets] = useState<TextbookSetModel[]>([]);
 
   const data = useMemo(() => textbookSets, [textbookSets]);
@@ -46,9 +45,9 @@ export default function Tables() {
     setTextbookSets(res.data.data.textbooks);
   }
 
-  const handleSelectionChange = (id: string) => {
+  const handleSelectionChange = (original: TextbookSetModel) => {
     console.log("handleSelectionChange");
-    setSelected(id);
+    setSelected(original._id);
   };
 
   return (

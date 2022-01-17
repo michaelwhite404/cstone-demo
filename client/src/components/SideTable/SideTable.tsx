@@ -1,9 +1,7 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { ReactChild, useEffect, useState } from "react";
 import { Row, useExpanded, useGroupBy, useTable } from "react-table";
-import CreateTextbookButton from "../../pages/TextbooksTest/CreateTextbookButton";
 import FadeIn from "../FadeIn";
-import PageHeader from "../PageHeader";
 import classNames from "classnames";
 import "./SideTable.sass";
 
@@ -16,6 +14,7 @@ export default function SideTable<T extends BasicDoc>({
   groupBy,
   onSelectionChange,
   selected,
+  children,
 }: {
   columns: {
     id?: string;
@@ -25,8 +24,9 @@ export default function SideTable<T extends BasicDoc>({
   data: any[];
   rowComponent: (props: any) => JSX.Element;
   groupBy: string | string[];
-  onSelectionChange?: (_id: string) => void;
+  onSelectionChange?: (original: T) => void;
   selected?: string;
+  children?: ReactChild;
 }) {
   const [tableSelected, setTableSelected] = useState("");
   const group = typeof groupBy === "string" ? [groupBy] : groupBy;
@@ -35,9 +35,9 @@ export default function SideTable<T extends BasicDoc>({
     { data, columns, initialState: { groupBy: group } },
     useGroupBy,
     useExpanded
-    // useRowSelect
   );
   const { rows, prepareRow } = instance;
+  rows.sort((row1, row2) => (row1.groupByVal as string).localeCompare(row2.groupByVal));
 
   useEffect(() => {
     selected !== undefined && setTableSelected(selected);
@@ -45,16 +45,12 @@ export default function SideTable<T extends BasicDoc>({
 
   const handleClick = (subRow: Row<T>) => {
     if (selected === undefined) setTableSelected(subRow.original._id);
-    onSelectionChange && onSelectionChange(subRow.original._id);
+    onSelectionChange && onSelectionChange(subRow.original);
   };
 
   return (
     <aside className="side-table">
-      <div className="side-table-top">
-        <PageHeader text="Textbooks" />
-        <p>Search directory of many books</p>
-        <CreateTextbookButton fill />
-      </div>
+      {children}
       <div className="side-table-content">
         <FadeIn>
           {rows.map((row) => {

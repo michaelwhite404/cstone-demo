@@ -1,9 +1,6 @@
 import axios from "axios";
-import React, { createContext, useEffect, useState } from "react";
-import classnames from "classnames";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
-import Badge from "../../components/Badge/Badge";
-import PageHeader from "../../components/PageHeader";
 import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
@@ -11,11 +8,10 @@ import AddTextbook from "./AddTextbook";
 import { useWindowSize } from "../../hooks";
 import FadeIn from "../../components/FadeIn";
 import CreateTextbookButton from "./CreateTextbookButton";
+import SideTable from "../../components/SideTable/SideTable";
+import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
+import PageHeader from "../../components/PageHeader";
 
-interface LetterGroup {
-  letter: string;
-  children: TextbookSetModel[];
-}
 interface TextbookContextProps {
   getTextbookSets: () => Promise<void>;
 }
@@ -24,7 +20,7 @@ export const TextbookContext = createContext<TextbookContextProps>({} as Textboo
 type PageState = "blank" | "view" | "add";
 
 export default function TextbooksTest() {
-  const [letterGroup, setLetterGroup] = useState<LetterGroup[]>([]);
+  const [textbookSets, setTextbookSets] = useState<TextbookSetModel[]>([]);
   const [pageState, setPageState] = useState<PageState>("blank");
   const [selected, setSelected] = useState<TextbookSetModel>();
   const [width] = useWindowSize();
@@ -38,23 +34,7 @@ export default function TextbooksTest() {
         sort: "title",
       },
     });
-
-    let groups = res.data.data.textbooks.reduce((r, e) => {
-      let letter = e.title[0].toUpperCase();
-      if (!r[letter]) r[letter] = { letter, children: [e] };
-      else r[letter].children.push(e);
-      return r;
-    }, {} as { [letter: string]: LetterGroup });
-
-    const letterGroup = Object.values(groups).sort((a, b) => {
-      var nameA = a.letter;
-      var nameB = b.letter;
-      if (nameA < nameB) return -1;
-      if (nameA > nameB) return 1;
-      return 0;
-    });
-
-    setLetterGroup(letterGroup);
+    setTextbookSets(res.data.data.textbooks);
   }
 
   const handleAddTextbookClick = () => {
@@ -67,58 +47,48 @@ export default function TextbooksTest() {
     setSelected(set);
   };
 
+  const data = useMemo(() => textbookSets, [textbookSets]);
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Class",
+        accessor: "class",
+      },
+      {
+        Header: "Count",
+        accessor: "count",
+      },
+      {
+        Header: "Title",
+        accessor: "title",
+      },
+      {
+        Header: "First Letter",
+        id: "firstLetter",
+        accessor: ({ title }: { title: string }) => title[0].toUpperCase(),
+      },
+    ],
+    []
+  );
+
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
       <div className="flex" style={{ height: "100%" }}>
         {!(width < 768 && pageState !== "blank") && (
-          <aside className="side-table">
+          <SideTable<TextbookSetModel>
+            data={data}
+            columns={columns}
+            rowComponent={TextbookSetRow}
+            groupBy="firstLetter"
+            onSelectionChange={handleSetClick}
+            selected={selected?._id || ""}
+          >
             <div className="side-table-top">
               <PageHeader text="Textbooks" />
               <p>Search directory of many books</p>
-              <CreateTextbookButton
-                onClick={handleAddTextbookClick}
-                disabled={pageState === "add"}
-                fill
-              />
+              <CreateTextbookButton fill onClick={handleAddTextbookClick} />
             </div>
-            <div className="side-table-content">
-              <FadeIn>
-                {letterGroup.map((group) => (
-                  <div className="letter-group" key={group.letter}>
-                    <div className="letter-header">{group.letter}</div>
-                    <ul className="letter-list">
-                      {group.children.map((set) => (
-                        <li onClick={() => handleSetClick(set)} key={set.slug}>
-                          <div
-                            className={classnames("book-set", {
-                              selected: selected?._id === set._id,
-                            })}
-                          >
-                            <span className="flex">
-                              <span
-                                style={{
-                                  fontWeight: 500,
-                                  marginRight: "0.5rem",
-                                  maxWidth: 230,
-                                  whiteSpace: "nowrap",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                }}
-                              >
-                                {set.title}
-                              </span>
-                              <Badge text={set.count.toString()} color="blue" noDot />
-                            </span>
-                            <div className="book-subject">{set.class}</div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </FadeIn>
-            </div>
-          </aside>
+          </SideTable>
         )}
         <main className="main-content">
           {pageState === "view" && selected && (
