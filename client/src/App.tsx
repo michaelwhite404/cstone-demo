@@ -27,6 +27,7 @@ import { ToasterProvider } from "./context/ToasterContext";
 import { useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
+import DeviceType2 from "./pages/DeviceType2/DeviceType2";
 
 interface NavRouteProps {
   exact: boolean;
@@ -150,6 +151,13 @@ function App() {
                   path="/devices/:deviceType(chromebooks|tablets)"
                   component={DeviceType}
                   auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/devices2/:deviceType(chromebooks|tablets)"
+                  component={DeviceType2}
+                  auth={isAuthenticated}
+                  noPadding
                 />
                 <ProtectedNavRoute
                   exact
