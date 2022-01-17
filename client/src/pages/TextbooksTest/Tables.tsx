@@ -6,7 +6,7 @@ import { APITextbookSetsResponse } from "../../types/apiResponses";
 import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 
 export default function Tables() {
-  const [selected, setSelected] = useState<TextbookSetModel>();
+  const [selected, setSelected] = useState("");
 
   const [textbookSets, setTextbookSets] = useState<TextbookSetModel[]>([]);
 
@@ -46,8 +46,9 @@ export default function Tables() {
     setTextbookSets(res.data.data.textbooks);
   }
 
-  const handleSelectionChange = (set: TextbookSetModel) => {
-    setSelected(set);
+  const handleSelectionChange = (id: string) => {
+    console.log("handleSelectionChange");
+    setSelected(id);
   };
 
   return (
@@ -57,6 +58,7 @@ export default function Tables() {
       rowComponent={TextbookSetRow}
       groupBy="firstLetter"
       onSelectionChange={handleSelectionChange}
+      selected={selected}
     />
   );
 }

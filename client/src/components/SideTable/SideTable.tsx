@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Row, useExpanded, useGroupBy, useTable } from "react-table";
 import CreateTextbookButton from "../../pages/TextbooksTest/CreateTextbookButton";
 import FadeIn from "../FadeIn";
@@ -7,12 +7,15 @@ import PageHeader from "../PageHeader";
 import classNames from "classnames";
 import "./SideTable.sass";
 
-export default function SideTable<T = any>({
+type BasicDoc = { _id: string; [x: string]: any };
+
+export default function SideTable<T extends BasicDoc>({
   columns,
   data,
   rowComponent: Component,
   groupBy,
   onSelectionChange,
+  selected,
 }: {
   columns: {
     id?: string;
@@ -22,9 +25,10 @@ export default function SideTable<T = any>({
   data: any[];
   rowComponent: (props: any) => JSX.Element;
   groupBy: string | string[];
-  onSelectionChange?: (seletion: T) => void;
+  onSelectionChange?: (_id: string) => void;
+  selected?: string;
 }) {
-  const [tableSelected, setTableSelected] = useState<Row>();
+  const [tableSelected, setTableSelected] = useState("");
   const group = typeof groupBy === "string" ? [groupBy] : groupBy;
   const instance = useTable(
     //@ts-ignore
@@ -33,15 +37,15 @@ export default function SideTable<T = any>({
     useExpanded
     // useRowSelect
   );
-  const { rows } = instance;
-  console.log(rows);
+  const { rows, prepareRow } = instance;
 
   useEffect(() => {
-    onSelectionChange && onSelectionChange(tableSelected?.original);
-  }, [onSelectionChange, tableSelected]);
+    selected !== undefined && setTableSelected(selected);
+  }, [selected]);
 
-  const handleSelect = (subRow: any) => {
-    setTableSelected(subRow);
+  const handleClick = (subRow: Row<T>) => {
+    if (selected === undefined) setTableSelected(subRow.original._id);
+    onSelectionChange && onSelectionChange(subRow.original._id);
   };
 
   return (
@@ -53,24 +57,27 @@ export default function SideTable<T = any>({
       </div>
       <div className="side-table-content">
         <FadeIn>
-          {rows.map((row) => (
-            <div className="side-table-group" key={row.groupByVal}>
-              <div className="side-table-header">{row.groupByVal}</div>
-              <ul className="side-table-list">
-                {row.subRows.map((subRow) => (
-                  <li
-                    className={classNames("side-table-row", {
-                      "highlight-row": tableSelected?.id === subRow.id,
-                    })}
-                    key={subRow.id}
-                    onClick={() => handleSelect(subRow)}
-                  >
-                    <Component {...subRow.values} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {rows.map((row) => {
+            prepareRow(row);
+            return (
+              <div className="side-table-group" key={row.groupByVal}>
+                <div className="side-table-header">{row.groupByVal}</div>
+                <ul className="side-table-list">
+                  {row.subRows.map((subRow) => (
+                    <li
+                      className={classNames("side-table-row", {
+                        "highlight-row": tableSelected === subRow.original._id,
+                      })}
+                      key={subRow.id}
+                      onClick={() => handleClick(subRow)}
+                    >
+                      <Component {...subRow.original} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </FadeIn>
       </div>
     </aside>
