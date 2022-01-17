@@ -1,13 +1,14 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { TextbookSetModel } from "../../../../src/types/models/textbookSetTypes";
 import SideTable from "../../components/SideTable/SideTable";
 import { APITextbookSetsResponse } from "../../types/apiResponses";
 import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 
 export default function Tables() {
-  const [textbookSets, setTextbookSets] = useState<APITextbookSetsResponse["data"]["textbooks"]>(
-    []
-  );
+  const [selected, setSelected] = useState<TextbookSetModel>();
+
+  const [textbookSets, setTextbookSets] = useState<TextbookSetModel[]>([]);
 
   const data = useMemo(() => textbookSets, [textbookSets]);
   const columns = useMemo(
@@ -45,7 +46,17 @@ export default function Tables() {
     setTextbookSets(res.data.data.textbooks);
   }
 
+  const handleSelectionChange = (set: TextbookSetModel) => {
+    setSelected(set);
+  };
+
   return (
-    <SideTable data={data} columns={columns} rowComponent={TextbookSetRow} groupBy="firstLetter" />
+    <SideTable<TextbookSetModel>
+      data={data}
+      columns={columns}
+      rowComponent={TextbookSetRow}
+      groupBy="firstLetter"
+      onSelectionChange={handleSelectionChange}
+    />
   );
 }
