@@ -87,7 +87,7 @@ export default function TablePaginate<T>({
         className="pagination-table-wrapper"
         style={{ height: height ? height - 37 : undefined }}
       >
-        <div className="table-wrapper" style={{ width: "100%", overflow: "visible" }} ref={ref}>
+        <div className="table-wrapper" style={{ width: "100%", overflow: "auto" }} ref={ref}>
           <table className="table-paginate" {...getTableProps()} id={id}>
             <thead>
               {headerGroups.map((headerGroup) => (

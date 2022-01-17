@@ -133,12 +133,12 @@ export default function TextbooksTest() {
           )}
           {pageState === "blank" && (
             <div className="empty-state-container">
-              <div
-                style={{ padding: "4rem 6rem", border: "2px #d1d5db dashed", borderRadius: "16px" }}
-              >
-                <div style={{ fontWeight: 500, textAlign: "center" }}>Select a textbook OR</div>
-                <CreateTextbookButton onClick={handleAddTextbookClick} />
-              </div>
+              <FadeIn>
+                <div className="empty-state-border">
+                  <div style={{ fontWeight: 500, textAlign: "center" }}>Select a textbook OR</div>
+                  <CreateTextbookButton onClick={handleAddTextbookClick} />
+                </div>
+              </FadeIn>
             </div>
           )}
         </main>
