@@ -2,18 +2,12 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import SideTable from "../../components/SideTable/SideTable";
 import { APITextbookSetsResponse } from "../../types/apiResponses";
-import "./TextbooksTest.sass";
+import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 
 export default function Tables() {
   const [textbookSets, setTextbookSets] = useState<APITextbookSetsResponse["data"]["textbooks"]>(
     []
   );
-
-  /**
-  class: "Calculus"
-  count: 7
-  title: "AP Calculus AB"
- */
 
   const data = useMemo(() => textbookSets, [textbookSets]);
   const columns = useMemo(
@@ -51,5 +45,7 @@ export default function Tables() {
     setTextbookSets(res.data.data.textbooks);
   }
 
-  return <SideTable data={data} columns={columns} /* groupBy={} */ />;
+  return (
+    <SideTable data={data} columns={columns} rowComponent={TextbookSetRow} groupBy="firstLetter" />
+  );
 }
