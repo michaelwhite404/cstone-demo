@@ -27,7 +27,6 @@ import { ToasterProvider } from "./context/ToasterContext";
 import { useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
-import Tables from "./pages/TextbooksTest/Tables";
 
 interface NavRouteProps {
   exact: boolean;
@@ -189,8 +188,6 @@ function App() {
                   component={Students}
                   auth={isAuthenticated}
                 />
-                {/** To Delete */}
-                <ProtectedNavRoute exact path="/tables" component={Tables} auth={isAuthenticated} />
               </UserContext.Provider>
             </ToasterProvider>
           </Switch>
