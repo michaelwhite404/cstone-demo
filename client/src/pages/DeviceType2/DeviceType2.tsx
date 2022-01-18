@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
+import EmptyState from "../../components/EmptyState/EmptyState";
 import MainContent, {
   MainContentFooter,
   MainContentHeader,
@@ -19,6 +20,7 @@ export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const { deviceType } = useParams<{ deviceType: string }>();
   const [pageState, setPageState] = useState<"blank">("blank");
+  const [selected, setSelected] = useState<DeviceModel>();
 
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
@@ -59,6 +61,8 @@ export default function DeviceType2() {
     []
   );
 
+  const handleSelection = (device: DeviceModel) => setSelected(device);
+
   return (
     <>
       <div style={{ display: "flex", height: "100%" }}>
@@ -67,8 +71,8 @@ export default function DeviceType2() {
           columns={columns}
           rowComponent={FakeComp}
           groupBy="brand"
-          // onSelectionChange={handleSetClick}
-          // selected={selected?._id || ""}
+          onSelectionChange={handleSelection}
+          selected={selected?._id || ""}
         >
           <div className="side-table-top">
             <PageHeader text={deviceType} />
@@ -76,7 +80,8 @@ export default function DeviceType2() {
           </div>
         </SideTable>
         <MainContent>
-          <MainContentInnerWrapper>
+          <EmptyState>Empty</EmptyState>
+          {/* <MainContentInnerWrapper>
             <MainContentHeader>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <BackButton />
@@ -86,8 +91,8 @@ export default function DeviceType2() {
 
             <MainContentFooter align="right">
               <Button />
-            </MainContentFooter>
-          </MainContentInnerWrapper>
+            </MainContentFooter> 
+          </MainContentInnerWrapper>*/}
         </MainContent>
       </div>
     </>
