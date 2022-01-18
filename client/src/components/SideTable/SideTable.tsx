@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { ReactChild, useEffect, useState } from "react";
-import { Row, useExpanded, useGroupBy, useTable } from "react-table";
+import { Row, useExpanded, useGlobalFilter, useGroupBy, useTable } from "react-table";
 import FadeIn from "../FadeIn";
 import classNames from "classnames";
 import "./SideTable.sass";
@@ -15,6 +15,7 @@ export default function SideTable<T extends BasicDoc>({
   onSelectionChange,
   selected,
   children,
+  filterValue,
 }: {
   columns: {
     id?: string;
@@ -27,21 +28,27 @@ export default function SideTable<T extends BasicDoc>({
   onSelectionChange?: (original: T) => void;
   selected?: string;
   children?: ReactChild;
+  filterValue?: string;
 }) {
   const [tableSelected, setTableSelected] = useState("");
   const group = typeof groupBy === "string" ? [groupBy] : groupBy;
   const instance = useTable(
     //@ts-ignore
     { data, columns, initialState: { groupBy: group } },
+    useGlobalFilter,
     useGroupBy,
     useExpanded
   );
-  const { rows, prepareRow } = instance;
+  const { rows, prepareRow, setGlobalFilter } = instance;
   rows.sort((row1, row2) => (row1.groupByVal as string).localeCompare(row2.groupByVal));
 
   useEffect(() => {
     selected !== undefined && setTableSelected(selected);
   }, [selected]);
+
+  useEffect(() => {
+    setGlobalFilter(filterValue);
+  }, [filterValue, setGlobalFilter]);
 
   const handleClick = (subRow: Row<T>) => {
     if (selected === undefined) setTableSelected(subRow.original._id);

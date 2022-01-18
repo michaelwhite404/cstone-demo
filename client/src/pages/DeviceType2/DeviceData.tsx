@@ -18,7 +18,6 @@ interface DeviceDataProps {
 
 export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
   const { device } = useDevice(d.deviceType, d.slug);
-  console.log(device);
   return (
     <MainContentInnerWrapper>
       <FadeIn>

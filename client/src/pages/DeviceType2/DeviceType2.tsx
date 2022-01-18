@@ -1,3 +1,4 @@
+import { InputGroup } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize, { singular } from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -18,6 +19,7 @@ export default function DeviceType2() {
   const [pageState, setPageState] = useState<"blank" | "device">("blank");
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
+  const [filter, setFilter] = useState("");
 
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
@@ -67,10 +69,20 @@ export default function DeviceType2() {
             groupBy="brand"
             onSelectionChange={handleSelection}
             selected={selected?._id || ""}
+            filterValue={filter}
           >
             <div className="side-table-top">
               <PageHeader text={deviceType} />
+              <InputGroup
+                className="search"
+                leftIcon="search"
+                placeholder="Search"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
               {/* <p>Search directory of many books</p> */}
+              {/**border-radius: 8px;
+    box-shadow: 0px 0px 2px 1px #c6c6c6; */}
             </div>
           </SideTable>
         )}
