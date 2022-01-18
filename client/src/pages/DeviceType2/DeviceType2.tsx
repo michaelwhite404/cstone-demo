@@ -1,26 +1,23 @@
-import { Button } from "@blueprintjs/core";
 import axios from "axios";
-import pluralize from "pluralize";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import pluralize, { singular } from "pluralize";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
-import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import EmptyState from "../../components/EmptyState/EmptyState";
-import MainContent, {
-  MainContentFooter,
-  MainContentHeader,
-  MainContentInnerWrapper,
-} from "../../components/MainContent";
+import MainContent from "../../components/MainContent";
 import PageHeader from "../../components/PageHeader";
 import SideTable from "../../components/SideTable/SideTable";
+import { useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
+import DeviceData from "./DeviceData";
 
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const { deviceType } = useParams<{ deviceType: string }>();
-  const [pageState, setPageState] = useState<"blank">("blank");
+  const [pageState, setPageState] = useState<"blank" | "device">("blank");
   const [selected, setSelected] = useState<DeviceModel>();
+  const width = useWindowSize()[0];
 
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
@@ -40,59 +37,54 @@ export default function DeviceType2() {
   const data = useMemo(() => devices, [devices]);
   const columns = useMemo(
     () => [
-      {
-        Header: "Name",
-        accessor: "name",
-      },
+      { Header: "Name", accessor: "name" },
       { Header: "Brand", accessor: "brand" },
       { Header: "Serial Number", accessor: "serialNumber" },
       { Header: "MAC Address", accessor: "macAddress" },
-      {
-        Header: "Status",
-        accessor: "status",
-      },
-      {
-        Header: "Student",
-        accessor: (original: DeviceModel): string => {
-          return getLastUser(original);
-        },
-      },
+      { Header: "Status", accessor: "status" },
+      { Header: "Student", accessor: (original: DeviceModel): string => getLastUser(original) },
     ],
     []
   );
 
-  const handleSelection = (device: DeviceModel) => setSelected(device);
+  const handleSelection = (device: DeviceModel) => {
+    setPageState("device");
+    setSelected(device);
+  };
+  const handleBack = () => {
+    setPageState("blank");
+    setSelected(undefined);
+  };
 
   return (
     <>
       <div style={{ display: "flex", height: "100%" }}>
-        <SideTable<DeviceModel>
-          data={data}
-          columns={columns}
-          rowComponent={FakeComp}
-          groupBy="brand"
-          onSelectionChange={handleSelection}
-          selected={selected?._id || ""}
-        >
-          <div className="side-table-top">
-            <PageHeader text={deviceType} />
-            {/* <p>Search directory of many books</p> */}
-          </div>
-        </SideTable>
+        {!(width < 768 && pageState !== "blank") && (
+          <SideTable<DeviceModel>
+            data={data}
+            columns={columns}
+            rowComponent={FakeComp}
+            groupBy="brand"
+            onSelectionChange={handleSelection}
+            selected={selected?._id || ""}
+          >
+            <div className="side-table-top">
+              <PageHeader text={deviceType} />
+              {/* <p>Search directory of many books</p> */}
+            </div>
+          </SideTable>
+        )}
         <MainContent>
-          <EmptyState>Empty</EmptyState>
-          {/* <MainContentInnerWrapper>
-            <MainContentHeader>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <BackButton />
-                <span style={{ fontWeight: 500, fontSize: 16 }}>Test</span>
+          {pageState === "blank" && (
+            <EmptyState fadeIn>
+              <div style={{ fontWeight: 500, textAlign: "center" }}>
+                Select a {singular(deviceType)}
               </div>
-            </MainContentHeader>
-
-            <MainContentFooter align="right">
-              <Button />
-            </MainContentFooter> 
-          </MainContentInnerWrapper>*/}
+            </EmptyState>
+          )}
+          {pageState === "device" && selected && (
+            <DeviceData device={selected} onBack={handleBack} />
+          )}
         </MainContent>
       </div>
     </>
