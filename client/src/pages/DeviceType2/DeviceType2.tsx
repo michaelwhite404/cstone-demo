@@ -1,4 +1,3 @@
-import { InputGroup } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize, { singular } from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,6 +8,7 @@ import EmptyState from "../../components/EmptyState/EmptyState";
 import MainContent from "../../components/MainContent";
 import PageHeader from "../../components/PageHeader";
 import SideTable from "../../components/SideTable/SideTable";
+import SideTableFilter from "../../components/SideTable/SideTableFilter";
 import { useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
 import DeviceData from "./DeviceData";
@@ -73,16 +73,8 @@ export default function DeviceType2() {
           >
             <div className="side-table-top">
               <PageHeader text={deviceType} />
-              <InputGroup
-                className="search"
-                leftIcon="search"
-                placeholder="Search"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              />
+              <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
               {/* <p>Search directory of many books</p> */}
-              {/**border-radius: 8px;
-    box-shadow: 0px 0px 2px 1px #c6c6c6; */}
             </div>
           </SideTable>
         )}
