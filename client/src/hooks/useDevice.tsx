@@ -28,6 +28,7 @@ export default function useDevice(deviceType: string, slug: string) {
   }, [deviceType, slug]);
 
   useEffect(() => {
+    setDeviceLoaded(false);
     getSingleDevice();
   }, [getSingleDevice]);
 
