@@ -127,11 +127,6 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
     />
   );
 
-  // const reset = () => {
-  //   setGradePicked(-1);
-  //   setStudentPicked("-1");
-  // };
-
   const reset = useCallback(() => {
     setGradePicked(-1);
     setStudentPicked("-1");

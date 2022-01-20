@@ -10,7 +10,6 @@ import { Skeleton } from "@mui/material";
 interface CheckOutSectionProps {
   device?: DeviceModel;
   showData: boolean;
-  originalDevice: DeviceModel;
   checkoutDevice: (studentId: string) => Promise<DeviceModel>;
   /** A function to run directly after a checkout request is successful. The updated device is
    * passed in as a parameter
@@ -21,7 +20,6 @@ interface CheckOutSectionProps {
 export default function CheckOutSection({
   device,
   showData,
-  originalDevice,
   checkoutDevice,
   onCheckoutSuccess,
 }: CheckOutSectionProps) {
@@ -39,7 +37,7 @@ export default function CheckOutSection({
       });
   };
 
-  useEffect(() => reset(), [reset, showData]);
+  useEffect(reset, [reset, showData]);
 
   return (
     <DevicePane heading="Check Out">

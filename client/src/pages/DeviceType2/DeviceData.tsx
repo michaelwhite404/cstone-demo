@@ -4,14 +4,13 @@ import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import FadeIn from "../../components/FadeIn";
-import { BasicInfoSection } from "./Sections";
+import { BasicInfoSection, CheckInSection, CheckOutSection } from "./Sections";
 import {
   MainContentFooter,
   MainContentHeader,
   MainContentInnerWrapper,
 } from "../../components/MainContent";
 import { useDevice } from "../../hooks";
-import CheckOutSection from "./Sections/CheckOutSection";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
 
 interface DeviceDataProps {
@@ -29,6 +28,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
   }, [deviceLoaded]);
 
   const showCheckout = device?.status === "Available" || (!showData && d.status === "Available");
+  const showCheckin = device?.checkedOut;
 
   return (
     <MainContentInnerWrapper>
@@ -47,11 +47,11 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
               <CheckOutSection
                 device={device}
                 showData={showData}
-                originalDevice={d}
                 checkoutDevice={checkoutDevice}
                 onCheckoutSuccess={reFetchDevices}
               />
             )}
+            {showCheckin && <CheckInSection device={device} />}
           </div>
         </div>
         <MainContentFooter align="right">
