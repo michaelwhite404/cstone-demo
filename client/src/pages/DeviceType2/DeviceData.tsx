@@ -12,6 +12,7 @@ import {
 } from "../../components/MainContent";
 import { useDevice } from "../../hooks";
 import CheckOutSection from "./Sections/CheckOutSection";
+import BadgeSkeleton from "../../components/BadgeSkeleton";
 
 interface DeviceDataProps {
   device: DeviceModel;
@@ -39,7 +40,7 @@ export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
             <BackButton onClick={onBack} />
             <span style={{ fontWeight: 500, fontSize: 16 }}>{d.name}</span>
           </div>
-          <DeviceStatusBadge status={d.status} />
+          {showData ? <DeviceStatusBadge status={device!.status} /> : <BadgeSkeleton />}
         </MainContentHeader>
         <div style={{ overflowY: "scroll" }}>
           <div>
