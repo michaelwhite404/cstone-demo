@@ -52,19 +52,25 @@ export default function CheckInSection({
   return (
     <DevicePane heading="Check In">
       <Checkin>
-        <div style={{ width: "65%" }}>
-          <Checkin.Form device={device} radioValue={radio} onRadioChange={handleRadioChange} />
-          {radio === "error" && (
-            <Checkin.ErrorForm value={error} onInputChange={handleInputChange} />
-          )}
-        </div>
-        <div className="device-checkin-right">
-          <Checkin.Button
-            deviceType={device?.deviceType}
-            disabled={!submittable}
-            onClick={handleCheckin}
-          />
-        </div>
+        {showData ? (
+          <>
+            <div style={{ width: "65%" }}>
+              <Checkin.Form device={device} radioValue={radio} onRadioChange={handleRadioChange} />
+              {radio === "error" && (
+                <Checkin.ErrorForm value={error} onInputChange={handleInputChange} />
+              )}
+            </div>
+            <div className="device-checkin-right">
+              <Checkin.Button
+                deviceType={device?.deviceType}
+                disabled={!submittable}
+                onClick={handleCheckin}
+              />
+            </div>
+          </>
+        ) : (
+          <Checkin.Skeleton />
+        )}
       </Checkin>
     </DevicePane>
   );
