@@ -1,18 +1,35 @@
 import { useState } from "react";
 import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
+import { useToasterContext } from "../../../hooks";
 import Checkin from "../Checkin";
 import DevicePane from "../DevicePane";
 
-export default function CheckInSection({ device }: { device?: DeviceModel }) {
+interface CheckInSectionProps {
+  device?: DeviceModel;
+  showData: boolean;
+  // checkinDevice: (studentId: string) => Promise<DeviceModel>;
+  checkinDevice: (data?: any) => Promise<DeviceModel>;
+  /** A function to run directly after a checkin request is successful. The updated device is
+   * passed in as a parameter
+   */
+  onCheckinSuccess?: (updatedDevice: DeviceModel) => void;
+}
+
+export default function CheckInSection({
+  device,
+  showData,
+  checkinDevice,
+  onCheckinSuccess,
+}: CheckInSectionProps) {
   type CheckInState = "passed" | "error";
   const [radio, setRadio] = useState<CheckInState | undefined>(undefined);
   const [error, setError] = useState({
     title: "",
     description: "",
   });
+  const { showToaster } = useToasterContext();
 
   const handleRadioChange = (value: string) => setRadio(value as CheckInState);
-
   const handleInputChange = (name: string, value: string) => setError({ ...error, [name]: value });
 
   const submittable =
@@ -20,7 +37,16 @@ export default function CheckInSection({ device }: { device?: DeviceModel }) {
     (radio === "error" && error.title.length > 0 && error.description.length > 0);
 
   const handleCheckin = () => {
-    if (submittable) return;
+    if (!submittable) return;
+    let data: any = {};
+    if (radio === "error")
+      data = { error: radio === "error", title: error.title, description: error.description };
+    checkinDevice(data)
+      .then((updatedDevice) => {
+        showToaster(`${updatedDevice.name} successfully checked in!`, "success");
+        onCheckinSuccess && onCheckinSuccess(updatedDevice);
+      })
+      .catch((err) => showToaster(err.message, "danger"));
   };
 
   return (

@@ -10,15 +10,12 @@ import {
   APIError,
   APIErrorLogResponse,
 } from "../types/apiResponses";
-import useToasterContext from "./useToasterContext";
 
 export default function useDevice(deviceType: string, slug: string) {
   const [device, setDevice] = useState<DeviceModel>();
   const [checkouts, setCheckouts] = useState<CheckoutLogModel[]>([]);
   const [errors, setErrors] = useState<ErrorLogModel[]>([]);
   const [deviceLoaded, setDeviceLoaded] = useState(false);
-
-  const { showToaster } = useToasterContext();
 
   const getSingleDevice = useCallback(async () => {
     try {
@@ -70,11 +67,10 @@ export default function useDevice(deviceType: string, slug: string) {
         `/api/v2/devices/${device!._id}/check-in`,
         data
       );
-      showToaster(`${device!.name} successfully checked in`, "success");
       await getSingleDevice();
       return res.data.data.device;
     } catch (err) {
-      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+      throw new Error((err as AxiosError<APIError>).response!.data.message);
     }
   };
 

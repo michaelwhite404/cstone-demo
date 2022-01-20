@@ -22,7 +22,7 @@ interface DeviceDataProps {
 
 export default function DeviceData({ device: d, onBack, reFetchDevices }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
-  const { device, deviceLoaded, checkoutDevice } = useDevice(d.deviceType, d.slug);
+  const { device, deviceLoaded, checkoutDevice, checkinDevice } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
@@ -51,7 +51,14 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
                 onCheckoutSuccess={reFetchDevices}
               />
             )}
-            {showCheckin && <CheckInSection device={device} />}
+            {showCheckin && (
+              <CheckInSection
+                device={device}
+                showData={showData}
+                checkinDevice={checkinDevice}
+                onCheckinSuccess={reFetchDevices}
+              />
+            )}
           </div>
         </div>
         <MainContentFooter align="right">
