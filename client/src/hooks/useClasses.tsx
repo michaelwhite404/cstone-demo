@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { APIError } from "../types/apiResponses";
 import Class from "../types/class";
@@ -37,6 +37,8 @@ interface IUseClasses {
   setGradePicked: React.Dispatch<React.SetStateAction<number>>;
   /** Indicates whether the classes have been loaded */
   loaded: boolean;
+  /** Resets grade and student to initial state */
+  reset: () => void;
 }
 
 export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
@@ -125,6 +127,16 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
     />
   );
 
+  // const reset = () => {
+  //   setGradePicked(-1);
+  //   setStudentPicked("-1");
+  // };
+
+  const reset = useCallback(() => {
+    setGradePicked(-1);
+    setStudentPicked("-1");
+  }, []);
+
   return {
     classes,
     GradeSelect,
@@ -133,5 +145,6 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
     studentPicked,
     setGradePicked,
     loaded,
+    reset,
   };
 }

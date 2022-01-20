@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@blueprintjs/core";
 import { useClasses, useToasterContext } from "../../../hooks";
 import DevicePane from "../DevicePane";
@@ -24,7 +24,7 @@ export default function CheckOutSection({
   checkoutDevice,
   onCheckoutSuccess,
 }: CheckOutSectionProps) {
-  const { GradeSelect, StudentSelect, studentPicked } = useClasses();
+  const { GradeSelect, StudentSelect, studentPicked, reset } = useClasses();
   const { showToaster } = useToasterContext();
 
   const handleCheckout = () => {
@@ -37,6 +37,8 @@ export default function CheckOutSection({
         showToaster(err.message, "danger");
       });
   };
+
+  useEffect(() => reset(), [reset, showData]);
 
   return (
     <DevicePane heading="Check Out">
