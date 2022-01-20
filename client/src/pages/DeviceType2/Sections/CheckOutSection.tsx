@@ -29,6 +29,7 @@ export default function CheckOutSection({
   const handleCheckout = () => {
     checkoutDevice(studentPicked)
       .then((updatedDevice) => {
+        showToaster(`${updatedDevice.name} checked out successfully!`, "success");
         onCheckoutSuccess && onCheckoutSuccess(updatedDevice);
       })
       .catch((err) => {

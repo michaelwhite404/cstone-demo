@@ -87,7 +87,7 @@ export default function DeviceType2() {
             </EmptyState>
           )}
           {pageState === "device" && selected && (
-            <DeviceData device={selected} onBack={handleBack} />
+            <DeviceData device={selected} onBack={handleBack} reFetchDevices={getDevicesByType} />
           )}
         </MainContent>
       </div>

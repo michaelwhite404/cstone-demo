@@ -18,19 +18,17 @@ interface DeviceDataProps {
   device: DeviceModel;
   /** Callback function to run when back button is pressed */
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  reFetchDevices: () => Promise<void>;
 }
 
-export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
+export default function DeviceData({ device: d, onBack, reFetchDevices }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
   const { device, deviceLoaded, checkoutDevice } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
 
-  const onCheckingSuccess = (updatedDevice: DeviceModel) => {
-    // setSelectedDevice(updatedDevice);
-    // updateDevice(device._id, updatedDevice);
-  };
+  // const onCheckingSuccess = (updatedDevice: DeviceModel) => ref;
 
   return (
     <MainContentInnerWrapper>
@@ -51,7 +49,7 @@ export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
                 showData={showData}
                 originalDevice={d}
                 checkoutDevice={checkoutDevice}
-                // onCheckoutSuccess={}
+                onCheckoutSuccess={reFetchDevices}
               />
             }
           </div>
