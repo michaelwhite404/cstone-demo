@@ -5,6 +5,7 @@ import DevicePane from "../DevicePane";
 import capitalize from "capitalize";
 import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
 import Checkout from "../Checkout";
+import { Skeleton } from "@mui/material";
 
 interface CheckOutSectionProps {
   device?: DeviceModel;
@@ -43,19 +44,40 @@ export default function CheckOutSection({
   return (
     <DevicePane heading="Check Out">
       <Checkout>
-        <Checkout.Box>
-          <span style={{ fontWeight: 500, marginBottom: "6px" }}>Grade</span>
-          <GradeSelect />
-        </Checkout.Box>
-        <Checkout.Box>
-          <span style={{ fontWeight: 500, marginBottom: "6px" }}>Student</span>
-          <StudentSelect />
-        </Checkout.Box>
-        <Checkout.Box className="button">
-          <Button intent="primary" disabled={studentPicked === "-1"} onClick={handleCheckout} fill>
-            Check Out {capitalize(device?.deviceType || "")}
-          </Button>
-        </Checkout.Box>
+        {showData ? (
+          <Checkout.Box>
+            <span style={{ fontWeight: 500, marginBottom: "6px" }}>Grade</span>
+            <GradeSelect />
+          </Checkout.Box>
+        ) : (
+          <Checkout.Skeleton />
+        )}
+        {showData ? (
+          <Checkout.Box>
+            <span style={{ fontWeight: 500, marginBottom: "6px" }}>Student</span>
+            <StudentSelect />
+          </Checkout.Box>
+        ) : (
+          <Checkout.Skeleton />
+        )}
+        {showData ? (
+          <Checkout.Box className="button">
+            <Button
+              intent="primary"
+              disabled={studentPicked === "-1"}
+              onClick={handleCheckout}
+              fill
+            >
+              Check Out {capitalize(device?.deviceType || "")}
+            </Button>
+          </Checkout.Box>
+        ) : (
+          <Checkout.Box className="button">
+            <Skeleton variant="rectangular" height={40} width="100%" sx={{ borderRadius: "5px" }}>
+              <Button text="Check Out Device" />
+            </Skeleton>
+          </Checkout.Box>
+        )}
       </Checkout>
     </DevicePane>
   );

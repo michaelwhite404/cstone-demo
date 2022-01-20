@@ -28,7 +28,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
 
-  // const onCheckingSuccess = (updatedDevice: DeviceModel) => ref;
+  const showCheckout = device?.status === "Available" || (!showData && d.status === "Available");
 
   return (
     <MainContentInnerWrapper>
@@ -43,7 +43,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
         <div style={{ overflowY: "scroll" }}>
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
-            {
+            {showCheckout && (
               <CheckOutSection
                 device={device}
                 showData={showData}
@@ -51,7 +51,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
                 checkoutDevice={checkoutDevice}
                 onCheckoutSuccess={reFetchDevices}
               />
-            }
+            )}
           </div>
         </div>
         <MainContentFooter align="right">
