@@ -32,7 +32,13 @@ export default function CheckInSection({ device }: { device?: DeviceModel }) {
             <Checkin.ErrorForm value={error} onInputChange={handleInputChange} />
           )}
         </div>
-        <div style={{ width: "35%" }}></div>
+        <div className="device-checkin-right">
+          <Checkin.Button
+            deviceType={device?.deviceType}
+            disabled={!submittable}
+            onClick={handleCheckin}
+          />
+        </div>
       </Checkin>
     </DevicePane>
   );
