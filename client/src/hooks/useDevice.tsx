@@ -57,11 +57,10 @@ export default function useDevice(deviceType: string, slug: string) {
       const res = await axios.post<APIDeviceResponse>(
         `/api/v2/devices/${device!._id}/check-out/student/${studentId}`
       );
-      showToaster(`${device!.name} successfully checked out`, "success");
       await getSingleDevice();
       return res.data.data.device;
     } catch (err) {
-      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+      throw new Error((err as AxiosError<APIError>).response!.data.message);
     }
   };
 

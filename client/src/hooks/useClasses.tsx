@@ -35,12 +35,15 @@ interface IUseClasses {
   /** The current selected sudent. "-1" if no student is selected  */
   studentPicked: string;
   setGradePicked: React.Dispatch<React.SetStateAction<number>>;
+  /** Indicates whether the classes have been loaded */
+  loaded: boolean;
 }
 
 export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
   const [classes, setClasses] = useState<Class[]>([]);
   const [gradePicked, setGradePicked] = useState(-1);
-  const [studentPicked, setStudentPicked] = useState<string>("-1");
+  const [studentPicked, setStudentPicked] = useState("-1");
+  const [loaded, setLoaded] = useState(Boolean(fetchedClasses));
 
   useEffect(() => {
     fetchedClasses ? setClasses(fetchedClasses) : getClasses();
@@ -49,6 +52,7 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
       try {
         const res = await axios.get("/api/v2/students/group");
         setClasses(res.data.data.grades);
+        setLoaded(true);
       } catch (err) {
         console.log((err as AxiosError<APIError>).response!.data);
       }
@@ -121,5 +125,13 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
     />
   );
 
-  return { classes, GradeSelect, StudentSelect, gradePicked, studentPicked, setGradePicked };
+  return {
+    classes,
+    GradeSelect,
+    StudentSelect,
+    gradePicked,
+    studentPicked,
+    setGradePicked,
+    loaded,
+  };
 }

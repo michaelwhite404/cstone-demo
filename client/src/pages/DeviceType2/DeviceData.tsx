@@ -11,18 +11,25 @@ import {
   MainContentInnerWrapper,
 } from "../../components/MainContent";
 import { useDevice } from "../../hooks";
+import CheckOutSection from "./Sections/CheckOutSection";
 
 interface DeviceDataProps {
   device: DeviceModel;
+  /** Callback function to run when back button is pressed */
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
 export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
-  const { device, deviceLoaded } = useDevice(d.deviceType, d.slug);
+  const { device, deviceLoaded, checkoutDevice } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
+
+  const onCheckingSuccess = (updatedDevice: DeviceModel) => {
+    // setSelectedDevice(updatedDevice);
+    // updateDevice(device._id, updatedDevice);
+  };
 
   return (
     <MainContentInnerWrapper>
@@ -37,6 +44,15 @@ export default function DeviceData({ device: d, onBack }: DeviceDataProps) {
         <div style={{ overflowY: "scroll" }}>
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
+            {
+              <CheckOutSection
+                device={device}
+                showData={showData}
+                originalDevice={d}
+                checkoutDevice={checkoutDevice}
+                // onCheckoutSuccess={}
+              />
+            }
           </div>
         </div>
         <MainContentFooter align="right">
