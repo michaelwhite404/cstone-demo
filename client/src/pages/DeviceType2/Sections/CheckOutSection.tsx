@@ -4,6 +4,7 @@ import { useClasses, useToasterContext } from "../../../hooks";
 import DevicePane from "../DevicePane";
 import capitalize from "capitalize";
 import { DeviceModel } from "../../../../../src/types/models/deviceTypes";
+import Checkout from "../Checkout";
 
 interface CheckOutSectionProps {
   device?: DeviceModel;
@@ -39,21 +40,21 @@ export default function CheckOutSection({
 
   return (
     <DevicePane heading="Check Out">
-      <div>
-        <div className="device-checkout-box">
+      <Checkout>
+        <Checkout.Box>
           <span style={{ fontWeight: 500, marginBottom: "6px" }}>Grade</span>
           <GradeSelect />
-        </div>
-        <div className="device-checkout-box">
+        </Checkout.Box>
+        <Checkout.Box>
           <span style={{ fontWeight: 500, marginBottom: "6px" }}>Student</span>
           <StudentSelect />
-        </div>
-        <div className="device-checkout-box button">
-          <Button intent="primary" disabled={studentPicked === "-1"} onClick={handleCheckout}>
+        </Checkout.Box>
+        <Checkout.Box className="button">
+          <Button intent="primary" disabled={studentPicked === "-1"} onClick={handleCheckout} fill>
             Check Out {capitalize(device?.deviceType || "")}
           </Button>
-        </div>
-      </div>
+        </Checkout.Box>
+      </Checkout>
     </DevicePane>
   );
 }
