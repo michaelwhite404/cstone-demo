@@ -62,7 +62,11 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
                 onCheckinSuccess={reFetchDevices}
               />
             )}
-            <CheckoutLogSection checkouts={checkouts} />
+            <CheckoutLogSection
+              checkouts={checkouts}
+              showData={showData}
+              originalStatus={d.status}
+            />
           </div>
         </div>
         {/* <MainContentFooter align="right">

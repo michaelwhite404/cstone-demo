@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import CheckoutLogRow from "./CheckoutLogRow";
-import "./CheckoutLog.sass";
 import classNames from "classnames";
+import CheckoutLogSkeleton from "./CheckoutLogSkeleton";
+import "./CheckoutLog.sass";
 
 function CheckoutLog({ children, length }: { children: ReactNode; length: number }) {
   return (
@@ -14,5 +15,6 @@ function CheckoutLog({ children, length }: { children: ReactNode; length: number
 }
 
 CheckoutLog.Row = CheckoutLogRow;
+CheckoutLog.Skeleton = CheckoutLogSkeleton;
 
 export default CheckoutLog;
