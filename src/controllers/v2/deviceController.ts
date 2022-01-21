@@ -25,7 +25,10 @@ export const getAllDevices: RequestHandler = catchAsync(async (req: Request, res
   const popArray: PopulateOptions[] = [pop];
   const queryPop = (req.query.populate as string)?.split(",") || [];
   queryPop.includes("checkouts") &&
-    popArray.push({ path: "checkouts", populate: { path: "deviceUser", select: "fullName" } });
+    popArray.push({
+      path: "checkouts",
+      populate: { path: "deviceUser teacherCheckOut teacherCheckIn", select: "fullName" },
+    });
   queryPop.includes("errorLogs") && popArray.push({ path: "errorLogs" });
   query.populate(popArray);
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();

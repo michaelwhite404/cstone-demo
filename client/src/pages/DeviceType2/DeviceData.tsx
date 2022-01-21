@@ -4,7 +4,7 @@ import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import FadeIn from "../../components/FadeIn";
-import { BasicInfoSection, CheckInSection, CheckOutSection } from "./Sections";
+import { BasicInfoSection, CheckInSection, CheckoutLogSection, CheckOutSection } from "./Sections";
 import {
   MainContentFooter,
   MainContentHeader,
@@ -22,7 +22,10 @@ interface DeviceDataProps {
 
 export default function DeviceData({ device: d, onBack, reFetchDevices }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
-  const { device, deviceLoaded, checkoutDevice, checkinDevice } = useDevice(d.deviceType, d.slug);
+  const { device, deviceLoaded, checkoutDevice, checkinDevice, checkouts } = useDevice(
+    d.deviceType,
+    d.slug
+  );
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
@@ -59,11 +62,12 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
                 onCheckinSuccess={reFetchDevices}
               />
             )}
+            <CheckoutLogSection checkouts={checkouts} />
           </div>
         </div>
-        <MainContentFooter align="right">
+        {/* <MainContentFooter align="right">
           <Button />
-        </MainContentFooter>
+        </MainContentFooter> */}
       </FadeIn>
     </MainContentInnerWrapper>
   );

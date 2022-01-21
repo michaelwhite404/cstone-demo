@@ -15,8 +15,11 @@ export interface CheckoutLogModel {
   teacherCheckIn?: EmployeeModel;
   checkedIn: boolean;
   error?: ErrorLogModel;
+  status: CheckOutStatus;
 }
 
 export interface CheckoutLogDocument extends CheckoutLogModel, Document {
   _id: CheckoutLogModel["_id"];
 }
+
+type CheckOutStatus = "Checked In" | "Checked Out" | "Checked In /w Error";

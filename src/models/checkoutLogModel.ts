@@ -51,6 +51,11 @@ const checkoutLogSchema: Schema<CheckoutLogDocument, Model<CheckoutLogDocument>>
 
 checkoutLogSchema.index({ device: 1 });
 
+checkoutLogSchema.virtual("status").get(function () {
+  //@ts-ignore
+  return !this.checkedIn ? "Checked Out" : this.error ? "Checked In /w Error" : "Checked In";
+});
+
 const CheckoutLog = model<CheckoutLogDocument>("DeviceLog", checkoutLogSchema);
 
 export default CheckoutLog;
