@@ -4,7 +4,13 @@ import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import FadeIn from "../../components/FadeIn";
-import { BasicInfoSection, CheckInSection, CheckoutLogSection, CheckOutSection } from "./Sections";
+import {
+  BasicInfoSection,
+  CheckInSection,
+  CheckoutLogSection,
+  CheckOutSection,
+  ErrorLogSection,
+} from "./Sections";
 import {
   MainContentFooter,
   MainContentHeader,
@@ -67,6 +73,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
               showData={showData}
               originalStatus={d.status}
             />
+            <ErrorLogSection />
           </div>
         </div>
         {/* <MainContentFooter align="right">
