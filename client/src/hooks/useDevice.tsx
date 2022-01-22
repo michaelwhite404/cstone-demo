@@ -87,12 +87,16 @@ export default function useDevice(deviceType: string, slug: string) {
   };
 
   const createDeviceError = async (data: { title: string; description: string }) => {
-    const res = await axios.post<APIErrorLogResponse>(
-      `/api/v2/devices/${device?._id}/errors`,
-      data
-    );
-    const fetchedDevice = await fetchDevice();
-    return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
+    try {
+      const res = await axios.post<APIErrorLogResponse>(
+        `/api/v2/devices/${device?._id}/errors`,
+        data
+      );
+      const fetchedDevice = await fetchDevice();
+      return { errorLog: res.data.data.errorLog, device: fetchedDevice! };
+    } catch (err) {
+      throw new Error((err as AxiosError<APIError>).response!.data.message);
+    }
   };
 
   const resetDevice = async (action: "wipe" | "powerwash") => {

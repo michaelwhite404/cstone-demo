@@ -16,6 +16,7 @@ import { useDevice } from "../../hooks";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
 import { Button, IconName } from "@blueprintjs/core";
 import ResetBody from "../DeviceType/SingleDevice/ResetBody";
+import CreateError from "./Modals/CreateError";
 
 interface DeviceDataProps {
   device: DeviceModel;
@@ -50,6 +51,7 @@ export default function DeviceData({
     updateDeviceError,
     updateableErrors,
     resetDevice,
+    createDeviceError,
   } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
@@ -72,8 +74,17 @@ export default function DeviceData({
     },
     {
       text: "Create Error",
-      icon: "error",
-      onClick: () => dialogControls.open(`Reset ${d.name}`, 400, <div>Create Error</div>),
+      icon: "warning-sign",
+      onClick: () =>
+        dialogControls.open(
+          `Create Error`,
+          600,
+          <CreateError
+            close={dialogControls.close}
+            createError={createDeviceError}
+            reFetchDevices={reFetchDevices}
+          />
+        ),
     },
   ];
 
