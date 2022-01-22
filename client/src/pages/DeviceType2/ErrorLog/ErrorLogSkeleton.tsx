@@ -25,7 +25,7 @@ const ErrorSkeletonRow = () => (
         <BadgeSkeleton />
       </div>
       <div className="dchr-bottom">
-        <div>
+        <div style={{ width: "100%" }}>
           <div style={{ marginBottom: 5, display: "flex" }}>
             <Icon icon="warning-sign" style={{ marginRight: 10 }} />
             <Skeleton width="75px" />

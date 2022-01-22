@@ -54,7 +54,7 @@ export default function CheckInSection({
       <Checkin>
         {showData ? (
           <>
-            <div style={{ width: "65%" }}>
+            <div className="device-checkin-left">
               <Checkin.Form device={device} radioValue={radio} onRadioChange={handleRadioChange} />
               {radio === "error" && (
                 <Checkin.ErrorForm value={error} onInputChange={handleInputChange} />
