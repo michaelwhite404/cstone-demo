@@ -128,6 +128,7 @@ export default function DeviceType2() {
             onBack={handleBack}
             reFetchDevices={getDevicesByType}
             dialogControls={dialogControls}
+            user={user!}
           />
         )}
         {pageState === "add" && (

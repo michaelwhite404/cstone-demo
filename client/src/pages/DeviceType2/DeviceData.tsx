@@ -14,9 +14,10 @@ import {
 import MainContent from "../../components/MainContent";
 import { useDevice } from "../../hooks";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
-import { Button, IconName } from "@blueprintjs/core";
+import { Button, ButtonGroup, IconName } from "@blueprintjs/core";
 import ResetBody from "../DeviceType/SingleDevice/ResetBody";
 import CreateError from "./Modals/CreateError";
+import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 
 interface DeviceDataProps {
   device: DeviceModel;
@@ -27,11 +28,13 @@ interface DeviceDataProps {
     open: (title: string, width: string | number, Component: JSX.Element) => void;
     close: () => void;
   };
+  user: EmployeeModel;
 }
 interface SubHeadingButton {
   text: string;
   icon: IconName;
   onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  show?: boolean;
 }
 
 export default function DeviceData({
@@ -39,6 +42,7 @@ export default function DeviceData({
   onBack,
   reFetchDevices,
   dialogControls,
+  user,
 }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
   const {
@@ -71,6 +75,7 @@ export default function DeviceData({
           400,
           <ResetBody close={dialogControls.close} resetDevice={resetDevice} />
         ),
+      show: Boolean(device?.directoryId) && user.role === "Super Admin",
     },
     {
       text: "Create Error",
@@ -85,8 +90,10 @@ export default function DeviceData({
             reFetchDevices={reFetchDevices}
           />
         ),
+      show: device?.status !== "Checked Out",
     },
   ];
+  const showableButtons = subHeadingButtons.filter((v) => v.show);
 
   return (
     <MainContent.InnerWrapper>
@@ -98,11 +105,15 @@ export default function DeviceData({
           </div>
           {showData ? <DeviceStatusBadge status={device!.status} /> : <BadgeSkeleton />}
         </MainContent.Header>
-        <MainContent.Header>
-          {subHeadingButtons.map(({ text, icon, onClick }) => (
-            <Button key={text} text={text} icon={icon} onClick={onClick} />
-          ))}
-        </MainContent.Header>
+        {showableButtons.length > 0 && (
+          <MainContent.Header>
+            <ButtonGroup style={{ marginLeft: "auto" }}>
+              {showableButtons.map(({ text, icon, onClick }) => (
+                <Button key={text} text={text} icon={icon} onClick={onClick} />
+              ))}
+            </ButtonGroup>
+          </MainContent.Header>
+        )}
         <div style={{ overflowY: "scroll" }}>
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
@@ -111,6 +122,7 @@ export default function DeviceData({
                 errors={updateableErrors}
                 updateDeviceError={updateDeviceError}
                 showData={showData}
+                onUpdateErrorSuccess={reFetchDevices}
               />
             )}
             {showCheckout && (

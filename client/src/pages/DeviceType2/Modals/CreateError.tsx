@@ -26,7 +26,7 @@ export default function CreateError({ close, createError, reFetchDevices }: Crea
   const handleSubmit = () => {
     createError(data)
       .then(() => {
-        showToaster("Error created sucesssfully", "success");
+        showToaster("Error created successsfully", "success");
         reFetchDevices();
       })
       .catch((err) => showToaster(err.message, "danger"));
