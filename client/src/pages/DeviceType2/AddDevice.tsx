@@ -111,6 +111,8 @@ export default function AddDevice({
     }
   };
 
+  const onBack = () => setPageStatus("blank");
+
   const { directoryId, ...rest } = data;
   const submittable = Object.values(rest).every((value) => value.length > 0);
 
@@ -119,37 +121,37 @@ export default function AddDevice({
       <FadeIn>
         <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <BackButton /* onClick={onBack} */ />
+            <BackButton onClick={onBack} />
             <span style={{ fontWeight: 500, fontSize: 16 }}>Add {capitalize(deviceType)}</span>
           </div>
         </MainContent.Header>
         <div
           style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            padding: "25px 0",
             overflowY: "scroll",
           }}
         >
-          <div style={{ width: "80%" }}>
-            {inputs.map(({ name, label, required, disabled, placeholder }) => (
-              <InputRow
-                key={name}
-                name={name}
-                label={label}
-                required={required}
-                onChange={handleInput}
-                disabled={disabled}
-                //@ts-ignore
-                value={data[name] ?? singular(deviceType)}
-                placeholder={placeholder}
-              />
-            ))}
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center", padding: "15px 0" }}
+          >
+            <div style={{ width: "80%" }}>
+              {inputs.map(({ name, label, required, disabled, placeholder }) => (
+                <InputRow
+                  key={name}
+                  name={name}
+                  label={label}
+                  required={required}
+                  onChange={handleInput}
+                  disabled={disabled}
+                  //@ts-ignore
+                  value={data[name] ?? singular(deviceType)}
+                  placeholder={placeholder}
+                />
+              ))}
+            </div>
           </div>
         </div>
         <MainContent.Footer>
+          <Button text="Cancel" onClick={onBack} style={{ marginRight: 10 }} />
           <Button intent="primary" onClick={handleClick} disabled={!submittable}>
             Create {capitalize(singular(deviceType))}
           </Button>
