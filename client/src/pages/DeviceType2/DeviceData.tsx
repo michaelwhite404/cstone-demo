@@ -56,7 +56,11 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
             {showUpdateError && (
-              <UpdateErrorSection errors={updateableErrors} updateDeviceError={updateDeviceError} />
+              <UpdateErrorSection
+                errors={updateableErrors}
+                updateDeviceError={updateDeviceError}
+                showData={showData}
+              />
             )}
             {showCheckout && (
               <CheckOutSection
