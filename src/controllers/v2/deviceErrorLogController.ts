@@ -21,11 +21,21 @@ export const getAllDeviceErrorLogs = factory.getAll(Model, `${key}s`);
 
 export const getDeviceErrorLog = factory.getOne(Model, key);
 
-export const createErrorLog = factory.createOne(Model, key);
+export const createErrorLog = catchAsync(async (req, res) => {
+  const errorLog = new Model(req.body);
+  errorLog.$locals.notCheckOut = true;
+  await errorLog.save();
+  res.status(201).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    data: {
+      errorLog,
+    },
+  });
+});
 
 export const updateErrorLog = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.params);
     const errorLog = await ErrorLog.findOne(req.params);
 
     if (!errorLog) return next(new AppError("No error log found with that ID", 404));
