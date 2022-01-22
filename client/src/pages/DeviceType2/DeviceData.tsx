@@ -28,7 +28,7 @@ interface DeviceDataProps {
 
 export default function DeviceData({ device: d, onBack, reFetchDevices }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
-  const { device, deviceLoaded, checkoutDevice, checkinDevice, checkouts } = useDevice(
+  const { device, deviceLoaded, checkoutDevice, checkinDevice, checkouts, errors } = useDevice(
     d.deviceType,
     d.slug
   );
@@ -73,7 +73,7 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
               showData={showData}
               originalStatus={d.status}
             />
-            <ErrorLogSection />
+            <ErrorLogSection errors={errors} showData={showData} />
           </div>
         </div>
         {/* <MainContentFooter align="right">

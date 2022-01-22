@@ -1,15 +1,20 @@
 import React from "react";
+import { ErrorLogModel } from "../../../../../src/types/models/errorLogTypes";
 import DevicePane from "../DevicePane";
 import ErrorLog from "../ErrorLog";
 
-function ErrorLogSection() {
+function ErrorLogSection({ errors, showData }: { errors: ErrorLogModel[]; showData: boolean }) {
   return (
     <DevicePane heading="Error History">
-      <ErrorLog>
-        <ErrorLog.Row />
-        <ErrorLog.Row />
-        <ErrorLog.Row />
-      </ErrorLog>
+      {showData ? (
+        <ErrorLog length={errors.length}>
+          {errors.length
+            ? errors.map((error) => <ErrorLog.Row error={error} />)
+            : "There is no data to display"}
+        </ErrorLog>
+      ) : (
+        <ErrorLog.Skeleton />
+      )}
     </DevicePane>
   );
 }
