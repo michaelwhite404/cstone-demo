@@ -7,7 +7,7 @@ import {
   Switch,
 } from "react-router-dom";
 import Students from "./pages/Students/Students";
-import DeviceType from "./pages/DeviceType/DeviceType";
+// import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
 // import Textbooks from "./pages/Textbooks/Textbooks";
 import "normalize.css";
@@ -149,12 +149,6 @@ function App() {
                 <ProtectedNavRoute
                   exact
                   path="/devices/:deviceType(chromebooks|tablets)"
-                  component={DeviceType}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  exact
-                  path="/devices2/:deviceType(chromebooks|tablets)"
                   component={DeviceType2}
                   auth={isAuthenticated}
                   noPadding
@@ -177,12 +171,6 @@ function App() {
                   component={SingleDevice}
                   auth={isAuthenticated}
                 />
-                {/* <ProtectedNavRoute
-                  exact
-                  path="/textbooks"
-                  component={Textbooks}
-                  auth={isAuthenticated}
-                /> */}
                 <ProtectedNavRoute
                   exact
                   path="/textbooks"
