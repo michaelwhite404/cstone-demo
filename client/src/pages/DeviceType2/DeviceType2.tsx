@@ -1,9 +1,10 @@
 import { Icon } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize, { singular } from "pluralize";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
+import { UserContext } from "../../App";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import MainContent from "../../components/MainContent";
@@ -22,6 +23,7 @@ export default function DeviceType2() {
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
+  const { user } = useContext(UserContext);
 
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
@@ -82,13 +84,15 @@ export default function DeviceType2() {
               <PageHeader text={deviceType} />
               <div style={{ display: "flex", marginTop: 5 }}>
                 <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
-                <button
-                  className="create-textbook-button"
-                  style={{ marginTop: 0, padding: "0 10px", marginLeft: 10 }}
-                  onClick={handleAddClick}
-                >
-                  <Icon icon="plus" color="#0566c3" />
-                </button>
+                {["Super Admin", "Admin"].includes(user!.role) && (
+                  <button
+                    className="create-textbook-button"
+                    style={{ marginTop: 0, padding: "0 10px", marginLeft: 10 }}
+                    onClick={handleAddClick}
+                  >
+                    <Icon icon="plus" color="#0566c3" />
+                  </button>
+                )}
               </div>
               {/* <p>Search directory of many books</p> */}
             </div>

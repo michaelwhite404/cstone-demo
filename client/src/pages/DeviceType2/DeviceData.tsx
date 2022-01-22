@@ -9,6 +9,7 @@ import {
   CheckoutLogSection,
   CheckOutSection,
   ErrorLogSection,
+  UpdateErrorSection,
 } from "./Sections";
 import MainContent from "../../components/MainContent";
 import { useDevice } from "../../hooks";
@@ -23,16 +24,23 @@ interface DeviceDataProps {
 
 export default function DeviceData({ device: d, onBack, reFetchDevices }: DeviceDataProps) {
   const [showData, setShowData] = useState(false);
-  const { device, deviceLoaded, checkoutDevice, checkinDevice, checkouts, errors } = useDevice(
-    d.deviceType,
-    d.slug
-  );
+  const {
+    device,
+    deviceLoaded,
+    checkoutDevice,
+    checkinDevice,
+    checkouts,
+    errors,
+    updateDeviceError,
+    updateableErrors,
+  } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
 
   const showCheckout = device?.status === "Available" || (!showData && d.status === "Available");
   const showCheckin = device?.checkedOut;
+  const showUpdateError = device?.status === "Broken" && updateableErrors.length > 0;
 
   return (
     <MainContent.InnerWrapper>
@@ -47,6 +55,9 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
         <div style={{ overflowY: "scroll" }}>
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
+            {showUpdateError && (
+              <UpdateErrorSection errors={updateableErrors} updateDeviceError={updateDeviceError} />
+            )}
             {showCheckout && (
               <CheckOutSection
                 device={device}

@@ -122,7 +122,9 @@ export default function AddDevice({
         <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
             <BackButton onClick={onBack} />
-            <span style={{ fontWeight: 500, fontSize: 16 }}>Add {capitalize(deviceType)}</span>
+            <span style={{ fontWeight: 500, fontSize: 16 }}>
+              Add {capitalize(singular(deviceType))}
+            </span>
           </div>
         </MainContent.Header>
         <div
