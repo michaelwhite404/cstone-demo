@@ -1,4 +1,3 @@
-import { Button } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
@@ -11,11 +10,7 @@ import {
   CheckOutSection,
   ErrorLogSection,
 } from "./Sections";
-import {
-  MainContentFooter,
-  MainContentHeader,
-  MainContentInnerWrapper,
-} from "../../components/MainContent";
+import MainContent from "../../components/MainContent";
 import { useDevice } from "../../hooks";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
 
@@ -40,15 +35,15 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
   const showCheckin = device?.checkedOut;
 
   return (
-    <MainContentInnerWrapper>
+    <MainContent.InnerWrapper>
       <FadeIn>
-        <MainContentHeader>
+        <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
             <BackButton onClick={onBack} />
             <span style={{ fontWeight: 500, fontSize: 16 }}>{d.name}</span>
           </div>
           {showData ? <DeviceStatusBadge status={device!.status} /> : <BadgeSkeleton />}
-        </MainContentHeader>
+        </MainContent.Header>
         <div style={{ overflowY: "scroll" }}>
           <div>
             <BasicInfoSection device={device} showData={showData} originalDevice={d} />
@@ -80,6 +75,6 @@ export default function DeviceData({ device: d, onBack, reFetchDevices }: Device
           <Button />
         </MainContentFooter> */}
       </FadeIn>
-    </MainContentInnerWrapper>
+    </MainContent.InnerWrapper>
   );
 }

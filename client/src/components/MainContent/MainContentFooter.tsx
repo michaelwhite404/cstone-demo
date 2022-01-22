@@ -7,7 +7,7 @@ export default function MainContentFooter({
   ...props
 }: {
   children?: ReactNode;
-  align: "left" | "center" | "right";
+  align?: "left" | "center" | "right";
 }) {
   const className = classNames("main-content-footer", { [`mcf-${align}`]: align });
 

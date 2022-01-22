@@ -12,12 +12,13 @@ import SideTable from "../../components/SideTable/SideTable";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
 import { useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
+import AddDevice from "./AddDevice";
 import DeviceData from "./DeviceData";
 
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const { deviceType } = useParams<{ deviceType: string }>();
-  const [pageState, setPageState] = useState<"blank" | "device">("blank");
+  const [pageState, setPageState] = useState<"blank" | "device" | "add">("blank");
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
@@ -59,6 +60,11 @@ export default function DeviceType2() {
     setSelected(undefined);
   };
 
+  const handleAddClick = () => {
+    setPageState("add");
+    setSelected(undefined);
+  };
+
   return (
     <>
       <div style={{ display: "flex", height: "100%" }}>
@@ -79,6 +85,7 @@ export default function DeviceType2() {
                 <button
                   className="create-textbook-button"
                   style={{ marginTop: 0, padding: "0 10px", marginLeft: 10 }}
+                  onClick={handleAddClick}
                 >
                   <Icon icon="plus" color="#0566c3" />
                 </button>
@@ -97,6 +104,14 @@ export default function DeviceType2() {
           )}
           {pageState === "device" && selected && (
             <DeviceData device={selected} onBack={handleBack} reFetchDevices={getDevicesByType} />
+          )}
+          {pageState === "add" && (
+            <AddDevice
+              deviceType={deviceType}
+              setPageStatus={setPageState}
+              setSelectedDevice={setSelected}
+              reFetchDevices={getDevicesByType}
+            />
           )}
         </MainContent>
       </div>

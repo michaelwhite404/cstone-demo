@@ -160,3 +160,27 @@ input {
   outline-color: rgba(96, 93, 255, 0.44) auto 2px;
   outline-offset: 1px !important;
 }
+
+.add-device-input {
+  .bp3-input {
+    &::placeholder {
+      color: rgb(216, 216, 216);
+    }
+  }
+}
+
+// ::placeholder {
+//   /* Chrome, Firefox, Opera, Safari 10.1+ */
+//   color: red;
+//   opacity: 1; /* Firefox */
+// }
+
+// :-ms-input-placeholder {
+//   /* Internet Explorer 10-11 */
+//   color: red;
+// }
+
+// ::-ms-input-placeholder {
+//   /* Microsoft Edge */
+//   color: red;
+// }
