@@ -1,3 +1,4 @@
+import { Icon } from "@blueprintjs/core";
 import axios from "axios";
 import pluralize, { singular } from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -73,7 +74,15 @@ export default function DeviceType2() {
           >
             <div className="side-table-top">
               <PageHeader text={deviceType} />
-              <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
+              <div style={{ display: "flex", marginTop: 5 }}>
+                <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
+                <button
+                  className="create-textbook-button"
+                  style={{ marginTop: 0, padding: "0 10px", marginLeft: 10 }}
+                >
+                  <Icon icon="plus" color="#0566c3" />
+                </button>
+              </div>
               {/* <p>Search directory of many books</p> */}
             </div>
           </SideTable>
