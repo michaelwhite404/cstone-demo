@@ -6,7 +6,7 @@ import {
   RouteComponentProps,
   Switch,
 } from "react-router-dom";
-import Students from "./pages/Students/Students";
+// import Students from "./pages/Students/Students";
 // import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
 // import Textbooks from "./pages/Textbooks/Textbooks";
@@ -182,12 +182,6 @@ function App() {
                 <ProtectedNavRoute
                   exact
                   path="/students"
-                  component={Students}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  exact
-                  path="/students2"
                   component={Students2}
                   auth={isAuthenticated}
                   noPadding
