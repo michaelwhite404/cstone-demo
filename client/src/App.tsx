@@ -28,6 +28,7 @@ import { useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
 import DeviceType2 from "./pages/DeviceType2/DeviceType2";
+import Students2 from "./pages/Students2/Students2";
 
 interface NavRouteProps {
   exact: boolean;
@@ -183,6 +184,13 @@ function App() {
                   path="/students"
                   component={Students}
                   auth={isAuthenticated}
+                />
+                <ProtectedNavRoute
+                  exact
+                  path="/students2"
+                  component={Students2}
+                  auth={isAuthenticated}
+                  noPadding
                 />
               </UserContext.Provider>
             </ToasterProvider>

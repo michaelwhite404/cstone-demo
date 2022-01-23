@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { ReactChild, useEffect, useState } from "react";
-import { Row, useExpanded, useGlobalFilter, useGroupBy, useTable } from "react-table";
+import { Row, useGlobalFilter, useGroupBy, useSortBy, useTable } from "react-table";
 import FadeIn from "../FadeIn";
 import classNames from "classnames";
 import "./SideTable.sass";
@@ -16,6 +16,7 @@ export default function SideTable<T extends BasicDoc>({
   selected,
   children,
   filterValue,
+  customMethod,
 }: {
   columns: {
     id?: string;
@@ -29,6 +30,7 @@ export default function SideTable<T extends BasicDoc>({
   selected?: string;
   children?: ReactChild;
   filterValue?: string;
+  customMethod?: (rows: Row<{}>[]) => void;
 }) {
   const [tableSelected, setTableSelected] = useState("");
   const group = typeof groupBy === "string" ? [groupBy] : groupBy;
@@ -37,10 +39,10 @@ export default function SideTable<T extends BasicDoc>({
     { data, columns, initialState: { groupBy: group } },
     useGlobalFilter,
     useGroupBy,
-    useExpanded
+    useSortBy
   );
   const { rows, prepareRow, setGlobalFilter } = instance;
-  rows.sort((row1, row2) => (row1.groupByVal as string).localeCompare(row2.groupByVal));
+  customMethod && customMethod(rows);
 
   useEffect(() => {
     selected !== undefined && setTableSelected(selected);

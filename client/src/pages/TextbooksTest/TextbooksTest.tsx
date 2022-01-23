@@ -12,6 +12,7 @@ import SideTable from "../../components/SideTable/SideTable";
 import TextbookSetRow from "./TextbookSetRow/TextbookSetRow";
 import PageHeader from "../../components/PageHeader";
 import "../Textbooks/Table.sass";
+import { Row } from "react-table";
 
 interface TextbookContextProps {
   getTextbookSets: () => Promise<void>;
@@ -72,6 +73,11 @@ export default function TextbooksTest() {
     []
   );
 
+  const customMethod = (rows: Row<{}>[]) => {
+    // @ts-ignore
+    rows.sort((row1, row2) => (row1.groupByVal as string).localeCompare(row2.groupByVal));
+  };
+
   return (
     <TextbookContext.Provider value={{ getTextbookSets }}>
       <div style={{ display: "flex", height: "100%" }}>
@@ -83,6 +89,7 @@ export default function TextbooksTest() {
             groupBy="firstLetter"
             onSelectionChange={handleSetClick}
             selected={selected?._id || ""}
+            customMethod={customMethod}
           >
             <div className="side-table-top">
               <PageHeader text="Textbooks" />
