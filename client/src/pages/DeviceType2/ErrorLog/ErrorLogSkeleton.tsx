@@ -7,8 +7,8 @@ export default function ErrorLogSkeleton({ rows = 1 }: { rows?: number }) {
   return (
     <div className="device-checkout-history-container">
       <div className="device-checkout-history-wrapper">
-        {Array.from({ length: rows }).map(() => (
-          <ErrorSkeletonRow />
+        {Array.from({ length: rows }).map((_, i) => (
+          <ErrorSkeletonRow key={`skeleton-${i}`} />
         ))}
       </div>
     </div>

@@ -16,7 +16,9 @@ export default function CheckoutLogSection({
       {showData ? (
         <CheckoutLog length={checkouts.length}>
           {checkouts.length
-            ? checkouts.map((checkout) => <CheckoutLog.Row checkout={checkout} />)
+            ? checkouts.map((checkout) => (
+                <CheckoutLog.Row checkout={checkout} key={checkout._id} />
+              ))
             : "There is no data to display"}
         </CheckoutLog>
       ) : (

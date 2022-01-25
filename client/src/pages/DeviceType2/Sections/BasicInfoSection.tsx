@@ -47,7 +47,11 @@ export default function BasicInfoSection({
     <DevicePane heading="Basic Info">
       <BasicInfo>
         {values.map((value) =>
-          showData ? <BasicInfo.Card data={value} /> : value.showSkeleton && <BasicInfo.Skeleton />
+          showData ? (
+            <BasicInfo.Card data={value} key={value.heading} />
+          ) : (
+            value.showSkeleton && <BasicInfo.Skeleton key={`${value.heading}-skeleton`} />
+          )
         )}
       </BasicInfo>
     </DevicePane>

@@ -100,7 +100,7 @@ export default function UpdateErrorSection({
         <>
           <div style={{ padding: 15 }}>
             <div>
-              <div className="device-pane-child">
+              <div className="device-pane-child" style={{ marginBottom: 10 }}>
                 <span style={{ fontWeight: 500, marginRight: 15 }}>Error To Update</span>
                 <HTMLSelect
                   options={errorOptions}

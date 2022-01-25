@@ -9,7 +9,7 @@ function ErrorLogSection({ errors, showData }: { errors: ErrorLogModel[]; showDa
       {showData ? (
         <ErrorLog length={errors.length}>
           {errors.length
-            ? errors.map((error) => <ErrorLog.Row error={error} />)
+            ? errors.map((error) => <ErrorLog.Row error={error} key={error._id} />)
             : "There is no data to display"}
         </ErrorLog>
       ) : (

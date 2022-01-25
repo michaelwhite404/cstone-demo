@@ -7,12 +7,13 @@ export default function UpdateErrorSkeleton() {
   const [width] = useWindowSize();
   const Chips = () => (
     <>
-      {[70, 80, 60, 75].map((width) => (
+      {[70, 80, 60, 75].map((width, i) => (
         <Skeleton
           variant="rectangular"
           width={`${width}px`}
           height="32px"
           sx={{ borderRadius: "16px", marginRight: "10px" }}
+          key={`skeleton-chip-${i}`}
         />
       ))}
     </>

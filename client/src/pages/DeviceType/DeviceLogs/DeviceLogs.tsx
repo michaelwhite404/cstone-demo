@@ -1,5 +1,3 @@
-import { Button, Menu, MenuItem } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
 import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
 import React, { useEffect, useMemo, useState } from "react";

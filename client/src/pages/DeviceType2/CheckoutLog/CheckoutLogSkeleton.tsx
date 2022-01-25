@@ -14,7 +14,7 @@ export default function CheckoutLogSkeleton({
     <div className="device-checkout-history-container">
       <div className="device-checkout-history-wrapper">
         {Array.from({ length: rows }).map((_, i) => (
-          <SkeletonRow checkedOut={i === 0 && checkedOut} />
+          <SkeletonRow checkedOut={i === 0 && checkedOut} key={`skeleton-row-${i}`} />
         ))}
       </div>
     </div>
