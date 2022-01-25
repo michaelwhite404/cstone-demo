@@ -6,6 +6,7 @@ import {
   RouteComponentProps,
   Switch,
 } from "react-router-dom";
+import Div100vh from "react-div-100vh";
 // import Students from "./pages/Students/Students";
 // import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -45,7 +46,7 @@ const NavRoute = ({ exact, path, component: Component, noPadding = false }: NavR
       exact={exact}
       path={path}
       render={(props) => (
-        <div className="app-container">
+        <Div100vh className="app-container">
           {width > 992 ? <Sidebar /> : <Topbar />}
           <div
             className="main-area-container"
@@ -60,7 +61,7 @@ const NavRoute = ({ exact, path, component: Component, noPadding = false }: NavR
           >
             <Component {...props} />
           </div>
-        </div>
+        </Div100vh>
       )}
     />
   );
