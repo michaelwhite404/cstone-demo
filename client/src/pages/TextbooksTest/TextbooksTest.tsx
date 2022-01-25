@@ -5,7 +5,7 @@ import { APITextbookSetsResponse } from "../../types/apiResponses";
 import "./TextbooksTest.sass";
 import ContentPanels from "./ContentPanels";
 import AddTextbook from "./AddTextbook";
-import { useWindowSize } from "../../hooks";
+import { useDocTitle, useWindowSize } from "../../hooks";
 import FadeIn from "../../components/FadeIn";
 import CreateTextbookButton from "./CreateTextbookButton";
 import SideTable from "../../components/SideTable/SideTable";
@@ -26,6 +26,7 @@ export default function TextbooksTest() {
   const [pageState, setPageState] = useState<PageState>("blank");
   const [selected, setSelected] = useState<TextbookSetModel>();
   const [width] = useWindowSize();
+  useDocTitle("Textbooks | Cornerstone App");
 
   useEffect(() => {
     getTextbookSets();
