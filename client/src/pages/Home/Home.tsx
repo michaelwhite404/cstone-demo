@@ -1,6 +1,7 @@
 import { InputGroup, Label } from "@blueprintjs/core";
 import axios from "axios";
 import { useState } from "react";
+import Div100vh from "react-div-100vh";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
@@ -38,7 +39,7 @@ export default function Home({
 
   return (
     <div>
-      <div className="home-container">
+      <Div100vh className="home-container">
         <div className="login-main">
           <div className="welcome-section">
             <CornerstoneLogo style={{ width: 50 }} />
@@ -87,7 +88,7 @@ export default function Home({
           <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
         <div className="login-image-banner" style={{ backgroundImage: "url(Lions+Den_18.jpeg)" }} />
-      </div>
+      </Div100vh>
     </div>
   );
 }
