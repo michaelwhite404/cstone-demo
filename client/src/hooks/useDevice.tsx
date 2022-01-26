@@ -61,6 +61,18 @@ export default function useDevice(deviceType: string, slug: string) {
     }
   };
 
+  const assignDevice = async (studentId: string) => {
+    try {
+      const res = await axios.post<APIDeviceResponse>(`/api/v2/devices/${device!._id}/assign`, {
+        student: studentId,
+      });
+      await getSingleDevice();
+      return res.data.data.device;
+    } catch (err) {
+      throw new Error((err as AxiosError<APIError>).response!.data.message);
+    }
+  };
+
   const checkinDevice = async (data: any = {}) => {
     try {
       const res = await axios.post<APIDeviceResponse>(
@@ -110,6 +122,7 @@ export default function useDevice(deviceType: string, slug: string) {
     device,
     setDevice,
     checkoutDevice,
+    assignDevice,
     checkouts,
     errors,
     checkinDevice,
