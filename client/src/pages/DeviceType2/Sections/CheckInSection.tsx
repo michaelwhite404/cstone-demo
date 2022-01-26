@@ -21,7 +21,7 @@ export default function CheckInSection({
   checkinDevice,
   onCheckinSuccess,
 }: CheckInSectionProps) {
-  type CheckInState = "passed" | "error";
+  type CheckInState = "passed" | "assign" | "error";
   const [radio, setRadio] = useState<CheckInState | undefined>(undefined);
   const [error, setError] = useState({
     title: "",
@@ -34,6 +34,7 @@ export default function CheckInSection({
 
   const submittable =
     radio === "passed" ||
+    radio === "assign" ||
     (radio === "error" && error.title.length > 0 && error.description.length > 0);
 
   const handleCheckin = () => {
@@ -41,6 +42,7 @@ export default function CheckInSection({
     let data: any = {};
     if (radio === "error")
       data = { error: radio === "error", title: error.title, description: error.description };
+    if (radio === "assign") data = { assign: true };
     checkinDevice(data)
       .then((updatedDevice) => {
         showToaster(`${updatedDevice.name} successfully checked in!`, "success");

@@ -88,8 +88,8 @@ export const checkOutDevice: RequestHandler = catchAsync(
     ]);
     // If no device
     if (!device) return next(new AppError("No device found with that ID", 404));
-    // If Not Available
-    if (device.status !== "Available")
+    // If not Available or Assigned
+    if (!["Assigned", "Available"].includes(device.status))
       return next(new AppError(`This device is ${device.status.toLowerCase()}`, 400));
     // No student
     if (!student) return next(new AppError("No student found with that ID", 404));
@@ -167,7 +167,8 @@ export const checkInDevice = catchAsync(async (req: Request, res: Response, next
       log.error = errorLog._id;
       device.status = "Broken";
     } else {
-      device.status = "Available";
+      if (req.body.assign === true || req.body.assign === "true") device.status = "Assigned";
+      else device.status = "Available";
     }
 
     await device.save({ validateBeforeSave: false });
@@ -316,9 +317,7 @@ export const assignDevice = catchAsync(async (req, res, next) => {
     response.status(statusCode).json({
       status: "success",
       requestedAt: req.requestTime,
-      data: {
-        dataObject,
-      },
+      data: dataObject,
     });
   };
 

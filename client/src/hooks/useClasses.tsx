@@ -71,10 +71,12 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
   const studentOptions =
     gradePicked === -1
       ? undefined
-      : classes[gradePicked].students.map((s) => ({
+      : classes.length > 0
+      ? classes[gradePicked].students.map((s) => ({
           label: s.fullName,
           value: s.id,
-        }));
+        }))
+      : undefined;
   studentOptions?.unshift(selectAStudent);
 
   const changeGrade = (

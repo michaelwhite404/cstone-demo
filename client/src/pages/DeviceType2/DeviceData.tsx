@@ -56,6 +56,7 @@ export default function DeviceData({
     updateableErrors,
     resetDevice,
     createDeviceError,
+    assignDevice,
   } = useDevice(d.deviceType, d.slug);
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
@@ -132,6 +133,8 @@ export default function DeviceData({
                 showData={showData}
                 checkoutDevice={checkoutDevice}
                 onCheckoutSuccess={reFetchDevices}
+                assignDevice={assignDevice}
+                onAssignSuccess={reFetchDevices}
               />
             )}
             {showCheckin && (

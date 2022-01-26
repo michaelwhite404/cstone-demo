@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button } from "@blueprintjs/core";
+import React, { useEffect, useState } from "react";
+import { Button, HTMLSelect } from "@blueprintjs/core";
 import { useClasses, useToasterContext } from "../../../hooks";
 import DevicePane from "../DevicePane";
 import capitalize from "capitalize";
@@ -11,10 +11,12 @@ interface CheckOutSectionProps {
   device?: DeviceModel;
   showData: boolean;
   checkoutDevice: (studentId: string) => Promise<DeviceModel>;
+  assignDevice: (studentId: string) => Promise<DeviceModel>;
   /** A function to run directly after a checkout request is successful. The updated device is
    * passed in as a parameter
    */
   onCheckoutSuccess?: (updatedDevice: DeviceModel) => void;
+  onAssignSuccess?: (updatedDevice: DeviceModel) => void;
 }
 
 export default function CheckOutSection({
@@ -22,10 +24,13 @@ export default function CheckOutSection({
   showData,
   checkoutDevice,
   onCheckoutSuccess,
+  onAssignSuccess,
+  assignDevice,
 }: CheckOutSectionProps) {
   const { GradeSelect, StudentSelect, studentPicked, reset, setGradePicked, setStudentPicked } =
     useClasses();
   const { showToaster } = useToasterContext();
+  const [action, setAction] = useState("Check Out");
 
   const handleCheckout = () => {
     checkoutDevice(studentPicked)
@@ -38,24 +43,30 @@ export default function CheckOutSection({
       });
   };
 
+  const handleAssign = () => {
+    assignDevice(studentPicked)
+      .then((updatedDevice) => {
+        console.log(updatedDevice);
+        showToaster(`${updatedDevice.name} has been assigned!`, "success");
+        onAssignSuccess && onAssignSuccess(updatedDevice);
+        setAction("Check Out");
+      })
+      .catch((err) => {
+        showToaster(err.message, "danger");
+      });
+  };
+
   useEffect(() => {
     reset();
     if (device?.status === "Assigned") {
       setGradePicked(device.lastUser.grade);
       setStudentPicked(device.lastUser._id);
     }
-  }, [
-    device?.lastUser._id,
-    device?.lastUser.grade,
-    device?.status,
-    reset,
-    setGradePicked,
-    setStudentPicked,
-    showData,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reset, showData]);
 
   return (
-    <DevicePane heading="Check Out">
+    <DevicePane heading="Check Out/Assign">
       <Checkout>
         {showData ? (
           <Checkout.Box>
@@ -74,14 +85,29 @@ export default function CheckOutSection({
           <Checkout.Skeleton />
         )}
         {showData ? (
+          <Checkout.Box>
+            <span style={{ fontWeight: 500, marginBottom: "6px" }}>Action</span>
+            <HTMLSelect
+              value={action}
+              options={[
+                { disabled: false, value: "Check Out" },
+                { value: "Assign", disabled: device?.status === "Assigned" },
+              ]}
+              onChange={(e) => setAction(e.target.value)}
+            />
+          </Checkout.Box>
+        ) : (
+          <Checkout.Skeleton />
+        )}
+        {showData ? (
           <Checkout.Box className="button">
             <Button
               intent="primary"
               disabled={studentPicked === "-1"}
-              onClick={handleCheckout}
+              onClick={action === "Check Out" ? handleCheckout : handleAssign}
               fill
             >
-              Check Out {capitalize(device?.deviceType || "")}
+              {action} {capitalize(device?.deviceType || "")}
             </Button>
           </Checkout.Box>
         ) : (

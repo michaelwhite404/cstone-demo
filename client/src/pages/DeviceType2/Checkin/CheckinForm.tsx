@@ -23,6 +23,9 @@ export default function CheckinForm({
       <Radio className="radio" name="checkin-device" value="passed">
         {device?.lastUser!.fullName} has returned the {device?.deviceType} in working condition
       </Radio>
+      <Radio className="radio" name="checkin-device" value="assign">
+        Check in {device?.deviceType} and assign to {device?.lastUser!.fullName}
+      </Radio>
       <Radio className="radio" name="checkin-device" value="error">
         There is an issue with the {device?.deviceType}
       </Radio>

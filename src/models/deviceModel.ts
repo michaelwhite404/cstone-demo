@@ -117,6 +117,7 @@ deviceSchema.pre<DeviceDocument>("save", function (next) {
       .catch((reason) => {
         next(new AppError(reason, 400));
       });
+  next();
 });
 
 const Device: Model<DeviceDocument> = model<DeviceDocument>("Device", deviceSchema);
