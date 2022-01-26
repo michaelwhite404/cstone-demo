@@ -178,7 +178,7 @@ function FakeComp(device: DeviceModel) {
 }
 
 const getLastUser = (device: DeviceModel) => {
-  return device.status === "Checked Out" && device.lastUser
+  return ["Checked Out", "Assigned"].includes(device.status) && device.lastUser
     ? `${device.lastUser?.fullName} (${grades[device.lastUser?.grade]})`
     : "";
 };

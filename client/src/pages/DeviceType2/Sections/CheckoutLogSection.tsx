@@ -9,7 +9,7 @@ export default function CheckoutLogSection({
 }: {
   checkouts: CheckoutLogModel[];
   showData: boolean;
-  originalStatus: "Available" | "Checked Out" | "Broken" | "Not Available";
+  originalStatus: "Available" | "Checked Out" | "Assigned" | "Broken" | "Not Available";
 }) {
   return (
     <DevicePane heading="Check Out History">
