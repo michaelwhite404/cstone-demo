@@ -312,20 +312,22 @@ export const assignDevice = catchAsync(async (req, res, next) => {
   Device.populate(device, { path: "lastUser" }, function (_, device) {
     sendJson(res, 200, { device });
   });
-
-  const sendJson = (response: typeof res, statusCode: number, dataObject: any) => {
-    response.status(statusCode).json({
-      status: "success",
-      requestedAt: req.requestTime,
-      data: dataObject,
-    });
-  };
-
-  // res.status(200).json({
-  //   status: "success",
-  //   requestedAt: req.requestTime,
-  //   data: {
-  //     device,
-  //   },
-  // });
 });
+
+export const unassignDevice = catchAsync(async (req, res, next) => {
+  const device = await Model.findById(req.params.id);
+  if (!device) return next(new AppError("No device found with that ID", 404));
+  if (device.status !== "Assigned")
+    return next(new AppError("This device is not assigned to a student", 400));
+  device.status = "Available";
+  await device.save();
+  sendJson(res, 200, { device });
+});
+
+const sendJson = (response: Response, statusCode: number, dataObject: any) => {
+  response.status(statusCode).json({
+    status: "success",
+    requestedAt: new Date(),
+    data: dataObject,
+  });
+};

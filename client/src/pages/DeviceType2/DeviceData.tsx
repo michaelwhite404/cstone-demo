@@ -12,7 +12,7 @@ import {
   UpdateErrorSection,
 } from "./Sections";
 import MainContent from "../../components/MainContent";
-import { useDevice } from "../../hooks";
+import { useDevice, useToasterContext } from "../../hooks";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
 import { Button, ButtonGroup, IconName } from "@blueprintjs/core";
 import ResetBody from "../DeviceType/SingleDevice/ResetBody";
@@ -57,7 +57,9 @@ export default function DeviceData({
     resetDevice,
     createDeviceError,
     assignDevice,
+    unassignDevice,
   } = useDevice(d.deviceType, d.slug);
+  const { showToaster } = useToasterContext();
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
@@ -96,6 +98,15 @@ export default function DeviceData({
     },
   ];
   const showableButtons = subHeadingButtons.filter((v) => v.show);
+
+  const handleUnassign = () => {
+    unassignDevice()
+      .then(() => {
+        showToaster("Device unassigned!", "success");
+        reFetchDevices();
+      })
+      .catch((err) => showToaster(err.response.data.message, "danger"));
+  };
 
   return (
     <MainContent.InnerWrapper>
@@ -153,6 +164,11 @@ export default function DeviceData({
             <ErrorLogSection errors={errors} showData={showData} />
           </div>
         </div>
+        {device?.status === "Assigned" && (
+          <MainContent.Footer>
+            <Button text="Unassign" onClick={handleUnassign} intent="primary" />
+          </MainContent.Footer>
+        )}
       </FadeIn>
     </MainContent.InnerWrapper>
   );
