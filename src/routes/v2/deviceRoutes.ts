@@ -67,5 +67,6 @@ deviceRouter
 
 deviceRouter.post("/:id/check-out/student/:student_id", deviceController.checkOutDevice);
 deviceRouter.post("/:id/check-in", deviceController.checkInDevice);
+deviceRouter.post("/:id/assign", deviceController.assignDevice);
 
 export default deviceRouter;

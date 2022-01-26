@@ -1,7 +1,9 @@
-import { Schema, model, Model, Types } from "mongoose";
+import { Schema, model, Model, Types, ObjectId } from "mongoose";
 import slugify from "slugify";
 import { DeviceDocument } from "../types/models/deviceTypes";
 import AppError from "../utils/appError";
+import FKHelper from "./helpers/foreignKeyHelper";
+import Student from "./studentModel";
 
 const deviceSchema = new Schema(
   {
@@ -38,7 +40,7 @@ const deviceSchema = new Schema(
       required: [true, "Each Device must have a status"],
       default: "Available",
       enum: {
-        values: ["Available", "Checked Out", "Broken", "Not Available"],
+        values: ["Available", "Checked Out", "Assigned", "Broken", "Not Available"],
         message: "Status is either: Available, Not Available, Broken, Not Available",
       },
     },
@@ -104,6 +106,17 @@ deviceSchema.pre<DeviceDocument>("save", function (next) {
   }
   this.slug = slugify(this.name, { lower: true });
   next();
+});
+
+deviceSchema.pre<DeviceDocument>("save", function (next) {
+  if (this.$locals.assigned)
+    FKHelper(Student, this.$locals.student as ObjectId)
+      .then(() => {
+        next();
+      })
+      .catch((reason) => {
+        next(new AppError(reason, 400));
+      });
 });
 
 const Device: Model<DeviceDocument> = model<DeviceDocument>("Device", deviceSchema);

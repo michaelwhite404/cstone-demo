@@ -6,7 +6,6 @@ import { Request, Response, NextFunction } from "express";
 import * as factory from "./handlerFactory";
 import Textbook from "../../models/textbookModel";
 import { TextbookDocument } from "../../types/models/textbookTypes";
-import pluralize from "pluralize";
 var isPlainObject = require("lodash.isplainobject");
 
 const Model = TextbookSet;

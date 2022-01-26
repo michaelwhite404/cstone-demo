@@ -294,3 +294,39 @@ export const deviceAction = catchAsync(async (req, res) => {
     },
   });
 });
+
+// /:device/assign
+export const assignDevice = catchAsync(async (req, res, next) => {
+  const device = await Model.findById(req.params.id);
+  if (!device) return next(new AppError("No device found with that ID", 404));
+  if (device.status === "Assigned")
+    return next(new AppError("This device has already been assigned", 400));
+  if (device.status !== "Available")
+    return next(new AppError("This device cannot be assigned", 400));
+  device.status = "Assigned";
+  device.lastUser = req.body.student;
+  device.$locals.assigned = true;
+  device.$locals.student = req.body.student;
+  await device.save();
+  Device.populate(device, { path: "lastUser" });
+
+  const sendJson = (response: typeof res, statusCode: number, dataObject: any) => {
+    response.status(statusCode).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: {
+        dataObject,
+      },
+    });
+  };
+
+  sendJson(res, 200, { device });
+
+  // res.status(200).json({
+  //   status: "success",
+  //   requestedAt: req.requestTime,
+  //   data: {
+  //     device,
+  //   },
+  // });
+});

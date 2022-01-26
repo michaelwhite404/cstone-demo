@@ -13,7 +13,7 @@ export interface DeviceModel {
   serialNumber: string;
   dueDate?: Date;
   macAddress: string;
-  status: "Available" | "Checked Out" | "Broken" | "Not Available";
+  status: "Available" | "Checked Out" | "Assigned" | "Broken" | "Not Available";
   deviceType: string;
   autoUpdateExpiration?: string;
   checkedOut?: boolean;
