@@ -35,6 +35,7 @@ interface IUseClasses {
   /** The current selected sudent. "-1" if no student is selected  */
   studentPicked: string;
   setGradePicked: React.Dispatch<React.SetStateAction<number>>;
+  setStudentPicked: React.Dispatch<React.SetStateAction<string>>;
   /** Indicates whether the classes have been loaded */
   loaded: boolean;
   /** Resets grade and student to initial state */
@@ -139,6 +140,7 @@ export default function useClasses(fetchedClasses?: Class[]): IUseClasses {
     gradePicked,
     studentPicked,
     setGradePicked,
+    setStudentPicked,
     loaded,
     reset,
   };

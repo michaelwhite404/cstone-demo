@@ -23,7 +23,8 @@ export default function CheckOutSection({
   checkoutDevice,
   onCheckoutSuccess,
 }: CheckOutSectionProps) {
-  const { GradeSelect, StudentSelect, studentPicked, reset } = useClasses();
+  const { GradeSelect, StudentSelect, studentPicked, reset, setGradePicked, setStudentPicked } =
+    useClasses();
   const { showToaster } = useToasterContext();
 
   const handleCheckout = () => {
@@ -37,7 +38,21 @@ export default function CheckOutSection({
       });
   };
 
-  useEffect(reset, [reset, showData]);
+  useEffect(() => {
+    reset();
+    if (device?.status === "Assigned") {
+      setGradePicked(device.lastUser.grade);
+      setStudentPicked(device.lastUser._id);
+    }
+  }, [
+    device?.lastUser._id,
+    device?.lastUser.grade,
+    device?.status,
+    reset,
+    setGradePicked,
+    setStudentPicked,
+    showData,
+  ]);
 
   return (
     <DevicePane heading="Check Out">

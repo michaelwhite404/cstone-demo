@@ -60,8 +60,9 @@ export default function DeviceData({
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
-
-  const showCheckout = device?.status === "Available" || (!showData && d.status === "Available");
+  const showCheckout =
+    ["Available", "Assigned"].includes(device?.status || "") ||
+    (!showData && ["Available", "Assigned"].includes(d.status));
   const showCheckin = device?.checkedOut;
   const showUpdateError = device?.status === "Broken" && updateableErrors.length > 0;
 
