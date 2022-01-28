@@ -30,7 +30,7 @@ export default function DeviceType2() {
     open: false,
     title: "",
     width: 400 as number | string,
-    Component: <>Wow</>,
+    Component: <></>,
   });
 
   const getDevicesByType = useCallback(async () => {

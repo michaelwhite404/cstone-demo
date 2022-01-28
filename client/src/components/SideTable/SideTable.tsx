@@ -50,7 +50,7 @@ export default function SideTable<T extends BasicDoc>({
 
   useEffect(() => {
     setGlobalFilter(filterValue);
-  }, [filterValue, setGlobalFilter]);
+  }, [filterValue, setGlobalFilter, data]);
 
   const handleClick = (subRow: Row<T>) => {
     if (selected === undefined) setTableSelected(subRow.original._id);
