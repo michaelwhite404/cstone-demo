@@ -1,25 +1,18 @@
 import "./App.scss";
 import { BrowserRouter as Router, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Div100vh from "react-div-100vh";
-// import Students from "./pages/Students/Students";
-// import DeviceType from "./pages/DeviceType/DeviceType";
 import Sidebar from "./components/Sidebar/Sidebar";
-// import Textbooks from "./pages/Textbooks/Textbooks";
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import Devices from "./pages/Devices/Devices";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import { createContext, useEffect, useState } from "react";
-import axios from "axios";
-import { EmployeeModel } from "../../src/types/models/employeeTypes";
-import Home from "./pages/Home/Home";
 import { FocusStyleManager } from "@blueprintjs/core";
-import Stats from "./pages/DeviceType/Stats/Stats";
-import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
-import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
+// import Stats from "./pages/DeviceType/Stats/Stats";
+// import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
+// import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
 import { ToasterProvider } from "./context/ToasterContext";
-import { useAuth, useWindowSize } from "./hooks";
+import { useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
 import DeviceType2 from "./pages/DeviceType2/DeviceType2";
@@ -32,19 +25,20 @@ function App() {
 
   return (
     <ToasterProvider>
-      <AuthProvider>
-        <Router>
+      <Router>
+        <AuthProvider>
           <Routes>
             <Route path="/" element={<AppContainer />}>
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Navigate to="/" replace />} />
               <Route path="students" element={<Students2 />} />
               <Route path="textbooks" element={<TextbooksTest />} />
               <Route path="devices" element={<Devices />} />
               <Route path="/devices/:deviceType" element={<DeviceType2 />} />
             </Route>
           </Routes>
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </Router>
     </ToasterProvider>
   );
 }

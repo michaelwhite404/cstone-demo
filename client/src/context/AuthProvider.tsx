@@ -1,7 +1,9 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
+import { useNavigate } from "react-router-dom";
 import { EmployeeModel } from "../../../src/types/models/employeeTypes";
+import Home from "../pages/Home/Home";
 
 interface AuthContextType {
   user: EmployeeModel | null;
@@ -22,6 +24,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [user, setUser] = useState<EmployeeModel | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMe();
@@ -30,18 +33,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       axios
         .get("/api/v2/users/me")
         .then((res) => {
-          setIsAuthenticated(true);
           setUser(res.data.data.user);
+          setIsAuthenticated(true);
         })
-        .catch()
+        .catch(() => navigate("/", { replace: true }))
         .finally(() => setAuthLoaded(true));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logout = async (callback?: VoidFunction) => {
     try {
       await axios.post<{ status: "success" }>("/api/v2/users/logout");
-      setIsAuthenticated(false);
+      setTimeout(() => {
+        setIsAuthenticated(false);
+        navigate("/");
+      }, 1250);
       callback && callback();
     } catch (err) {
       throw Error("There was an error. Please try again");
@@ -52,7 +59,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const res = await axios.post("/api/v2/users/login", { email, password });
       setUser(res.data.data.employee);
-      setIsAuthenticated(true);
+      setTimeout(() => setIsAuthenticated(true), 1250);
       return res.data.data.employee as EmployeeModel;
     } catch (err) {
       throw Error(err.response.data.message as string);
@@ -66,7 +73,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const res = await axios.post("/api/v2/users/google", { token: data.tokenId });
       setUser(res.data.data.employee);
-      setIsAuthenticated(true);
+      setTimeout(() => setIsAuthenticated(true), 1250);
       return res.data.data.employee as EmployeeModel;
     } catch (err) {
       throw Error(err.response.data.message as string);
@@ -84,5 +91,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     authLoaded,
   };
 
-  return <AuthContext.Provider value={value}>{isAuthenticated && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {authLoaded && (isAuthenticated ? children : <Home />)}
+    </AuthContext.Provider>
+  );
 }

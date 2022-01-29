@@ -7,7 +7,9 @@ import { useAuth } from "../../hooks";
 export default function Sidebar() {
   const location = useLocation();
   const { user } = useAuth();
-  const matchesURL = (url: string) => location.pathname.startsWith(url);
+  const matchesURL = (url: string) =>
+    url === "/" ? location.pathname === "/" : location.pathname.startsWith(url);
+
   return (
     <div className="sidebar-container">
       <div className="sidebar">
