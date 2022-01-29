@@ -5,7 +5,7 @@ import "./Devices.sass";
 export default function Devices() {
   useDocTitle("Devices | Cornerstone App");
   return (
-    <div>
+    <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Devices</h1>
       </div>

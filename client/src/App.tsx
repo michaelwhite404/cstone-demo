@@ -1,5 +1,5 @@
 import "./App.scss";
-import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Div100vh from "react-div-100vh";
 // import Students from "./pages/Students/Students";
 // import DeviceType from "./pages/DeviceType/DeviceType";
@@ -24,63 +24,7 @@ import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
 import DeviceType2 from "./pages/DeviceType2/DeviceType2";
 import Students2 from "./pages/Students2/Students2";
-
-interface NavRouteProps {
-  path: string;
-  component: React.ComponentType<any> | React.ComponentType<any>;
-  noPadding?: boolean;
-}
-
-const NavRoute = ({ path, component: Component, noPadding = false }: NavRouteProps) => {
-  const [width] = useWindowSize();
-
-  return (
-    <Route
-      path={path}
-      element={
-        <Div100vh className="app-container">
-          {width > 992 ? <Sidebar /> : <Topbar />}
-          <div
-            className="main-area-container"
-            style={{
-              backgroundColor: "#f9fcff",
-              width: "100%",
-              height: "100%",
-              padding: noPadding ? undefined : "10px 25px 25px",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}
-          >
-            <Component />
-          </div>
-        </Div100vh>
-      }
-    />
-  );
-};
-
-function ProtectedNavRoute({
-  path,
-  auth,
-  component: Component,
-  noPadding,
-  ...restOfProps
-}: NavRouteProps & { auth: boolean }) {
-  const isAuthenticated = auth;
-
-  return (
-    <Route
-      {...restOfProps}
-      element={
-        isAuthenticated ? (
-          <NavRoute path={path} component={Component} noPadding={noPadding} />
-        ) : (
-          <Navigate to="/" />
-        )
-      }
-    />
-  );
-}
+import "./pages/Devices/Devices.sass";
 
 interface UserContextProps {
   user: EmployeeModel | null;
@@ -117,57 +61,53 @@ function App() {
     <>
       {loaded && (
         <ToasterProvider>
-          <Router>
-            <Routes>
-              <Route path="/">
-                {isAuthenticated ? (
-                  <Navigate to="/dashboard" />
-                ) : (
-                  <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
-                )}
-              </Route>
-              <UserContext.Provider value={{ user, setIsAuthenticated }}>
-                <ProtectedNavRoute path="/dashboard" component={Dashboard} auth={isAuthenticated} />
-                <ProtectedNavRoute path="/devices" component={Devices} auth={isAuthenticated} />
-                <ProtectedNavRoute
-                  path="/devices/:deviceType(chromebooks|tablets)"
-                  component={DeviceType2}
-                  auth={isAuthenticated}
-                  noPadding
-                />
-                <ProtectedNavRoute
-                  path="/devices/:deviceType(chromebooks|tablets)/stats"
-                  component={Stats}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  path="/devices/:deviceType(chromebooks|tablets)/logs"
-                  component={DeviceLogs}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  path={`/devices/:deviceType(chromebooks|tablets)/:slug([a-z]{2}-\\d{2,4})`}
-                  component={SingleDevice}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  path="/textbooks"
-                  component={TextbooksTest}
-                  auth={isAuthenticated}
-                  noPadding
-                />
-                <ProtectedNavRoute
-                  path="/students"
-                  component={Students2}
-                  auth={isAuthenticated}
-                  noPadding
-                />
-              </UserContext.Provider>
-            </Routes>
-          </Router>
+          <UserContext.Provider value={{ user, setIsAuthenticated }}>
+            <Router>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    isAuthenticated ? (
+                      <AppContainer />
+                    ) : (
+                      <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+                    )
+                  }
+                >
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="students" element={<Students2 />} />
+                  <Route path="textbooks" element={<TextbooksTest />} />
+                  <Route path="devices" element={<Devices />} />
+                  <Route path="/devices/:deviceType" element={<DeviceType2 />} />
+                </Route>
+              </Routes>
+            </Router>
+          </UserContext.Provider>
         </ToasterProvider>
       )}
     </>
+  );
+}
+
+function AppContainer() {
+  const [width] = useWindowSize();
+
+  return (
+    <Div100vh className="app-container">
+      {width > 992 ? <Sidebar /> : <Topbar />}
+      <div
+        className="main-area-container"
+        style={{
+          backgroundColor: "#f9fcff",
+          width: "100%",
+          height: "100%",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+      >
+        <Outlet />
+      </div>
+    </Div100vh>
   );
 }
 
