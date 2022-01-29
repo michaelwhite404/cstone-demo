@@ -1,25 +1,18 @@
 import { InputGroup, Label } from "@blueprintjs/core";
-import axios from "axios";
 import { useState } from "react";
 import Div100vh from "react-div-100vh";
-import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TextOverLine from "../../components/TextOverLine";
-import { useDocTitle, useToasterContext } from "../../hooks";
+import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import "./Home.sass";
 
-export default function Home({
-  setIsAuthenticated,
-  setUser,
-}: {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<EmployeeModel | null>>;
-}) {
+export default function Home() {
   useDocTitle("Login Page | Cornerstone App");
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const { showToaster } = useToasterContext();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -28,10 +21,9 @@ export default function Home({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/v2/users/login", credentials);
-      setUser(res.data.data.employee);
-      showToaster("Log in successful!", "success");
-      setTimeout(() => setIsAuthenticated(true), 1250);
+      login(credentials.email, credentials.password)
+        .then(() => showToaster("Log in successful!", "success"))
+        .catch((err) => showToaster(err.message, "danger"));
     } catch (err) {
       showToaster(err.response.data.message, "danger");
     }

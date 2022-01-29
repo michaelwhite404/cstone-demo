@@ -8,7 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   logout: (callback?: VoidFunction) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<EmployeeModel>;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -44,6 +44,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       const res = await axios.post("/api/v2/users/login", { email, password });
       setUser(res.data.data.employee);
       setIsAuthenticated(true);
+      return res.data.data.employee as EmployeeModel;
     } catch (err) {
       throw Error(err.response.data.message as string);
     }

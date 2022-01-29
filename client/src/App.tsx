@@ -29,7 +29,7 @@ import AuthProvider from "./context/AuthProvider";
 
 function App() {
   // const [loaded, setLoaded] = useState(false);
-  const { setIsAuthenticated, setUser, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   FocusStyleManager.onlyShowFocusOnTabs();
 
   return (
@@ -37,17 +37,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route
-              path="/"
-              element={
-                isAuthenticated ? (
-                  <AppContainer />
-                ) : (
-                  <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
-                )
-              }
-            >
-              {/* <Route index element={} /> */}
+            <Route path="/" element={isAuthenticated ? <AppContainer /> : <Home />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="students" element={<Students2 />} />
               <Route path="textbooks" element={<TextbooksTest />} />
