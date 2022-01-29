@@ -1,11 +1,5 @@
 import "./App.scss";
-import {
-  BrowserRouter as Router,
-  Route,
-  Redirect,
-  RouteComponentProps,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import Div100vh from "react-div-100vh";
 // import Students from "./pages/Students/Students";
 // import DeviceType from "./pages/DeviceType/DeviceType";
@@ -32,20 +26,18 @@ import DeviceType2 from "./pages/DeviceType2/DeviceType2";
 import Students2 from "./pages/Students2/Students2";
 
 interface NavRouteProps {
-  exact: boolean;
   path: string;
-  component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
+  component: React.ComponentType<any> | React.ComponentType<any>;
   noPadding?: boolean;
 }
 
-const NavRoute = ({ exact, path, component: Component, noPadding = false }: NavRouteProps) => {
+const NavRoute = ({ path, component: Component, noPadding = false }: NavRouteProps) => {
   const [width] = useWindowSize();
 
   return (
     <Route
-      exact={exact}
       path={path}
-      render={(props) => (
+      element={
         <Div100vh className="app-container">
           {width > 992 ? <Sidebar /> : <Topbar />}
           <div
@@ -59,16 +51,15 @@ const NavRoute = ({ exact, path, component: Component, noPadding = false }: NavR
               overflowX: "hidden",
             }}
           >
-            <Component {...props} />
+            <Component />
           </div>
         </Div100vh>
-      )}
+      }
     />
   );
 };
 
 function ProtectedNavRoute({
-  exact,
   path,
   auth,
   component: Component,
@@ -80,11 +71,11 @@ function ProtectedNavRoute({
   return (
     <Route
       {...restOfProps}
-      render={() =>
+      element={
         isAuthenticated ? (
-          <NavRoute exact path={path} component={Component} noPadding={noPadding} />
+          <NavRoute path={path} component={Component} noPadding={noPadding} />
         ) : (
-          <Redirect to="/" />
+          <Navigate to="/" />
         )
       }
     />
@@ -125,72 +116,56 @@ function App() {
   return (
     <>
       {loaded && (
-        <Router>
-          <Switch>
-            <ToasterProvider>
-              <Route exact path="/">
+        <ToasterProvider>
+          <Router>
+            <Routes>
+              <Route path="/">
                 {isAuthenticated ? (
-                  <Redirect to="/dashboard" />
+                  <Navigate to="/dashboard" />
                 ) : (
                   <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
                 )}
               </Route>
               <UserContext.Provider value={{ user, setIsAuthenticated }}>
+                <ProtectedNavRoute path="/dashboard" component={Dashboard} auth={isAuthenticated} />
+                <ProtectedNavRoute path="/devices" component={Devices} auth={isAuthenticated} />
                 <ProtectedNavRoute
-                  exact
-                  path="/dashboard"
-                  component={Dashboard}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  exact
-                  path="/devices"
-                  component={Devices}
-                  auth={isAuthenticated}
-                />
-                <ProtectedNavRoute
-                  exact
                   path="/devices/:deviceType(chromebooks|tablets)"
                   component={DeviceType2}
                   auth={isAuthenticated}
                   noPadding
                 />
                 <ProtectedNavRoute
-                  exact
                   path="/devices/:deviceType(chromebooks|tablets)/stats"
                   component={Stats}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
-                  exact
                   path="/devices/:deviceType(chromebooks|tablets)/logs"
                   component={DeviceLogs}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
-                  exact
                   path={`/devices/:deviceType(chromebooks|tablets)/:slug([a-z]{2}-\\d{2,4})`}
                   component={SingleDevice}
                   auth={isAuthenticated}
                 />
                 <ProtectedNavRoute
-                  exact
                   path="/textbooks"
                   component={TextbooksTest}
                   auth={isAuthenticated}
                   noPadding
                 />
                 <ProtectedNavRoute
-                  exact
                   path="/students"
                   component={Students2}
                   auth={isAuthenticated}
                   noPadding
                 />
               </UserContext.Provider>
-            </ToasterProvider>
-          </Switch>
-        </Router>
+            </Routes>
+          </Router>
+        </ToasterProvider>
       )}
     </>
   );

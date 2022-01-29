@@ -2,17 +2,15 @@
 import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
 import { useEffect, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDocTitle } from "../../../hooks";
 import { APIError } from "../../../types/apiResponses";
 import { Brand, Totals } from "../../../types/brand";
 import StatsTable from "./StatsTable";
 
 export default function Stats() {
-  const {
-    params: { deviceType },
-  } = useRouteMatch<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType)} Stats | Cornerstone App`);
+  const { deviceType } = useParams<{ deviceType: string }>();
+  useDocTitle(`${capitalize(deviceType!)} Stats | Cornerstone App`);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [totals, setTotals] = useState<Totals>();
   useEffect(() => {

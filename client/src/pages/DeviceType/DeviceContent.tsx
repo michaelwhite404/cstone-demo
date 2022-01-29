@@ -1,6 +1,6 @@
 import { Button } from "@blueprintjs/core";
 import React, { useContext, useEffect } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
 import { UserContext } from "../../App";
@@ -23,8 +23,9 @@ export default function DeviceContent({
   setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
   updateDevice: (id: string, newDevice: DeviceModel) => void;
 }) {
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  // const history = useHistory();
   const {
     checkouts,
     errors,
@@ -122,7 +123,7 @@ export default function DeviceContent({
       {user && ["Super Admin", "Admin"].includes(user.role) && (
         <div className="drawer-footer">
           <div className="drawer-footer-inner">
-            <Button intent="warning" onClick={() => history.push(`${url}/${device.slug}`)}>
+            <Button intent="warning" onClick={() => navigate(`${pathname}/${device.slug}`)}>
               {"See All Data >"}
             </Button>
           </div>

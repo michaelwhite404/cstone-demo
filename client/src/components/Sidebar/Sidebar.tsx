@@ -1,4 +1,4 @@
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import ProfileButton from "../ProfileButton/ProfileButton";
 import navigation from "../../navigation";
@@ -6,9 +6,9 @@ import { UserContext } from "../../App";
 import "./Sidebar.sass";
 
 export default function Sidebar() {
-  const match = useRouteMatch();
+  const location = useLocation();
   const { user } = useContext(UserContext);
-  const matchesURL = (url: string) => match.url.startsWith(url);
+  const matchesURL = (url: string) => location.pathname.startsWith(url);
   return (
     <div className="sidebar-container">
       <div className="sidebar">

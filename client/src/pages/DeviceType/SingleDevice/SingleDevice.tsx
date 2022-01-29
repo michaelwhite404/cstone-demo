@@ -20,17 +20,12 @@ import { Popover2 } from "@blueprintjs/popover2";
 import ResetBody from "./ResetBody";
 import { UserContext } from "../../../App";
 
-interface SingleDeviceParams {
-  deviceType: string;
-  slug: string;
-}
-
 type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 
 export default function SingleDevice() {
   const { user } = useContext(UserContext);
   // const { showToaster } = useToasterContext();
-  const { deviceType, slug } = useParams<SingleDeviceParams>();
+  const { deviceType, slug } = useParams<"deviceType" | "slug">();
   const {
     device,
     checkouts,
@@ -41,7 +36,7 @@ export default function SingleDevice() {
     updateableErrors,
     updateDeviceError,
     resetDevice,
-  } = useDevice(deviceType, slug);
+  } = useDevice(deviceType!, slug!);
   const [, setDocTitle] = useDocTitle(`${device?.name || ""} | Cornerstone App`);
   const [googleDevice, setGoogleDevice] = useState<ChromeOsDevice>();
   const [currentOsVersion, setCurrentOsVersion] = useState<string>();

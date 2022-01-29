@@ -4,7 +4,7 @@ import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../components/PageHeader";
@@ -15,12 +15,10 @@ import AddDevice from "./AddDevice";
 import DeviceContent from "./DeviceContent";
 
 export default function DeviceType() {
-  const {
-    params: { deviceType },
-    url,
-  } = useRouteMatch<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType)} | Cornerstone App`);
-  const history = useHistory();
+  const { pathname } = useLocation();
+  const { deviceType } = useParams<{ deviceType: string }>();
+  useDocTitle(`${capitalize(deviceType!)} | Cornerstone App`);
+  const navigate = useNavigate();
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceModel | undefined>(undefined);
@@ -100,7 +98,7 @@ export default function DeviceType() {
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
       params: {
-        deviceType: pluralize.singular(deviceType),
+        deviceType: pluralize.singular(deviceType!),
         sort: "name",
         limit: 2000,
       },
@@ -112,7 +110,7 @@ export default function DeviceType() {
     getDevicesByType();
   }, [getDevicesByType]);
 
-  const goTo = (value: string) => history.push(`${url}/${value}`);
+  const goTo = (value: string) => navigate(`${pathname}/${value}`);
 
   const drawerTitle = {
     Single: (
@@ -126,7 +124,7 @@ export default function DeviceType() {
       </div>
     ),
     List: "",
-    Add: `Add ${capitalize(pluralize.singular(deviceType))}`,
+    Add: `Add ${capitalize(pluralize.singular(deviceType!))}`,
   };
   const drawerContent = {
     Single: (
@@ -143,7 +141,7 @@ export default function DeviceType() {
     List: "",
     Add: (
       <AddDevice
-        deviceType={deviceType}
+        deviceType={deviceType!}
         setPageStatus={setPageStatus}
         setSelectedDevice={setSelectedDevice}
         getDevicesByType={getDevicesByType}
@@ -160,7 +158,7 @@ export default function DeviceType() {
     <Menu className="custom-pop">
       <MenuItem
         icon="add"
-        text={`Add ${capitalize(pluralize.singular(deviceType))}`}
+        text={`Add ${capitalize(pluralize.singular(deviceType!))}`}
         onClick={() => setPageStatus("Add")}
       />
       <MenuItem icon="th-list" text="Checkout Logs" onClick={() => goTo("logs")} />
@@ -170,7 +168,7 @@ export default function DeviceType() {
 
   return (
     <div>
-      <PageHeader text={deviceType}>
+      <PageHeader text={deviceType!}>
         <Popover2 content={ActionsMenu} placement="bottom-end" className="menu-popover">
           <Button icon="settings" text="Actions" large />
         </Popover2>

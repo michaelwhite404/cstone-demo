@@ -19,8 +19,8 @@ import DeviceData from "./DeviceData";
 
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
-  const { deviceType } = useParams<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType)} | Devices | Cornerstone App`);
+  const { deviceType } = useParams<"deviceType">();
+  useDocTitle(`${capitalize(deviceType!)} | Devices | Cornerstone App`);
   const [pageState, setPageState] = useState<"blank" | "device" | "add">("blank");
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
@@ -36,7 +36,7 @@ export default function DeviceType2() {
   const getDevicesByType = useCallback(async () => {
     const res = await axios.get("/api/v2/devices", {
       params: {
-        deviceType: pluralize.singular(deviceType),
+        deviceType: pluralize.singular(deviceType!),
         sort: "name",
         limit: 2000,
       },
@@ -97,7 +97,7 @@ export default function DeviceType2() {
           filterValue={filter}
         >
           <div className="side-table-top">
-            <PageHeader text={deviceType} />
+            <PageHeader text={deviceType!} />
             <div style={{ display: "flex", marginTop: 5 }}>
               <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
               {["Super Admin", "Admin"].includes(user!.role) && (
@@ -118,7 +118,7 @@ export default function DeviceType2() {
         {pageState === "blank" && (
           <EmptyState fadeIn>
             <div style={{ fontWeight: 500, textAlign: "center" }}>
-              Select a {singular(deviceType)}
+              Select a {singular(deviceType!)}
             </div>
           </EmptyState>
         )}
@@ -133,7 +133,7 @@ export default function DeviceType2() {
         )}
         {pageState === "add" && (
           <AddDevice
-            deviceType={deviceType}
+            deviceType={deviceType!}
             setPageStatus={setPageState}
             setSelectedDevice={setSelected}
             reFetchDevices={getDevicesByType}

@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { CheckoutLogModel } from "../../../../../src/types/models/checkoutLogTypes";
 import DeviceCheckoutStatusBadge, {
   CheckOutStatus,
@@ -13,10 +13,8 @@ import { APICheckoutLogResponse, APIError } from "../../../types/apiResponses";
 import "./DeviceLogs.sass";
 
 export default function DeviceLogs() {
-  const {
-    params: { deviceType },
-  } = useRouteMatch<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType)} Logs | Cornerstone App`);
+  const { deviceType } = useParams<{ deviceType: string }>();
+  useDocTitle(`${capitalize(deviceType!)} Logs | Cornerstone App`);
   const windowHeight = useWindowSize()[1];
   const [deviceLogs, setDeviceLogs] = useState<CheckoutLogModel[]>([]);
   useEffect(() => {
