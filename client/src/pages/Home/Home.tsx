@@ -20,13 +20,9 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      login(credentials.email, credentials.password)
-        .then(() => showToaster("Log in successful!", "success"))
-        .catch((err) => showToaster(err.message, "danger"));
-    } catch (err) {
-      showToaster(err.response.data.message, "danger");
-    }
+    login(credentials.email, credentials.password)
+      .then(() => showToaster("Log in successful!", "success"))
+      .catch((err) => showToaster(err.message, "danger"));
   };
 
   return (
@@ -42,7 +38,7 @@ export default function Home() {
             <Label>
               <span style={{ fontWeight: 500 }}>Sign in with Cornestone Gmail Account</span>
             </Label>
-            <Login setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+            <Login />
           </div>
           <span style={{ padding: "1rem 0" }}>
             <TextOverLine text="Or continue with" />

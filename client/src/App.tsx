@@ -28,8 +28,6 @@ import "./pages/Devices/Devices.sass";
 import AuthProvider from "./context/AuthProvider";
 
 function App() {
-  // const [loaded, setLoaded] = useState(false);
-  const { isAuthenticated } = useAuth();
   FocusStyleManager.onlyShowFocusOnTabs();
 
   return (
@@ -37,7 +35,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={isAuthenticated ? <AppContainer /> : <Home />}>
+            <Route path="/" element={<AppContainer />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="students" element={<Students2 />} />
               <Route path="textbooks" element={<TextbooksTest />} />

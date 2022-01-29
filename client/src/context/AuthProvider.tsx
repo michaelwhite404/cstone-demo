@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 import { EmployeeModel } from "../../../src/types/models/employeeTypes";
 
 interface AuthContextType {
@@ -9,6 +10,10 @@ interface AuthContextType {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   logout: (callback?: VoidFunction) => Promise<void>;
   login: (email: string, password: string) => Promise<EmployeeModel>;
+  loginFromGoogle: (
+    googleData: GoogleLoginResponse | GoogleLoginResponseOffline
+  ) => Promise<EmployeeModel | undefined>;
+  authLoaded: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -16,16 +21,20 @@ export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<EmployeeModel | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoaded, setAuthLoaded] = useState(false);
 
   useEffect(() => {
     fetchMe();
 
     async function fetchMe() {
-      try {
-        const res = await axios.get("/api/v2/users/me");
-        setIsAuthenticated(true);
-        setUser(res.data.data.user);
-      } catch (err) {}
+      axios
+        .get("/api/v2/users/me")
+        .then((res) => {
+          setIsAuthenticated(true);
+          setUser(res.data.data.user);
+        })
+        .catch()
+        .finally(() => setAuthLoaded(true));
     }
   }, []);
 
@@ -50,7 +59,30 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }
   };
 
-  const value = { user, isAuthenticated, setIsAuthenticated, logout, login, setUser };
+  const loginFromGoogle = async (googleData: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+    const data = googleData as GoogleLoginResponse;
+    // @ts-ignore
+    if (data.error === "popup_closed_by_user") return;
+    try {
+      const res = await axios.post("/api/v2/users/google", { token: data.tokenId });
+      setUser(res.data.data.employee);
+      setIsAuthenticated(true);
+      return res.data.data.employee as EmployeeModel;
+    } catch (err) {
+      throw Error(err.response.data.message as string);
+    }
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const value = {
+    user,
+    isAuthenticated,
+    setIsAuthenticated,
+    logout,
+    login,
+    setUser,
+    loginFromGoogle,
+    authLoaded,
+  };
+
+  return <AuthContext.Provider value={value}>{isAuthenticated && children}</AuthContext.Provider>;
 }
