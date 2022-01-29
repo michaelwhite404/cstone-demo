@@ -3,7 +3,7 @@ import axios from "axios";
 import capitalize from "capitalize";
 import pluralize from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import MainContent from "../../components/MainContent";
@@ -15,9 +15,14 @@ import { grades } from "../../utils/grades";
 
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
-  const { deviceType } = useParams<"deviceType">();
+  const { deviceType, slug } = useParams<"deviceType" | "slug">();
+  const location = useLocation();
   useDocTitle(`${capitalize(deviceType!)} | Devices | Cornerstone App`);
-  const [pageState, setPageState] = useState<"blank" | "device" | "add">("blank");
+  const [pageState, setPageState] = useState<"blank" | "device" | "add">(() => {
+    if (location.pathname.endsWith("add")) return "add";
+    if (slug) return "device";
+    return "blank";
+  });
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
@@ -72,6 +77,7 @@ export default function DeviceType2() {
   const handleBack = () => {
     setPageState("blank");
     setSelected(undefined);
+    navigate(`/devices/${deviceType}`);
   };
 
   const handleAddClick = () => {

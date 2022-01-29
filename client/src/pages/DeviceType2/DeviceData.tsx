@@ -18,7 +18,7 @@ import { Button, ButtonGroup, IconName } from "@blueprintjs/core";
 import ResetBody from "../DeviceType/SingleDevice/ResetBody";
 import CreateError from "./Modals/CreateError";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 
 interface DeviceDataProps {
   device?: DeviceModel;
@@ -48,6 +48,7 @@ export default function DeviceData() {
     dialogControls,
     user,
     setSelectedDevice,
+    onBack,
   } = useOutletContext<DeviceDataProps>();
   const {
     device,
@@ -64,7 +65,6 @@ export default function DeviceData() {
     unassignDevice,
   } = useDevice(deviceType!, slug!);
   const { showToaster } = useToasterContext();
-  const navigate = useNavigate();
 
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
@@ -75,8 +75,6 @@ export default function DeviceData() {
     (!showData && ["Available", "Assigned"].includes(d?.status || dummyDevice.status));
   const showCheckin = device?.checkedOut;
   const showUpdateError = device?.status === "Broken" && updateableErrors.length > 0;
-
-  const handleBack = () => navigate(`/devices/${deviceType}`);
 
   const subHeadingButtons: SubHeadingButton[] = [
     {
@@ -122,7 +120,7 @@ export default function DeviceData() {
       <FadeIn>
         <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <BackButton onClick={handleBack} />
+            <BackButton onClick={onBack} />
             <span style={{ fontWeight: 500, fontSize: 16 }}>{d?.name || ""}</span>
           </div>
           {showData ? <DeviceStatusBadge status={device!.status} /> : <BadgeSkeleton />}

@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
 import { singular } from "pluralize";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import FadeIn from "../../components/FadeIn";
@@ -16,13 +16,13 @@ interface AddDeviceProps {
   setPageStatus: React.Dispatch<React.SetStateAction<"blank" | "device" | "add">>;
   setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
   reFetchDevices: () => Promise<void>;
+  onBack: VoidFunction;
 }
 
 export default function AddDevice() {
   const { showToaster } = useToasterContext();
-  const { deviceType, setPageStatus, setSelectedDevice, reFetchDevices } =
+  const { deviceType, setPageStatus, setSelectedDevice, reFetchDevices, onBack } =
     useOutletContext<AddDeviceProps>();
-  const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
     brand: "",
@@ -110,8 +110,6 @@ export default function AddDevice() {
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }
   };
-
-  const onBack = () => navigate(`/devices/${deviceType}`);
 
   const { directoryId, ...rest } = data;
   const submittable = Object.values(rest).every((value) => value.length > 0);
