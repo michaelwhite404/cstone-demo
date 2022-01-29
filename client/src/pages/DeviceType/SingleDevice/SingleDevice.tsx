@@ -1,11 +1,11 @@
 import axios from "axios";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { admin_directory_v1 } from "googleapis";
 import DeviceStatusBadge from "../../../components/Badges/DeviceStatusBagde";
 import PageHeader from "../../../components/PageHeader";
 import PaneHeader from "../../../components/PaneHeader/PaneHeader";
-import { useDevice, useDocTitle } from "../../../hooks";
+import { useAuth, useDevice, useDocTitle } from "../../../hooks";
 import { grades } from "../../../utils/grades";
 import Checkin from "../Checkin";
 // import useToasterContext from "../../../hooks/useToasterContext";
@@ -18,12 +18,11 @@ import UpdateError from "../UpdateError";
 import { Button, Dialog, Menu, MenuItem } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import ResetBody from "./ResetBody";
-import { UserContext } from "../../../App";
 
 type ChromeOsDevice = admin_directory_v1.Schema$ChromeOsDevice;
 
 export default function SingleDevice() {
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   // const { showToaster } = useToasterContext();
   const { deviceType, slug } = useParams<"deviceType" | "slug">();
   const {

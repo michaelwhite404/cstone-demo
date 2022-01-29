@@ -2,17 +2,16 @@ import { Dialog, Icon } from "@blueprintjs/core";
 import axios from "axios";
 import capitalize from "capitalize";
 import pluralize, { singular } from "pluralize";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
-import { UserContext } from "../../App";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
 import EmptyState from "../../components/EmptyState/EmptyState";
 import MainContent from "../../components/MainContent";
 import PageHeader from "../../components/PageHeader";
 import SideTable from "../../components/SideTable/SideTable";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
-import { useDocTitle, useWindowSize } from "../../hooks";
+import { useAuth, useDocTitle, useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
 import AddDevice from "./AddDevice";
 import DeviceData from "./DeviceData";
@@ -25,7 +24,7 @@ export default function DeviceType2() {
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   const [dialogState, setDialogState] = useState({
     open: false,
     title: "",

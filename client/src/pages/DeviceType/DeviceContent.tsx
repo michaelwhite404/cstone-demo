@@ -1,11 +1,10 @@
 import { Button } from "@blueprintjs/core";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../../src/types/models/errorLogTypes";
-import { UserContext } from "../../App";
 import PaneHeader from "../../components/PaneHeader/PaneHeader";
-import { useDevice } from "../../hooks";
+import { useAuth, useDevice } from "../../hooks";
 import { grades } from "../../utils/grades";
 import Checkin from "./Checkin";
 import Checkout from "./Checkout";
@@ -35,7 +34,7 @@ export default function DeviceContent({
     updateDeviceError,
     createDeviceError,
   } = useDevice(device.deviceType, device.slug);
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   useEffect(() => {}, []);
 
   const values = [

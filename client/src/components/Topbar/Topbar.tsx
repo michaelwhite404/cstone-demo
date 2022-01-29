@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Drawer, Icon } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
-import { UserContext } from "../../App";
 import ProfileMenu from "../ProfileMenu";
 import "./Topbar.sass";
 import Sidebar from "../Sidebar/Sidebar";
+import { useAuth } from "../../hooks";
 
 export default function Topbar() {
-  const { user } = useContext(UserContext);
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
 
   return (
