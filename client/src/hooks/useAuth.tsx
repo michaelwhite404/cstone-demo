@@ -1,9 +1,6 @@
-import axios from "axios";
+import React from "react";
+import { AuthContext } from "../context/AuthProvider";
 
 export default function useAuth() {
-  const logout = async () => {
-    await axios.post<{ status: "success" }>("/api/v2/users/logout");
-  };
-
-  return { logout };
+  return React.useContext(AuthContext);
 }

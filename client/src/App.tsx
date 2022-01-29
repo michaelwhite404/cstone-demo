@@ -19,73 +19,45 @@ import Stats from "./pages/DeviceType/Stats/Stats";
 import DeviceLogs from "./pages/DeviceType/DeviceLogs/DeviceLogs";
 import SingleDevice from "./pages/DeviceType/SingleDevice/SingleDevice";
 import { ToasterProvider } from "./context/ToasterContext";
-import { useWindowSize } from "./hooks";
+import { useAuth, useWindowSize } from "./hooks";
 import Topbar from "./components/Topbar/Topbar";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
 import DeviceType2 from "./pages/DeviceType2/DeviceType2";
 import Students2 from "./pages/Students2/Students2";
 import "./pages/Devices/Devices.sass";
-
-interface UserContextProps {
-  user: EmployeeModel | null;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const UserContext = createContext<UserContextProps>({} as UserContextProps);
+import AuthProvider from "./context/AuthProvider";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [user, setUser] = useState<EmployeeModel | null>(null);
-
+  // const [loaded, setLoaded] = useState(false);
+  const { setIsAuthenticated, setUser, isAuthenticated } = useAuth();
   FocusStyleManager.onlyShowFocusOnTabs();
 
-  useEffect(() => {
-    fetchMe();
-
-    async function fetchMe() {
-      try {
-        const res = await axios.get("/api/v2/users/me");
-        if (res.data.status === "success") {
-          setIsAuthenticated(true);
-          setUser(res.data.data.user);
-        }
-      } catch (err) {
-      } finally {
-        setLoaded(true);
-      }
-    }
-  }, []);
-
   return (
-    <>
-      {loaded && (
-        <ToasterProvider>
-          <UserContext.Provider value={{ user, setIsAuthenticated }}>
-            <Router>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    isAuthenticated ? (
-                      <AppContainer />
-                    ) : (
-                      <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
-                    )
-                  }
-                >
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="students" element={<Students2 />} />
-                  <Route path="textbooks" element={<TextbooksTest />} />
-                  <Route path="devices" element={<Devices />} />
-                  <Route path="/devices/:deviceType" element={<DeviceType2 />} />
-                </Route>
-              </Routes>
-            </Router>
-          </UserContext.Provider>
-        </ToasterProvider>
-      )}
-    </>
+    <ToasterProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isAuthenticated ? (
+                  <AppContainer />
+                ) : (
+                  <Home setIsAuthenticated={setIsAuthenticated} setUser={setUser} />
+                )
+              }
+            >
+              {/* <Route index element={} /> */}
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="students" element={<Students2 />} />
+              <Route path="textbooks" element={<TextbooksTest />} />
+              <Route path="devices" element={<Devices />} />
+              <Route path="/devices/:deviceType" element={<DeviceType2 />} />
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ToasterProvider>
   );
 }
 
