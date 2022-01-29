@@ -19,9 +19,9 @@ import DeviceType2 from "./pages/DeviceType2/DeviceType2";
 import Students2 from "./pages/Students2/Students2";
 import "./pages/Devices/Devices.sass";
 import AuthProvider from "./context/AuthProvider";
-import EmptyState from "./components/EmptyState/EmptyState";
 import AddDevice from "./pages/DeviceType2/AddDevice";
 import DeviceData from "./pages/DeviceType2/DeviceData";
+import DeviceEmptyState from "./pages/DeviceType2/DeviceEmptyState";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -38,15 +38,7 @@ function App() {
               <Route path="textbooks" element={<TextbooksTest />} />
               <Route path="devices" element={<Devices />} />
               <Route path="/devices/:deviceType" element={<DeviceType2 />}>
-                <Route
-                  index
-                  element={
-                    <EmptyState fadeIn>
-                      <div style={{ fontWeight: 500, textAlign: "center" }}>Select a device</div>
-                    </EmptyState>
-                  }
-                />
-
+                <Route index element={<DeviceEmptyState />} />
                 <Route path="add" element={<AddDevice />} />
                 <Route path=":slug" element={<DeviceData />} />
               </Route>

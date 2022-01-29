@@ -50,12 +50,6 @@ export default function DeviceType2() {
     getDevicesByType();
   }, [getDevicesByType]);
 
-  // useEffect(() => {
-  //   if (slug) {
-  //     axios.get
-  //   }
-  // })
-
   const data = useMemo(() => devices, [devices]);
   const columns = useMemo(
     () => [

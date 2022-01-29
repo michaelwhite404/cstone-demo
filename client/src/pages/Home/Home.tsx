@@ -75,7 +75,10 @@ export default function Home() {
           </div>
           <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
-        <div className="login-image-banner" style={{ backgroundImage: "url(Lions+Den_18.jpeg)" }} />
+        <div
+          className="login-image-banner"
+          style={{ backgroundImage: "url(/Lions+Den_18.jpeg)" }}
+        />
       </Div100vh>
     </div>
   );
