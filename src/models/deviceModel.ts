@@ -1,5 +1,6 @@
 import { Schema, model, Model, Types, ObjectId } from "mongoose";
 import slugify from "slugify";
+import autopopulate from "mongoose-autopopulate";
 import { DeviceDocument } from "../types/models/deviceTypes";
 import AppError from "../utils/appError";
 import FKHelper from "./helpers/foreignKeyHelper";
@@ -80,7 +81,11 @@ deviceSchema.virtual("checkouts", {
   ref: "DeviceLog",
   foreignField: "device",
   localField: "_id",
-  options: { sort: { checkOutDate: -1 } },
+  options: {
+    sort: { checkOutDate: -1 },
+    populate: { path: "deviceUser teacherCheckOut teacherCheckIn", select: "fullName" },
+  },
+  autopopulate: true,
 });
 
 deviceSchema.virtual("errorLogs", {
@@ -88,7 +93,10 @@ deviceSchema.virtual("errorLogs", {
   foreignField: "device",
   localField: "_id",
   options: { sort: { createdAt: -1 } },
+  autopopulate: true,
 });
+
+deviceSchema.plugin(autopopulate);
 
 deviceSchema.pre<DeviceDocument>("save", function (next) {
   if (this.isModified("dueDate") && this.dueDate !== undefined) {

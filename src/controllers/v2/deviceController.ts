@@ -1,13 +1,12 @@
 import capitalize from "capitalize";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { google } from "googleapis";
-import { PopulateOptions, Types } from "mongoose";
+import { Types } from "mongoose";
 import CheckoutLog from "../../models/checkoutLogModel";
 import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
 import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
-import APIFeatures from "../../utils/apiFeatures";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import { googleAuthJWT } from "./authController";
@@ -20,30 +19,7 @@ const pop = { path: "lastUser teacherCheckOut", select: "fullName grade email" }
 /** `GET` - Gets all devices
  *  - All authorized users can access this route
  */
-export const getAllDevices: RequestHandler = catchAsync(async (req: Request, res: Response) => {
-  const query = Model.find({});
-  const popArray: PopulateOptions[] = [pop];
-  const queryPop = (req.query.populate as string)?.split(",") || [];
-  queryPop.includes("checkouts") &&
-    popArray.push({
-      path: "checkouts",
-      populate: { path: "deviceUser teacherCheckOut teacherCheckIn", select: "fullName" },
-    });
-  queryPop.includes("errorLogs") && popArray.push({ path: "errorLogs" });
-  query.populate(popArray);
-  const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
-  const devices = await features.query;
-
-  // SEND RESPONSE
-  res.status(200).json({
-    status: "success",
-    requestedAt: req.requestTime,
-    results: devices.length,
-    data: {
-      devices,
-    },
-  });
-});
+export const getAllDevices: RequestHandler = factory.getAll(Model, `${key}s`, {}, pop);
 /** `GET` - Gets a single device
  *  - All authorized users can access this route
  */
