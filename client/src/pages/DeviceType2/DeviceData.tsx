@@ -18,9 +18,10 @@ import { Button, ButtonGroup, IconName } from "@blueprintjs/core";
 import ResetBody from "../DeviceType/SingleDevice/ResetBody";
 import CreateError from "./Modals/CreateError";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 interface DeviceDataProps {
-  device: DeviceModel;
+  device?: DeviceModel;
   /** Callback function to run when back button is pressed */
   onBack?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   reFetchDevices: () => Promise<void>;
@@ -29,6 +30,7 @@ interface DeviceDataProps {
     close: () => void;
   };
   user: EmployeeModel;
+  setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
 }
 interface SubHeadingButton {
   text: string;
@@ -37,14 +39,16 @@ interface SubHeadingButton {
   show?: boolean;
 }
 
-export default function DeviceData({
-  device: d,
-  onBack,
-  reFetchDevices,
-  dialogControls,
-  user,
-}: DeviceDataProps) {
+export default function DeviceData() {
   const [showData, setShowData] = useState(false);
+  const { deviceType, slug } = useParams<"deviceType" | "slug">();
+  const {
+    device: d,
+    reFetchDevices,
+    dialogControls,
+    user,
+    setSelectedDevice,
+  } = useOutletContext<DeviceDataProps>();
   const {
     device,
     deviceLoaded,
@@ -58,16 +62,21 @@ export default function DeviceData({
     createDeviceError,
     assignDevice,
     unassignDevice,
-  } = useDevice(d.deviceType, d.slug);
+  } = useDevice(deviceType!, slug!);
   const { showToaster } = useToasterContext();
+  const navigate = useNavigate();
+
   useEffect(() => {
     deviceLoaded ? setTimeout(() => setShowData(true), 750) : setShowData(false);
   }, [deviceLoaded]);
+  useEffect(() => setSelectedDevice(device), [device, setSelectedDevice]);
   const showCheckout =
     ["Available", "Assigned"].includes(device?.status || "") ||
-    (!showData && ["Available", "Assigned"].includes(d.status));
+    (!showData && ["Available", "Assigned"].includes(d?.status || dummyDevice.status));
   const showCheckin = device?.checkedOut;
   const showUpdateError = device?.status === "Broken" && updateableErrors.length > 0;
+
+  const handleBack = () => navigate(`/devices/${deviceType}`);
 
   const subHeadingButtons: SubHeadingButton[] = [
     {
@@ -75,7 +84,7 @@ export default function DeviceData({
       icon: "reset",
       onClick: () =>
         dialogControls.open(
-          `Reset ${d.name}`,
+          `Reset ${device?.name || ""}`,
           400,
           <ResetBody close={dialogControls.close} resetDevice={resetDevice} />
         ),
@@ -105,7 +114,7 @@ export default function DeviceData({
         showToaster("Device unassigned!", "success");
         reFetchDevices();
       })
-      .catch((err) => showToaster(err.response.data.message, "danger"));
+      .catch((err) => showToaster(err.message, "danger"));
   };
 
   return (
@@ -113,8 +122,8 @@ export default function DeviceData({
       <FadeIn>
         <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <BackButton onClick={onBack} />
-            <span style={{ fontWeight: 500, fontSize: 16 }}>{d.name}</span>
+            <BackButton onClick={handleBack} />
+            <span style={{ fontWeight: 500, fontSize: 16 }}>{d?.name || ""}</span>
           </div>
           {showData ? <DeviceStatusBadge status={device!.status} /> : <BadgeSkeleton />}
         </MainContent.Header>
@@ -129,7 +138,11 @@ export default function DeviceData({
         )}
         <div style={{ overflowY: "scroll" }}>
           <div>
-            <BasicInfoSection device={device} showData={showData} originalDevice={d} />
+            <BasicInfoSection
+              device={device}
+              showData={showData}
+              originalDevice={d || dummyDevice}
+            />
             {showUpdateError && (
               <UpdateErrorSection
                 errors={updateableErrors}
@@ -159,7 +172,7 @@ export default function DeviceData({
             <CheckoutLogSection
               checkouts={checkouts}
               showData={showData}
-              originalStatus={d.status}
+              originalStatus={d?.status || "Checked Out"}
             />
             <ErrorLogSection errors={errors} showData={showData} />
           </div>
@@ -173,3 +186,19 @@ export default function DeviceData({
     </MainContent.InnerWrapper>
   );
 }
+
+const dummyDevice: DeviceModel = {
+  _id: "6008a0299eb4415e7cbc8042",
+  status: "Available",
+  checkedOut: false,
+  name: "FC 01",
+  brand: "HP",
+  model: "Fake Chromebook",
+  serialNumber: "1122334455",
+  macAddress: "11:22:33:44:55:66",
+  deviceType: "chromebook",
+  slug: "fc-01",
+  lastCheckOut: new Date("2022-01-26T06:50:11.913+00:00"),
+  lastUser: "5f43ba6edca18d644cbf6cf1",
+  lastCheckIn: new Date("2022-01-26T06:50:18.372+00:00"),
+};

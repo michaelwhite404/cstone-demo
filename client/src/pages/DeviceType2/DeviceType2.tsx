@@ -1,20 +1,17 @@
 import { Dialog, Icon } from "@blueprintjs/core";
 import axios from "axios";
 import capitalize from "capitalize";
-import pluralize, { singular } from "pluralize";
+import pluralize from "pluralize";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import DeviceStatusBadge from "../../components/Badges/DeviceStatusBagde";
-import EmptyState from "../../components/EmptyState/EmptyState";
 import MainContent from "../../components/MainContent";
 import PageHeader from "../../components/PageHeader";
 import SideTable from "../../components/SideTable/SideTable";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
 import { useAuth, useDocTitle, useWindowSize } from "../../hooks";
 import { grades } from "../../utils/grades";
-import AddDevice from "./AddDevice";
-import DeviceData from "./DeviceData";
 
 export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
@@ -24,6 +21,7 @@ export default function DeviceType2() {
   const [selected, setSelected] = useState<DeviceModel>();
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [dialogState, setDialogState] = useState({
     open: false,
@@ -47,6 +45,12 @@ export default function DeviceType2() {
     getDevicesByType();
   }, [getDevicesByType]);
 
+  // useEffect(() => {
+  //   if (slug) {
+  //     axios.get
+  //   }
+  // })
+
   const data = useMemo(() => devices, [devices]);
   const columns = useMemo(
     () => [
@@ -63,6 +67,7 @@ export default function DeviceType2() {
   const handleSelection = (device: DeviceModel) => {
     setSelected(device);
     setPageState("device");
+    navigate(`/devices/${deviceType}/${device.slug}`);
   };
   const handleBack = () => {
     setPageState("blank");
@@ -72,6 +77,7 @@ export default function DeviceType2() {
   const handleAddClick = () => {
     setPageState("add");
     setSelected(undefined);
+    navigate(`/devices/${deviceType}/add`);
   };
 
   const dialogControls = {
@@ -114,30 +120,18 @@ export default function DeviceType2() {
         </SideTable>
       )}
       <MainContent>
-        {pageState === "blank" && (
-          <EmptyState fadeIn>
-            <div style={{ fontWeight: 500, textAlign: "center" }}>
-              Select a {singular(deviceType!)}
-            </div>
-          </EmptyState>
-        )}
-        {pageState === "device" && selected && (
-          <DeviceData
-            device={selected}
-            onBack={handleBack}
-            reFetchDevices={getDevicesByType}
-            dialogControls={dialogControls}
-            user={user!}
-          />
-        )}
-        {pageState === "add" && (
-          <AddDevice
-            deviceType={deviceType!}
-            setPageStatus={setPageState}
-            setSelectedDevice={setSelected}
-            reFetchDevices={getDevicesByType}
-          />
-        )}
+        <Outlet
+          context={{
+            device: selected,
+            onBack: handleBack,
+            reFetchDevices: getDevicesByType,
+            dialogControls,
+            user,
+            deviceType,
+            setPageState,
+            setSelectedDevice: setSelected,
+          }}
+        />
       </MainContent>
       <Dialog
         isOpen={dialogState.open}

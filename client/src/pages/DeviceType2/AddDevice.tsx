@@ -2,7 +2,8 @@ import { Button, InputGroup, Label } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
 import { singular } from "pluralize";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import FadeIn from "../../components/FadeIn";
@@ -17,14 +18,11 @@ interface AddDeviceProps {
   reFetchDevices: () => Promise<void>;
 }
 
-export default function AddDevice({
-  deviceType,
-  setPageStatus,
-  setSelectedDevice,
-  reFetchDevices,
-}: AddDeviceProps) {
+export default function AddDevice() {
   const { showToaster } = useToasterContext();
-
+  const { deviceType, setPageStatus, setSelectedDevice, reFetchDevices } =
+    useOutletContext<AddDeviceProps>();
+  const navigate = useNavigate();
   const [data, setData] = useState({
     name: "",
     brand: "",
@@ -33,6 +31,8 @@ export default function AddDevice({
     macAddress: "",
     directoryId: "",
   });
+
+  useEffect(() => setSelectedDevice(undefined), [setSelectedDevice]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -111,7 +111,7 @@ export default function AddDevice({
     }
   };
 
-  const onBack = () => setPageStatus("blank");
+  const onBack = () => navigate(`/devices/${deviceType}`);
 
   const { directoryId, ...rest } = data;
   const submittable = Object.values(rest).every((value) => value.length > 0);

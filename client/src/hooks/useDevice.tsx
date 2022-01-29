@@ -46,7 +46,6 @@ export default function useDevice(deviceType: string, slug: string) {
       setDeviceLoaded(true);
       return devices[0];
     }
-    throw new Error("Device Not Found");
   };
 
   const checkoutDevice = async (studentId: string) => {
