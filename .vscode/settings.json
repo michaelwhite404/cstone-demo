@@ -1,0 +1,34 @@
+{
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "comment",
+          "keyword",
+          "storage.modifier",
+          "storage.type.class.js",
+          "storage.type.js",
+          "keyword.control.import",
+          "storage.type.class",
+          "storage.type.tsx",
+          "keyword.operator.new",
+          "meta.type.parameters.ts",
+          "storage.type.interface",
+          "storage.type.namespace.ts"
+        ],
+        "settings": {
+          "fontStyle": "italic bold"
+        }
+      },
+      {
+        "scope": [
+          "keyword.control.conditional",
+          "keyword.operator"
+        ],
+        "settings": {
+          "fontStyle": ""
+        }
+      }
+    ]
+  }
+}
