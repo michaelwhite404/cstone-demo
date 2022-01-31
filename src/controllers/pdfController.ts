@@ -5,7 +5,7 @@ import CheckoutLog from "../models/checkoutLogModel";
 import PopOptions from "../types/popOptions";
 import APIFeatures from "../utils/apiFeatures";
 import catchAsync from "../utils/catchAsync";
-import { TDocumentDefinitions } from "pdfmake/interfaces";
+import { TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
 export const getDeviceLogsPDF = catchAsync(async (req: Request, res: Response) => {
   const filter = {};
@@ -67,6 +67,50 @@ export const getDeviceLogsPDF = catchAsync(async (req: Request, res: Response) =
   doc.end();
   res.header("Content-Type", "application/pdf");
   res.header("Content-Disposition", "inline;filename=device-logs.pdf");
+  res.status(200);
+  doc.pipe(res);
+});
+
+export const createAveryLabel = catchAsync(async (_: Request, res: Response) => {
+  /* const repeat = <T>(num: number, data: T): T[] => {
+    return Array.from<T>({ length: num }).fill(data);
+  }; */
+
+  var fonts = {
+    Roboto: {
+      normal: Buffer.from(vfsFonts.pdfMake.vfs["Roboto-Regular.ttf"], "base64"),
+      bold: Buffer.from(vfsFonts.pdfMake.vfs["Roboto-Medium.ttf"], "base64"),
+    },
+  };
+
+  const docDefinitions = {} as TDocumentDefinitions;
+  docDefinitions.pageMargins = [13.5, 36];
+  docDefinitions.pageSize = { width: 8.5 * 72, height: 11 * 72 };
+  docDefinitions.content = [];
+  const content = docDefinitions.content;
+  content.push({
+    table: {
+      dontBreakRows: true,
+      widths: [189, 9, 189, 9, 189].map((l) => l - 10),
+      heights: 72 - 6,
+      body: Array.from({ length: 20 }).map(
+        () =>
+          [
+            { qr: "Label 1", fit: "50", foreground: "#2781f4" },
+            "",
+            { qr: "Label 2", fit: "50", foreground: "#2781f4" },
+            "",
+            { qr: "Label 3", fit: "50", foreground: "#2781f4" },
+          ] as TableCell[]
+      ),
+    },
+  });
+  // content.push({ qr: "Text Me Now!" });
+  const pdfPrinter = new PDFPrinter(fonts);
+  const doc = pdfPrinter.createPdfKitDocument(docDefinitions);
+  doc.end();
+  res.header("Content-Type", "application/pdf");
+  res.header("Content-Disposition", "inline;filename=labels.pdf");
   res.status(200);
   doc.pipe(res);
 });

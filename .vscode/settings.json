@@ -10,7 +10,7 @@
           "storage.type.js",
           "keyword.control.import",
           "storage.type.class",
-          "storage.type.tsx",
+          "storage.type.ts",
           "keyword.operator.new",
           "meta.type.parameters.ts",
           "storage.type.interface",
