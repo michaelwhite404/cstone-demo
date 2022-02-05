@@ -1,5 +1,6 @@
 declare namespace Express {
   import { ObjectId } from "mongoose";
+  import { Send } from "express";
   export interface Request {
     /** Time of the request */
     requestTime: string;
@@ -21,5 +22,9 @@ declare namespace Express {
         name: string;
       }[];
     };
+  }
+
+  export interface Response {
+    sendJson(statusCode: number, dataObject: any): Express.Response;
   }
 }

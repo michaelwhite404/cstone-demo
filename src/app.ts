@@ -40,8 +40,15 @@ app.get("*", function (req, res, next) {
 // Set security HTTP headers
 // app.use(helmet());
 
-app.use((req, _, next) => {
+app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  res.sendJson = (statusCode: number, dataObject: any) => {
+    return res.status(statusCode).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      data: dataObject,
+    });
+  };
   next();
 });
 
