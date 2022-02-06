@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { EmployeeModel } from "../../../src/types/models/employeeTypes";
 import Home from "../pages/Home/Home";
 
@@ -25,6 +25,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchMe();
@@ -36,11 +37,20 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
           setUser(res.data.data.user);
           setIsAuthenticated(true);
         })
-        .catch(() => navigate("/", { replace: true }))
+        .catch(() => navigate("/", { replace: true, state: { afterLogin: location.pathname } }))
         .finally(() => setAuthLoaded(true));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleAuthSuccess = () => {
+    setTimeout(() => {
+      setIsAuthenticated(true);
+      if ((location.state as any)?.afterLogin) {
+        navigate((location.state as any)?.afterLogin, { replace: true });
+      }
+    }, 1250);
+  };
 
   const logout = async (callback?: VoidFunction) => {
     try {
@@ -59,7 +69,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const res = await axios.post("/api/v2/users/login", { email, password });
       setUser(res.data.data.employee);
-      setTimeout(() => setIsAuthenticated(true), 1250);
+      handleAuthSuccess();
       return res.data.data.employee as EmployeeModel;
     } catch (err) {
       throw Error(err.response.data.message as string);
@@ -73,7 +83,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const res = await axios.post("/api/v2/users/google", { token: data.tokenId });
       setUser(res.data.data.employee);
-      setTimeout(() => setIsAuthenticated(true), 1250);
+      handleAuthSuccess();
       return res.data.data.employee as EmployeeModel;
     } catch (err) {
       throw Error(err.response.data.message as string);
