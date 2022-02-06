@@ -307,3 +307,24 @@ const sendJson = (response: Response, statusCode: number, dataObject: any) => {
     data: dataObject,
   });
 };
+
+// const policy = google.chromepolicy({
+//   version: "v1",
+//   auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
+// });
+
+// policy.customers.policies.orgunits.batchModify({
+//   customer: "",
+//   requestBody: {
+//     requests: [
+//       {
+//         policyTargetKey: {
+//           targetResource: "orgunits/03ph8a2z39jpy3t",
+//         },
+//         policyValue: {
+//           policySchema: "chrome.users.URLBlocking",
+//         },
+//       },
+//     ],
+//   },
+// });

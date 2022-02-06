@@ -8,7 +8,7 @@ export default function Login() {
     googleData: GoogleLoginResponse | GoogleLoginResponseOffline
   ): Promise<void> => {
     loginFromGoogle(googleData)
-      .then(() => showToaster("Log in successful!", "success"))
+      .then((employee) => employee && showToaster("Log in successful!", "success"))
       .catch((err) => showToaster(err.message, "danger"));
   };
 

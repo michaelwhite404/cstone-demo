@@ -8,7 +8,7 @@ const admin = google.admin({
   auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
 });
 
-export const getAllOrgUnits = catchAsync(async (req, res) => {
+export const getAllOrgUnits = catchAsync(async (_, res) => {
   const result = await admin.orgunits.list({
     customerId: process.env.GOOGLE_CUSTOMER_ID,
     type: "ALL",
@@ -19,7 +19,7 @@ export const getAllOrgUnits = catchAsync(async (req, res) => {
   };
 
   function getNestedChildren(arr: OrgUnit[], parent: string) {
-    var out = [];
+    var out: OrgUnit[] = [];
     for (var i in arr) {
       if (arr[i].parentOrgUnitPath == parent) {
         var children = getNestedChildren(arr, arr[i].orgUnitPath!);
@@ -34,9 +34,5 @@ export const getAllOrgUnits = catchAsync(async (req, res) => {
 
   const orgUnits = getNestedChildren(result.data.organizationUnits!, "/");
 
-  res.status(200).json({
-    status: "success",
-    requestedAt: req.requestTime,
-    orgUnits,
-  });
+  res.sendJson(200, { orgUnits });
 });
