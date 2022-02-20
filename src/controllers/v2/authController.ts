@@ -9,7 +9,7 @@ import { EmployeeModel } from "../../types/models/employeeTypes";
 import AppError from "../../utils/appError";
 import catchAsync from "../../utils/catchAsync";
 import makePassword from "../../utils/makePassword";
-import { createSendToken } from "../v1/authController";
+import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 
 /**
  * `POST` - Creates new employee
@@ -113,3 +113,5 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   // GRANT ACCESS TO PROTECTED ROUTE
   next();
 });
+
+export const restrictTo = v1restrictTo;

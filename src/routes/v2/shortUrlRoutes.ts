@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as v2auth from "../../controllers/v2/authController";
-import * as shortUrlController from "../../controllers/v2/shortUrlController";
+import { shortUrlController } from "@controllers/v2";
+import * as v2auth from "@controllers/v2/authController";
 
 const router = Router();
 

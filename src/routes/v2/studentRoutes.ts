@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { protect } from "../../controllers/v1/authController";
-import * as studentController from "../../controllers/v2/studentController";
+import { studentController, authController } from "@controllers/v2";
+const { protect } = authController;
 
 const studentRouter = Router();
 

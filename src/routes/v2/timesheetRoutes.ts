@@ -1,13 +1,15 @@
 import { Router } from "express";
-import { protect } from "../../controllers/v2/authController";
-import {
+import { authController, timesheetController } from "@controllers/v2";
+
+const { protect } = authController;
+const {
   approveTimesheets,
   createTimeSheetEntry,
   deleteTimesheetEntry,
   getAllTimeSheetEntries,
   getOneTimesheetEntry,
   updateTimesheetEntry,
-} from "../../controllers/v2/timesheetController";
+} = timesheetController;
 
 const router = Router();
 

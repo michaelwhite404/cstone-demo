@@ -1,6 +1,5 @@
 import { Router } from "express";
-import * as deviceLogController from "../../controllers/v2/deviceLogController";
-import * as helpers from "../../controllers/v2/helpers";
+import { helpers, deviceLogController } from "@controllers/v2";
 
 const router = Router({ mergeParams: true });
 

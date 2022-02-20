@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Student from "../../models/studentModel";
 import catchAsync from "../../utils/catchAsync";
-import * as factory from "./handlerFactory";
+import { handlerFactory as factory } from ".";
 
 const Model = Student;
 const key = "student";

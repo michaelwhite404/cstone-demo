@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { restrictTo } from "../../controllers/v1/authController";
-import * as v2auth from "../../controllers/v2/authController";
-import { getAllOrgUnits } from "../../controllers/v2/orgUnitController";
+import { authController, orgUnitController } from "@controllers/v2";
+
+const { protect, restrictTo } = authController;
+const { getAllOrgUnits } = orgUnitController;
 
 const router = Router();
 
-router.use(v2auth.protect);
+router.use(protect);
 
 router.get("/", restrictTo("Super Admin"), getAllOrgUnits);
 

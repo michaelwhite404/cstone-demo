@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as textbookController from "../../controllers/v2/textbookController";
-import { protect } from "../../controllers/v1/authController";
+import { authController, textbookController } from "@controllers/v2";
 import singleTextbookRouter from "./singleTextbookRoutes";
+const { protect } = authController;
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import v1Router from "./v1/v1Routes";
-import v2Router from "./v2/v2Routes";
+import v2Router from "./v2";
 
 const router = Router();
 

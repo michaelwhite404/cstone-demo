@@ -1,6 +1,5 @@
 import { Router } from "express";
-import * as singleTextbookController from "../../controllers/v2/singleTextbookController";
-import * as helpers from "../../controllers/v2/helpers";
+import { singleTextbookController, helpers } from "@controllers/v2";
 
 const router = Router({ mergeParams: true });
 

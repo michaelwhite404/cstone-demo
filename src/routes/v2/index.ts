@@ -1,13 +1,16 @@
 import { Router } from "express";
 import textbookRouter from "./textbookRoutes";
+import singleTextbookRouter from "./singleTextbookRoutes";
 import studentRouter from "./studentRoutes";
 import employeeRouter from "./employeeRoutes";
 import deviceRouter from "./deviceRoutes";
+import deviceLogRouter from "./deviceLogRoutes";
+import deviceErrorLogRouter from "./deviceErrorLogRoutes";
 import roomRouter from "./roomRoutes";
 import timesheetRouter from "./timesheetRoutes";
 import departmentRouter from "./departmentRoutes";
 import orgUnitRouter from "./orgUnitRoutes";
-import shortUrlRouter from "./shorturlRoutes";
+import shortUrlRouter from "./shortUrlRoutes";
 
 const v2Router = Router();
 
@@ -24,4 +27,18 @@ v2Router.use("/short", shortUrlRouter);
 // v2Router.use("/reimbursement" /* , reimbursementRouter */);
 // v2Router.use("/ideas" /* ,ideaRouter */);
 
+export {
+  textbookRouter,
+  singleTextbookRouter,
+  studentRouter,
+  employeeRouter,
+  deviceRouter,
+  deviceLogRouter,
+  deviceErrorLogRouter,
+  roomRouter,
+  timesheetRouter,
+  departmentRouter,
+  orgUnitRouter,
+  shortUrlRouter,
+};
 export default v2Router;

@@ -1,10 +1,9 @@
 import { Router } from "express";
-import * as roomController from "../../controllers/v2/roomController";
-import * as v1auth from "../../controllers/v1/authController";
+import { roomController, authController } from "@controllers/v2";
 
 const router = Router();
 
-router.use(v1auth.protect);
+router.use(authController.protect);
 
 router.route("/").get(roomController.getAllRooms).post(roomController.createRoom);
 router

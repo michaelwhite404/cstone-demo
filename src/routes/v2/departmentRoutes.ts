@@ -1,12 +1,8 @@
 import { Router } from "express";
-import * as v1auth from "../../controllers/v1/authController";
-import * as v2auth from "../../controllers/v1/authController";
-import {
-  createDepartment,
-  getAllDepartments,
-  getOneDepartment,
-  updateDepartment,
-} from "../../controllers/v2/departmentController";
+import * as v1auth from "@controllers/v1/authController";
+import { authController as v2auth } from "@controllers/v2";
+import { departmentController as dC } from "@controllers/v2";
+const { createDepartment, getAllDepartments, getOneDepartment, updateDepartment } = dC;
 
 const router = Router();
 
