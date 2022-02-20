@@ -1,7 +1,6 @@
 // import Textbook from "../../models/textbookModel";
 import TextbookSet from "../../models/textbookSetModel";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
+import { AppError, catchAsync } from "@utils";
 import { Request, Response, NextFunction } from "express";
 import * as factory from "./handlerFactory";
 import Textbook from "../../models/textbookModel";

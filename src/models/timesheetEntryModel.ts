@@ -9,8 +9,7 @@ import {
   ValidateFn,
 } from "mongoose";
 import { TimesheetEntryDocument } from "../types/models/timesheetEntryTypes";
-import AppError from "../utils/appError";
-import datesAreOnSameDay from "../utils/datesAreOnSameDay";
+import { AppError, datesAreOnSameDay } from "@utils";
 import Department from "./DepartmentModel";
 import FKHelper from "./helpers/foreignKeyHelper";
 

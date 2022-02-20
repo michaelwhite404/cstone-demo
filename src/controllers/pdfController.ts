@@ -3,8 +3,7 @@ import PDFPrinter from "pdfmake";
 import vfsFonts from "pdfmake/build/vfs_fonts.js";
 import CheckoutLog from "../models/checkoutLogModel";
 import PopOptions from "../types/popOptions";
-import APIFeatures from "../utils/apiFeatures";
-import catchAsync from "../utils/catchAsync";
+import { APIFeatures, catchAsync } from "@utils";
 import { TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 
 export const getDeviceLogsPDF = catchAsync(async (req: Request, res: Response) => {

@@ -6,8 +6,7 @@ import TextbookLog from "../../models/textbookLogModel";
 import Textbook from "../../models/textbookModel";
 import { TextbookLogModel } from "../../types/models/textbookLogTypes";
 import { TextbookModel } from "../../types/models/textbookTypes";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
+import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 var isPlainObject = require("lodash.isplainobject");
 

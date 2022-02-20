@@ -1,6 +1,6 @@
 import { Schema, model, Types, Model } from "mongoose";
 import { TextbookDocument } from "../types/models/textbookTypes";
-import AppError from "../utils/appError";
+import { AppError } from "@utils";
 import TextbookSet from "./textbookSetModel";
 
 const textbookSchema: Schema<TextbookDocument, Model<TextbookDocument>> = new Schema({

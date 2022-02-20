@@ -1,7 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import Department from "../../models/DepartmentModel";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
+import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 
 const Model = Department;

@@ -1,12 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import TimesheetEntry from "../../models/timesheetEntryModel";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
-import distinctArrays from "../../utils/distinctArrays";
+import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import { TimesheetEntryDocument, TimesheetModel } from "../../types/models/timesheetEntryTypes";
 import pluralize from "pluralize";
-import APIFeatures from "../../utils/apiFeatures";
 
 const Model = TimesheetEntry;
 

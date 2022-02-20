@@ -2,10 +2,7 @@ import { Mongoose } from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import pluralize from "pluralize";
 import { ExtractDocumentModel } from "../../types/extract";
-import APIFeatures from "../../utils/apiFeatures";
-import catchAsync from "../../utils/catchAsync";
-import AppError from "../../utils/appError";
-import camelCaseToText from "../../utils/camelCaseToText";
+import { APIFeatures, AppError, camelCaseToText, catchAsync } from "@utils";
 import PopOptions from "../../types/popOptions";
 
 export const getAll = <T extends Mongoose["Model"]>(
@@ -15,13 +12,9 @@ export const getAll = <T extends Mongoose["Model"]>(
   populate?: PopOptions
 ) =>
   catchAsync(async (req: Request, res: Response) => {
-    const query = Model.find(filter)
+    const query = Model.find(filter);
     if (populate) query.populate(populate);
-    const features = new APIFeatures(query, req.query)
-      .filter()
-      .limitFields()
-      .sort()
-      .paginate();
+    const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
     const docs = await features.query;
 
     // SEND RESPONSE

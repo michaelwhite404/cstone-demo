@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import omitFromObject from "../../utils/omitFromObject";
+import { omitFromObject } from "@utils";
 
 export const omitFromBody = (...keys: string[]): RequestHandler => {
   return (req, _, next) => {

@@ -2,7 +2,7 @@ import { Schema, model, Model, Types, ObjectId } from "mongoose";
 import slugify from "slugify";
 import autopopulate from "mongoose-autopopulate";
 import { DeviceDocument } from "../types/models/deviceTypes";
-import AppError from "../utils/appError";
+import { AppError } from "@utils";
 import FKHelper from "./helpers/foreignKeyHelper";
 import Student from "./studentModel";
 

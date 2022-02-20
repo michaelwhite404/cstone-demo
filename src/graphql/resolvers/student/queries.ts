@@ -2,7 +2,7 @@ import { isValidObjectId } from "mongoose";
 import Student from "../../../models/studentModel";
 import { StudentModel } from "../../../types/models/studentTypes";
 import ParsedQueryString from "../../../types/queryString";
-import APIFeatures from "../../../utils/apiFeatures";
+import { APIFeatures } from "@utils";
 
 interface StudentsArgs {
   sort?: string;

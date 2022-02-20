@@ -7,8 +7,7 @@ import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
 import Student from "../../models/studentModel";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
+import { AppError, catchAsync } from "@utils";
 import { googleAuthJWT } from "./authController";
 import * as factory from "./handlerFactory";
 

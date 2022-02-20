@@ -1,5 +1,5 @@
 import ShortUrl from "../../models/shortUrlModel";
-import catchAsync from "../../utils/catchAsync";
+import { catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 
 const Model = ShortUrl;

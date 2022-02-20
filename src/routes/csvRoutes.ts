@@ -3,8 +3,7 @@ import { protect } from "../controllers/v2/authController";
 import { stringify } from "csv-stringify";
 import PopOptions from "../types/popOptions";
 import CheckoutLog from "../models/checkoutLogModel";
-import APIFeatures from "../utils/apiFeatures";
-import catchAsync from "../utils/catchAsync";
+import { APIFeatures, catchAsync } from "@utils";
 
 const router = Router();
 

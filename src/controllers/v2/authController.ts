@@ -6,9 +6,7 @@ import { promisify } from "util";
 import Employee from "../../models/employeeModel";
 import DecodedPayload from "../../types/decodedPayload";
 import { EmployeeModel } from "../../types/models/employeeTypes";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
-import makePassword from "../../utils/makePassword";
+import { AppError, catchAsync, makePassword } from "@utils";
 import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 
 /**

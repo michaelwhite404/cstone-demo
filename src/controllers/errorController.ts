@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import mongoose, { CastError } from "mongoose";
 import { MongoError } from "mongodb";
-import AppError from "../utils/appError";
+import { AppError } from "@utils";
 
 type ValidationError = mongoose.Error.ValidationError;
 

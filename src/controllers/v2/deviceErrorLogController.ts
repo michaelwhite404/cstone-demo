@@ -1,8 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import Device from "../../models/deviceModel";
 import ErrorLog from "../../models/errorLogModel";
-import AppError from "../../utils/appError";
-import catchAsync from "../../utils/catchAsync";
+import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 
 const Model = ErrorLog;
