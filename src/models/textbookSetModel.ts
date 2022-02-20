@@ -1,6 +1,6 @@
 import { Schema, model, Model } from "mongoose";
 import slugify from "slugify";
-import { TextbookSetDocument } from "../types/models/textbookSetTypes";
+import { TextbookSetDocument } from "@@types/models";
 
 const textbookSetSchema: Schema<TextbookSetDocument, Model<TextbookSetDocument>> = new Schema(
   {

@@ -30,5 +30,8 @@
         }
       }
     ]
-  }
+  },
+  "exportall.config.folderListener": [
+    "/src/types/models"
+  ]
 }

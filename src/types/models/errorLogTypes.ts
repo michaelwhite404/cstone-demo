@@ -1,6 +1,5 @@
 import { Document } from "mongoose";
-import { DeviceModel } from "./deviceTypes";
-import { CheckoutLogModel } from "./checkoutLogTypes";
+import { CheckoutLogModel, DeviceModel } from ".";
 
 export interface ErrorLogModel {
   /** Id of the error log */

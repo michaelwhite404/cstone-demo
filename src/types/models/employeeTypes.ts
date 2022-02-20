@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { DepartmentModel } from "./departmentTypes";
+import { DepartmentModel } from ".";
 
 export interface EmployeeModel {
   /** Id of the user */

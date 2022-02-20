@@ -1,5 +1,5 @@
 import { Model, model, Schema } from "mongoose";
-import { RoomDocument } from "../types/models/roomTypes";
+import { RoomDocument } from "@@types/models";
 
 const roomSchema: Schema<RoomDocument, Model<RoomDocument>> = new Schema({
   roomNumber: {

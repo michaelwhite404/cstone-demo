@@ -1,5 +1,5 @@
 import { Model, model, Schema, Types } from "mongoose";
-import { CheckoutLogDocument } from "../types/models/checkoutLogTypes";
+import { CheckoutLogDocument } from "@@types/models";
 
 const checkoutLogSchema: Schema<CheckoutLogDocument, Model<CheckoutLogDocument>> = new Schema(
   {

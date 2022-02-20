@@ -1,4 +1,4 @@
-export default interface DecodedPayload {
+export interface DecodedPayload {
   /** Id of the user */
   id: string;
   /** Date the token was issued (seconds since Unix epoch) */
@@ -6,3 +6,5 @@ export default interface DecodedPayload {
   /** Date the token will expire (seconds since Unix epoch) */
   exp: number;
 }
+
+export default DecodedPayload;

@@ -2,7 +2,7 @@ import { Model, model, Schema } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import slugify from "slugify";
-import { EmployeeDocument } from "../types/models/employeeTypes";
+import { EmployeeDocument } from "@@types/models";
 
 const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema(
   {

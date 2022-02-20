@@ -1,13 +1,13 @@
 import { Request, Response, Router } from "express";
-import { protect } from "../controllers/v2/authController";
 import { stringify } from "csv-stringify";
-import PopOptions from "../types/popOptions";
-import CheckoutLog from "../models/checkoutLogModel";
+import { authController } from "@controllers/v2";
+import { PopOptions } from "@@types";
+import { CheckoutLog } from "@models";
 import { APIFeatures, catchAsync } from "@utils";
 
 const router = Router();
 
-router.use(protect);
+router.use(authController.protect);
 router.get(
   "/device-logs",
   catchAsync(async (req: Request, res: Response) => {

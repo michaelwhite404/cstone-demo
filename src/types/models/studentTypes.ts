@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { TextbookModel } from "./textbookTypes";
+import { TextbookModel } from ".";
 
 export interface StudentModel {
   /** Id of the student */

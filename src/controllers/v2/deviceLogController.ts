@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { CheckoutLog } from "@models";
-import PopOptions from "../../types/popOptions";
+import { PopOptions } from "@@types";
 import * as factory from "./handlerFactory";
 
 const Model = CheckoutLog;

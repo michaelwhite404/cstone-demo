@@ -1,7 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { TextbookSetModel } from "./textbookSetTypes";
-import { StudentModel } from "./studentTypes";
-import { EmployeeModel } from "./employeeTypes";
+import { TextbookSetModel, StudentModel, EmployeeModel } from ".";
 
 export interface TextbookModel {
   /** Id of the textbook */

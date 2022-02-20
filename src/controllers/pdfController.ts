@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import PDFPrinter from "pdfmake";
 import vfsFonts from "pdfmake/build/vfs_fonts.js";
-import CheckoutLog from "../models/checkoutLogModel";
-import PopOptions from "../types/popOptions";
+import { CheckoutLog } from "@models";
+import { PopOptions } from "@@types";
 import { APIFeatures, catchAsync } from "@utils";
 import { TableCell, TDocumentDefinitions } from "pdfmake/interfaces";
 

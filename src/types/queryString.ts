@@ -1,8 +1,10 @@
 import { ParsedQs } from "qs";
 
-export default interface ParsedQueryString extends ParsedQs {
+export interface ParsedQueryString extends ParsedQs {
   sort?: string;
   page?: string;
   limit?: string;
   fields?: string;
 }
+
+export default ParsedQueryString;

@@ -1,7 +1,7 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
 import Employee from "../models/employeeModel";
-import { EmployeeDocument } from "../types/models/employeeTypes";
+import { EmployeeDocument } from "@@types/models";
 
 passport.serializeUser((employee, done) => {
   // @ts-ignore

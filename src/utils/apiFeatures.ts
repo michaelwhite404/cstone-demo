@@ -1,5 +1,5 @@
 import { Document, Query } from "mongoose";
-import ParsedQueryString from "../types/queryString";
+import { ParsedQueryString } from "@@types";
 
 class APIFeatures<T extends Document> {
   query: Query<T[], any>;

@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import slugify from "slugify";
-import { StudentDocument } from "../types/models/studentTypes";
+import { StudentDocument } from "@@types/models";
 
 const studentSchema = new Schema(
   {

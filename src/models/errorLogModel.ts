@@ -1,7 +1,7 @@
 import { model, Model, Schema, Types } from "mongoose";
-import { ErrorLogDocument } from "../types/models/errorLogTypes";
+import { Device } from "@models";
 import { AppError } from "@utils";
-import Device from "./deviceModel";
+import { ErrorLogDocument } from "@@types/models";
 
 const errorLogSchema: Schema<ErrorLogDocument, Model<ErrorLogDocument>> = new Schema(
   {

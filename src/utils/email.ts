@@ -1,4 +1,4 @@
-import { EmployeeDocument } from "../types/models/employeeTypes";
+import { EmployeeDocument } from "@@types/models";
 
 const nodemailer = require("nodemailer");
 const pug = require("pug");

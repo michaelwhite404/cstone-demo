@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+import { FilterQuery, Query, UpdateQuery } from "mongoose";
+import pluralize from "pluralize";
 import { TimesheetEntry } from "@models";
 import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
-import { FilterQuery, Query, UpdateQuery } from "mongoose";
-import { TimesheetEntryDocument, TimesheetModel } from "../../types/models/timesheetEntryTypes";
-import pluralize from "pluralize";
+import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
 const Model = TimesheetEntry;
 

@@ -1,7 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { EmployeeModel } from "./employeeTypes";
-import { StudentModel } from "./studentTypes";
-import { TextbookModel, TextbookQuality } from "./textbookTypes";
+import { EmployeeModel, StudentModel, TextbookModel, TextbookQuality } from ".";
 
 export interface TextbookLogModel {
   /** Id of textbook log */

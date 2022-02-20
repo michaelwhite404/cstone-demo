@@ -1,7 +1,7 @@
 import { model, Schema, Types } from "mongoose";
 import nanoid from "nanoid";
-import { ShortUrlDocument } from "../types/models/shortUrlTypes";
 import validator from "validator";
+import { ShortUrlDocument } from "@@types/models";
 
 const shortUrlSchema = new Schema({
   full: {

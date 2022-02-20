@@ -1,9 +1,8 @@
 import { Mongoose } from "mongoose";
 import { NextFunction, Request, Response } from "express";
 import pluralize from "pluralize";
-import { ExtractDocumentModel } from "../../types/extract";
 import { APIFeatures, AppError, camelCaseToText, catchAsync } from "@utils";
-import PopOptions from "../../types/popOptions";
+import { ExtractDocumentModel, PopOptions } from "@@types";
 
 export const getAll = <T extends Mongoose["Model"]>(
   Model: T,

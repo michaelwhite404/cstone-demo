@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import isPlainObject from "lodash.isplainobject";
 import { Textbook, TextbookSet } from "@models";
 import { AppError, catchAsync } from "@utils";
+import { TextbookDocument } from "@@types/models";
 import * as factory from "./handlerFactory";
-import { TextbookDocument } from "../../types/models/textbookTypes";
-var isPlainObject = require("lodash.isplainobject");
 
 const Model = TextbookSet;
 const key = "textbook";

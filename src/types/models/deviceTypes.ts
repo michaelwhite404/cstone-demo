@@ -1,8 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { CheckoutLogModel } from "./checkoutLogTypes";
-import { EmployeeModel } from "./employeeTypes";
-import { ErrorLogModel } from "./errorLogTypes";
-import { StudentModel } from "./studentTypes";
+import { CheckoutLogModel, EmployeeModel, ErrorLogModel, StudentModel } from ".";
 
 export interface DeviceModel {
   /** Id of the device */

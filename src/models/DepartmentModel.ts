@@ -7,8 +7,8 @@ import {
   Types,
   ValidateFn,
 } from "mongoose";
-import { DepartmentDocument } from "../types/models/departmentTypes";
-import Employee from "./employeeModel";
+import { Employee } from "@models";
+import { DepartmentDocument } from "@@types/models";
 import FKHelper from "./helpers/foreignKeyHelper";
 
 const validEmployeeValidation = {

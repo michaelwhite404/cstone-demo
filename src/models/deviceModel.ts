@@ -1,10 +1,10 @@
 import { Schema, model, Model, Types, ObjectId } from "mongoose";
 import slugify from "slugify";
 import autopopulate from "mongoose-autopopulate";
-import { DeviceDocument } from "../types/models/deviceTypes";
+import { DeviceDocument } from "@@types/models";
+import { Student } from "@models";
 import { AppError } from "@utils";
 import FKHelper from "./helpers/foreignKeyHelper";
-import Student from "./studentModel";
 
 const deviceSchema = new Schema(
   {

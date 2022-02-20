@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { TextbookLogDocument } from "../types/models/textbookLogTypes";
+import { TextbookLogDocument } from "@@types/models";
 
 const textbookLogSchema = new Schema({
   textbook: {

@@ -3,9 +3,8 @@ import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import pluralize from "pluralize";
 import isPlainObject from "lodash.isplainobject";
 import { Student, Textbook, TextbookLog } from "@models";
-import { TextbookLogModel } from "../../types/models/textbookLogTypes";
-import { TextbookModel } from "../../types/models/textbookTypes";
 import { AppError, catchAsync } from "@utils";
+import { TextbookModel, TextbookLogModel } from "@@types/models";
 import * as factory from "./handlerFactory";
 
 const Model = Textbook;

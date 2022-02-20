@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import { promisify } from "util";
 import { Employee } from "@models";
-import DecodedPayload from "../../types/decodedPayload";
-import { EmployeeModel } from "../../types/models/employeeTypes";
+import { EmployeeModel } from "@@types/models";
+import { DecodedPayload } from "@@types";
 import { AppError, catchAsync, makePassword } from "@utils";
 import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 

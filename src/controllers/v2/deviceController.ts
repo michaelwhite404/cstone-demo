@@ -3,9 +3,9 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { google } from "googleapis";
 import { Types } from "mongoose";
 import { CheckoutLog, Device, ErrorLog, Student } from "@models";
-import { ErrorLogModel } from "../../types/models/errorLogTypes";
 import { AppError, catchAsync } from "@utils";
 import { authController } from "@controllers/v2";
+import { ErrorLogModel } from "@@types/models";
 import * as factory from "./handlerFactory";
 
 const { googleAuthJWT } = authController;

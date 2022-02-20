@@ -1,5 +1,5 @@
 import { PopulatedDoc } from "mongoose";
-import { EmployeeModel } from "./employeeTypes";
+import { EmployeeModel } from ".";
 
 export interface ShortUrlModel {
   _id: any;

@@ -1,6 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { DepartmentModel } from "./departmentTypes";
-import { EmployeeModel } from "./employeeTypes";
+import { DepartmentModel, EmployeeModel } from ".";
 
 export interface TimesheetModel {
   /** Id of the timesheet entry */

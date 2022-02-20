@@ -1,8 +1,5 @@
 import { Document } from "mongoose";
-import { DeviceModel } from "./deviceTypes";
-import { EmployeeModel } from "./employeeTypes";
-import { ErrorLogModel } from "./errorLogTypes";
-import { StudentModel } from "./studentTypes";
+import { DeviceModel, EmployeeModel, ErrorLogModel, StudentModel } from ".";
 
 export interface CheckoutLogModel {
   _id: any;
