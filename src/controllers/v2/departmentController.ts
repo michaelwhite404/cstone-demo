@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import Department from "../../models/DepartmentModel";
+import { Department } from "@models";
 import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 

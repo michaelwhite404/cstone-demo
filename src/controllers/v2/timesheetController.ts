@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import TimesheetEntry from "../../models/timesheetEntryModel";
+import { TimesheetEntry } from "@models";
 import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import { TimesheetEntryDocument, TimesheetModel } from "../../types/models/timesheetEntryTypes";

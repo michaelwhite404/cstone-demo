@@ -1,14 +1,12 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import pluralize from "pluralize";
-import Student from "../../models/studentModel";
-import TextbookLog from "../../models/textbookLogModel";
-import Textbook from "../../models/textbookModel";
+import isPlainObject from "lodash.isplainobject";
+import { Student, Textbook, TextbookLog } from "@models";
 import { TextbookLogModel } from "../../types/models/textbookLogTypes";
 import { TextbookModel } from "../../types/models/textbookTypes";
 import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
-var isPlainObject = require("lodash.isplainobject");
 
 const Model = Textbook;
 const key = "book";

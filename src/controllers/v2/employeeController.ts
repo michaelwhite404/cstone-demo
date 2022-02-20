@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import Employee from "../../models/employeeModel";
+import { Employee } from "@models";
 import * as factory from "./handlerFactory";
 
 const Model = Employee;

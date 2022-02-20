@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import CheckoutLog from "../../models/checkoutLogModel";
+import { CheckoutLog } from "@models";
 import PopOptions from "../../types/popOptions";
 import * as factory from "./handlerFactory";
 

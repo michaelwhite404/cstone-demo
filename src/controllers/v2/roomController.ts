@@ -1,4 +1,4 @@
-import Room from "../../models/roomModel";
+import { Room } from "@models";
 import * as factory from "./handlerFactory";
 
 const Model = Room;

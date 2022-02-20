@@ -1,4 +1,4 @@
-import ShortUrl from "../../models/shortUrlModel";
+import { ShortUrl } from "@models";
 import { catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 

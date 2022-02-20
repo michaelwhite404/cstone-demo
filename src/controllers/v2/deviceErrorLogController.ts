@@ -1,6 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import Device from "../../models/deviceModel";
-import ErrorLog from "../../models/errorLogModel";
+import { Device, ErrorLog } from "@models";
 import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
 

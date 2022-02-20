@@ -2,14 +2,13 @@ import capitalize from "capitalize";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { google } from "googleapis";
 import { Types } from "mongoose";
-import CheckoutLog from "../../models/checkoutLogModel";
-import Device from "../../models/deviceModel";
-import ErrorLog from "../../models/errorLogModel";
-import Student from "../../models/studentModel";
+import { CheckoutLog, Device, ErrorLog, Student } from "@models";
 import { ErrorLogModel } from "../../types/models/errorLogTypes";
 import { AppError, catchAsync } from "@utils";
-import { googleAuthJWT } from "./authController";
+import { authController } from "@controllers/v2";
 import * as factory from "./handlerFactory";
+
+const { googleAuthJWT } = authController;
 
 const Model = Device;
 const key = "device";
@@ -131,7 +130,7 @@ export const checkInDevice = catchAsync(async (req: Request, res: Response, next
 
     if (req.body.error === true || req.body.error === "true") {
       const { title, description } = req.body;
-      const errorData = {
+      const errorData: ErrorLogModel = {
         title,
         description,
         device: device._id,

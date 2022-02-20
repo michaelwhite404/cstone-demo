@@ -1,9 +1,7 @@
-// import Textbook from "../../models/textbookModel";
-import TextbookSet from "../../models/textbookSetModel";
-import { AppError, catchAsync } from "@utils";
 import { Request, Response, NextFunction } from "express";
+import { Textbook, TextbookSet } from "@models";
+import { AppError, catchAsync } from "@utils";
 import * as factory from "./handlerFactory";
-import Textbook from "../../models/textbookModel";
 import { TextbookDocument } from "../../types/models/textbookTypes";
 var isPlainObject = require("lodash.isplainobject");
 

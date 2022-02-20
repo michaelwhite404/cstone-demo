@@ -3,7 +3,7 @@ import { JWT, OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import { promisify } from "util";
-import Employee from "../../models/employeeModel";
+import { Employee } from "@models";
 import DecodedPayload from "../../types/decodedPayload";
 import { EmployeeModel } from "../../types/models/employeeTypes";
 import { AppError, catchAsync, makePassword } from "@utils";

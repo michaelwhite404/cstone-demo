@@ -1,6 +1,8 @@
 import { admin_directory_v1, google } from "googleapis";
 import { catchAsync } from "@utils";
-import { googleAuthJWT } from "./authController";
+import { authController } from ".";
+
+const { googleAuthJWT } = authController;
 
 const scopes = ["https://www.googleapis.com/auth/admin.directory.orgunit"];
 const admin = google.admin({
