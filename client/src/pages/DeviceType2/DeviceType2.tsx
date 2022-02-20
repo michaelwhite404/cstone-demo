@@ -18,12 +18,16 @@ export default function DeviceType2() {
   const { deviceType, slug } = useParams<"deviceType" | "slug">();
   const location = useLocation();
   useDocTitle(`${capitalize(deviceType!)} | Devices | Cornerstone App`);
-  const [pageState, setPageState] = useState<"blank" | "device" | "add">(() => {
+  const [selected, setSelected] = useState<DeviceModel>();
+
+  const getPageState = useCallback(() => {
     if (location.pathname.endsWith("add")) return "add";
     if (slug) return "device";
+    setSelected(undefined);
     return "blank";
-  });
-  const [selected, setSelected] = useState<DeviceModel>();
+  }, [location.pathname, slug]);
+
+  const [pageState, setPageState] = useState<"blank" | "device" | "add">(getPageState);
   const width = useWindowSize()[0];
   const [filter, setFilter] = useState("");
   const navigate = useNavigate();
@@ -49,6 +53,8 @@ export default function DeviceType2() {
   useEffect(() => {
     getDevicesByType();
   }, [getDevicesByType]);
+
+  useEffect(() => setPageState(getPageState), [getPageState]);
 
   const data = useMemo(() => devices, [devices]);
   const columns = useMemo(
