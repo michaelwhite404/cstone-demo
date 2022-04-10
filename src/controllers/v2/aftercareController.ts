@@ -10,20 +10,21 @@ export const addAftercareStudent = catchAsync(async (req, res, next) => {
 });
 
 export const createAftercareSession = catchAsync(async (req, res, next) => {
-  if (!req.body.students || !Array.isArray(req.body.students)) {
+  if (await AftercareSession.sessionExistsToday())
+    return next(new AppError("A session already exists today", 400));
+
+  if (!req.body.students || !Array.isArray(req.body.students))
     return next(new AppError("There must be an array of student ids to create a session", 400));
-  }
+
   const bodyStudents: any[] = req.body.students;
 
-  if (!bodyStudents.every((student) => typeof student === "string")) {
+  if (!bodyStudents.every((student) => typeof student === "string"))
     return next(new AppError("Each id in the student array must be a string", 400));
-  }
 
   const students = await Student.find({ _id: { $in: bodyStudents }, status: "Active" });
 
-  // res.sendJson(200, { students });
-
   const session = await AftercareSession.create({
+    date: new Date().toISOString(),
     active: true,
     numAttended: students.length,
     dropIns: students.filter((s) => !s.aftercare).length,
