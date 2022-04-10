@@ -16,6 +16,8 @@ export interface StudentModel {
   createdAt: Date;
   lastUpdate: Date;
   slug: string;
+  /** Denotes if a student is in aftercare */
+  aftercare: boolean;
 }
 
 export interface StudentDocument extends StudentModel, Document {

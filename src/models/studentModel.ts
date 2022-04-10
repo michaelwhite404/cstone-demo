@@ -55,6 +55,10 @@ const studentSchema = new Schema(
       select: false,
     },
     slug: String,
+    aftercare: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
