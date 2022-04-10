@@ -33,5 +33,8 @@
   },
   "exportall.config.folderListener": [
     "/src/types/models"
+  ],
+  "exportall.config.relExclusion": [
+    "/src/controllers/v2"
   ]
 }

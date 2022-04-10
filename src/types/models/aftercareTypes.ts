@@ -4,7 +4,6 @@ import { StudentModel } from ".";
 export interface AftercareAttendanceEntryModel {
   _id: any;
   student: StudentModel;
-  attended: boolean;
   session: any;
   signOutDate?: Date;
   signature?: string;

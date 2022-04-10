@@ -10,14 +10,17 @@ const aftercareSessionSchema = new Schema({
   active: {
     type: Boolean,
     required: true,
+    default: true,
   },
   numAttended: {
     type: Number,
     required: true,
+    min: 0,
   },
   dropIns: {
     type: Number,
     required: true,
+    min: 0,
   },
 });
 

@@ -1,3 +1,4 @@
+export * as aftercareController from "./aftercareController";
 export * as authController from "./authController";
 export * as departmentController from "./departmentController";
 export * as deviceController from "./deviceController";

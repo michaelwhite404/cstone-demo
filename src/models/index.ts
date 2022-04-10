@@ -1,3 +1,5 @@
+export { default as AftercareAttendanceEntry } from "./aftercareAttendanceEntryModel";
+export { default as AftercareSession } from "./aftercareSessionModel";
 export { default as CheckoutLog } from "./checkoutLogModel";
 export { default as Department } from "./departmentModel";
 export { default as Device } from "./deviceModel";

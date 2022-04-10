@@ -8,10 +8,6 @@ const aftercareAttendanceEntrySchema = new Schema({
     required: [true, "Each aftercare attendance entry must have a student."],
     immutable: true,
   },
-  attended: {
-    type: Boolean,
-    required: true,
-  },
   session: {
     type: Types.ObjectId,
     ref: "AftercareSession",
