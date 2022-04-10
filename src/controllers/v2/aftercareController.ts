@@ -5,9 +5,9 @@ import * as factory from "./handlerFactory";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
-export const addAftercareStudent = catchAsync(async (req, res, next) => {
-  Student.find;
-});
+// export const addAftercareStudent = catchAsync(async (req, res, next) => {
+//   Student.find;
+// });
 
 export const createAftercareSession = catchAsync(async (req, res, next) => {
   if (await AftercareSession.sessionExistsToday())
@@ -49,5 +49,18 @@ export const createAftercareSession = catchAsync(async (req, res, next) => {
       },
       dropIn: entry.dropIn,
     })),
+  });
+});
+
+export const getAllAttendanceEntries = factory.getAll(AftercareAttendanceEntry, "entries");
+
+export const signOutStudent = catchAsync(async (req, res, next) => {
+  const entry = await AftercareAttendanceEntry.findById(req.params.id);
+  if (!entry) return next(new AppError("There is no entry with this id", 404));
+  entry.signOutDate = new Date();
+  entry.lateSignOut = new Date().getHours() >= 18;
+  await entry.save();
+  res.sendJson(200, {
+    entry,
   });
 });
