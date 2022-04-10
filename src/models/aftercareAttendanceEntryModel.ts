@@ -12,13 +12,20 @@ const aftercareAttendanceEntrySchema = new Schema({
     type: Boolean,
     required: true,
   },
+  session: {
+    type: Types.ObjectId,
+    ref: "AftercareSession",
+    required: [true, "Each aftercare attendance entry must have a session."],
+    immutable: true,
+  },
   signOutDate: Date,
   signature: String,
   lateSignOut: Boolean,
+  dropIn: Boolean,
 });
 
 const AftercareAttendanceEntry = model<AftercareAttendanceEntryDocument>(
-  "aftercareAttendanceEntry",
+  "AftercareAttendanceEntry",
   aftercareAttendanceEntrySchema
 );
 

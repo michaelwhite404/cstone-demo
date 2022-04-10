@@ -8,6 +8,7 @@ router.use(v2auth.protect);
 
 router.route("/attendance").get().post();
 router.route("/students").get(getAllAftercareStudents).put().post();
+router.route("/students/:id")
 router.route("/session");
 
 export default router;
