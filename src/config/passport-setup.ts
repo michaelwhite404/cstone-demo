@@ -1,6 +1,6 @@
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth20";
-import Employee from "../models/employeeModel";
+import { Employee } from "@models";
 import { EmployeeDocument } from "@@types/models";
 
 passport.serializeUser((employee, done) => {

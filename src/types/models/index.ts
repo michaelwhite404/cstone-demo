@@ -1,3 +1,4 @@
+export * from "./aftercareAttendanceEntryTypes";
 export * from "./checkoutLogTypes";
 export * from "./departmentTypes";
 export * from "./deviceTypes";
