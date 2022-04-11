@@ -1,13 +1,45 @@
 import { Student } from "@models";
 import { AftercareSession, AftercareAttendanceEntry } from "@models";
-import { AppError, catchAsync } from "@utils";
+import { StudentModel } from "@@types/models";
+import { AppError, catchAsync, isObject, isObjectID } from "@utils";
+import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import * as factory from "./handlerFactory";
+import pluralize from "pluralize";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
-// export const addAftercareStudent = catchAsync(async (req, res, next) => {
-//   Student.find;
-// });
+export const modifyAftercareStudentStatus = catchAsync(async (req, res, next) => {
+  if (!req.body.data || !Array.isArray(req.body.data))
+    return next(new AppError("There must be an array of data", 400));
+
+  const bodyData: any[] = req.body.data;
+
+  if (!bodyData.every((obj) => isObject(obj) && "id" in obj && "op" in obj))
+    return next(new AppError("Each object should have an `id` and `op` property", 400));
+  const filteredData = bodyData.filter(
+    (obj) => isObjectID(obj.id) && ["add", "remove"].includes(obj.op)
+  );
+  // Good to go
+
+  const writes = filteredData.map((obj) => ({
+    updateOne: {
+      filter: {
+        _id: new Types.ObjectId(obj.id),
+      } as FilterQuery<StudentModel>,
+      update: {
+        aftercare: obj.op === "add" ? true : false,
+      } as UpdateQuery<StudentModel>,
+    },
+  }));
+
+  const result = await Student.bulkWrite(writes);
+
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    message: `${pluralize("status", result.modifiedCount, true)} updated`,
+  });
+});
 
 export const createAftercareSession = catchAsync(async (req, res, next) => {
   if (await AftercareSession.sessionExistsToday())
