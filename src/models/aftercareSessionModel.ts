@@ -1,9 +1,9 @@
-import { /* AftercareSessionDocument, */ AftercareSessionModel } from "@@types/models";
+import { AftercareSessionDocument, AftercareSessionModel } from "@@types/models";
 import { Model, model, Schema } from "mongoose";
 
 interface ASM extends Model<AftercareSessionModel> {
-  /** Checks if a session exists today */
-  sessionExistsToday(): Promise<boolean>;
+  /** Finds today's session, if it exists */
+  sessionToday(): Promise<AftercareSessionDocument | undefined>;
 }
 
 const aftercareSessionSchema = new Schema<AftercareSessionModel, ASM>({
@@ -45,14 +45,13 @@ const aftercareSessionSchema = new Schema<AftercareSessionModel, ASM>({
 //   count: true,
 // });
 
-aftercareSessionSchema.static("sessionExistsToday", async function (this) {
+aftercareSessionSchema.static("sessionToday", async function (this) {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
 
   const end = new Date();
   end.setHours(23, 59, 59, 999);
-  const session = await this.findOne({ date: { $gte: start, $lt: end } });
-  return !session ? false : true;
+  return await this.findOne({ date: { $gte: start, $lt: end } });
 });
 
 const AftercareSession = model<AftercareSessionModel, ASM>(

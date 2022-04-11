@@ -8,13 +8,14 @@ const {
   signOutStudent,
   modifyAftercareStudentStatus,
   putAftercareStudentStatus,
+  createAttendanceEntries,
 } = aftercareController;
 
 const router = Router();
 
 router.use(v2auth.protect);
 
-router.route("/attendance").get(getAllAttendanceEntries).post();
+router.route("/attendance").get(getAllAttendanceEntries).post(createAttendanceEntries);
 router
   .route("/students")
   .get(getAllAftercareStudents)

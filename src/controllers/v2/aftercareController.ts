@@ -67,7 +67,7 @@ export const putAftercareStudentStatus = catchAsync(async (req, res, next) => {
 });
 
 export const createAftercareSession = catchAsync(async (req, res, next) => {
-  if (await AftercareSession.sessionExistsToday())
+  if (await AftercareSession.sessionToday())
     return next(new AppError("A session already exists today", 400));
 
   if (!req.body.students || !Array.isArray(req.body.students))
@@ -119,5 +119,44 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
   await entry.save();
   res.sendJson(200, {
     entry,
+  });
+});
+
+export const createAttendanceEntries = catchAsync(async (req, res, next) => {
+  const session = await AftercareSession.sessionToday();
+  if (!session) return next(new AppError("No session has been created today.", 400));
+  if (!session.active)
+    return next(new AppError("Entries cannot be added after a session is over", 400));
+  // Array of student ids
+  if (!req.body.students || !Array.isArray(req.body.students))
+    return next(new AppError("There must be an array of student ids to create a session", 400));
+
+  const bodyStudents: any[] = req.body.students;
+
+  if (!bodyStudents.every((id) => typeof id === "string" && isObjectID(id)))
+    return next(new AppError("Each id in the student array must be a string ObjectId", 400));
+
+  const [sessionEntries, students] = await Promise.all([
+    AftercareAttendanceEntry.find({ session: session._id }),
+    Student.find({ _id: { $in: bodyStudents } }),
+  ]);
+
+  const sessionEntriesStudentIds = sessionEntries.map((e) => e.student.toString());
+  // const studentIds = students.map((s) => s._id.toString());
+
+  const studentsToAdd = students.filter(
+    (student) => !sessionEntriesStudentIds.includes(student._id.toString())
+  );
+
+  const entries = await AftercareAttendanceEntry.create(
+    studentsToAdd.map((student) => ({
+      student: student._id,
+      session: session._id,
+      dropIn: !student.aftercare,
+    }))
+  );
+
+  res.sendJson(200, {
+    entries,
   });
 });
