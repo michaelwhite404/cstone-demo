@@ -111,6 +111,11 @@ export const createAftercareSession = catchAsync(async (req, res, next) => {
 
 export const getAllAttendanceEntries = factory.getAll(AftercareAttendanceEntry, "entries");
 
+export const getAftercareEntryById = factory.getOneById(AftercareAttendanceEntry, "entry", {
+  path: "student",
+  select: "fullName",
+});
+
 export const signOutStudent = catchAsync(async (req, res, next) => {
   const entry = await AftercareAttendanceEntry.findById(req.params.id);
   if (!entry) return next(new AppError("There is no entry with this id", 404));
