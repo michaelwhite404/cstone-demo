@@ -7,6 +7,7 @@ const {
   createAftercareSession,
   signOutStudent,
   modifyAftercareStudentStatus,
+  putAftercareStudentStatus,
 } = aftercareController;
 
 const router = Router();
@@ -18,7 +19,7 @@ router
   .route("/students")
   .get(getAllAftercareStudents)
   .patch(modifyAftercareStudentStatus)
-  .put()
+  .put(putAftercareStudentStatus)
   .post();
 
 router.route("/students/:id");

@@ -41,6 +41,31 @@ export const modifyAftercareStudentStatus = catchAsync(async (req, res, next) =>
   });
 });
 
+export const putAftercareStudentStatus = catchAsync(async (req, res, next) => {
+  if (!req.body.students || !Array.isArray(req.body.students))
+    return next(new AppError("There must be an array of student ids", 400));
+
+  const bodyStudents: any[] = req.body.students;
+
+  if (!bodyStudents.every((student) => typeof student === "string"))
+    return next(new AppError("Each id in the student array must be a string", 400));
+
+  const filteredStudentIds: string[] = bodyStudents.filter((id) => isObjectID(id));
+
+  await Student.updateMany({}, { aftercare: false });
+
+  const result = await Student.updateMany(
+    { _id: { $in: filteredStudentIds } },
+    { aftercare: true }
+  );
+
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    message: `${pluralize("status", result.nModified, true)} updated`,
+  });
+});
+
 export const createAftercareSession = catchAsync(async (req, res, next) => {
   if (await AftercareSession.sessionExistsToday())
     return next(new AppError("A session already exists today", 400));
