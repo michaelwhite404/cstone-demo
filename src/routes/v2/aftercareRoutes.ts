@@ -10,7 +10,7 @@ const {
   createAttendanceEntries,
   getAllAttendanceEntries,
   getAftercareEntryById,
-  getActiveSession,
+  getSessionToday,
 } = aftercareController;
 
 const router = Router();
@@ -29,6 +29,6 @@ router
 
 // router.route("/students/:id");
 router.route("/session").post(createAftercareSession);
-router.get("/session/active", getActiveSession);
+router.get("/session/today", getSessionToday);
 
 export default router;

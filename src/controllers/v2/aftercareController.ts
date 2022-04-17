@@ -117,10 +117,14 @@ export const getAftercareEntryById = factory.getOneById(AftercareAttendanceEntry
 });
 
 export const signOutStudent = catchAsync(async (req, res, next) => {
-  const entry = await AftercareAttendanceEntry.findById(req.params.id);
+  const entry = await AftercareAttendanceEntry.findById(req.params.id).populate({
+    path: "student",
+    select: "fullName schoolEmail",
+  });
   if (!entry) return next(new AppError("There is no entry with this id", 404));
   entry.signOutDate = new Date();
   entry.lateSignOut = new Date().getHours() >= 18;
+  entry.signature = req.body.signature;
   await entry.save();
   res.sendJson(200, {
     entry,
@@ -166,7 +170,7 @@ export const createAttendanceEntries = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getActiveSession = catchAsync(async (_, res) => {
+export const getSessionToday = catchAsync(async (_, res) => {
   const session = await AftercareSession.sessionToday();
   const attendance = session
     ? await AftercareAttendanceEntry.find({ session }).populate({
