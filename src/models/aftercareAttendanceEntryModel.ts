@@ -20,6 +20,15 @@ const aftercareAttendanceEntrySchema = new Schema({
   dropIn: Boolean,
 });
 
+aftercareAttendanceEntrySchema.static("sessionToday", async function (this) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+  return await this.findOne({ date: { $gte: start, $lt: end } });
+});
+
 const AftercareAttendanceEntry = model<AftercareAttendanceEntryDocument>(
   "AftercareAttendanceEntry",
   aftercareAttendanceEntrySchema

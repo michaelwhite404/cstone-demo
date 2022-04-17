@@ -165,3 +165,17 @@ export const createAttendanceEntries = catchAsync(async (req, res, next) => {
     entries,
   });
 });
+
+export const getActiveSession = catchAsync(async (_, res) => {
+  const session = await AftercareSession.sessionToday();
+  const attendance = session
+    ? await AftercareAttendanceEntry.find({ session }).populate({
+        path: "student",
+        select: "fullName schoolEmail",
+      })
+    : [];
+  res.sendJson(200, {
+    session,
+    attendance,
+  });
+});
