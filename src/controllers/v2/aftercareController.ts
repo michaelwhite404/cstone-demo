@@ -183,3 +183,5 @@ export const getSessionToday = catchAsync(async (_, res) => {
     attendance,
   });
 });
+
+export const getAllAftercareSessions = factory.getAll(AftercareSession, "sessions", {});
