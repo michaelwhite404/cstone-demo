@@ -5,6 +5,7 @@ import { AppError, catchAsync, isObject, isObjectID } from "@utils";
 import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import * as factory from "./handlerFactory";
 import pluralize from "pluralize";
+import s3 from "@utils/s3";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
@@ -122,9 +123,10 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
     select: "fullName schoolEmail",
   });
   if (!entry) return next(new AppError("There is no entry with this id", 404));
+  const data = await s3.uploadBase64Image(req.body.signature, `/signatures/${entry._id}`);
   entry.signOutDate = new Date();
   entry.lateSignOut = new Date().getHours() >= 18;
-  entry.signature = req.body.signature;
+  entry.signature = data.Key;
   await entry.save();
   res.sendJson(200, {
     entry,

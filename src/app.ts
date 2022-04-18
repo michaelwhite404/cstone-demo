@@ -9,7 +9,7 @@ import compression from "compression";
 import passport from "passport";
 import { graphqlHTTP } from "express-graphql";
 
-import { AppError } from "@utils";
+import { AppError, catchAsync, s3 } from "@utils";
 import globalErrorHandler from "@controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/v1/viewRoutes";
@@ -94,6 +94,18 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/pdf", pdfRouter);
 app.use("/csv", csvRouter);
+app.get(
+  "/images/:key",
+  catchAsync(async (req, res, next) => {
+    const key = req.params.key;
+    const readStream = s3.getFileStream(key);
+    readStream.on("error", () => {
+      return next(new AppError("No image was found", 404));
+    });
+    readStream.pipe(res);
+  })
+);
+
 app.use("/", viewRouter);
 
 if (process.env.NODE_ENV === "production") {
