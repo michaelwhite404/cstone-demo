@@ -123,7 +123,8 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
     select: "fullName schoolEmail",
   });
   if (!entry) return next(new AppError("There is no entry with this id", 404));
-  const data = await s3.uploadBase64Image(req.body.signature, `/signatures/${entry._id}`);
+  if (entry.signOutDate) return next(new AppError("This student has already been signed out", 400));
+  const data = await s3.uploadBase64Image(req.body.signature, `signatures/${entry._id}`);
   entry.signOutDate = new Date();
   entry.lateSignOut = new Date().getHours() >= 18;
   entry.signature = data.Key;
