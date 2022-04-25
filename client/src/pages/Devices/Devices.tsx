@@ -1,9 +1,36 @@
+import capitalize from "capitalize";
+import pluralize from "pluralize";
 import { Link } from "react-router-dom";
 import { useDocTitle } from "../../hooks";
 import "./Devices.sass";
 
 export default function Devices() {
   useDocTitle("Devices | Cornerstone App");
+
+  const links = [
+    {
+      resource: "chromebook",
+      img: {
+        src: "/icons/chrome-icon.png",
+        alt: "Chrome Icon",
+      },
+    },
+    {
+      resource: "tablet",
+      img: {
+        src: "/icons/tablet-icon.png",
+        alt: "Tablet Icon",
+      },
+    },
+    {
+      resource: "robot",
+      img: {
+        src: "/icons/robot-icon.png",
+        alt: "Robot Icon",
+      },
+    },
+  ];
+
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">
@@ -11,20 +38,15 @@ export default function Devices() {
       </div>
       <div className="device-wrapper">
         <div className="device-grid-container">
-          <Link className="device-item" to="/devices/chromebooks">
-            <img src="/icons/chrome-icon.png" alt="Chrome Icon" />
-            <div>
-              <div className="device-heading">Chromebooks</div>
-              <div>View, edit, check in and check out Chromebooks</div>
-            </div>
-          </Link>
-          <Link className="device-item" to="/devices/tablets">
-            <img src="/icons/tablet-icon.png" alt="Tablet Icon" />
-            <div>
-              <div className="device-heading">Tablets</div>
-              <div>View, edit, check in and check out tablets</div>
-            </div>
-          </Link>
+          {links.map(({ resource, img }) => (
+            <Link className="device-item" to={`/devices/${pluralize(resource)}`} key={resource}>
+              <img src={img.src} alt={img.alt} />
+              <div>
+                <div className="device-heading">{capitalize(pluralize(resource))}</div>
+                <div>View, edit, check in and check out {pluralize(resource)}</div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
