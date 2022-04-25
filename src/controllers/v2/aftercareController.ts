@@ -187,4 +187,15 @@ export const getSessionToday = catchAsync(async (_, res) => {
   });
 });
 
-export const getAllAftercareSessions = factory.getAll(AftercareSession, "sessions", {});
+export const getAllAftercareSessions = factory.getAll(
+  AftercareSession,
+  "sessions",
+  {},
+  {
+    path: "numAttended dropIns",
+  }
+);
+
+export const getAftercareSession = factory.getOneById(AftercareSession, "session", {
+  path: "numAttended dropIns",
+});

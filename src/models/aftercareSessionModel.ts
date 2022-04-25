@@ -6,44 +6,39 @@ interface ASM extends Model<AftercareSessionModel> {
   sessionToday(): Promise<AftercareSessionDocument | undefined>;
 }
 
-const aftercareSessionSchema = new Schema<AftercareSessionModel, ASM>({
-  date: {
-    type: Date,
-    required: true,
-    default: () => new Date().toISOString(),
+const aftercareSessionSchema = new Schema<AftercareSessionModel, ASM>(
+  {
+    date: {
+      type: Date,
+      required: true,
+      default: () => new Date().toISOString(),
+    },
+    active: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
-  active: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  numAttended: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  dropIns: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+aftercareSessionSchema.virtual("numAttended", {
+  ref: "AftercareAttendanceEntry",
+  foreignField: "session",
+  localField: "_id",
+  count: true,
 });
 
-// aftercareSessionSchema.virtual("numAttended", {
-//   ref: "AftercareAttendanceEntry",
-//   foreignField: "session",
-//   localField: "_id",
-//   match: {attended: true},
-//   count: true,
-// });
-
-// aftercareSessionSchema.virtual("dropIns", {
-//   ref: "AftercareAttendanceEntry",
-//   foreignField: "session",
-//   localField: "_id",
-//   match: { attended: true },
-//   count: true,
-// });
+aftercareSessionSchema.virtual("dropIns", {
+  ref: "AftercareAttendanceEntry",
+  foreignField: "session",
+  localField: "_id",
+  match: { dropIn: true },
+  count: true,
+});
 
 aftercareSessionSchema.static("sessionToday", async function (this) {
   const start = new Date();
