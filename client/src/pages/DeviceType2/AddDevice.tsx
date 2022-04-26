@@ -1,9 +1,9 @@
 import { Button, InputGroup, Label } from "@blueprintjs/core";
 import axios, { AxiosError } from "axios";
 import capitalize from "capitalize";
-import { singular } from "pluralize";
+import pluralize, { singular } from "pluralize";
 import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { DeviceModel } from "../../../../src/types/models/deviceTypes";
 import BackButton from "../../components/BackButton";
 import FadeIn from "../../components/FadeIn";
@@ -13,7 +13,7 @@ import { APIDeviceResponse, APIError } from "../../types/apiResponses";
 
 interface AddDeviceProps {
   deviceType: string;
-  setPageStatus: React.Dispatch<React.SetStateAction<"blank" | "device" | "add">>;
+  setPageState: React.Dispatch<React.SetStateAction<"blank" | "device" | "add">>;
   setSelectedDevice: React.Dispatch<React.SetStateAction<DeviceModel | undefined>>;
   reFetchDevices: () => Promise<void>;
   onBack: VoidFunction;
@@ -21,7 +21,8 @@ interface AddDeviceProps {
 
 export default function AddDevice() {
   const { showToaster } = useToasterContext();
-  const { deviceType, setPageStatus, setSelectedDevice, reFetchDevices, onBack } =
+  const navigate = useNavigate();
+  const { deviceType, setPageState, setSelectedDevice, reFetchDevices, onBack } =
     useOutletContext<AddDeviceProps>();
   const [data, setData] = useState({
     name: "",
@@ -103,10 +104,12 @@ export default function AddDevice() {
     try {
       const device = await createDevice({ ...data, deviceType: singular(deviceType) });
       setSelectedDevice(device);
-      setPageStatus("device");
+      setPageState("device");
       showToaster(`${device.name} successfully created`, "success");
       reFetchDevices();
+      navigate(`/devices/${pluralize(deviceType)}/${device.slug}`);
     } catch (err) {
+      console.log(err);
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }
   };
