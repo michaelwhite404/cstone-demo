@@ -110,7 +110,15 @@ export const createAftercareSession = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getAllAttendanceEntries = factory.getAll(AftercareAttendanceEntry, "entries");
+export const getAllAttendanceEntries = factory.getAll(
+  AftercareAttendanceEntry,
+  "entries",
+  {},
+  {
+    path: "student",
+    select: "fullName schoolEmail grade",
+  }
+);
 
 export const getAftercareEntryById = factory.getOneById(AftercareAttendanceEntry, "entry", {
   path: "student",

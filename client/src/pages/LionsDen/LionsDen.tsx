@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import axios from "axios";
-
 import Tabs from "../../components/Tabs";
 import { useDocTitle } from "../../hooks";
 import Sessions from "./Sessions";
@@ -12,17 +9,6 @@ const tabs = [
 
 export default function LionsDen() {
   useDocTitle("Lions Den | Cornerstone App");
-
-  useEffect(() => {
-    getSessions();
-  });
-
-  const getSessions = async () => {
-    const res = await axios.get("/api/v2/aftercare/attendance", {
-      params: { "signOutDate[gte]": "04-23-2022", "signOutDate[lte]": "04-24-2022" },
-    });
-    console.log(res.data.data);
-  };
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
