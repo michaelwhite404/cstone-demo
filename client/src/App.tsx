@@ -22,6 +22,7 @@ import AuthProvider from "./context/AuthProvider";
 import AddDevice from "./pages/DeviceType2/AddDevice";
 import DeviceData from "./pages/DeviceType2/DeviceData";
 import DeviceEmptyState from "./pages/DeviceType2/DeviceEmptyState";
+import LionsDen from "./pages/LionsDen/LionsDen";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -42,6 +43,7 @@ function App() {
                 <Route path="add" element={<AddDevice />} />
                 <Route path=":slug" element={<DeviceData />} />
               </Route>
+              <Route path="lions-den" element={<LionsDen />} />
             </Route>
           </Routes>
         </AuthProvider>

@@ -2,6 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDocTitle } from "../../hooks";
 
+const links = [
+  { to: "/students", heading: "Students", text: "View, edit and filter students" },
+  { to: "/devices", heading: "Devices", text: "View, manage and edit devices." },
+  { to: "/textbooks", heading: "Textbooks", text: "View, manage and and checkout textbooks" },
+  { to: "/lions-den", heading: "Lions Den", text: "View sessions from Lions' Den" },
+];
+
 export default function Dashboard() {
   useDocTitle("Dashboard | Cornerstone App");
   return (
@@ -11,24 +18,14 @@ export default function Dashboard() {
       </div>
       <div className="device-wrapper">
         <div className="device-grid-container">
-          <Link className="device-item" to="/students">
-            <div>
-              <div className="device-heading">Students</div>
-              <div>View, edit and filter students</div>
-            </div>
-          </Link>
-          <Link className="device-item" to="/devices">
-            <div>
-              <div className="device-heading">Devices</div>
-              <div>View, manage and edit devices.</div>
-            </div>
-          </Link>
-          <Link className="device-item" to="/textbooks">
-            <div>
-              <div className="device-heading">Textbooks</div>
-              <div>View, manage and and checkout textbooks</div>
-            </div>
-          </Link>
+          {links.map(({ to, heading, text }) => (
+            <Link className="device-item" to={to}>
+              <div>
+                <div className="device-heading">{heading}</div>
+                <div>{text}</div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
