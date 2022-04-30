@@ -8,7 +8,11 @@ export default function Tabs({ children }: { children?: ReactNode }) {
 
 function Tab({ name, current }: { name: string; current?: boolean }) {
   const className = classNames("tab", { current });
-  return <div className={className}>{name}</div>;
+  return (
+    <div className={className} aria-current={current ? "page" : undefined}>
+      {name}
+    </div>
+  );
 }
 
 Tabs.Tab = Tab;
