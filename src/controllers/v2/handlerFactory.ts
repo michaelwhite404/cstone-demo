@@ -11,6 +11,7 @@ export const getAll = <T extends Mongoose["Model"]>(
   populate?: PopOptions
 ) =>
   catchAsync(async (req: Request, res: Response) => {
+    console.log(req.query);
     const query = Model.find(filter);
     if (populate) query.populate(populate);
     const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();

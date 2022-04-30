@@ -6,6 +6,9 @@ import { FilterQuery, Types, UpdateQuery } from "mongoose";
 import * as factory from "./handlerFactory";
 import pluralize from "pluralize";
 import s3 from "@utils/s3";
+import { RequestHandler } from "express";
+import validator from "validator";
+import { addDays } from "date-fns";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
@@ -207,3 +210,21 @@ export const getAllAftercareSessions = factory.getAll(
 export const getAftercareSession = factory.getOneById(AftercareSession, "session", {
   path: "numAttended dropIns",
 });
+
+export const addDateToParams: RequestHandler = (req, _, next) => {
+  let { year, month, day } = req.params;
+  if (month.length === 1) month = `0${month}`;
+  if (day.length === 1) day = `0${day}`;
+
+  // If date is not valid
+  if (!validator.isDate(`${year}-${month}-${day}`, { format: "YYYY/MM/DD" })) {
+    return next(new AppError("Invalid Date", 400));
+  }
+  const date = new Date(+year, +month - 1, +day);
+  const nextDay = addDays(date, 1);
+  req.query.signOutDate = {
+    gte: date.toISOString(),
+    lte: nextDay.toISOString(),
+  };
+  next();
+};

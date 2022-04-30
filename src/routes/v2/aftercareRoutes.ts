@@ -13,6 +13,7 @@ const {
   getSessionToday,
   getAllAftercareSessions,
   getAftercareSession,
+  addDateToParams,
 } = aftercareController;
 
 const router = Router();
@@ -21,6 +22,11 @@ router.use(v2auth.protect);
 
 router.route("/attendance").get(getAllAttendanceEntries).post(createAttendanceEntries);
 router.route("/attendance/:id").get(getAftercareEntryById);
+router.get(
+  "/attendance/year/:year/month/:month/day/:day",
+  addDateToParams,
+  getAllAttendanceEntries
+);
 router.patch("/attendance/sign-out/:id", signOutStudent);
 router
   .route("/students")
