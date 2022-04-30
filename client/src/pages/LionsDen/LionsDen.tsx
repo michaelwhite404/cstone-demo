@@ -17,7 +17,7 @@ export default function LionsDen() {
         <h1 style={{ marginBottom: "10px" }}>Lions Den</h1>
       </div>
       {/* Tabs */}
-      <div className="hidden sm:block">
+      <div className="hidden sm:block mb-6">
         <nav className="" aria-label="Tabs">
           <Tabs>
             {tabs.map((tab) => (
@@ -26,9 +26,7 @@ export default function LionsDen() {
           </Tabs>
         </nav>
       </div>
-      <div>
-        <Sessions />
-      </div>
+      <Sessions />
     </div>
   );
 }
