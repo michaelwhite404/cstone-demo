@@ -1,0 +1,28 @@
+.aftercare-session-table
+  position: relative
+
+  tr
+    & > td:nth-child(1), & > th:nth-child(1)
+      padding-left: 15px
+
+  td
+    padding: 7px 0px
+
+  .show-at-640
+    display: none
+
+  .sign-out-signature
+    width: 125px
+
+  .late-td
+    text-align: center
+
+  @media screen and ( max-width: 640px )
+    .hide-at-640
+      display: none
+
+    .show-at-640
+      display: block
+
+    .sign-out-signature
+      width: 100px

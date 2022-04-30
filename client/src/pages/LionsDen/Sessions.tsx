@@ -1,8 +1,8 @@
-import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import DatePicker from "sassy-datepicker";
 import LabeledInput from "../../components/Inputs/LabeledInput";
-import TablePaginate from "../../components/TablePaginate/TablePaginate";
+import SessionsTable from "./SessionsTable";
 
 export default function Sessions() {
   const [date, setDate] = useState(new Date());
@@ -60,32 +60,6 @@ export default function Sessions() {
     setOpen(false);
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Student",
-        accessor: "student.fullName",
-      },
-      {
-        Header: "Time",
-        accessor: "signOutDate",
-        Cell: ({ row: { original } }: { row: { original: any } }) => {
-          return new Date(original.signOutDate).toLocaleTimeString();
-        },
-      },
-      {
-        Header: "Signature",
-        accessor: "signature",
-        Cell: ({ row: { original } }: { row: { original: any } }) => {
-          return <img src={`/images/${original.signature}`} alt="signature" width={100} />;
-        },
-      },
-    ],
-    []
-  );
-
-  const data = useMemo(() => entries, [entries]);
-
   return (
     <div>
       <div
@@ -110,7 +84,8 @@ export default function Sessions() {
         )}
       </div>
       <div>
-        <TablePaginate data={data} columns={columns} />
+        {/* <TablePaginate data={data} columns={columns} /> */}
+        <SessionsTable entries={entries} />
       </div>
     </div>
   );
