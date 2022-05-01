@@ -23,6 +23,8 @@ import AddDevice from "./pages/DeviceType2/AddDevice";
 import DeviceData from "./pages/DeviceType2/DeviceData";
 import DeviceEmptyState from "./pages/DeviceType2/DeviceEmptyState";
 import LionsDen from "./pages/LionsDen/LionsDen";
+import LionsDenStudents from "./pages/LionsDen/LionsDenStudents";
+import Sessions from "./pages/LionsDen/Sessions";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -43,7 +45,10 @@ function App() {
                 <Route path="add" element={<AddDevice />} />
                 <Route path=":slug" element={<DeviceData />} />
               </Route>
-              <Route path="lions-den" element={<LionsDen />} />
+              <Route path="lions-den" element={<LionsDen />}>
+                <Route index element={<Sessions />} />
+                <Route path="students" element={<LionsDenStudents />} />
+              </Route>
             </Route>
           </Routes>
         </AuthProvider>

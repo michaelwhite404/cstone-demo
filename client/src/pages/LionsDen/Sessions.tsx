@@ -4,9 +4,11 @@ import SessionsTable from "./SessionsTable";
 import "./Sessions.sass";
 import DateSelector from "../../components/DateSelector";
 import SessionStat from "./SessionStat";
+import { format } from "date-fns";
 
 export default function Sessions() {
   const [entries, setEntries] = useState<any[]>([]);
+  const [date, setDate] = useState<Date>(new Date());
 
   const getSessions = async (date: Date) => {
     const res = await axios.get(
@@ -18,11 +20,12 @@ export default function Sessions() {
   };
 
   useEffect(() => {
-    getSessions(new Date());
-  }, []);
+    getSessions(date);
+  }, [date]);
 
   return (
     <div>
+      <div className="session-header">Session on {format(date, "LLLL d, yyyy")}</div>
       <div className="session-stats-container">
         <SessionStat label="Total Students" value={entries.length} disable={!entries.length} />
         <SessionStat
@@ -30,7 +33,7 @@ export default function Sessions() {
           value={entries.filter((e) => e.dropIn).length}
           disable={!entries.length}
         />
-        <DateSelector onChange={getSessions} />
+        <DateSelector onChange={setDate} />
       </div>
       <div>
         {entries.length > 0 ? (

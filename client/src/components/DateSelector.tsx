@@ -39,7 +39,7 @@ export default function DateSelector(props: DateSelectorProps) {
   const DateInput = forwardRef((props, ref) => {
     return (
       <LabeledInput
-        label="Date"
+        label="Change Date"
         value={date.toLocaleDateString()}
         onFocus={() => setOpen(true)}
         readOnly
