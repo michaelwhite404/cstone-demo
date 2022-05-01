@@ -34,7 +34,7 @@ export default function StudentTable({ students }: { students: StudentAftercareS
     { comp: "Student", className: "" },
     { comp: "Grade", className: "hidden sm:table-cell" },
     { comp: "Days Present", className: "hidden sm:table-cell" },
-    { comp: "Days Late", className: "hidden sm:table-cell" },
+    { comp: "Late Pickup", className: "hidden sm:table-cell" },
   ];
 
   useEffect(() => {
@@ -42,7 +42,6 @@ export default function StudentTable({ students }: { students: StudentAftercareS
   }, [students]);
 
   useEffect(() => {
-    console.log("HERE");
     const numChecked = rows.filter((r) => r.checked).length;
     if (numChecked === 0) return setMain("unchecked");
     if (numChecked === rows.length) return setMain("checked");

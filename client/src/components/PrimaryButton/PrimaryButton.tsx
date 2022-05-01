@@ -1,8 +1,9 @@
 import classNames from "classnames";
+import { ReactNode } from "react";
 import "./PrimaryButton.sass";
 
 interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children?: string;
+  children?: ReactNode;
   text?: string;
   fill?: boolean;
 }
