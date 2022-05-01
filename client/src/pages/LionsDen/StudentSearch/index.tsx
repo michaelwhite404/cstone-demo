@@ -7,6 +7,7 @@ import pluralize from "pluralize";
 
 interface StudentSearchProps {
   students: StudentModel[];
+  onSubmit?: (students: Option[]) => Promise<void>;
 }
 
 interface Option {
@@ -22,12 +23,28 @@ export default function StudentSearch(props: StudentSearchProps) {
     value: student._id,
   }));
 
+  const clear = () => setSelected([]);
+
+  const submit = () => {
+    props
+      .onSubmit?.(selected)
+      .then(clear)
+      .catch(() => {});
+  };
+
   const handleChange = (newValue: Option[] | any, _: any) => setSelected(newValue);
+
   const btnTxt = `+ Add ${pluralize("Students", selected.length, selected.length > 1)}`;
   return (
     <div className="add-student-container">
-      <Select isMulti placeholder="Students to Add" options={options} onChange={handleChange} />
-      <PrimaryButton disabled={selected.length === 0}>
+      <Select
+        isMulti
+        placeholder="Students to Add"
+        options={options}
+        onChange={handleChange}
+        value={selected}
+      />
+      <PrimaryButton disabled={selected.length === 0} onClick={submit}>
         <div style={{ display: "flex" }}>{btnTxt}</div>
       </PrimaryButton>
     </div>

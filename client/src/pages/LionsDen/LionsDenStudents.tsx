@@ -1,13 +1,19 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { StudentModel } from "../../../../src/types/models";
-import { APIAttendanceStatsResponse, APIStudentsResponse } from "../../types/apiResponses";
+import { useToasterContext } from "../../hooks";
+import {
+  APIAttendanceStatsResponse,
+  APIError,
+  APIStudentsResponse,
+} from "../../types/apiResponses";
 import StudentSearch from "./StudentSearch";
 import StudentsTable from "./StudentsTable";
 
 export default function LionsDenStudents() {
   const [data, setData] = useState<StudentAftercareStat[]>([]);
   const [notInA, setNotInA] = useState<StudentModel[]>([]);
+  const { showToaster } = useToasterContext();
 
   useEffect(() => {
     getStudentData();
@@ -42,11 +48,23 @@ export default function LionsDenStudents() {
     setNotInA(nonAftercareStudents);
   };
 
+  const addStudents = async (students: { label: string; value: string }[]) => {
+    const data = students.map((s) => ({ id: s.value, op: "add" }));
+    try {
+      await axios.patch("/api/v2/aftercare/students", { data });
+      getStudentData();
+      showToaster("Students Added!", "success");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+      throw err;
+    }
+  };
+
   return (
     <div>
-      <div className="session-header">Students</div>
+      <div className="session-header">Students ({data.length})</div>
       <div>
-        <StudentSearch students={notInA} />
+        <StudentSearch students={notInA} onSubmit={addStudents} />
         <StudentsTable students={data} />
       </div>
     </div>
