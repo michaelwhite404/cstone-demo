@@ -228,3 +228,34 @@ export const addDateToParams: RequestHandler = (req, _, next) => {
   };
   next();
 };
+
+export const getAttendanceStats = catchAsync(async (req, res, next) => {
+  const stats = await AftercareAttendanceEntry.aggregate([
+    { $match: { signOutDate: { $exists: 1 } } },
+    {
+      $group: {
+        _id: "$student",
+        entriesCount: { $sum: 1 },
+        lateCount: { $sum: { $cond: ["$lateSignOut", 1, 0] } },
+      },
+    },
+    {
+      $lookup: {
+        from: "students",
+        localField: "_id",
+        foreignField: "_id",
+        as: "student",
+        pipeline: [{ $project: { fullName: 1, grade: 1, schoolEmail: 1 } }],
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        entriesCount: 1,
+        lateCount: 1,
+        student: { $arrayElemAt: ["$student", 0] },
+      },
+    },
+  ]);
+  res.sendJson(200, { stats });
+});
