@@ -45,7 +45,7 @@ export default function StudentSearch(props: StudentSearchProps) {
         value={selected}
       />
       <PrimaryButton disabled={selected.length === 0} onClick={submit}>
-        <div style={{ display: "flex" }}>{btnTxt}</div>
+        {btnTxt}
       </PrimaryButton>
     </div>
   );
