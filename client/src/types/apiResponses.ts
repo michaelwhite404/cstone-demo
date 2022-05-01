@@ -1,3 +1,4 @@
+import { AttendanceStat } from "../../../src/types/models";
 import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
@@ -30,3 +31,5 @@ export interface APIError {
   status: "fail" | "error";
   message: string;
 }
+
+export interface APIAttendanceStatsResponse extends APIResponse<{ stats: AttendanceStat[] }> {}

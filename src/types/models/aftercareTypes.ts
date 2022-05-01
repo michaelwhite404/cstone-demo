@@ -27,3 +27,9 @@ export interface AftercareSessionModel {
 export interface AftercareSessionDocument extends AftercareSessionModel, Document {
   _id: AftercareSessionModel["_id"];
 }
+
+export interface AttendanceStat {
+  entriesCount: number;
+  lateCount: number;
+  student: Pick<StudentModel, "_id" | "fullName" | "grade" | "schoolEmail">;
+}

@@ -229,7 +229,7 @@ export const addDateToParams: RequestHandler = (req, _, next) => {
   next();
 };
 
-export const getAttendanceStats = catchAsync(async (req, res, next) => {
+export const getAttendanceStats = catchAsync(async (_, res) => {
   const stats = await AftercareAttendanceEntry.aggregate([
     { $match: { signOutDate: { $exists: 1 } } },
     {
