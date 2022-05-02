@@ -1,6 +1,9 @@
 import { Checkbox } from "@mui/material";
+import classNames from "classnames";
+import pluralize from "pluralize";
 import { useEffect, useState } from "react";
 import { StudentModel } from "../../../../../src/types/models";
+import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import TableWrapper from "../../../components/TableWrapper";
 import { numberToGrade } from "../../../utils/grades";
 import "./StudentsTable.sass";
@@ -8,9 +11,30 @@ import "./StudentsTable.sass";
 type RemoveArray<T> = T extends any[] ? T[number] : never;
 type CheckboxStates = "unchecked" | "checked" | "indeterminate";
 
-export default function StudentTable({ students }: { students: StudentAftercareStat[] }) {
+interface StudentTableProps {
+  students: StudentAftercareStat[];
+  removeStudents: (students: StudentModel[]) => Promise<any>;
+}
+
+export default function StudentTable({ students, removeStudents }: StudentTableProps) {
   const [rows, setRows] = useState(students.map((s) => ({ ...s, checked: false })));
   const [main, setMain] = useState<CheckboxStates>("unchecked");
+
+  const checkedLength = () => rows.filter((r) => r.checked).length;
+
+  const RemoveButton = () => (
+    <div style={{ boxShadow: "#d2d2d2 0px 0px 2px 1px", width: "fit-content", borderRadius: 4 }}>
+      <PrimaryButton
+        text={`Remove ${pluralize("Students", checkedLength(), true)}`}
+        style={{
+          backgroundColor: "white",
+          color: "black",
+          padding: "7px 14px",
+        }}
+        onClick={handleRemove}
+      />
+    </div>
+  );
 
   const mainCheckboxClick = () => {
     if (main === "checked") {
@@ -29,9 +53,12 @@ export default function StudentTable({ students }: { students: StudentAftercareS
           checked={main === "checked"}
         />
       ),
-      className: "sm:w-auto w-20",
+      className: "sm:w-24 w-20",
     },
-    { comp: "Student", className: "" },
+    {
+      comp: main === "unchecked" ? "Student" : <RemoveButton />,
+      className: "",
+    },
     { comp: "Grade", className: "hidden sm:table-cell" },
     { comp: "Days Present", className: "hidden sm:table-cell" },
     { comp: "Late Pickup", className: "hidden sm:table-cell" },
@@ -57,6 +84,8 @@ export default function StudentTable({ students }: { students: StudentAftercareS
 
   const switchAll = (checked: boolean) => setRows([...rows].map((row) => ({ ...row, checked })));
 
+  const handleRemove = () => removeStudents(rows.filter((r) => r.checked));
+
   return (
     <TableWrapper>
       <table className="aftercare-student-table">
@@ -69,12 +98,24 @@ export default function StudentTable({ students }: { students: StudentAftercareS
         </thead>
         <tbody>
           {rows.map((student) => (
-            <tr style={{ borderBottom: "1px #e5e7eb solid" }} key={student._id}>
-              <td>
+            <tr
+              className={classNames({ checked: student.checked })}
+              style={{ borderBottom: "1px #e5e7eb solid" }}
+              key={student._id}
+            >
+              <td className="relative">
+                {student.checked && (
+                  <div
+                    className="absolute inset-y-0 left-0 w-0.5"
+                    style={{ backgroundColor: "#1976d2" }}
+                  />
+                )}
                 <Checkbox checked={student.checked} onChange={() => onCheckboxChange(student)} />
               </td>
               <td>
-                {student.fullName}
+                <span style={{ color: student.checked ? "#1976d2" : undefined }}>
+                  {student.fullName}
+                </span>
                 <div className="block sm:hidden sub-td">
                   {student.grade !== undefined && <div>Grade: {numberToGrade(student.grade)}</div>}
                   {/* <div>Days Present: {student.entriesCount}</div>

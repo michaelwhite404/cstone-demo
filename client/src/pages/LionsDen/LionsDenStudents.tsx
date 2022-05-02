@@ -60,12 +60,24 @@ export default function LionsDenStudents() {
     }
   };
 
+  const removeStudents = async (students: StudentModel[]) => {
+    const data = students.map((s) => ({ id: s._id, op: "remove" }));
+    try {
+      await axios.patch("/api/v2/aftercare/students", { data });
+      getStudentData();
+      showToaster("Students Removed!", "success");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+      throw err;
+    }
+  };
+
   return (
     <div>
       <div className="session-header">Students ({data.length})</div>
       <div>
         <StudentSearch students={notInA} onSubmit={addStudents} />
-        <StudentsTable students={data} />
+        <StudentsTable students={data} removeStudents={removeStudents} />
       </div>
     </div>
   );
