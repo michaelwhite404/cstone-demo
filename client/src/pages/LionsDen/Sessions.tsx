@@ -5,10 +5,12 @@ import "./Sessions.sass";
 import DateSelector from "../../components/DateSelector";
 import SessionStat from "./SessionStat";
 import { format } from "date-fns";
+import { useSocket } from "../../hooks";
 
 export default function Sessions() {
   const [entries, setEntries] = useState<any[]>([]);
   const [date, setDate] = useState<Date>(new Date());
+  const socket = useSocket();
 
   const getSessions = async (date: Date) => {
     const res = await axios.get(

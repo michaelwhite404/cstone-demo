@@ -25,6 +25,7 @@ import DeviceEmptyState from "./pages/DeviceType2/DeviceEmptyState";
 import LionsDen from "./pages/LionsDen/LionsDen";
 import LionsDenStudents from "./pages/LionsDen/LionsDenStudents";
 import Sessions from "./pages/LionsDen/Sessions";
+import SocketIoProvider from "./context/SocketIoProvider";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -33,24 +34,26 @@ function App() {
     <ToasterProvider>
       <Router>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<AppContainer />}>
-              <Route index element={<Dashboard />} />
-              <Route path="dashboard" element={<Navigate to="/" replace />} />
-              <Route path="students" element={<Students2 />} />
-              <Route path="textbooks" element={<TextbooksTest />} />
-              <Route path="devices" element={<Devices />} />
-              <Route path="/devices/:deviceType" element={<DeviceType2 />}>
-                <Route index element={<DeviceEmptyState />} />
-                <Route path="add" element={<AddDevice />} />
-                <Route path=":slug" element={<DeviceData />} />
+          <SocketIoProvider>
+            <Routes>
+              <Route path="/" element={<AppContainer />}>
+                <Route index element={<Dashboard />} />
+                <Route path="dashboard" element={<Navigate to="/" replace />} />
+                <Route path="students" element={<Students2 />} />
+                <Route path="textbooks" element={<TextbooksTest />} />
+                <Route path="devices" element={<Devices />} />
+                <Route path="/devices/:deviceType" element={<DeviceType2 />}>
+                  <Route index element={<DeviceEmptyState />} />
+                  <Route path="add" element={<AddDevice />} />
+                  <Route path=":slug" element={<DeviceData />} />
+                </Route>
+                <Route path="lions-den" element={<LionsDen />}>
+                  <Route index element={<Sessions />} />
+                  <Route path="students" element={<LionsDenStudents />} />
+                </Route>
               </Route>
-              <Route path="lions-den" element={<LionsDen />}>
-                <Route index element={<Sessions />} />
-                <Route path="students" element={<LionsDenStudents />} />
-              </Route>
-            </Route>
-          </Routes>
+            </Routes>
+          </SocketIoProvider>
         </AuthProvider>
       </Router>
     </ToasterProvider>
