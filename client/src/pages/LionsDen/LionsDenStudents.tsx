@@ -21,7 +21,7 @@ export default function LionsDenStudents() {
 
   const getStudentData = async () => {
     const getAftercareStudents = axios.get<APIStudentsResponse>("/api/v2/students", {
-      params: { sort: "-grade", limit: 2000 },
+      params: { sort: "-grade", limit: 2000, status: "Active" },
     });
     const getAftercareData = axios.get<APIAttendanceStatsResponse>(
       "/api/v2/aftercare/attendance/stats"
