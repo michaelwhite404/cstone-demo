@@ -23,7 +23,8 @@ export default function Sessions() {
 
   useEffect(() => {
     getSessions(date);
-  }, [date]);
+    socket?.on("aftercareSignOutSuccess", () => getSessions(date));
+  }, [date, socket]);
 
   return (
     <div>

@@ -2,20 +2,21 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
+import chalk from "chalk";
 
 dotenv.config({ path: "./config.env" });
 import app from "./app";
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
 
-io.on("connection", (socket) => console.log("A user connected: " + socket.id));
+io.on("connection", (socket) => console.log(chalk.green(`A user connected: ${socket.id}`)));
 
 const DB = process.env.DATABASE!.replace("<PASSWORD>", process.env.DATABASE_PASSWORD!);
 

@@ -25,6 +25,7 @@
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "capitalize": "^2.0.3",
+    "chalk": "^4.1.2",
     "compression": "^1.7.4",
     "concurrently": "^6.2.1",
     "cookie-parser": "^1.4.5",

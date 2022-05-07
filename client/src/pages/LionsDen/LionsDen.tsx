@@ -4,11 +4,12 @@ import Tabs from "../../components/Tabs";
 import { useDocTitle } from "../../hooks";
 
 const tabs = [
-  { title: "Sessions", name: "sessions", href: "", current: true },
-  { title: "Students", name: "students", href: "/students", current: false },
+  { title: "Current Session", name: "current-session", href: "" },
+  { title: "Sessions", name: "sessions", href: "/sessions" },
+  { title: "Students", name: "students", href: "/students" },
 ];
 
-type LionsDenPageState = "sessions" | "students";
+type LionsDenPageState = "current-session" | "sessions" | "students";
 
 export default function LionsDen() {
   useDocTitle("Lions Den | Cornerstone App");
@@ -19,7 +20,7 @@ export default function LionsDen() {
   useEffect(() => {
     const getPageState = () => {
       const paths = location.pathname.split("/").filter((p) => p !== "");
-      if (paths.length === 1) return setPageState("sessions");
+      if (paths.length === 1) return setPageState("current-session");
       setPageState(paths[paths.length - 1] as LionsDenPageState);
     };
 
