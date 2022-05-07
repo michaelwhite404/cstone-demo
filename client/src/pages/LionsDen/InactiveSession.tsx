@@ -153,10 +153,19 @@ const AddDropIns = ({ setPageState, setStudentsToAdd }: PagesProps) => {
     }
   };
 
+  const StudentRow = ({ student }: { student: StudentModel }) => (
+    <div className="flex align-center" style={{ padding: 10, paddingLeft: 0 }}>
+      <Button onClick={() => handleDelete(student._id)}>
+        <Icon icon="trash" color="#ca1b1b" />
+      </Button>
+      <div style={{ marginLeft: 10, fontWeight: 500 }}>{student.fullName}</div>
+    </div>
+  );
+
   return (
     <FadeIn>
       <div className="session-header">Add Drop Ins</div>
-      <div>
+      <div className="add-student-container">
         <Select
           isMulti
           options={options}
@@ -164,17 +173,13 @@ const AddDropIns = ({ setPageState, setStudentsToAdd }: PagesProps) => {
           onChange={handleSelect}
           placeholder="Students to Add"
         />
+        <PrimaryButton>✓ &nbsp;&nbsp; Start Session</PrimaryButton>
       </div>
-      <div>
+      <div style={{ marginTop: 10 }}>
         {students
           .filter((s) => s.selected)
           .map(({ student }) => (
-            <div key={student._id} className="flex align-center">
-              <Button onClick={() => handleDelete(student._id)}>
-                <Icon icon="trash" color="#ca1b1b" />
-              </Button>
-              <div>{student.fullName}</div>
-            </div>
+            <StudentRow key={student._id} student={student} />
           ))}
       </div>
     </FadeIn>
