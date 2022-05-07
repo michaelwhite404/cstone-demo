@@ -10,15 +10,11 @@ import useChecker from "../../../hooks/useChecker";
 import { InactiveAftercarePagesProps } from "../../../types/aftercareTypes";
 import { APIStudentsResponse } from "../../../types/apiResponses";
 
-interface AddStudentProps extends InactiveAftercarePagesProps {
-  studentsToAdd?: StudentModel[];
-}
-
 export default function AddStudents({
   setPageState,
   setStudentsToAdd,
   studentsToAdd,
-}: AddStudentProps) {
+}: InactiveAftercarePagesProps) {
   const [students, setStudents] = useState<StudentModel[]>([]);
   const { rows, checked } = useChecker(students, {
     onChange: setStudentsToAdd,

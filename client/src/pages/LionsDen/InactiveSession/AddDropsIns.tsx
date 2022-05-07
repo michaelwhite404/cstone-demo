@@ -20,11 +20,15 @@ interface Option {
   value: string;
 }
 
-export default function AddDropIns({
-  setPageState,
-  setStudentsToAdd,
-}: InactiveAftercarePagesProps) {
+interface AddDropInsProps extends InactiveAftercarePagesProps {
+  startSession?: (students: string[]) => void;
+}
+
+export default function AddDropIns({ setPageState, studentsToAdd, startSession }: AddDropInsProps) {
   const [students, setStudents] = useState<StudentToSelect[]>([]);
+
+  const selected = students.filter((s) => s.selected);
+
   useEffect(() => {
     getAftercareStudents();
   }, []);
@@ -66,6 +70,14 @@ export default function AddDropIns({
     }
   };
 
+  const handleStartSession = () => {
+    const studentIds: string[] = [
+      ...studentsToAdd.map((s) => s._id),
+      ...selected.map(({ student: s }) => s._id),
+    ];
+    startSession?.(studentIds);
+  };
+
   const StudentRow = ({ student }: { student: StudentModel }) => (
     <div className="flex align-center" style={{ padding: 10, paddingLeft: 0 }}>
       <Button onClick={() => handleDelete(student._id)}>
@@ -87,14 +99,12 @@ export default function AddDropIns({
           onChange={handleSelect}
           placeholder="Students to Add"
         />
-        <PrimaryButton>✓ &nbsp;&nbsp; Start Session</PrimaryButton>
+        <PrimaryButton onClick={handleStartSession}>✓ &nbsp;&nbsp; Start Session</PrimaryButton>
       </div>
       <div style={{ marginTop: 10 }}>
-        {students
-          .filter((s) => s.selected)
-          .map(({ student }) => (
-            <StudentRow key={student._id} student={student} />
-          ))}
+        {selected.map(({ student }) => (
+          <StudentRow key={student._id} student={student} />
+        ))}
       </div>
     </FadeIn>
   );
