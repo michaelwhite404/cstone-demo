@@ -15,11 +15,22 @@ interface IUseChecker<T> {
   CheckAllBox: () => JSX.Element;
 }
 
+interface CheckerOptions<T> {
+  /**
+   * Function to run when a row is checked
+   * @param {T} checked - An array of rows that are currently checked
+   */
+  onChange?: (checked: T[]) => void;
+  /** The property key used to identify rows that should be initially checked */
+  key?: keyof T;
+  initialCheck?: (string | number)[];
+}
+
 type CheckboxStates = "unchecked" | "checked" | "indeterminate";
 
 export default function useChecker<T>(
   data: T[],
-  onChange?: (checked: T[]) => void
+  checkerOptions?: CheckerOptions<T>
 ): IUseChecker<T> {
   const [state, setState] = useState<CheckerRow<T>[]>([]);
   const [main, setMain] = useState<CheckboxStates>("unchecked");
@@ -49,10 +60,15 @@ export default function useChecker<T>(
     const initializeRows = () => {
       const rows = data.map((row) => {
         const rowId = uuid();
+        let checked = false;
+        if (checkerOptions?.key && checkerOptions.initialCheck) {
+          //@ts-ignore
+          if (checkerOptions.initialCheck.includes(row[checkerOptions.key])) checked = true;
+        }
         return {
           rowId,
           original: row,
-          checked: false,
+          checked,
         };
       });
       //@ts-ignore
@@ -60,6 +76,7 @@ export default function useChecker<T>(
     };
 
     initializeRows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -67,7 +84,7 @@ export default function useChecker<T>(
     if (numChecked === 0) return setMain("unchecked");
     if (numChecked === state.length) return setMain("checked");
     setMain("indeterminate");
-    onChange?.(checked);
+    checkerOptions?.onChange?.(checked);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 

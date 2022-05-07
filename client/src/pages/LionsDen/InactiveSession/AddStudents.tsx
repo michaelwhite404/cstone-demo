@@ -10,12 +10,21 @@ import useChecker from "../../../hooks/useChecker";
 import { InactiveAftercarePagesProps } from "../../../types/aftercareTypes";
 import { APIStudentsResponse } from "../../../types/apiResponses";
 
+interface AddStudentProps extends InactiveAftercarePagesProps {
+  studentsToAdd?: StudentModel[];
+}
+
 export default function AddStudents({
   setPageState,
   setStudentsToAdd,
-}: InactiveAftercarePagesProps) {
+  studentsToAdd,
+}: AddStudentProps) {
   const [students, setStudents] = useState<StudentModel[]>([]);
-  const { rows } = useChecker(students, setStudentsToAdd);
+  const { rows, checked } = useChecker(students, {
+    onChange: setStudentsToAdd,
+    key: "_id",
+    initialCheck: studentsToAdd?.map((s) => s._id),
+  });
   const { ref, inView } = useInView({ threshold: 0 });
   const [width] = useWindowSize();
 
@@ -28,12 +37,17 @@ export default function AddStudents({
     setStudents(res.data.data.students);
   };
 
+  const onButtonClick = () => {
+    setStudentsToAdd(checked);
+    setPageState("dropIns");
+  };
+
   return (
     <div>
       <FadeIn>
         <div ref={ref} className="flex align-center space-between">
           <div className="session-header">Add Students</div>
-          <PrimaryButton onClick={() => setPageState("dropIns")}>Add Drop Ins</PrimaryButton>
+          <PrimaryButton onClick={onButtonClick}>Add Drop Ins</PrimaryButton>
         </div>
         <div style={{ marginBottom: 50 }}>
           {rows.map(({ Checkbox, original, rowId }) => (
@@ -58,7 +72,7 @@ export default function AddStudents({
           justifyContent: "center",
         }}
       >
-        <PrimaryButton onClick={() => setPageState("dropIns")}>Add Drop Ins</PrimaryButton>
+        <PrimaryButton onClick={onButtonClick}>Add Drop Ins</PrimaryButton>
       </div>
     </div>
   );

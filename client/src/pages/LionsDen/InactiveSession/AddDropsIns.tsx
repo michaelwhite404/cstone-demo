@@ -8,6 +8,7 @@ import FadeIn from "../../../components/FadeIn";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { InactiveAftercarePagesProps } from "../../../types/aftercareTypes";
 import { APIStudentsResponse } from "../../../types/apiResponses";
+import BackButton from "../../../components/BackButton";
 
 interface StudentToSelect {
   student: StudentModel;
@@ -76,6 +77,7 @@ export default function AddDropIns({
 
   return (
     <FadeIn>
+      <BackButton onClick={() => setPageState("students")} />
       <div className="session-header">Add Drop Ins</div>
       <div className="add-student-container">
         <Select

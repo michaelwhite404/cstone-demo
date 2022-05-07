@@ -10,12 +10,21 @@ export default function InactiveSession() {
   const [studentsToAdd, setStudentsToAdd] = useState<StudentModel[]>([]);
 
   const pages = [
-    { state: "empty", Component: EmptyPage },
-    { state: "students", Component: AddStudents },
+    {
+      state: "empty",
+      Component: EmptyPage,
+    },
+    {
+      state: "students",
+      Component: AddStudents,
+      props: {
+        studentsToAdd,
+      },
+    },
     { state: "dropIns", Component: AddDropIns },
   ];
 
-  const { Component } = pages.find((page) => page.state === pageState)!;
+  const { Component, props } = pages.find((page) => page.state === pageState)!;
 
-  return <Component setPageState={setPageState} setStudentsToAdd={setStudentsToAdd} />;
+  return <Component setPageState={setPageState} setStudentsToAdd={setStudentsToAdd} {...props} />;
 }
