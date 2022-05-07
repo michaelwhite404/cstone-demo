@@ -7,12 +7,12 @@ export default function Tabs({ children }: { children?: ReactNode }) {
 }
 
 interface TabProps {
-  name: string;
+  children: ReactNode;
   current?: boolean;
   onClick?: () => void;
 }
 
-function Tab({ name, current, onClick }: TabProps) {
+function Tab({ current, onClick, children }: TabProps) {
   const className = classNames("tab", { current });
   return (
     <div
@@ -20,7 +20,7 @@ function Tab({ name, current, onClick }: TabProps) {
       aria-current={current ? "page" : undefined}
       onClick={() => onClick?.()}
     >
-      {name}
+      {children}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { AttendanceEntry, SignedOutEntry } from "../../types/aftercareTypes";
 import AwaitingPickupTable from "./AwaitingPickupTable";
 import SessionsTable from "./SessionsTable";

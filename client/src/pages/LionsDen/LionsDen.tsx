@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import Dot from "../../components/Dot";
 import Tabs from "../../components/Tabs";
 import { useDocTitle } from "../../hooks";
 
@@ -37,13 +38,17 @@ export default function LionsDen() {
       <div className="hidden sm:block mb-10">
         <nav className="lions-den-tabs" aria-label="Tabs">
           <Tabs>
-            {tabs.map((tab) => (
+            {tabs.map((tab, i) => (
               <Tabs.Tab
                 key={tab.name}
-                name={tab.title}
                 current={pageState === tab.name}
                 onClick={() => navigate(`/lions-den${tab.href}`)}
-              />
+              >
+                {tab.title}
+                <span className="absolute -top-1 -right-1 b">
+                  {tab.name === "current-session" && <Dot color="red" blinking />}
+                </span>
+              </Tabs.Tab>
             ))}
           </Tabs>
         </nav>
