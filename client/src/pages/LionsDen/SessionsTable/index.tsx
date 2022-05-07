@@ -1,21 +1,8 @@
 import { format } from "date-fns";
 import Badge from "../../../components/Badge/Badge";
 import TableWrapper from "../../../components/TableWrapper";
+import { SignedOutEntry } from "../../../types/aftercareTypes";
 import "./SessionsTable.sass";
-
-interface SignedOutEntry {
-  _id: string;
-  student: {
-    _id: string;
-    fullName: string;
-    email: string;
-  };
-  session: string;
-  dropIn: boolean;
-  lateSignOut: boolean;
-  signOutDate: string;
-  signature: string;
-}
 
 export default function SessionsTable({ entries }: { entries: SignedOutEntry[] }) {
   return (

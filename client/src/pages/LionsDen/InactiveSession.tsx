@@ -4,11 +4,15 @@ import { StudentModel } from "../../../../src/types/models";
 import EmptyPage from "./InactiveSession/EmptyPage";
 import AddStudents from "./InactiveSession/AddStudents";
 import AddDropIns from "./InactiveSession/AddDropsIns";
-import { InactivePageState } from "../../types/aftercareTypes";
+import { CurrentSession, InactivePageState } from "../../types/aftercareTypes";
 import { useToasterContext } from "../../hooks";
 import { APICurrentSessionResponse, APIError } from "../../types/apiResponses";
 
-export default function InactiveSession() {
+interface InactiveSessionProps {
+  setCurrentSession: React.Dispatch<React.SetStateAction<CurrentSession>>;
+}
+
+export default function InactiveSession({ setCurrentSession }: InactiveSessionProps) {
   const [pageState, setPageState] = useState<InactivePageState>("empty");
   const [studentsToAdd, setStudentsToAdd] = useState<StudentModel[]>([]);
   const { showToaster } = useToasterContext();
@@ -19,6 +23,7 @@ export default function InactiveSession() {
         students,
       });
       showToaster("Session Started", "success");
+      setCurrentSession(res.data.data);
     } catch (err) {
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }

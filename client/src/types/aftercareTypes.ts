@@ -1,8 +1,4 @@
-import {
-  AftercareAttendanceEntryModel,
-  AftercareSessionModel,
-  StudentModel,
-} from "../../../src/types/models";
+import { AftercareSessionModel, StudentModel } from "../../../src/types/models";
 
 export type InactivePageState = "empty" | "students" | "dropIns";
 
@@ -14,5 +10,21 @@ export interface InactiveAftercarePagesProps {
 
 export interface CurrentSession {
   session: AftercareSessionModel | null;
-  attendance: AftercareAttendanceEntryModel[];
+  attendance: AttendanceEntry[];
 }
+
+export interface AttendanceEntry {
+  _id: string;
+  student: {
+    _id: string;
+    fullName: string;
+    schoolEmail: string;
+  };
+  session: string;
+  dropIn: boolean;
+  lateSignOut?: boolean;
+  signOutDate?: string;
+  signature?: string;
+}
+
+export type SignedOutEntry = Required<AttendanceEntry>;
