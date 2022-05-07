@@ -1,6 +1,7 @@
 import { Checkbox } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
+
 interface CheckerRow<T> {
   rowId: string;
   original: T;
@@ -8,9 +9,18 @@ interface CheckerRow<T> {
   Checkbox: () => JSX.Element;
 }
 
+interface IUseChecker<T> {
+  rows: CheckerRow<T>[];
+  checked: T[];
+  CheckAllBox: () => JSX.Element;
+}
+
 type CheckboxStates = "unchecked" | "checked" | "indeterminate";
 
-export default function useChecker<T>(data: T[]) {
+export default function useChecker<T>(
+  data: T[],
+  onChange?: (checked: T[]) => void
+): IUseChecker<T> {
   const [state, setState] = useState<CheckerRow<T>[]>([]);
   const [main, setMain] = useState<CheckboxStates>("unchecked");
 
@@ -57,6 +67,8 @@ export default function useChecker<T>(data: T[]) {
     if (numChecked === 0) return setMain("unchecked");
     if (numChecked === state.length) return setMain("checked");
     setMain("indeterminate");
+    onChange?.(checked);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const rows: CheckerRow<T>[] = state.map((r) => {
