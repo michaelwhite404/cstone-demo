@@ -1,30 +1,30 @@
-import axios from "axios";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import { useSocket } from "../../hooks";
 import { CurrentSession as SessionNow } from "../../types/aftercareTypes";
-import { APICurrentSessionResponse } from "../../types/apiResponses";
 import ActiveSession from "./ActiveSession";
 import InactiveSession from "./InactiveSession";
 
+interface LionsDenOutletContext {
+  currentSession: SessionNow;
+  getCurrentSession: () => Promise<void>;
+  setCurrentSession: React.Dispatch<React.SetStateAction<SessionNow>>;
+}
+
 export default function CurrentSession() {
   const socket = useSocket();
-  const [data, setData] = useState<SessionNow>({ session: null, attendance: [] });
+  const { currentSession, getCurrentSession, setCurrentSession } =
+    useOutletContext<LionsDenOutletContext>();
 
   useLayoutEffect(() => {
-    getCurrentSession();
     socket?.on("aftercareSignOutSuccess", getCurrentSession);
-  }, [socket]);
-
-  const getCurrentSession = async () => {
-    const res = await axios.get<APICurrentSessionResponse>("/api/v2/aftercare/session/today");
-    setData(res.data.data);
-  };
+  }, [socket, getCurrentSession]);
 
   const Session = () =>
-    data.session ? (
-      <ActiveSession attendance={data.attendance} />
+    currentSession.session ? (
+      <ActiveSession attendance={currentSession.attendance} />
     ) : (
-      <InactiveSession setCurrentSession={setData} />
+      <InactiveSession setCurrentSession={setCurrentSession} />
     );
 
   return <Session />;
