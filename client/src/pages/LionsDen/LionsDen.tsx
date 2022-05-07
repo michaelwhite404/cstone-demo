@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Dot from "../../components/Dot";
 import Tabs from "../../components/Tabs";
@@ -26,10 +26,10 @@ export default function LionsDen() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const getCurrentSession = async () => {
+  const getCurrentSession = useCallback(async () => {
     const res = await axios.get<APICurrentSessionResponse>("/api/v2/aftercare/session/today");
     setCurrentSession(res.data.data);
-  };
+  }, []);
 
   useEffect(() => {
     const getPageState = () => {
@@ -39,8 +39,11 @@ export default function LionsDen() {
     };
 
     getPageState();
-    getCurrentSession();
   }, [location.pathname]);
+
+  useEffect(() => {
+    getCurrentSession();
+  }, [getCurrentSession]);
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
