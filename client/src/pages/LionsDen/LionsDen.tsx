@@ -45,6 +45,9 @@ export default function LionsDen() {
     getCurrentSession();
   }, [getCurrentSession]);
 
+  const finished =
+    currentSession.session && currentSession.attendance.every((entry) => entry.signOutDate);
+
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       {/* Header */}
@@ -64,7 +67,9 @@ export default function LionsDen() {
                 {tab.title}
                 {currentSession.session && (
                   <span className="absolute -top-1 -right-1 b">
-                    {tab.name === "current-session" && <Dot color="red" blinking />}
+                    {tab.name === "current-session" && (
+                      <Dot color={finished ? "#4caf50" : "red"} blinking={!finished} />
+                    )}
                   </span>
                 )}
               </Tabs.Tab>
