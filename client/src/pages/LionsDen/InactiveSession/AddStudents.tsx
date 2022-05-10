@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { StudentModel } from "../../../../../src/types/models";
+import BackButton from "../../../components/BackButton";
 import FadeIn from "../../../components/FadeIn";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import { useWindowSize } from "../../../hooks";
@@ -42,7 +43,10 @@ export default function AddStudents({
     <div>
       <FadeIn>
         <div ref={ref} className="flex align-center space-between">
-          <div className="session-header">Add Students</div>
+          <div className="session-header">
+            <BackButton onClick={() => setPageState("empty")} />
+            Add Students
+          </div>
           <PrimaryButton onClick={onButtonClick}>Add Drop Ins</PrimaryButton>
         </div>
         <div style={{ marginBottom: 50 }}>

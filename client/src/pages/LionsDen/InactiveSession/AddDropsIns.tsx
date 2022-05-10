@@ -89,8 +89,12 @@ export default function AddDropIns({ setPageState, studentsToAdd, startSession }
 
   return (
     <FadeIn>
-      <BackButton onClick={() => setPageState("students")} />
-      <div className="session-header">Add Drop Ins</div>
+      <div className="flex">
+        <div className="session-header">
+          <BackButton onClick={() => setPageState("students")} />
+          Add Drop Ins
+        </div>
+      </div>
       <div className="add-student-container">
         <Select
           isMulti
