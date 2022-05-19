@@ -53,6 +53,7 @@ export default function LionsDen() {
         attendance: [],
       })
     );
+    socket?.on("aftercareSessionStart", setCurrentSession);
   }, [getCurrentSession, socket]);
 
   const finished =
