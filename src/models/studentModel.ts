@@ -6,12 +6,12 @@ const studentSchema = new Schema(
   {
     firstName: {
       type: String,
-      required: [true, "An employee must have a first name"],
+      required: [true, "A student must have a first name"],
       trim: true,
     },
     lastName: {
       type: String,
-      required: [true, "An employee must have a last name"],
+      required: [true, "A student must have a last name"],
       trim: true,
     },
     fullName: {

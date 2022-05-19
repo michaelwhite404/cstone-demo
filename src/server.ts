@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
-import chalk from "chalk";
+import { green } from "chalk";
+import cron from "node-cron";
 
 dotenv.config({ path: "./config.env" });
-import app from "./app";
+import { AftercareSession } from "@models";
+import app from "@app";
 
 const server = http.createServer(app);
 
@@ -16,7 +18,9 @@ export const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => console.log(chalk.green(`A user connected: ${socket.id}`)));
+io.on("connection", (socket) => {
+  process.env.NODE_ENV === "development" && console.log(green`A user connected: ${socket.id}`);
+});
 
 const DB = process.env.DATABASE!.replace("<PASSWORD>", process.env.DATABASE_PASSWORD!);
 
@@ -28,6 +32,15 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("DB connection successful!"));
+
+cron.schedule(
+  "0 0 * * *",
+  async () => {
+    await AftercareSession.findOneAndUpdate({ active: true }, { active: false });
+    io.emit("newDay");
+  },
+  { timezone: "America/New_York" }
+);
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {

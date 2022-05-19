@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Dot from "../../components/Dot";
 import Tabs from "../../components/Tabs";
-import { useDocTitle } from "../../hooks";
+import { useDocTitle, useSocket } from "../../hooks";
 import { CurrentSession } from "../../types/aftercareTypes";
 import { APICurrentSessionResponse } from "../../types/apiResponses";
 
@@ -17,6 +17,7 @@ type LionsDenPageState = "current-session" | "sessions" | "students";
 
 export default function LionsDen() {
   useDocTitle("Lions Den | Cornerstone App");
+  const socket = useSocket();
   const [pageState, setPageState] = useState<LionsDenPageState>();
   const [currentSession, setCurrentSession] = useState<CurrentSession>({
     session: null,
@@ -37,13 +38,22 @@ export default function LionsDen() {
       if (paths.length === 1) return setPageState("current-session");
       setPageState(paths[paths.length - 1] as LionsDenPageState);
     };
-
     getPageState();
   }, [location.pathname]);
 
   useEffect(() => {
     getCurrentSession();
   }, [getCurrentSession]);
+
+  useEffect(() => {
+    socket?.on("aftercareSignOutSuccess", getCurrentSession);
+    socket?.on("newDay", () =>
+      setCurrentSession({
+        session: null,
+        attendance: [],
+      })
+    );
+  }, [getCurrentSession, socket]);
 
   const finished =
     currentSession.session && currentSession.attendance.every((entry) => entry.signOutDate);

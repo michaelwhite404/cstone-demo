@@ -8,7 +8,6 @@ import path from "path";
 import compression from "compression";
 import passport from "passport";
 import { graphqlHTTP } from "express-graphql";
-import cron from "node-cron";
 
 import { AppError, catchAsync, s3 } from "@utils";
 import globalErrorHandler from "@controllers/errorController";
@@ -19,18 +18,11 @@ import pdfRouter from "./routes/pdfRoutes";
 import csvRouter from "./routes/csvRoutes";
 import "./config/passport-setup";
 import schema from "./graphql/schema";
-import { AftercareSession } from "@models";
 
 const app = express();
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "../views"));
-
-cron.schedule(
-  "0 0 * * *",
-  async () => await AftercareSession.findOneAndUpdate({ active: true }, { active: false }),
-  { timezone: "America/New_York" }
-);
 
 // 1.) MIDDLEWARES
 // Serving static files

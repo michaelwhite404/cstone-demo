@@ -99,8 +99,7 @@ export const createAftercareSession = catchAsync(async (req, res, next) => {
   }));
 
   const attendance = await AftercareAttendanceEntry.create(entryArray);
-
-  res.sendJson(201, {
+  const data = {
     session,
     attendance: attendance.map((entry) => ({
       _id: entry._id,
@@ -111,7 +110,10 @@ export const createAftercareSession = catchAsync(async (req, res, next) => {
       },
       dropIn: entry.dropIn,
     })),
-  });
+  };
+
+  io.emit("aftercareSessionStart", data);
+  res.sendJson(201, data);
 });
 
 export const getAllAttendanceEntries = factory.getAll(
