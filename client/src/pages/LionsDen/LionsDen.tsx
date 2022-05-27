@@ -47,6 +47,7 @@ export default function LionsDen() {
 
   useEffect(() => {
     socket?.on("aftercareSignOutSuccess", getCurrentSession);
+    socket?.on("aftercareAddEntries", getCurrentSession);
     socket?.on("newDay", () =>
       setCurrentSession({
         session: null,

@@ -28,11 +28,17 @@ export default function SessionsTable({ entries }: { entries: SignedOutEntry[] }
           {regular.map((entry) => (
             <EntryRow key={entry._id} entry={entry} />
           ))}
-          <tr>
-            <td className="table-header" style={{ height: "auto", padding: 15 }} colSpan={4}>
-              Drop Ins
-            </td>
-          </tr>
+          {dropIns.length > 0 && (
+            <tr>
+              <td
+                className="table-header"
+                style={{ height: "auto", padding: "10px 15px" }}
+                colSpan={4}
+              >
+                Drop Ins
+              </td>
+            </tr>
+          )}
           {dropIns.map((entry) => (
             <EntryRow key={entry._id} entry={entry} />
           ))}

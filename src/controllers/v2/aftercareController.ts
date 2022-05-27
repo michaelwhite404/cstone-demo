@@ -138,7 +138,7 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
   });
   if (!entry) return next(new AppError("There is no entry with this id", 404));
   if (entry.signOutDate) return next(new AppError("This student has already been signed out", 400));
-  const data = await s3.uploadBase64Image(req.body.signature, `signatures/${entry._id}`);
+  const data = await s3.uploadBase64Image(req.body.signature, `signatures/aftercare/${entry._id}`);
   entry.signOutDate = new Date();
   entry.lateSignOut = new Date().getHours() >= 18;
   entry.signature = data.Key;
@@ -182,7 +182,7 @@ export const createAttendanceEntries = catchAsync(async (req, res, next) => {
       dropIn: !student.aftercare,
     }))
   );
-
+  io.emit("aftercareAddEntries");
   res.sendJson(200, {
     entries,
   });
