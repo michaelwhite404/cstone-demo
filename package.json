@@ -1,6 +1,6 @@
 {
-  "name": "cornerstone-employee-login",
-  "version": "2.1.0",
+  "name": "cornerstone-app",
+  "version": "2.2.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start:prod": "NODE_ENV=production nodemon dist/server.js",
     "watch": "concurrently -n 'tsc,alias' -c 'yellow,magenta'  --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --public-url /js --out-file bundle.js",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --public-url /js --out-file bundle.js",
+    "build:js": "parcel build ./p ublic/js/index.js --out-dir ./public/js --public-url /js --out-file bundle.js",
     "client": "cd client && npm start",
     "server": "nodemon dist/server.js",
     "dev": "concurrently -n 'server,client' -c 'green,blue' \"npm run server\" \"npm run client\"",
