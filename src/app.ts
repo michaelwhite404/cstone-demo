@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "xss-clean";
 import cookieParser from "cookie-parser";
@@ -59,12 +59,13 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Limit requests from same API
-const limiter = rateLimit({
-  max: 300,
-  windowMs: 60000,
-  message: "To many requests from this IP, please try again in one minute",
-});
-app.use("/api", limiter);
+// const limiter = rateLimit({
+//   max: 300,
+//   windowMs: 60000,
+//   message: "To many requests from this IP, please try again in one minute",
+// });
+// app.use("/api", limiter);
+// app.use(subdomain("api", limiter));
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: "1mb" }));
@@ -81,7 +82,6 @@ app.use(xss());
 
 app.use(compression());
 
-// @ts-ignore
 app.use(subdomain("api", apiRouter));
 app.use("/api", apiRouter);
 app.use(

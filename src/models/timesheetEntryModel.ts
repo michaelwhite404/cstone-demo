@@ -26,7 +26,7 @@ const timesheetEntrySchema: Schema<
     ref: "Employee",
     required: [true, "Each timesheet entry must have an employee id"],
     immutable: true,
-  } as SchemaTypeOptions<ObjectId>,
+  },
   timeStart: {
     type: Date,
     required: [true, "Each timesheet entry must have a start time"],

@@ -202,7 +202,7 @@ export const getOneDeviceFromGoogle = catchAsync(async (req, res, next) => {
       },
     });
   } catch (err) {
-    return next(new AppError(err.response.data.error.message, 500));
+    return next(new AppError((err as any).response.data.error.message, 500));
   }
 });
 
