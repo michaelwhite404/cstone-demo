@@ -13,7 +13,7 @@ import subdomain from "express-subdomain";
 import { AppError, catchAsync, s3 } from "@utils";
 import globalErrorHandler from "@controllers/errorController";
 import apiRouter from "./routes/apiRoutes";
-import viewRouter from "./routes/v1/viewRoutes";
+// import viewRouter from "./routes/v1/viewRoutes";
 import authRouter from "./routes/authRoutes";
 import pdfRouter from "./routes/pdfRoutes";
 import csvRouter from "./routes/csvRoutes";
