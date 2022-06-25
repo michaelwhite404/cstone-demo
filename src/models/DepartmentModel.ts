@@ -45,22 +45,22 @@ const departmentSchema = new Schema({
       type: Types.ObjectId,
       ref: "Employee",
       validate: [validEmployeeValidation],
-    } as SchemaTypeOptions<ObjectId>,
-  ] as SchemaTypeOptions<ObjectId[]>,
+    },
+  ],
   approvers: [
     {
       type: Types.ObjectId,
       ref: "Employee",
       validate: [validEmployeeValidation, approverValidation],
-    } as SchemaTypeOptions<ObjectId>,
-  ] as SchemaTypeOptions<ObjectId[]>,
+    },
+  ],
   employees: [
     {
       type: Types.ObjectId,
       ref: "Employee",
       validate: [validEmployeeValidation, employeeValidation],
-    } as SchemaTypeOptions<ObjectId>,
-  ] as SchemaTypeOptions<ObjectId[]>,
+    },
+  ],
 } as SchemaDefinition);
 
 const Department = model<DepartmentDocument>("Department", departmentSchema);
