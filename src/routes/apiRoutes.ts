@@ -1,3 +1,4 @@
+import { AppError } from "@utils";
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import v1Router from "./v1/v1Routes";
@@ -14,5 +15,9 @@ const limiter = rateLimit({
 router.use(limiter);
 router.use("/v1", v1Router);
 router.use(["/v2", "/"], v2Router);
+
+router.all("*", (req, _, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 export default router;
