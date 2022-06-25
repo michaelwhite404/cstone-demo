@@ -27,7 +27,7 @@ const handleJWTError = () => new AppError("Invalid Token. Please log in again!",
 
 const sendErrorDev = (err: AppError, req: Request, res: Response) => {
   // A) API
-  if (req.originalUrl.startsWith("/api")) {
+  if (req.originalUrl.startsWith("/api") || req.subdomains.includes("api")) {
     return res.status(err.statusCode).json({
       status: err.status,
       error: err,
@@ -44,7 +44,7 @@ const sendErrorDev = (err: AppError, req: Request, res: Response) => {
 
 const sendErrorProd = (err: AppError, req: Request, res: Response) => {
   // A) API
-  if (req.originalUrl.startsWith("/api")) {
+  if (req.originalUrl.startsWith("/api") || req.subdomains.includes("api")) {
     // A) Operational, trusted error: send message to client
     if (err.isOperational) {
       return res.status(err.statusCode).json({

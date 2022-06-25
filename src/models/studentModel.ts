@@ -20,9 +20,15 @@ const studentSchema = new Schema(
     },
     grade: {
       type: Number,
-      required: false,
       min: 0,
       max: 12,
+      required: [
+        function () {
+          // @ts-ignore
+          return this.status === "Active";
+        },
+        "Active students must have a grade",
+      ] as [() => boolean, string],
     },
     schoolEmail: {
       type: String,
@@ -46,12 +52,12 @@ const studentSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: () => Date.now(),
       select: false,
     },
     lastUpdate: {
       type: Date,
-      default: Date.now(),
+      default: () => Date.now(),
       select: false,
     },
     slug: String,

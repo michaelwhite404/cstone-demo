@@ -8,6 +8,7 @@ import path from "path";
 import compression from "compression";
 import passport from "passport";
 import { graphqlHTTP } from "express-graphql";
+import subdomain from "express-subdomain";
 
 import { AppError, catchAsync, s3 } from "@utils";
 import globalErrorHandler from "@controllers/errorController";
@@ -80,6 +81,8 @@ app.use(xss());
 
 app.use(compression());
 
+// @ts-ignore
+app.use(subdomain("api", apiRouter));
 app.use("/api", apiRouter);
 app.use(
   "/graphql",
@@ -106,7 +109,7 @@ app.get(
   })
 );
 
-app.use("/", viewRouter);
+// app.use("/", viewRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(path.resolve(__dirname, "../client/build"))));
