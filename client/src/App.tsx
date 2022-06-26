@@ -27,6 +27,7 @@ import LionsDenStudents from "./pages/LionsDen/LionsDenStudents";
 import Sessions from "./pages/LionsDen/Sessions";
 import SocketIoProvider from "./context/SocketIoProvider";
 import CurrentSession from "./pages/LionsDen/CurrentSession";
+import Tools from "./pages/Tools";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -52,6 +53,10 @@ function App() {
                   <Route index element={<CurrentSession />} />
                   <Route path="sessions" element={<Sessions />} />
                   <Route path="students" element={<LionsDenStudents />} />
+                </Route>
+                <Route path="tools">
+                  <Route index element={<Tools />} />
+                  <Route path="short-url" element={<Tools.ShortUrl />} />
                 </Route>
               </Route>
             </Routes>

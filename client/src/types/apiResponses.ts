@@ -5,9 +5,10 @@ import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
 import { StudentModel } from "../../../src/types/models/studentTypes";
 import { TextbookSetModel } from "../../../src/types/models/textbookSetTypes";
 import { TextbookModel } from "../../../src/types/models/textbookTypes";
+import { ShortUrlModel } from "../../../src/types/models/shortUrlTypes";
 import { CurrentSession } from "./aftercareTypes";
 
-interface APIResponse<T> {
+export interface APIResponse<T> {
   status: "success";
   requestedAt: string;
   data: T;
@@ -36,3 +37,5 @@ export interface APIError {
 export interface APIAttendanceStatsResponse extends APIResponse<{ stats: AttendanceStat[] }> {}
 
 export interface APICurrentSessionResponse extends APIResponse<CurrentSession> {}
+
+export interface APIShortUrlResponse extends APIResponse<{ shortUrl: ShortUrlModel }> {}

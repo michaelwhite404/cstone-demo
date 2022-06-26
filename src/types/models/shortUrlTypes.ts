@@ -7,6 +7,7 @@ export interface ShortUrlModel {
   short: string;
   clicks: number;
   createdBy: PopulatedDoc<EmployeeModel>;
+  qr_clicks: number;
 }
 
 export interface ShortUrlDocument extends ShortUrlModel, Document {

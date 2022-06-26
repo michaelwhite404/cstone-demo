@@ -28,6 +28,10 @@ const shortUrlSchema = new Schema({
     required: true,
     ref: "Employee",
   },
+  qr_clicks: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const ShortUrl = model<ShortUrlDocument>("shortUrl", shortUrlSchema);

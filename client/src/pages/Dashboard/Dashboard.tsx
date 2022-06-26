@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { useDocTitle } from "../../hooks";
 
@@ -19,7 +18,7 @@ export default function Dashboard() {
       <div className="device-wrapper">
         <div className="device-grid-container">
           {links.map(({ to, heading, text }) => (
-            <Link className="device-item" to={to}>
+            <Link key={heading} className="device-item" to={to}>
               <div>
                 <div className="device-heading">{heading}</div>
                 <div>{text}</div>
