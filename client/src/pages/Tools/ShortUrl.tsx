@@ -108,7 +108,7 @@ export default function ShortUrl() {
           Auto-generate short link
         </Checkbox>
       </div>
-      <div className="mt-20">
+      <div className="mt-24">
         <div className="flex space-between">
           <h3>Short Link Created by {staff ? "Staff" : "You"}</h3>
           <Switch large checked={staff} onChange={toggle} label="View All Staff" />

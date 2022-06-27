@@ -28,6 +28,7 @@ import Sessions from "./pages/LionsDen/Sessions";
 import SocketIoProvider from "./context/SocketIoProvider";
 import CurrentSession from "./pages/LionsDen/CurrentSession";
 import Tools from "./pages/Tools";
+import DevTag from "./components/DevTag";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -85,6 +86,7 @@ function AppContainer() {
       >
         <Outlet />
       </div>
+      {process.env.NODE_ENV === "development" && <DevTag />}
     </Div100vh>
   );
 }
