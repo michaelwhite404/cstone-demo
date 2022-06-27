@@ -39,3 +39,4 @@ export interface APIAttendanceStatsResponse extends APIResponse<{ stats: Attenda
 export interface APICurrentSessionResponse extends APIResponse<CurrentSession> {}
 
 export interface APIShortUrlResponse extends APIResponse<{ shortUrl: ShortUrlModel }> {}
+export interface APIShortUrlsResponse extends APIResponse<{ shortUrls: ShortUrlModel[] }> {}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { Checkbox, Label } from "@blueprintjs/core";
 import { nanoid } from "nanoid";
@@ -6,36 +6,78 @@ import { useDocTitle, useToasterContext } from "../../hooks";
 import LabeledInput from "../../components/Inputs/LabeledInput";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { APIError, APIShortUrlResponse } from "../../types/apiResponses";
+import { ShortUrlModel } from "../../../../src/types/models";
+import QRCode from "react-qr-code";
 
 export default function ShortUrl() {
   useDocTitle("Short URL | Tools | Cornerstone App");
   const { showToaster } = useToasterContext();
-  const [link, setLink] = useState({
+  const [newLink, setNewLink] = useState({
     full: "",
     short: "",
     autogenerate: false,
   });
+  const [shortLinks, setShortLinks] = useState<ShortUrlModel[]>([]);
+
+  useEffect(() => {
+    const getLinks = async () => {
+      const res = await axios.get("/api/v2/short");
+      setShortLinks(res.data.data.shortUrls);
+    };
+
+    getLinks();
+  }, []);
+
+  const clear = () =>
+    setNewLink({
+      full: "",
+      short: newLink.autogenerate ? nanoid(8) : "",
+      autogenerate: newLink.autogenerate,
+    });
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-    setLink({ ...link, [e.target.name]: e.target.value });
+    setNewLink({ ...newLink, [e.target.name]: e.target.value });
 
   const toggleCheckbox: React.FormEventHandler<HTMLInputElement> = (e) => {
-    link.autogenerate
-      ? setLink({ full: link.full, short: "", autogenerate: false })
-      : setLink({ full: link.full, short: nanoid(8), autogenerate: true });
+    newLink.autogenerate
+      ? setNewLink({ full: newLink.full, short: "", autogenerate: false })
+      : setNewLink({ full: newLink.full, short: nanoid(8), autogenerate: true });
   };
 
   const handleSubmit = async () => {
     try {
-      /* const res =  */ await axios.post<APIShortUrlResponse>("/api/v2/short", {
-        full: link.full,
-        short: link.short,
+      const res = await axios.post<APIShortUrlResponse>("/api/v2/short", {
+        full: newLink.full,
+        short: newLink.short,
       });
       showToaster("Short link created", "success");
-      // res.data.data.shortUrl
+      setShortLinks([res.data.data.shortUrl, ...shortLinks]);
+      clear();
     } catch (err) {
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }
+  };
+
+  const submittable = newLink.full.length > 0 && newLink.short.length > 0;
+
+  const downloadQr = (link: ShortUrlModel) => {
+    const svg = document.getElementById(link._id);
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const pngFile = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.download = `${link.short}_qr`;
+      downloadLink.href = `${pngFile}`;
+      downloadLink.click();
+    };
+    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
   };
 
   return (
@@ -49,7 +91,7 @@ export default function ShortUrl() {
           <LabeledInput
             label="Full URL"
             name="full"
-            value={link.full}
+            value={newLink.full}
             onChange={handleChange}
             placeholder="https://your-full-link.com/example-ending"
             fill
@@ -59,25 +101,41 @@ export default function ShortUrl() {
           <LabeledInput
             label="Short Ending"
             name="short"
-            value={link.short}
+            value={newLink.short}
             onChange={handleChange}
-            disabled={link.autogenerate}
+            disabled={newLink.autogenerate}
             fill
           />
         </div>
-        <PrimaryButton text="+ Add Short Link" onClick={handleSubmit} />
+        <PrimaryButton text="+ Add Short Link" onClick={handleSubmit} disabled={!submittable} />
       </div>
       <div>
         <Label>
-          Short Link: cstonedc.org/<span style={{ color: "dodgerblue" }}>{link.short}</span>
+          Short Link: cstonedc.org/<span style={{ color: "dodgerblue" }}>{newLink.short}</span>
         </Label>
         <Checkbox
           style={{ userSelect: "none" }}
-          checked={link.autogenerate}
+          checked={newLink.autogenerate}
           onChange={toggleCheckbox}
         >
           Auto-generate short link
         </Checkbox>
+      </div>
+      <div>
+        {shortLinks.map((link) => (
+          <div key={link._id} className="flex space-between py-5">
+            <div>{link.full}</div>
+            <div>cstonedc.org/{link.short}</div>
+            <div>
+              <QRCode
+                size={100}
+                id={link._id}
+                value={`cstonedc.org/${link.short}?refer_method=qr`}
+              />
+              <button onClick={() => downloadQr(link)}>Download</button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
