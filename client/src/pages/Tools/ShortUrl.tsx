@@ -7,7 +7,7 @@ import LabeledInput from "../../components/Inputs/LabeledInput";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { APIError, APIShortUrlResponse } from "../../types/apiResponses";
 import { ShortUrlModel } from "../../../../src/types/models";
-import QRCode from "react-qr-code";
+import QRCode from "../../components/QRCode";
 
 export default function ShortUrl() {
   useDocTitle("Short URL | Tools | Cornerstone App");
@@ -127,12 +127,7 @@ export default function ShortUrl() {
             <div>{link.full}</div>
             <div>cstonedc.org/{link.short}</div>
             <div>
-              <QRCode
-                size={100}
-                id={link._id}
-                value={`cstonedc.org/${link.short}?refer_method=qr`}
-              />
-              <button onClick={() => downloadQr(link)}>Download</button>
+              <QRCode size={125} value={`cstonedc.org/${link.short}?refer_method=qr`} />
             </div>
           </div>
         ))}
