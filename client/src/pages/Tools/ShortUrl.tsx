@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios, { AxiosError } from "axios";
-import { Checkbox, Label } from "@blueprintjs/core";
+import { Checkbox, Label, Switch } from "@blueprintjs/core";
 import { nanoid } from "nanoid";
-import { useDocTitle, useToasterContext } from "../../hooks";
+import { useAuth, useDocTitle, useToasterContext, useToggle } from "../../hooks";
 import LabeledInput from "../../components/Inputs/LabeledInput";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { APIError, APIShortUrlResponse } from "../../types/apiResponses";
@@ -18,6 +18,13 @@ export default function ShortUrl() {
     autogenerate: false,
   });
   const [shortLinks, setShortLinks] = useState<ShortUrlModel[]>([]);
+  const [staff, toggle] = useToggle();
+  const { user } = useAuth();
+
+  const myLinks = useMemo(
+    () => shortLinks.filter((link) => link.createdBy === user?._id),
+    [shortLinks, user?._id]
+  );
 
   useEffect(() => {
     const getLinks = async () => {
@@ -59,26 +66,6 @@ export default function ShortUrl() {
   };
 
   const submittable = newLink.full.length > 0 && newLink.short.length > 0;
-
-  // const downloadQr = (link: ShortUrlModel) => {
-  //   const svg = document.getElementById(link._id);
-  //   if (!svg) return;
-  //   const svgData = new XMLSerializer().serializeToString(svg);
-  //   const canvas = document.createElement("canvas");
-  //   const ctx = canvas.getContext("2d")!;
-  //   const img = new Image();
-  //   img.onload = () => {
-  //     canvas.width = img.width;
-  //     canvas.height = img.height;
-  //     ctx.drawImage(img, 0, 0);
-  //     const pngFile = canvas.toDataURL("image/png");
-  //     const downloadLink = document.createElement("a");
-  //     downloadLink.download = `${link.short}_qr`;
-  //     downloadLink.href = `${pngFile}`;
-  //     downloadLink.click();
-  //   };
-  //   img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
-  // };
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -122,7 +109,11 @@ export default function ShortUrl() {
         </Checkbox>
       </div>
       <div className="mt-20">
-        <ShortLinksTable links={shortLinks} />
+        <div className="flex space-between">
+          <h3>Short Link Created by {staff ? "Staff" : "You"}</h3>
+          <Switch large checked={staff} onChange={toggle} label="View All Staff" />
+        </div>
+        <ShortLinksTable links={staff ? shortLinks : myLinks} />
       </div>
     </div>
   );

@@ -5,3 +5,4 @@ export { default as useToasterContext } from "./useToasterContext";
 export { default as useDevice } from "./useDevice";
 export { default as useAuth } from "./useAuth";
 export { default as useSocket } from "./useSocket";
+export { default as useToggle } from "./useToggle";
