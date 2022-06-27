@@ -7,7 +7,7 @@ import LabeledInput from "../../components/Inputs/LabeledInput";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { APIError, APIShortUrlResponse } from "../../types/apiResponses";
 import { ShortUrlModel } from "../../../../src/types/models";
-import QRCode from "../../components/QRCode";
+import ShortLinksTable from "./ShortLinksTable";
 
 export default function ShortUrl() {
   useDocTitle("Short URL | Tools | Cornerstone App");
@@ -60,25 +60,25 @@ export default function ShortUrl() {
 
   const submittable = newLink.full.length > 0 && newLink.short.length > 0;
 
-  const downloadQr = (link: ShortUrlModel) => {
-    const svg = document.getElementById(link._id);
-    if (!svg) return;
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      const pngFile = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.download = `${link.short}_qr`;
-      downloadLink.href = `${pngFile}`;
-      downloadLink.click();
-    };
-    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
-  };
+  // const downloadQr = (link: ShortUrlModel) => {
+  //   const svg = document.getElementById(link._id);
+  //   if (!svg) return;
+  //   const svgData = new XMLSerializer().serializeToString(svg);
+  //   const canvas = document.createElement("canvas");
+  //   const ctx = canvas.getContext("2d")!;
+  //   const img = new Image();
+  //   img.onload = () => {
+  //     canvas.width = img.width;
+  //     canvas.height = img.height;
+  //     ctx.drawImage(img, 0, 0);
+  //     const pngFile = canvas.toDataURL("image/png");
+  //     const downloadLink = document.createElement("a");
+  //     downloadLink.download = `${link.short}_qr`;
+  //     downloadLink.href = `${pngFile}`;
+  //     downloadLink.click();
+  //   };
+  //   img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+  // };
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -86,7 +86,7 @@ export default function ShortUrl() {
         <h1 style={{ marginBottom: "10px" }}>Short URL</h1>
         <p>Create short links with Cornerstone branding</p>
       </div>
-      <div className="flex align-center space-between">
+      <div className="flex align-center space-between mt-10">
         <div style={{ width: "40%" }}>
           <LabeledInput
             label="Full URL"
@@ -121,16 +121,8 @@ export default function ShortUrl() {
           Auto-generate short link
         </Checkbox>
       </div>
-      <div>
-        {shortLinks.map((link) => (
-          <div key={link._id} className="flex space-between py-5">
-            <div>{link.full}</div>
-            <div>cstonedc.org/{link.short}</div>
-            <div>
-              <QRCode size={125} value={`cstonedc.org/${link.short}?refer_method=qr`} />
-            </div>
-          </div>
-        ))}
+      <div className="mt-20">
+        <ShortLinksTable links={shortLinks} />
       </div>
     </div>
   );
