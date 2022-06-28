@@ -10,6 +10,8 @@ export default function Topbar() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
 
+  const close = () => setOpen(false);
+
   return (
     <div className="topbar">
       <button className="hamburger-button" type="button" onClick={() => setOpen(true)}>
@@ -31,7 +33,7 @@ export default function Topbar() {
         canOutsideClickClose={true}
         onClose={() => setOpen(false)}
       >
-        <Sidebar />
+        <Sidebar closeMenu={close} />
       </Drawer>
     </div>
   );

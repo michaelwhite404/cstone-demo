@@ -4,7 +4,7 @@ import navigation from "../../navigation";
 import "./Sidebar.sass";
 import { useAuth } from "../../hooks";
 
-export default function Sidebar() {
+export default function Sidebar(props: SidebarProps) {
   const location = useLocation();
   const { user } = useAuth();
   const matchesURL = (url: string) =>
@@ -28,6 +28,7 @@ export default function Sidebar() {
                     to={item.href}
                     className={`navigation-item${matchesURL(item.href) ? " current" : ""}`}
                     aria-current={matchesURL(item.href)}
+                    onClick={props.closeMenu}
                   >
                     <item.icon className="" aria-hidden="false" height={20} width={20} />
                     {item.name}
@@ -40,4 +41,8 @@ export default function Sidebar() {
       </div>
     </div>
   );
+}
+
+interface SidebarProps {
+  closeMenu?: () => void;
 }
