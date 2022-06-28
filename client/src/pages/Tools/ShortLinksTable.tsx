@@ -28,14 +28,21 @@ export default function ShortLinksTable({ links }: { links: ShortUrlModel[] }) {
                 </a>
               </td>
               <td>
-                <a href={`http://cstonedc.org/${link.short}`} target="_blank" rel="noreferrer">
-                  cstonedc.org/{link.short}
+                <a
+                  href={`http://${process.env.REACT_APP_SHORT_URL_HOST}/${link.short}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {process.env.REACT_APP_SHORT_URL_HOST}/{link.short}
                 </a>
               </td>
               <td>{link.clicks}</td>
               <td>{link.qr_clicks}</td>
               <td>
-                <QRCode size={40} value={`cstonedc.org/${link.short}?refer_method=qr`} />
+                <QRCode
+                  size={40}
+                  value={`${process.env.REACT_APP_SHORT_URL_HOST}/${link.short}?refer_method=qr`}
+                />
               </td>
             </tr>
           ))}

@@ -144,6 +144,11 @@ h1 {
   color: $gray-600;
 }
 
+h3 {
+  font-size: 1.17em;
+  font-weight: 700;
+}
+
 input {
   &:focus {
     outline: none;

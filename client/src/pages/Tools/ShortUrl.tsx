@@ -73,8 +73,8 @@ export default function ShortUrl() {
         <h1 style={{ marginBottom: "10px" }}>Short URL</h1>
         <p>Create short links with Cornerstone branding</p>
       </div>
-      <div className="flex align-center space-between mt-10">
-        <div style={{ width: "40%" }}>
+      <div className="align-center flex md:flex-row mt-10 flex-col space-between">
+        <div className="w-full md:w-1/3">
           <LabeledInput
             label="Full URL"
             name="full"
@@ -84,7 +84,7 @@ export default function ShortUrl() {
             fill
           />
         </div>
-        <div style={{ width: "40%" }}>
+        <div className="w-full md:w-1/3">
           <LabeledInput
             label="Short Ending"
             name="short"
@@ -94,11 +94,17 @@ export default function ShortUrl() {
             fill
           />
         </div>
-        <PrimaryButton text="+ Add Short Link" onClick={handleSubmit} disabled={!submittable} />
+        <PrimaryButton
+          className="hidden md:block"
+          text="+ Add Short Link"
+          onClick={handleSubmit}
+          disabled={!submittable}
+        />
       </div>
       <div>
         <Label>
-          Short Link: cstonedc.org/<span style={{ color: "dodgerblue" }}>{newLink.short}</span>
+          Short Link: {process.env.REACT_APP_SHORT_URL_HOST}/
+          <span style={{ color: "dodgerblue" }}>{newLink.short}</span>
         </Label>
         <Checkbox
           style={{ userSelect: "none" }}
@@ -107,6 +113,12 @@ export default function ShortUrl() {
         >
           Auto-generate short link
         </Checkbox>
+        <PrimaryButton
+          className="md:hidden block ml-auto mt-6"
+          text="+ Add Short Link"
+          onClick={handleSubmit}
+          disabled={!submittable}
+        />
       </div>
       <div className="mt-24">
         <div className="flex space-between">
