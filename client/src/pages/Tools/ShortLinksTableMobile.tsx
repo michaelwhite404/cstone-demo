@@ -7,7 +7,7 @@ export default function ShortLinksTableMobile({ links }: { links: ShortUrlModel[
     <div className="short-link-table-mobile md:hidden">
       <TableWrapper>
         {links.map((link) => (
-          <div className="flex space-between align-center px-4 py-3 border-b">
+          <div key={link._id} className="flex space-between align-center px-4 py-3 border-b">
             <div className="overflow-hidden">
               <div className="mb-1.5 truncate pr-5">
                 <span className="header">Full:</span> {link.full}
