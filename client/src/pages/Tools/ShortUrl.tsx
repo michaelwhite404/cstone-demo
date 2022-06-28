@@ -8,6 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { APIError, APIShortUrlResponse } from "../../types/apiResponses";
 import { ShortUrlModel } from "../../../../src/types/models";
 import ShortLinksTable from "./ShortLinksTable";
+import ShortLinksTableMobile from "./ShortLinksTableMobile";
 
 export default function ShortUrl() {
   useDocTitle("Short URL | Tools | Cornerstone App");
@@ -121,11 +122,12 @@ export default function ShortUrl() {
         />
       </div>
       <div className="mt-24">
-        <div className="flex space-between">
-          <h3>Short Link Created by {staff ? "Staff" : "You"}</h3>
+        <div className="flex flex-col sm:flex-row space-between">
+          <h3 className="mb-3 sm:mt-0">Short Link Created by {staff ? "Staff" : "You"}</h3>
           <Switch large checked={staff} onChange={toggle} label="View All Staff" />
         </div>
         <ShortLinksTable links={staff ? shortLinks : myLinks} />
+        <ShortLinksTableMobile links={staff ? shortLinks : myLinks} />
       </div>
     </div>
   );
