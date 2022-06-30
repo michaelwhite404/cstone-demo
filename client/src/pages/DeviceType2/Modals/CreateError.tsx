@@ -7,6 +7,7 @@ import LabeledTextArea from "../../../components/Inputs/LabeledTextArea";
 import { useToasterContext } from "../../../hooks";
 
 interface CreateErrorProps {
+  /**Closes the dialog */
   close: () => void;
   createError: (data: { title: string; description: string }) => Promise<{
     errorLog: ErrorLogModel;
@@ -28,6 +29,7 @@ export default function CreateError({ close, createError, reFetchDevices }: Crea
       .then(() => {
         showToaster("Error created successsfully", "success");
         reFetchDevices();
+        close();
       })
       .catch((err) => showToaster(err.message, "danger"));
   };
@@ -47,7 +49,12 @@ export default function CreateError({ close, createError, reFetchDevices }: Crea
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button text="Cancel" onClick={close} />
-          <Button text="Reset" intent="primary" onClick={handleSubmit} disabled={!submittable} />
+          <Button
+            text="Create Error"
+            intent="primary"
+            onClick={handleSubmit}
+            disabled={!submittable}
+          />
         </div>
       </div>
     </>
