@@ -35,25 +35,26 @@ export default function ErrorLogRow({ error }: { error: ErrorLogModel }) {
       </div>
       {open && (
         <div>
-          <div className="my-8">Updates</div>
-          <div style={{ color: "#bcc0d6" }}>
-            {error.updates.map((update, i) => (
-              <div className="mb-5 ">
-                <div className="font-medium">
-                  <span className="text-indigo-600 mr-1">Update {i + 1}:</span>
-                  <span className="text-gray-500">{update.description}</span>
+          <div className="my-8" />
+          {error.updates.length > 0 ? (
+            <div className="space-y-5" style={{ color: "#bcc0d6" }}>
+              {error.updates.map((update, i) => (
+                <div className="">
+                  <div className="font-medium">
+                    <span className="text-indigo-600 mr-1">Update {i + 1}:</span>
+                    <span className="text-gray-500">{update.description}</span>
+                  </div>
+                  <div className="flex mb-1">
+                    <ClockIcon className="mr-1" width={15} fill="#4f46e5" />
+                    {format(new Date(update.createdAt), "LLLL d, yyyy - h:m a")}
+                  </div>
+                  <div className="flex">{update.status}</div>
                 </div>
-                <div className="flex mb-1">
-                  <ClockIcon className="mr-1" width={15} fill="#4f46e5" />
-                  {format(new Date(update.createdAt), "LLLL d, yyyy - h:m a")}
-                </div>
-                <div className="flex">
-                  {/* {<CheckCircleIcon className="mr-1" width={15} />} */}
-                  {update.status}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <span className="font-medium text-gray-500">There are no updates...... yet</span>
+          )}
         </div>
       )}
     </div>

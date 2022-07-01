@@ -8,6 +8,7 @@ import cron from "node-cron";
 dotenv.config({ path: "./config.env" });
 import { AftercareSession } from "@models";
 import app from "@app";
+// import axios from "axios";
 
 const server = http.createServer(app);
 
@@ -41,6 +42,10 @@ cron.schedule(
   },
   { timezone: "America/New_York" }
 );
+
+// cron.schedule("0 * * * *", async () => {
+//   await axios.get("http://cstonedc.org");
+// });
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {

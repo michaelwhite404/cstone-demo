@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-const useToggle = (initialState: boolean = false): [boolean, any] => {
+const useToggle = (initialState: boolean = false): [boolean, () => void] => {
   // Initialize the state
   const [state, setState] = useState<boolean>(initialState);
   // Define and memorize toggler function in case we pass down the comopnent,
