@@ -29,6 +29,7 @@ import SocketIoProvider from "./context/SocketIoProvider";
 import CurrentSession from "./pages/LionsDen/CurrentSession";
 import Tools from "./pages/Tools";
 import DevTag from "./components/DevTag";
+import Timesheet from "./pages/Timesheet";
 
 function App() {
   FocusStyleManager.onlyShowFocusOnTabs();
@@ -50,6 +51,7 @@ function App() {
                   <Route path="add" element={<AddDevice />} />
                   <Route path=":slug" element={<DeviceData />} />
                 </Route>
+                <Route path="timesheet" element={<Timesheet />} />
                 <Route path="lions-den" element={<LionsDen />}>
                   <Route index element={<CurrentSession />} />
                   <Route path="sessions" element={<Sessions />} />
