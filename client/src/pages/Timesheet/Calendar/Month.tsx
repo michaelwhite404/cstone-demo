@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react";
-import { format, getDaysInMonth, getDay, subDays, addDays, lastDayOfMonth } from "date-fns";
+import {
+  format,
+  getDaysInMonth,
+  getDay,
+  subDays,
+  addDays,
+  lastDayOfMonth,
+  isToday,
+} from "date-fns";
 import classNames from "classnames";
+import Month from "../../../types/month";
+import CalendarEvent from "../../../types/calendarEvent";
 
-const daysOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export function CalendarMonth({ month, year }: { month: Month; year: number }) {
-  const [days, setDays] = useState(createDates(month, year));
+export function CalendarMonth(props: CalendarMonthProps) {
+  const [days, setDays] = useState(createDates(props.month, props.year));
 
   useEffect(() => {
-    setDays(createDates(month, year));
-  }, [month, year]);
+    setDays(createDates(props.month, props.year));
+  }, [props.month, props.year]);
 
   return (
     <div>
       <div className="mb-2">
-        {month} {year}
+        {props.month} {props.year}
       </div>
       <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col rounded overflow-hidden">
-        {/* Days of Weeke */}
+        {/* Days of Week */}
         <div className="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none">
           {daysOfWeek.map((day) => (
             <div className="bg-white py-2" key={day}>
@@ -46,7 +56,7 @@ export function CalendarMonth({ month, year }: { month: Month; year: number }) {
                       : undefined
                   }
                 >
-                  {day.date.split("-").pop().replace(/^0/, "")}
+                  {day.date.split("-").pop()?.replace(/^0/, "")}
                 </time>
                 {/* {day.events.length > 0 && (
                   <ol className="mt-2">
@@ -97,7 +107,7 @@ export function CalendarMonth({ month, year }: { month: Month; year: number }) {
                     "ml-auto"
                   )}
                 >
-                  {day.date.split("-").pop().replace(/^0/, "")}
+                  {day.date.split("-").pop()?.replace(/^0/, "")}
                 </time>
                 <span className="sr-only">{day.events?.length} events</span>
                 {/* {day.events.length > 0 && (
@@ -119,30 +129,17 @@ export function CalendarMonth({ month, year }: { month: Month; year: number }) {
   );
 }
 
-type Month =
-  | "January"
-  | "February"
-  | "March"
-  | "April"
-  | "May"
-  | "June"
-  | "July"
-  | "August"
-  | "September"
-  | "October"
-  | "November"
-  | "December";
-
 const createDates = (month: Month, year: number) => {
   const firstDay = new Date(`${month} ${year}`);
   const daysInMonth = getDaysInMonth(firstDay);
   const form = (month: string, day: number, year: number) =>
     format(new Date(`${month} ${day}, ${year}`), "y-LL-dd");
-  const dates: any[] = [];
+  const dates: Day[] = [];
   for (let i = 1; i <= daysInMonth; i++) {
     dates.push({
       date: form(month, i, year),
       isCurrentMonth: true,
+      isToday: isToday(new Date(`${month} ${i}, ${year}`)),
     });
   }
   for (let i = 1; i <= getDay(firstDay); i++) {
@@ -162,3 +159,17 @@ const createDates = (month: Month, year: number) => {
   }
   return dates;
 };
+
+interface Day {
+  date: string;
+  isCurrentMonth?: boolean;
+  isToday?: boolean;
+  isSelected?: boolean;
+  events?: [];
+}
+
+interface CalendarMonthProps {
+  month: Month;
+  year: number;
+  events?: CalendarEvent[];
+}

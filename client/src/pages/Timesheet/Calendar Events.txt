@@ -1,0 +1,12 @@
+Month Component:
+  Props:
+    - Month
+    - Year
+    - Events
+
+    Each event should looks like this:
+      - ID
+      - Description
+      - Time Label
+
+    
