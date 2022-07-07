@@ -30,9 +30,10 @@ export default function Timesheet() {
       const events: CalendarEvent[] = entries.map((entry) => ({
         id: entry._id,
         description: entry.description,
+        date: new Date(entry.timeStart),
+        timeLabel: `${entry.hours} ${entry.hours === 1 ? "Hr" : "Hrs"}`,
       }));
       setEvents(events);
-      console.log(res.data.data);
     };
     getTimesheetData();
   }, [date.month, date.year, user?._id]);

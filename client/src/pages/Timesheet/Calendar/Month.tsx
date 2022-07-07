@@ -15,11 +15,11 @@ import CalendarEvent from "../../../types/calendarEvent";
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function CalendarMonth(props: CalendarMonthProps) {
-  const [days, setDays] = useState(createDates(props.month, props.year));
+  const [days, setDays] = useState(createDates(props.month, props.year, props.events));
 
   useEffect(() => {
-    setDays(createDates(props.month, props.year));
-  }, [props.month, props.year]);
+    setDays(createDates(props.month, props.year, props.events));
+  }, [props.events, props.month, props.year]);
 
   return (
     <div>
@@ -58,19 +58,19 @@ export function CalendarMonth(props: CalendarMonthProps) {
                 >
                   {day.date.split("-").pop()?.replace(/^0/, "")}
                 </time>
-                {/* {day.events.length > 0 && (
+                {day.events && day.events.length > 0 && (
                   <ol className="mt-2">
                     {day.events.slice(0, 2).map((event) => (
                       <li key={event.id}>
-                        <a href={event.href} className="group flex">
+                        <a href="#" className="group flex hover:no-underline">
                           <p className="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
-                            {event.name}
+                            {event.description}
                           </p>
                           <time
-                            dateTime={event.datetime}
+                            // dateTime={event.datetime}
                             className="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block"
                           >
-                            {event.time}
+                            {event.timeLabel}
                           </time>
                         </a>
                       </li>
@@ -79,7 +79,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
                       <li className="text-gray-500">+ {day.events.length - 2} more</li>
                     )}
                   </ol>
-                )} */}
+                )}
               </div>
             ))}
           </div>
@@ -110,7 +110,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
                   {day.date.split("-").pop()?.replace(/^0/, "")}
                 </time>
                 <span className="sr-only">{day.events?.length} events</span>
-                {/* {day.events.length > 0 && (
+                {day.events && day.events.length > 0 && (
                   <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
                     {day.events.map((event) => (
                       <span
@@ -119,7 +119,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
                       />
                     ))}
                   </span>
-                )} */}
+                )}
               </button>
             ))}
           </div>
@@ -129,7 +129,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
   );
 }
 
-const createDates = (month: Month, year: number) => {
+const createDates = (month: Month, year: number, events?: CalendarEvent[]) => {
   const firstDay = new Date(`${month} ${year}`);
   const daysInMonth = getDaysInMonth(firstDay);
   const form = (month: string, day: number, year: number) =>
@@ -140,8 +140,16 @@ const createDates = (month: Month, year: number) => {
       date: form(month, i, year),
       isCurrentMonth: true,
       isToday: isToday(new Date(`${month} ${i}, ${year}`)),
+      events: [],
     });
   }
+  events?.forEach((event) => {
+    // console.log(format(event.date, "LLLL"), event.date.getFullYear());
+    if (format(event.date, "LLLL") === month && event.date.getFullYear() === year) {
+      dates[event.date.getDate() - 1].events?.push(event);
+    }
+  });
+  // Days Before Month
   for (let i = 1; i <= getDay(firstDay); i++) {
     const day = subDays(firstDay, i);
     dates.unshift({
@@ -149,6 +157,7 @@ const createDates = (month: Month, year: number) => {
       isCurrentMonth: false,
     });
   }
+  // Days After Month
   const lastDay = lastDayOfMonth(firstDay);
   for (let i = 1; i <= 6 - getDay(lastDay); i++) {
     const day = addDays(lastDay, i);
@@ -165,7 +174,7 @@ interface Day {
   isCurrentMonth?: boolean;
   isToday?: boolean;
   isSelected?: boolean;
-  events?: [];
+  events?: CalendarEvent[];
 }
 
 interface CalendarMonthProps {
