@@ -45,6 +45,7 @@ export default function Timesheet() {
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
       <div className="flex justify-end">
+        <Calendar.DatePick view={view} />
         <Calendar.View view={view} setView={setView} />
       </div>
       <Calendar.Month month={date.month} year={date.year} events={events} />
