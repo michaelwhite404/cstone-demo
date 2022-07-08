@@ -217,7 +217,7 @@ export default function AddTextbook(props: AddTextbookProps) {
           </div>
         </div>
         <div className="main-content-footer">
-          <div className="bp3-dialog-footer-actions">
+          <div className="bp4-dialog-footer-actions">
             <Button text="Cancel" onClick={handleBack} />
             <Button
               text="Create Textbook"

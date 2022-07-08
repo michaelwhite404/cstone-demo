@@ -11,8 +11,9 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  const [date, setDate] = useState<{ month: Month; year: number }>({
+  const [date, setDate] = useState<{ month: Month; day: number; year: number }>({
     month: /*format(new Date(), "LLLL") */ "December",
+    day: 1,
     year: /* new Date().getFullYear() */ 2021,
   });
   const [events, setEvents] = useState<CalendarEvent[]>([]);

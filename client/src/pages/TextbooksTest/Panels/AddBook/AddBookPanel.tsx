@@ -116,7 +116,7 @@ export default function AddBookPanel({ textbook, books, ...props }: AddBookProps
       </div>
 
       <div className="main-content-footer">
-        <div className="bp3-dialog-footer-actions">
+        <div className="bp4-dialog-footer-actions">
           <Button text="Cancel" onClick={props.closePanel} />
           <Button
             text={`Add ${pluralize("Book", booksToAdd.length, true)}`}

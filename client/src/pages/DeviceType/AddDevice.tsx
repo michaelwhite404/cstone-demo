@@ -115,7 +115,7 @@ export default function AddDevice({
           </div>
         </div>
       </div>
-      <div className="bp3-drawer-footer" style={{ textAlign: "right" }}>
+      <div className="bp4-drawer-footer" style={{ textAlign: "right" }}>
         <Button intent="primary" onClick={handleClick} disabled={!submittable}>
           Create {capitalize(singular(deviceType))}
         </Button>
