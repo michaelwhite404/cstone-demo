@@ -1,5 +1,5 @@
 import axios from "axios";
-import { startOfMonth, endOfMonth } from "date-fns";
+import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import { useAuth, useDocTitle } from "../../hooks";
@@ -11,19 +11,26 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  const [date, setDate] = useState<{ month: Month; day: number; year: number }>({
-    month: /*format(new Date(), "LLLL") */ "December",
-    day: 1,
-    year: /* new Date().getFullYear() */ 2021,
-  });
+  // const [date, setDate] = useState<CalendarDate>({
+  //   month: /*format(new Date(), "LLLL") */ "December",
+  //   day: 1,
+  //   year: /* new Date().getFullYear() */ 2021,
+  // });
+  const [date, setDate] = useState(new Date("December 1, 2021"));
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+  const { month, day, year } = {
+    month: format(date, "LLLL") as Month,
+    day: date.getDate(),
+    year: date.getFullYear(),
+  };
 
   useEffect(() => {
     const getTimesheetData = async () => {
       const res = await axios.get("/api/v2/timesheets", {
         params: {
-          "timeStart[gte]": startOfMonth(new Date(`${date.month} ${date.year}`)),
-          "timeStart[lte]": endOfMonth(new Date(`${date.month} ${date.year}`)),
+          "timeStart[gte]": startOfMonth(new Date(`${month} ${year}`)),
+          "timeStart[lte]": endOfMonth(new Date(`${month} ${year}`)),
           employeeId: user?._id,
         },
       });
@@ -37,7 +44,7 @@ export default function Timesheet() {
       setEvents(events);
     };
     getTimesheetData();
-  }, [date.month, date.year, user?._id]);
+  }, [month, year, user?._id]);
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -45,11 +52,11 @@ export default function Timesheet() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end space-x-2">
         <Calendar.DatePick view={view} setDate={setDate} />
         <Calendar.View view={view} setView={setView} />
       </div>
-      <Calendar.Month month={date.month} year={date.year} events={events} />
+      <Calendar.Month month={month} year={year} events={events} />
     </div>
   );
 }

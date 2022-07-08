@@ -1,22 +1,21 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { format } from "date-fns";
-import { CalendarDate, CalendarView } from "../../../types/calendar";
-import Month from "../../../types/month";
+import { addMonths, format, subMonths } from "date-fns";
+import { CalendarView } from "../../../types/calendar";
 
 export function DatePick(props: DatePickProps) {
-  const handleTodayClick = () =>
-    props.setDate({
-      month: format(new Date(), "LLLL") as Month,
-      day: new Date().getDay(),
-      year: new Date().getFullYear(),
-    });
+  const handleTodayClick = () => props.setDate(new Date());
+
+  const previousClick = () => props.setDate((date) => subMonths(date, 1));
+  const nextClick = () => props.setDate((date) => addMonths(date, 1));
+
   return (
     <div className="flex items-center rounded-md shadow-sm md:items-stretch">
       <button
         type="button"
         className="flex items-center justify-center rounded-l-md border border-r-0 border-gray-300 bg-white py-2 pl-3 pr-4 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+        onClick={previousClick}
       >
-        <span className="sr-only">Previous month</span>
+        <span className="sr-only">Previous {props.view}</span>
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
       <button
@@ -30,6 +29,7 @@ export function DatePick(props: DatePickProps) {
       <button
         type="button"
         className="flex items-center justify-center rounded-r-md border border-l-0 border-gray-300 bg-white py-2 pl-4 pr-3 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+        onClick={nextClick}
       >
         <span className="sr-only">Next {props.view}</span>
         <ChevronRightIcon className="h-5 w-5" />
@@ -40,5 +40,5 @@ export function DatePick(props: DatePickProps) {
 
 interface DatePickProps {
   view: CalendarView;
-  setDate: React.Dispatch<React.SetStateAction<CalendarDate>>;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
