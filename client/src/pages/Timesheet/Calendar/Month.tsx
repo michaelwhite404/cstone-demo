@@ -10,7 +10,7 @@ import {
 } from "date-fns";
 import classNames from "classnames";
 import Month from "../../../types/month";
-import CalendarEvent from "../../../types/calendarEvent";
+import { CalendarEvent } from "../../../types/calendar";
 import { ClockIcon } from "@heroicons/react/solid";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

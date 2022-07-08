@@ -3,7 +3,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import { useAuth, useDocTitle } from "../../hooks";
-import CalendarEvent from "../../types/calendarEvent";
+import { CalendarEvent } from "../../types/calendar";
 import Month from "../../types/month";
 import Calendar from "./Calendar";
 
@@ -11,9 +11,8 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  const [date, setDate] = useState<{ month: Month; day: number; year: number }>({
+  const [date, setDate] = useState<{ month: Month; year: number }>({
     month: /*format(new Date(), "LLLL") */ "December",
-    day: 1,
     year: /* new Date().getFullYear() */ 2021,
   });
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -45,6 +44,7 @@ export default function Timesheet() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
+      <Calendar.View view={view} />
       <Calendar.Month month={date.month} year={date.year} events={events} />
     </div>
   );
