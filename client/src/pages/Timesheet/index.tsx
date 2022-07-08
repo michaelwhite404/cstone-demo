@@ -44,7 +44,9 @@ export default function Timesheet() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
-      <Calendar.View view={view} setView={setView} />
+      <div className="flex justify-end">
+        <Calendar.View view={view} setView={setView} />
+      </div>
       <Calendar.Month month={date.month} year={date.year} events={events} />
     </div>
   );
