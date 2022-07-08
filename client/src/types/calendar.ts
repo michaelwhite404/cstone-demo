@@ -1,3 +1,5 @@
+import Month from "./month";
+
 export type CalendarView = "day" | "week" | "month" | "year";
 export interface CalendarEvent {
   id: string;
@@ -5,4 +7,10 @@ export interface CalendarEvent {
   date: Date;
   timeLabel?: string;
   color?: string;
+}
+
+export interface CalendarDate {
+  month: Month;
+  day: number;
+  year: number;
 }

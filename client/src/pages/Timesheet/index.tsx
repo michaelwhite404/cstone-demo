@@ -11,8 +11,9 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  const [date, setDate] = useState<{ month: Month; year: number }>({
+  const [date, setDate] = useState<{ month: Month; day: number; year: number }>({
     month: /*format(new Date(), "LLLL") */ "December",
+    day: 1,
     year: /* new Date().getFullYear() */ 2021,
   });
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -45,7 +46,7 @@ export default function Timesheet() {
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
       <div className="flex justify-end">
-        <Calendar.DatePick view={view} />
+        <Calendar.DatePick view={view} setDate={setDate} />
         <Calendar.View view={view} setView={setView} />
       </div>
       <Calendar.Month month={date.month} year={date.year} events={events} />

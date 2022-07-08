@@ -1,7 +1,15 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { CalendarView } from "../../../types/calendar";
+import { format } from "date-fns";
+import { CalendarDate, CalendarView } from "../../../types/calendar";
+import Month from "../../../types/month";
 
 export function DatePick(props: DatePickProps) {
+  const handleTodayClick = () =>
+    props.setDate({
+      month: format(new Date(), "LLLL") as Month,
+      day: new Date().getDay(),
+      year: new Date().getFullYear(),
+    });
   return (
     <div className="flex items-center rounded-md shadow-sm md:items-stretch">
       <button
@@ -14,6 +22,7 @@ export function DatePick(props: DatePickProps) {
       <button
         type="button"
         className="hidden border-t border-b border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:relative md:block"
+        onClick={handleTodayClick}
       >
         Today
       </button>
@@ -31,5 +40,5 @@ export function DatePick(props: DatePickProps) {
 
 interface DatePickProps {
   view: CalendarView;
-  // setDate:
+  setDate: React.Dispatch<React.SetStateAction<CalendarDate>>;
 }
