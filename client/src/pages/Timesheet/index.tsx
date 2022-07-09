@@ -1,7 +1,9 @@
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { useAuth, useDocTitle } from "../../hooks";
 import { CalendarEvent } from "../../types/calendar";
 import Month from "../../types/month";
@@ -11,11 +13,6 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  // const [date, setDate] = useState<CalendarDate>({
-  //   month: /*format(new Date(), "LLLL") */ "December",
-  //   day: 1,
-  //   year: /* new Date().getFullYear() */ 2021,
-  // });
   const [date, setDate] = useState(new Date("December 1, 2021"));
   const [events, setEvents] = useState<CalendarEvent[]>([]);
 
@@ -52,10 +49,23 @@ export default function Timesheet() {
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
       </div>
-      <div className="flex justify-end space-x-2">
-        <Calendar.DatePick view={view} setDate={setDate} />
-        <Calendar.View view={view} setView={setView} />
-      </div>
+      <header className="flex justify-between align-center mb-4">
+        <div className="font-medium ">
+          {month} {year}
+        </div>
+        <div className="flex md:space-x-3 align-center space-x-4">
+          <Calendar.DatePick view={view} setDate={setDate} />
+          <div className="space-x-3 align-center hidden md:flex">
+            <Calendar.View view={view} setView={setView} />
+            <div className="h-6 w-px bg-gray-300" />
+            <PrimaryButton text="Add Entry" />
+          </div>
+          <button className="-mx-2 flex md:hidden items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
+            <span className="sr-only">Open menu</span>
+            <DotsHorizontalIcon className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      </header>
       <Calendar.Month month={month} year={year} events={events} />
     </div>
   );
