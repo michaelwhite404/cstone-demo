@@ -1,12 +1,12 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { addMonths, format, subMonths } from "date-fns";
+import { sub, add } from "date-fns";
+import pluralize from "pluralize";
 import { CalendarView } from "../../../types/calendar";
 
 export function DatePick(props: DatePickProps) {
   const handleTodayClick = () => props.setDate(new Date());
-
-  const previousClick = () => props.setDate((date) => subMonths(date, 1));
-  const nextClick = () => props.setDate((date) => addMonths(date, 1));
+  const previousClick = () => props.setDate((date) => sub(date, { [pluralize(props.view)]: 1 }));
+  const nextClick = () => props.setDate((date) => add(date, { [pluralize(props.view)]: 1 }));
 
   return (
     <div className="flex items-center rounded-md shadow-sm md:items-stretch">
