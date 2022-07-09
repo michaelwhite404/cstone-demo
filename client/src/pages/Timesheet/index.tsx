@@ -1,3 +1,4 @@
+import { Dialog } from "@blueprintjs/core";
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import { startOfMonth, endOfMonth, format } from "date-fns";
@@ -7,6 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { useAuth, useDocTitle } from "../../hooks";
 import { CalendarEvent } from "../../types/calendar";
 import Month from "../../types/month";
+import AddEntry from "./AddEntry";
 import Calendar from "./Calendar";
 
 export default function Timesheet() {
@@ -15,6 +17,7 @@ export default function Timesheet() {
   const [view, setView] = useState<CalendarView>("month");
   const [date, setDate] = useState(new Date("December 1, 2021"));
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { month, day, year } = {
     month: format(date, "LLLL") as Month,
@@ -58,7 +61,7 @@ export default function Timesheet() {
           <div className="space-x-3 align-center hidden md:flex">
             <Calendar.View view={view} setView={setView} />
             <div className="h-6 w-px bg-gray-300" />
-            <PrimaryButton text="Add Entry" />
+            <PrimaryButton text="Add Entry" onClick={() => setModalOpen(true)} />
           </div>
           <button className="-mx-2 flex md:hidden items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
             <span className="sr-only">Open menu</span>
@@ -67,6 +70,14 @@ export default function Timesheet() {
         </div>
       </header>
       <Calendar.Month month={month} year={year} events={events} />
+      <Dialog
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        style={{ width: 400, background: "white", borderRadius: 12, padding: 0 }}
+        // canOutsideClickClose={false}
+      >
+        <AddEntry closeModal={() => setModalOpen(false)} />
+      </Dialog>
     </div>
   );
 }

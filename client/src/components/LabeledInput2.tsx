@@ -10,7 +10,7 @@ export default function LabeledInput2(props: LabeledInput2Props) {
       </label>
       <div className="mt-1">
         <input
-          type={type}
+          type={"text" || type}
           name={name}
           id={id}
           className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md"
@@ -25,5 +25,5 @@ export default function LabeledInput2(props: LabeledInput2Props) {
 
 interface LabeledInput2Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  type?: "email" | "input";
+  type?: "email" | "text";
 }
