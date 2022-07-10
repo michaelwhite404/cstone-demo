@@ -2,7 +2,7 @@ import { XIcon } from "@heroicons/react/solid";
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { EmployeeModel } from "../../../../src/types/models";
-import LabeledInput2 from "../../components/LabeledInput2";
+import DateSelector from "../../components/DateSelector";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import "./AddEntry.sass";
 
@@ -23,6 +23,8 @@ export default function AddEntry(props: AddEntryProps) {
     newValue: SingleValue<{ label: string; value: string }>,
     name: string
   ) => setEntry({ ...entry, [name]: newValue?.value });
+
+  const handleDateChange = (d: Date) => setEntry({ ...entry, date: d });
 
   const getDept = () => {
     const dept = props.user?.employeeOf?.find((dept) => dept._id === entry.department);
@@ -65,8 +67,8 @@ export default function AddEntry(props: AddEntryProps) {
             onChange={(newValue) => handleSelectChange(newValue, "department")}
           />
         </div>
-        <div className="col-span-2">
-          <LabeledInput2 label="Date" name="date" />
+        <div className="col-span-2" id="date-selector">
+          <DateSelector label="Date" onChange={handleDateChange} />
         </div>
         <div>
           <label>Time Start</label>

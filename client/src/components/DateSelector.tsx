@@ -4,6 +4,7 @@ import LabeledInput from "./Inputs/LabeledInput";
 
 interface DateSelectorProps {
   onChange?: (date: Date) => void;
+  label?: string;
 }
 
 export default function DateSelector(props: DateSelectorProps) {
@@ -11,6 +12,8 @@ export default function DateSelector(props: DateSelectorProps) {
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLLabelElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
+
+  const { label } = props;
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside, false);
@@ -39,7 +42,7 @@ export default function DateSelector(props: DateSelectorProps) {
   const DateInput = forwardRef((props, ref) => {
     return (
       <LabeledInput
-        label="Change Date"
+        label={label || "Change Date"}
         value={date.toLocaleDateString()}
         onFocus={() => setOpen(true)}
         readOnly
