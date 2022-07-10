@@ -76,7 +76,7 @@ export default function Timesheet() {
         style={{ width: 400, background: "white", borderRadius: 12, padding: 0 }}
         // canOutsideClickClose={false}
       >
-        <AddEntry closeModal={() => setModalOpen(false)} />
+        <AddEntry user={user} closeModal={() => setModalOpen(false)} />
       </Dialog>
     </div>
   );
