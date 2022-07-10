@@ -1,6 +1,6 @@
 import { XIcon } from "@heroicons/react/solid";
 import { useState } from "react";
-import Select from "react-select";
+import Select, { SingleValue } from "react-select";
 import { EmployeeModel } from "../../../../src/types/models";
 import LabeledInput2 from "../../components/LabeledInput2";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
@@ -16,10 +16,23 @@ export default function AddEntry(props: AddEntryProps) {
   });
   const times = createTimes();
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setEntry({ ...entry, [e.target.name]: e.target.value });
+
+  const handleSelectChange = (
+    newValue: SingleValue<{ label: string; value: string }>,
+    name: string
+  ) => setEntry({ ...entry, [name]: newValue?.value });
+
+  const getDept = () => {
+    const dept = props.user?.employeeOf?.find((dept) => dept._id === entry.department);
+    return dept ? { label: dept.name, value: dept._id } : undefined;
+  };
+
   return (
     <div className="p-10">
       <div className="flex text-2xl font-semibold mb-6 justify-between">
-        <span>New Time Entry</span>{" "}
+        <span>New Time Entry</span>
         <XIcon
           className="text-blue-400 w-5 hover:text-blue-500 cursor-pointer"
           onClick={props.closeModal}
@@ -30,8 +43,10 @@ export default function AddEntry(props: AddEntryProps) {
           <label>Description</label>
           <div className="mt-1">
             <input
-              className="entry-input px-3 py-2.5 w-full rounded "
-              // style={{ border: "1px #ccc solid" }}
+              className="entry-input px-3 py-2.5 w-full rounded"
+              value={entry.description}
+              name="description"
+              onChange={handleTextChange}
             />
           </div>
         </div>
@@ -46,6 +61,8 @@ export default function AddEntry(props: AddEntryProps) {
             options={
               props.user?.employeeOf?.map((dept) => ({ label: dept.name, value: dept._id })) || []
             }
+            value={getDept()}
+            onChange={(newValue) => handleSelectChange(newValue, "department")}
           />
         </div>
         <div className="col-span-2">
@@ -64,6 +81,8 @@ export default function AddEntry(props: AddEntryProps) {
               }),
             }}
             options={times.map((t) => ({ label: t, value: t }))}
+            value={entry.timeStart ? { label: entry.timeStart, value: entry.timeStart } : undefined}
+            onChange={(newValue) => handleSelectChange(newValue, "timeStart")}
           />
         </div>
         <div>
@@ -79,6 +98,8 @@ export default function AddEntry(props: AddEntryProps) {
               }),
             }}
             options={times.map((t) => ({ label: t, value: t }))}
+            value={entry.timeEnd ? { label: entry.timeEnd, value: entry.timeEnd } : undefined}
+            onChange={(newValue) => handleSelectChange(newValue, "timeEnd")}
           />
         </div>
       </div>
