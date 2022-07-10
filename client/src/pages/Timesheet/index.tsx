@@ -1,11 +1,12 @@
 import { Dialog } from "@blueprintjs/core";
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { startOfMonth, endOfMonth, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
-import { useAuth, useDocTitle } from "../../hooks";
+import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
+import { APIError } from "../../types/apiResponses";
 import { CalendarEvent } from "../../types/calendar";
 import Month from "../../types/month";
 import AddEntry from "./AddEntry";
@@ -15,14 +16,26 @@ export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
   const [view, setView] = useState<CalendarView>("month");
-  const [date, setDate] = useState(new Date("December 1, 2021"));
+  const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const { showToaster } = useToasterContext();
 
   const { month, day, year } = {
     month: format(date, "LLLL") as Month,
     day: date.getDate(),
     year: date.getFullYear(),
+  };
+
+  const addTimesheetEntry = async (data: AddTimesheetData) => {
+    try {
+      const res = await axios.post("/api/v2/timesheets", data);
+      setDate(new Date(res.data.data.timesheetEntry.timeEnd));
+      setModalOpen(false);
+      showToaster("Entry added successfully", "success");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
   };
 
   useEffect(() => {
@@ -44,7 +57,7 @@ export default function Timesheet() {
       setEvents(events);
     };
     getTimesheetData();
-  }, [month, year, user?._id]);
+  }, [month, year, date, user?._id]);
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -74,12 +87,23 @@ export default function Timesheet() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         style={{ width: 400, background: "white", borderRadius: 12, padding: 0 }}
-        // canOutsideClickClose={false}
+        canOutsideClickClose={false}
       >
-        <AddEntry user={user} closeModal={() => setModalOpen(false)} />
+        <AddEntry
+          user={user}
+          closeModal={() => setModalOpen(false)}
+          addTimesheetEntry={addTimesheetEntry}
+        />
       </Dialog>
     </div>
   );
 }
 
 type CalendarView = "day" | "week" | "month" | "year";
+
+interface AddTimesheetData {
+  description: string;
+  department: string;
+  timeStart: string;
+  timeEnd: string;
+}

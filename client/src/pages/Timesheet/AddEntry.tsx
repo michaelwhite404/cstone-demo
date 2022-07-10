@@ -1,4 +1,5 @@
 import { XIcon } from "@heroicons/react/solid";
+import { set } from "date-fns";
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { EmployeeModel } from "../../../../src/types/models";
@@ -31,6 +32,26 @@ export default function AddEntry(props: AddEntryProps) {
     return dept ? { label: dept.name, value: dept._id } : undefined;
   };
 
+  const handleSubmit = () => {
+    const getTimes = (time: string) => {
+      const arr = time.split(" ");
+      const timeSplit = [...arr[0].split(":"), arr[1]];
+      if (timeSplit[2] === "PM" && Number(timeSplit[0]) < 12) {
+        return { hours: +timeSplit[0] + 12, minutes: +timeSplit[1] };
+      }
+      if (timeSplit[2] === "AM" && Number(timeSplit[0]) === 12) {
+        return { hours: 0, minutes: +timeSplit[1] };
+      }
+      return { hours: +timeSplit[0], minutes: +timeSplit[1] };
+    };
+    props.addTimesheetEntry({
+      department: entry.department,
+      description: entry.description,
+      timeStart: set(entry.date, getTimes(entry.timeStart)).toISOString(),
+      timeEnd: set(entry.date, getTimes(entry.timeEnd)).toISOString(),
+    });
+  };
+
   return (
     <div className="p-10">
       <div className="flex text-2xl font-semibold mb-6 justify-between">
@@ -52,7 +73,7 @@ export default function AddEntry(props: AddEntryProps) {
             />
           </div>
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 z-50">
           <label>Department</label>
           <Select
             className="mt-1"
@@ -106,7 +127,7 @@ export default function AddEntry(props: AddEntryProps) {
         </div>
       </div>
       <div className="flex justify-end mt-6">
-        <PrimaryButton text="Add" /*  disabled  */ />
+        <PrimaryButton text="Add" onClick={handleSubmit} /* disabled */ />
       </div>
     </div>
   );
@@ -115,6 +136,7 @@ export default function AddEntry(props: AddEntryProps) {
 interface AddEntryProps {
   user: EmployeeModel | null;
   closeModal: () => void;
+  addTimesheetEntry: (data: AddTimesheetData) => Promise<void>;
 }
 
 const createTimes = (interval: number = 15) => {
@@ -134,3 +156,10 @@ const createTimes = (interval: number = 15) => {
 
   return times;
 };
+
+interface AddTimesheetData {
+  description: string;
+  department: string;
+  timeStart: string;
+  timeEnd: string;
+}
