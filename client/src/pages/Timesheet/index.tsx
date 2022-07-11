@@ -1,4 +1,4 @@
-import { Dialog } from "@blueprintjs/core";
+import { Dialog, Drawer } from "@blueprintjs/core";
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import { startOfMonth, endOfMonth, format } from "date-fns";
@@ -11,6 +11,7 @@ import { CalendarEvent } from "../../types/calendar";
 import Month from "../../types/month";
 import AddEntry from "./AddEntry";
 import Calendar from "./Calendar";
+import ShowEntry from "./ShowEntry";
 
 export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
@@ -19,6 +20,8 @@ export default function Timesheet() {
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<TimesheetModel>();
   const { showToaster } = useToasterContext();
 
   const { month, day, year } = {
@@ -36,6 +39,16 @@ export default function Timesheet() {
     } catch (err) {
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }
+  };
+
+  const showTimesheetEntry = async (entryId: string) => {
+    const res = await axios.get(`/api/v2/timesheets/${entryId}`);
+    setSelectedEntry(res.data.data.timesheetEntry);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    setSelectedEntry(undefined);
   };
 
   useEffect(() => {
@@ -82,7 +95,13 @@ export default function Timesheet() {
           </button>
         </div>
       </header>
-      <Calendar.Month month={month} year={year} events={events} />
+      <Calendar.Month
+        month={month}
+        year={year}
+        events={events}
+        openDrawer={() => setDrawerOpen(true)}
+        onEntryClick={showTimesheetEntry}
+      />
       <Dialog
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -95,6 +114,9 @@ export default function Timesheet() {
           addTimesheetEntry={addTimesheetEntry}
         />
       </Dialog>
+      <Drawer size={"480px"} isOpen={drawerOpen} onClose={handleDrawerClose} canOutsideClickClose>
+        {selectedEntry && <ShowEntry entry={selectedEntry} />}
+      </Drawer>
     </div>
   );
 }

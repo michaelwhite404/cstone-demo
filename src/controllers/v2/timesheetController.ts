@@ -53,6 +53,10 @@ export const getOneTimesheetEntry = catchAsync(
     } else {
       query = Model.findOne({ employeeId: req.employee._id, _id: req.params.id });
     }
+    query.populate({
+      path: "employeeId finalizedBy department",
+      select: "fullName email role name",
+    });
     const timesheetEntry = await query;
 
     if (!timesheetEntry) {

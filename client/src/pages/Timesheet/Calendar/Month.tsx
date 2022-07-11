@@ -34,6 +34,11 @@ export function CalendarMonth(props: CalendarMonthProps) {
     setDays(daysClone);
   };
 
+  const handleEntryClick = (entryId: string) => {
+    props.openDrawer();
+    props.onEntryClick?.(entryId);
+  };
+
   return (
     <div>
       <div className="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col rounded overflow-hidden">
@@ -72,7 +77,10 @@ export function CalendarMonth(props: CalendarMonthProps) {
                   <ol className="mt-2">
                     {day.events.slice(0, 2).map((event) => (
                       <li key={event.id}>
-                        <a href="#" className="group flex hover:no-underline">
+                        <div
+                          className="group flex hover:no-underline cursor-pointer"
+                          onClick={() => handleEntryClick(event.id)}
+                        >
                           <p className="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600">
                             {event.description}
                           </p>
@@ -82,7 +90,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
                           >
                             {event.timeLabel}
                           </time>
-                        </a>
+                        </div>
                       </li>
                     ))}
                     {day.events.length > 2 && (
@@ -153,12 +161,9 @@ export function CalendarMonth(props: CalendarMonthProps) {
                     {event.timeLabel}
                   </time>
                 </div>
-                <a
-                  href={"#"}
-                  className="ml-6 flex-none self-center rounded-md border border-gray-300 bg-white py-2 px-3 font-semibold text-gray-700 opacity-0 shadow-sm hover:bg-gray-50 focus:opacity-100 group-hover:opacity-100"
-                >
+                <div className="ml-6 flex-none self-center rounded-md border border-gray-300 bg-white py-2 px-3 font-semibold text-gray-700 opacity-0 shadow-sm hover:bg-gray-50 focus:opacity-100 group-hover:opacity-100">
                   Edit<span className="sr-only">, {event.description}</span>
-                </a>
+                </div>
               </li>
             ))}
           </ol>
@@ -220,4 +225,6 @@ interface CalendarMonthProps {
   month: Month;
   year: number;
   events?: CalendarEvent[];
+  openDrawer: () => void;
+  onEntryClick?: (entryId: string) => void;
 }
