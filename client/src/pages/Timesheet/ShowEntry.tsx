@@ -7,6 +7,7 @@ import BadgeColor from "../../components/Badge/BadgeColor";
 import "./ShowEntry.sass";
 import "react-circular-progressbar/dist/styles.css";
 import ProgressProvider from "./ProgressProvider";
+import FadeIn from "../../components/FadeIn";
 
 const badgeObj: { [x: string]: BadgeColor } = {
   Approved: "emerald",
@@ -19,7 +20,10 @@ export default function ShowEntry(props: ShowEntryProps) {
     <div className="p-7">
       <div className="flex justify-between align-center">
         <div className="flex align-center">
-          <span className="p-1 hover:bg-gray-100 rounded cursor-pointer">
+          <span
+            className="p-1 hover:bg-gray-100 rounded cursor-pointer"
+            onClick={() => props.closeDrawer()}
+          >
             <ArrowLeftIcon className="w-4" />
           </span>
           <span className="text-xl font-semibold ml-4">Timesheet Entry</span>
@@ -28,28 +32,40 @@ export default function ShowEntry(props: ShowEntryProps) {
       </div>
       <div className="mt-10 grid gap-8">
         <div className="col-span-2">
-          <div className="show-entry-label">Description</div>
-          <div>{props.entry.description}</div>
+          <FadeIn>
+            <div className="show-entry-label">Description</div>
+            <div>{props.entry.description}</div>
+          </FadeIn>
         </div>
         <div className="col-span-2">
-          <div className="show-entry-label">Date</div>
-          <div>{format(new Date(props.entry.timeStart), "PPPP")}</div>
+          <FadeIn>
+            <div className="show-entry-label">Date</div>
+            <div>{format(new Date(props.entry.timeStart), "PPPP")}</div>
+          </FadeIn>
         </div>
         <div>
-          <div className="show-entry-label">Time Start</div>
-          <div>{format(new Date(props.entry.timeStart), "p")}</div>
+          <FadeIn>
+            <div className="show-entry-label">Time Start</div>
+            <div>{format(new Date(props.entry.timeStart), "p")}</div>
+          </FadeIn>
         </div>
         <div>
-          <div className="show-entry-label">Time End</div>
-          <div>{format(new Date(props.entry.timeEnd), "p")}</div>
+          <FadeIn>
+            <div className="show-entry-label">Time End</div>
+            <div>{format(new Date(props.entry.timeEnd), "p")}</div>
+          </FadeIn>
         </div>
         <div className="col-span-2">
-          <div className="show-entry-label">Department</div>
-          <div>{props.entry.department.name}</div>
+          <FadeIn>
+            <div className="show-entry-label">Department</div>
+            <div>{props.entry.department.name}</div>
+          </FadeIn>
         </div>
         <div className="col-span-2">
-          <div className="show-entry-label">Hours</div>
-          <div className="w-28 h-28 mt-2">
+          <div className="show-entry-label">
+            <FadeIn>Hours</FadeIn>
+          </div>
+          <div className="w-28 h-28 mt-3">
             <ProgressProvider valueStart={0} valueEnd={props.entry.hours!}>
               {(value) => (
                 <CircularProgressbarWithChildren
@@ -68,6 +84,22 @@ export default function ShowEntry(props: ShowEntryProps) {
             </ProgressProvider>
           </div>
         </div>
+        {props.entry.finalizedAt && (
+          <>
+            <div className="col-span-2">
+              <FadeIn>
+                <div className="show-entry-label">{props.entry.status} At</div>
+                <div>{format(new Date(props.entry.finalizedAt), "PPPp")}</div>
+              </FadeIn>
+            </div>
+            <div className="col-span-2">
+              <FadeIn>
+                <div className="show-entry-label">{props.entry.status} By</div>
+                <div>{props.entry.finalizedBy.fullName}</div>
+              </FadeIn>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -75,4 +107,5 @@ export default function ShowEntry(props: ShowEntryProps) {
 
 interface ShowEntryProps {
   entry: TimesheetModel;
+  closeDrawer: () => void;
 }

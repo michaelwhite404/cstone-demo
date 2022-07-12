@@ -16,7 +16,7 @@ import ShowEntry from "./ShowEntry";
 export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
   const { user } = useAuth();
-  const [view, setView] = useState<CalendarView>("month");
+  const [view, setView] = useState<CalendarView>("week");
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -95,13 +95,16 @@ export default function Timesheet() {
           </button>
         </div>
       </header>
-      <Calendar.Month
-        month={month}
-        year={year}
-        events={events}
-        openDrawer={() => setDrawerOpen(true)}
-        onEntryClick={showTimesheetEntry}
-      />
+      {view === "month" && (
+        <Calendar.Month
+          month={month}
+          year={year}
+          events={events}
+          openDrawer={() => setDrawerOpen(true)}
+          onEntryClick={showTimesheetEntry}
+        />
+      )}
+      {view === "week" && <Calendar.Week />}
       <Dialog
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -115,7 +118,9 @@ export default function Timesheet() {
         />
       </Dialog>
       <Drawer size={"480px"} isOpen={drawerOpen} onClose={handleDrawerClose} canOutsideClickClose>
-        {selectedEntry && <ShowEntry entry={selectedEntry} />}
+        {selectedEntry && (
+          <ShowEntry entry={selectedEntry} closeDrawer={() => setDrawerOpen(false)} />
+        )}
       </Drawer>
     </div>
   );
