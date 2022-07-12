@@ -1,6 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import "date-fns";
+import { add, endOfWeek, isToday, startOfWeek } from "date-fns";
+import { CalendarEvent } from "../../../types/calendar";
+import classNames from "classnames";
 
-export function CalendarWeek() {
+export function CalendarWeek(props: CalendarWeekProps) {
+  const [days, setDays] = useState(createDates(props.date, []));
   const container = useRef<HTMLDivElement>(null);
   const containerNav = useRef<HTMLDivElement>(null);
   const containerOffset = useRef<HTMLDivElement>(null);
@@ -17,6 +22,10 @@ export function CalendarWeek() {
   //       1440;
   //   }
   // }, []);
+
+  useEffect(() => {
+    setDays(createDates(props.date, []));
+  }, [props.date]);
 
   const times = [
     "12AM",
@@ -44,6 +53,7 @@ export function CalendarWeek() {
     "10PM",
     "11PM",
   ];
+  const daysofWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
     <div className="flex flex-col week-view-wrapper">
@@ -60,108 +70,82 @@ export function CalendarWeek() {
             className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
+              {/* Days of Week - Mobile */}
+              {days.map((day, i) => {
+                const cN = classNames(
+                  { "rounded-full bg-indigo-600 text-white": day.isToday },
+                  { "text-gray-900": !day.isToday },
+                  "mt-1 flex h-8 w-8 items-center justify-center font-semibold"
+                );
+                return (
+                  <button type="button" className="flex flex-col items-center pt-2 pb-3">
+                    {daysofWeek[i][0]}{" "}
+                    <span className={cN}>{day.date.split("-").pop()?.replace(/^0/, "")}</span>
+                  </button>
+                );
+              })}
+              {/* <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 M{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  10
+                  2
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 T{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  11
+                  3
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 W{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                  12
+                  4
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 T{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  13
+                  5
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 F{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  14
+                  6
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 S{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  15
+                  7
                 </span>
               </button>
               <button type="button" className="flex flex-col items-center pt-2 pb-3">
                 S{" "}
                 <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  16
+                  8
                 </span>
-              </button>
+              </button> */}
             </div>
 
+            {/* Days of Week  - Desktop */}
             <div className="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
               <div className="col-end-1 w-14" />
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Mon{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    10
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Tue{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    11
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span className="flex items-baseline">
-                  Wed{" "}
-                  <span className="ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                    12
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Thu{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    13
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Fri{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    14
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sat{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    15
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sun{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    16
-                  </span>
-                </span>
-              </div>
+              {days.map((day, i) => {
+                const cN = classNames(
+                  { "ml-1.5 flex h-8 w-8 rounded-full bg-indigo-600 text-white": day.isToday },
+                  { "text-gray-900": !day.isToday },
+                  "items-center justify-center font-semibold"
+                );
+                return (
+                  <div key={day.date} className="flex items-center justify-center py-3">
+                    <span className={day.isToday ? "flex items-baseline" : ""}>
+                      {daysofWeek[i]}{" "}
+                      <span className={cN}>{day.date.split("-").pop()?.replace(/^0/, "")}</span>
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="flex flex-auto">
@@ -240,3 +224,19 @@ export function CalendarWeek() {
     </div>
   );
 }
+
+interface CalendarWeekProps {
+  date: Date;
+}
+
+const createDates = (date: Date, events: CalendarEvent[]) => {
+  const weekStartDate = startOfWeek(date, { weekStartsOn: 0 });
+  const dates = Array.from({ length: 7 }).map((_, i) => {
+    const thisDay = add(weekStartDate, { days: i });
+    return {
+      date: thisDay.toISOString().split("T")[0],
+      isToday: isToday(thisDay),
+    };
+  });
+  return dates;
+};

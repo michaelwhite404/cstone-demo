@@ -105,7 +105,7 @@ export default function Timesheet() {
           onEntryClick={showTimesheetEntry}
         />
       )}
-      {view === "week" && <Calendar.Week />}
+      {view === "week" && <Calendar.Week date={date} />}
       <Dialog
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
