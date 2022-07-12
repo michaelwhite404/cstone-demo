@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import "date-fns";
-import { add, endOfWeek, isToday, startOfWeek } from "date-fns";
+import { add, isToday, startOfWeek } from "date-fns";
 import { CalendarEvent } from "../../../types/calendar";
 import classNames from "classnames";
 
 export function CalendarWeek(props: CalendarWeekProps) {
-  const [days, setDays] = useState(createDates(props.date, []));
+  const [days, setDays] = useState(createDates(props.date));
   const container = useRef<HTMLDivElement>(null);
   const containerNav = useRef<HTMLDivElement>(null);
   const containerOffset = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
   // }, []);
 
   useEffect(() => {
-    setDays(createDates(props.date, []));
+    setDays(createDates(props.date));
   }, [props.date]);
 
   const times = [
@@ -78,54 +78,16 @@ export function CalendarWeek(props: CalendarWeekProps) {
                   "mt-1 flex h-8 w-8 items-center justify-center font-semibold"
                 );
                 return (
-                  <button type="button" className="flex flex-col items-center pt-2 pb-3">
+                  <button
+                    key={day.date}
+                    type="button"
+                    className="flex flex-col items-center pt-2 pb-3"
+                  >
                     {daysofWeek[i][0]}{" "}
                     <span className={cN}>{day.date.split("-").pop()?.replace(/^0/, "")}</span>
                   </button>
                 );
               })}
-              {/* <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                M{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  2
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  3
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                W{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                  4
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  5
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                F{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  6
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  7
-                </span>
-              </button>
-              <button type="button" className="flex flex-col items-center pt-2 pb-3">
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  8
-                </span>
-              </button> */}
             </div>
 
             {/* Days of Week  - Desktop */}
@@ -158,21 +120,24 @@ export function CalendarWeek(props: CalendarWeekProps) {
               >
                 <div ref={containerOffset} className="row-end-1 h-7"></div>
                 {times.map((time) => (
-                  <>
+                  <Fragment key={time}>
                     <div>
                       <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
                         {time}
                       </div>
                     </div>
                     <div />
-                  </>
+                  </Fragment>
                 ))}
               </div>
 
               {/* Vertical lines */}
               <div className="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div className={`col-start-${i + 1} row-span-full ${i === 7 ? "w-8" : ""}`} />
+                  <div
+                    key={i}
+                    className={`col-start-${i + 1} row-span-full ${i === 7 ? "w-8" : ""}`}
+                  />
                 ))}
               </div>
 
@@ -227,9 +192,10 @@ export function CalendarWeek(props: CalendarWeekProps) {
 
 interface CalendarWeekProps {
   date: Date;
+  events?: CalendarEvent[];
 }
 
-const createDates = (date: Date, events: CalendarEvent[]) => {
+const createDates = (date: Date) => {
   const weekStartDate = startOfWeek(date, { weekStartsOn: 0 });
   const dates = Array.from({ length: 7 }).map((_, i) => {
     const thisDay = add(weekStartDate, { days: i });

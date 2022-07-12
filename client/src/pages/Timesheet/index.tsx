@@ -1,18 +1,19 @@
 import { Dialog, Drawer } from "@blueprintjs/core";
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
-import { startOfMonth, endOfMonth, format, startOfWeek, endOfWeek } from "date-fns";
-import { useEffect, useState } from "react";
+import { format, startOfWeek, endOfWeek } from "date-fns";
+import { useCallback, useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import { APIError } from "../../types/apiResponses";
-import { CalendarEvent } from "../../types/calendar";
+import { CalendarEvent, CalendarView } from "../../types/calendar";
 import Month from "../../types/month";
 import AddEntry from "./AddEntry";
 import Calendar from "./Calendar";
 import ShowEntry from "./ShowEntry";
 import "./Calendar/Calendar.sass";
+import { start, end } from "../../utils/startEnd";
 
 export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");
@@ -25,7 +26,7 @@ export default function Timesheet() {
   const [selectedEntry, setSelectedEntry] = useState<TimesheetModel>();
   const { showToaster } = useToasterContext();
 
-  const { month, day, year } = getMDY(date);
+  const { month, year } = getMDY(date);
 
   const addTimesheetEntry = async (data: AddTimesheetData) => {
     try {
@@ -48,26 +49,29 @@ export default function Timesheet() {
     setSelectedEntry(undefined);
   };
 
+  const getTimesheetData = useCallback(async () => {
+    const res = await axios.get("/api/v2/timesheets", {
+      params: {
+        "timeStart[gte]": start(date, view),
+        "timeStart[lte]": end(date, view),
+        employeeId: user?._id,
+      },
+    });
+    const entries = res.data.data.timesheetEntries as TimesheetModel[];
+    const events: CalendarEvent[] = entries.map((entry) => ({
+      id: entry._id,
+      description: entry.description,
+      date: new Date(entry.timeStart),
+      timeLabel: `${entry.hours} ${entry.hours === 1 ? "Hr" : "Hrs"}`,
+      timeStart: new Date(entry.timeStart).toISOString(),
+      timeEnd: new Date(entry.timeEnd).toISOString(),
+    }));
+    setEvents(events);
+  }, [date, user?._id, view]);
+
   useEffect(() => {
-    const getTimesheetData = async () => {
-      const res = await axios.get("/api/v2/timesheets", {
-        params: {
-          "timeStart[gte]": startOfMonth(new Date(`${month} ${year}`)),
-          "timeStart[lte]": endOfMonth(new Date(`${month} ${year}`)),
-          employeeId: user?._id,
-        },
-      });
-      const entries = res.data.data.timesheetEntries as TimesheetModel[];
-      const events: CalendarEvent[] = entries.map((entry) => ({
-        id: entry._id,
-        description: entry.description,
-        date: new Date(entry.timeStart),
-        timeLabel: `${entry.hours} ${entry.hours === 1 ? "Hr" : "Hrs"}`,
-      }));
-      setEvents(events);
-    };
     getTimesheetData();
-  }, [month, year, date, user?._id]);
+  }, [getTimesheetData]);
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -102,7 +106,7 @@ export default function Timesheet() {
           onEntryClick={showTimesheetEntry}
         />
       )}
-      {view === "week" && <Calendar.Week date={date} />}
+      {view === "week" && <Calendar.Week date={date} events={events} />}
       <Dialog
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -137,8 +141,6 @@ const formatWeekString = (date: Date) => {
   const end = endOfWeek(date);
   return `${format(start, "PPP")} - ${format(end, "PPP")}`;
 };
-
-type CalendarView = "day" | "week" | "month" | "year";
 
 interface AddTimesheetData {
   description: string;

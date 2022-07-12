@@ -6,6 +6,8 @@ export interface CalendarEvent {
   description: string;
   date: Date;
   timeLabel?: string;
+  timeStart?: string;
+  timeEnd?: string;
   color?: string;
 }
 
