@@ -3,6 +3,7 @@ import { Classes, Popover2 } from "@blueprintjs/popover2";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import capitalize from "capitalize";
 import { CalendarView } from "../../../types/calendar";
+import "./Calendar.sass";
 
 const views: CalendarView[] = ["day", "week", "month", "year"];
 
@@ -14,6 +15,7 @@ export function CalendarViewDropdown(props: ViewProps) {
       className="menu-popover"
       interactionKind="click"
       hoverCloseDelay={10000}
+      portalClassName="view-portal"
     >
       <button className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
         {capitalize(props.view)} View
