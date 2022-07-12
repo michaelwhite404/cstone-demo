@@ -12,6 +12,7 @@ import Month from "../../types/month";
 import AddEntry from "./AddEntry";
 import Calendar from "./Calendar";
 import ShowEntry from "./ShowEntry";
+import "./Calendar/Calendar.sass";
 
 export default function Timesheet() {
   useDocTitle("Timesheet | Cornerstone App");

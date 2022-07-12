@@ -3,7 +3,6 @@ import { Classes, Popover2 } from "@blueprintjs/popover2";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import capitalize from "capitalize";
 import { CalendarView } from "../../../types/calendar";
-import "./Calendar.sass";
 
 const views: CalendarView[] = ["day", "week", "month", "year"];
 
