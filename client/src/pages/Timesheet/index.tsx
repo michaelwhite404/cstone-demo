@@ -1,7 +1,7 @@
 import { Dialog, Drawer } from "@blueprintjs/core";
 import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
-import { startOfMonth, endOfMonth, format } from "date-fns";
+import { startOfMonth, endOfMonth, format, startOfWeek, endOfWeek } from "date-fns";
 import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
@@ -25,11 +25,7 @@ export default function Timesheet() {
   const [selectedEntry, setSelectedEntry] = useState<TimesheetModel>();
   const { showToaster } = useToasterContext();
 
-  const { month, day, year } = {
-    month: format(date, "LLLL") as Month,
-    day: date.getDate(),
-    year: date.getFullYear(),
-  };
+  const { month, day, year } = getMDY(date);
 
   const addTimesheetEntry = async (data: AddTimesheetData) => {
     try {
@@ -81,7 +77,8 @@ export default function Timesheet() {
       </div>
       <header className="flex justify-between align-center mb-4">
         <div className="font-medium ">
-          {month} {year}
+          {view === "week" && formatWeekString(date)}
+          {view === "month" && `${month} ${year}`}
         </div>
         <div className="flex md:space-x-3 align-center space-x-4">
           <Calendar.DatePick view={view} setDate={setDate} />
@@ -126,6 +123,20 @@ export default function Timesheet() {
     </div>
   );
 }
+
+const getMDY = (date: Date) => {
+  return {
+    month: format(date, "LLLL") as Month,
+    day: date.getDate(),
+    year: date.getFullYear(),
+  };
+};
+
+const formatWeekString = (date: Date) => {
+  const start = startOfWeek(date);
+  const end = endOfWeek(date);
+  return `${format(start, "PPP")} - ${format(end, "PPP")}`;
+};
 
 type CalendarView = "day" | "week" | "month" | "year";
 
