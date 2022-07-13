@@ -17,8 +17,8 @@ const badgeObj: { [x: string]: BadgeColor } = {
 
 export default function ShowEntry(props: ShowEntryProps) {
   return (
-    <div className="p-7">
-      <div className="flex justify-between align-center">
+    <div className="px-7 pb-7 h-full overflow-scroll">
+      <div className="flex justify-between align-center sticky top-0 bg-white pt-7 pb-2">
         <div className="flex align-center">
           <span
             className="p-1 hover:bg-gray-100 rounded cursor-pointer"

@@ -114,6 +114,7 @@ export default function Timesheet() {
         onClose={() => setModalOpen(false)}
         style={{ width: 400, background: "white", borderRadius: 12, padding: 0 }}
         canOutsideClickClose={false}
+        portalClassName="z-40"
       >
         <AddEntry
           user={user}
@@ -121,7 +122,14 @@ export default function Timesheet() {
           addTimesheetEntry={addTimesheetEntry}
         />
       </Dialog>
-      <Drawer size={"480px"} isOpen={drawerOpen} onClose={handleDrawerClose} canOutsideClickClose>
+      <Drawer
+        portalClassName="z-40"
+        size={"480px"}
+        isOpen={drawerOpen}
+        onClose={handleDrawerClose}
+        canOutsideClickClose
+        className="pass-along"
+      >
         {selectedEntry && (
           <ShowEntry entry={selectedEntry} closeDrawer={() => setDrawerOpen(false)} />
         )}
