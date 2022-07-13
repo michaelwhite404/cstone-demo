@@ -55,6 +55,10 @@ export function CalendarWeek(props: CalendarWeekProps) {
   ];
   const daysofWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  const handleEventClick = (entryId: string) => {
+    props.onEntryClick?.(entryId);
+  };
+
   return (
     <div className="flex flex-col week-view-wrapper">
       <div
@@ -148,53 +152,13 @@ export function CalendarWeek(props: CalendarWeekProps) {
               >
                 {props.events &&
                   props.events.map((event) => (
-                    //@ts-ignore
-                    <Event key={event.id} event={event} />
+                    <Event
+                      key={event.id}
+                      //@ts-ignore
+                      event={event}
+                      onClick={() => handleEventClick(event.id)}
+                    />
                   ))}
-                {/* <li
-                  className="relative mt-px flex sm:col-start-3"
-                  style={{ gridRow: "74 / span 12" }}
-                >
-                  <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
-                    <p className="order-1 font-semibold text-blue-700">Breakfast</p>
-                    <p className="text-blue-500 group-hover:text-blue-700">
-                      <time dateTime="2022-01-12T06:00">6:00 AM</time>
-                    </p>
-                  </div>
-                </li>
-                <li
-                  className="relative mt-px flex sm:col-start-3"
-                  style={{ gridRow: "92 / span 30" }}
-                >
-                  <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs leading-5 hover:bg-pink-100 cursor-pointer">
-                    <p className="order-1 font-semibold text-pink-700">Flight to Paris</p>
-                    <p className="text-pink-500 group-hover:text-pink-700">
-                      <time dateTime="2022-01-12T07:30">7:30 AM</time>
-                    </p>
-                  </div>
-                </li>
-                <li
-                  className="relative mt-px hidden sm:col-start-6 sm:flex"
-                  style={{ gridRow: "122 / span 24" }}
-                >
-                  <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-gray-100 p-2 text-xs leading-5 hover:bg-gray-200 cursor-pointer">
-                    <p className="order-1 font-semibold text-gray-700">
-                      Meeting with design team at Disney
-                    </p>
-                    <p className="text-gray-500 group-hover:text-gray-700">
-                      <time dateTime="2022-01-15T10:00">10:00 AM</time>
-                    </p>
-                  </div>
-                </li>
-                <Event
-                  event={{
-                    date: new Date("December 22, 2021"),
-                    description: "Hmm I don't know yet but I will soon",
-                    id: "1",
-                    timeStart: "3:00 PM",
-                    timeEnd: "6:30 PM",
-                  }} 
-                />*/}
               </ol>
             </div>
           </div>
@@ -207,6 +171,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
 interface CalendarWeekProps {
   date: Date;
   events?: CalendarEvent[];
+  onEntryClick?: (entryId: string) => void;
 }
 
 const createDates = (date: Date) => {
@@ -221,7 +186,13 @@ const createDates = (date: Date) => {
   return dates;
 };
 
-const Event = ({ event }: { event: Required<Omit<CalendarEvent, "timeLabel" | "color">> }) => {
+const Event = ({
+  event,
+  onClick,
+}: {
+  event: Required<Omit<CalendarEvent, "timeLabel" | "color">>;
+  onClick?: React.MouseEventHandler<HTMLLIElement>;
+}) => {
   const dayOfWeek = new Date(event.date).getDay() + 1;
   const start = new Date(event.timeStart);
   const end = new Date(event.timeEnd);
@@ -233,6 +204,7 @@ const Event = ({ event }: { event: Required<Omit<CalendarEvent, "timeLabel" | "c
     <li
       className={`relative mt-px flex sm:col-start-${dayOfWeek}`}
       style={{ gridRowStart, gridRowEnd }}
+      onClick={onClick}
     >
       <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
         <p className="order-1 font-semibold text-blue-700">{event.description}</p>

@@ -42,6 +42,7 @@ export default function Timesheet() {
   const showTimesheetEntry = async (entryId: string) => {
     const res = await axios.get(`/api/v2/timesheets/${entryId}`);
     setSelectedEntry(res.data.data.timesheetEntry);
+    setDrawerOpen(true);
   };
 
   const handleDrawerClose = () => {
@@ -102,11 +103,12 @@ export default function Timesheet() {
           month={month}
           year={year}
           events={events}
-          openDrawer={() => setDrawerOpen(true)}
           onEntryClick={showTimesheetEntry}
         />
       )}
-      {view === "week" && <Calendar.Week date={date} events={events} />}
+      {view === "week" && (
+        <Calendar.Week date={date} events={events} onEntryClick={showTimesheetEntry} />
+      )}
       <Dialog
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

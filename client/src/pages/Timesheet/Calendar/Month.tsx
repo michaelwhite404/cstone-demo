@@ -35,7 +35,6 @@ export function CalendarMonth(props: CalendarMonthProps) {
   };
 
   const handleEntryClick = (entryId: string) => {
-    props.openDrawer();
     props.onEntryClick?.(entryId);
   };
 
@@ -225,6 +224,5 @@ interface CalendarMonthProps {
   month: Month;
   year: number;
   events?: CalendarEvent[];
-  openDrawer: () => void;
   onEntryClick?: (entryId: string) => void;
 }
