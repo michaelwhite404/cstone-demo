@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import "date-fns";
-import { add, isToday, set, startOfWeek, differenceInMinutes, format } from "date-fns";
+import { add, isToday, set, startOfWeek, differenceInMinutes, format, isSameDay } from "date-fns";
 import { CalendarEvent } from "../../../types/calendar";
 import classNames from "classnames";
 import Calendar from ".";
@@ -158,6 +158,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
                       //@ts-ignore
                       event={event}
                       onClick={() => handleEventClick(event.id)}
+                      hideBelowSmBreakpoint={!isSameDay(event.date, props.date)}
                     />
                   ))}
               </ol>
@@ -191,9 +192,11 @@ const createDates = (date: Date) => {
 const Event = ({
   event,
   onClick,
+  hideBelowSmBreakpoint,
 }: {
   event: Required<Omit<CalendarEvent, "timeLabel" | "color">>;
   onClick?: React.MouseEventHandler<HTMLLIElement>;
+  hideBelowSmBreakpoint?: boolean;
 }) => {
   const dayOfWeek = new Date(event.date).getDay() + 1;
   const start = new Date(event.timeStart);
@@ -202,12 +205,13 @@ const Event = ({
   const rowStartOffset = 2;
   const gridRowStart = differenceInMinutes(start, beginningOfDay) / 5 + rowStartOffset;
   const gridRowEnd = `span ${differenceInMinutes(end, start) / 5}`;
+
+  const className = classNames(`relative mt-px sm:flex sm:col-start-${dayOfWeek}`, {
+    hidden: hideBelowSmBreakpoint,
+  });
+
   return (
-    <li
-      className={`relative mt-px flex sm:col-start-${dayOfWeek}`}
-      style={{ gridRowStart, gridRowEnd }}
-      onClick={onClick}
-    >
+    <li className={className} style={{ gridRowStart, gridRowEnd }} onClick={onClick}>
       <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
         <p className="order-1 font-semibold text-blue-700">{event.description}</p>
         <p className="text-blue-500 group-hover:text-blue-700">
