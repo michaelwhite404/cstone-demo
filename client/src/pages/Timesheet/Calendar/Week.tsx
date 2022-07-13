@@ -3,6 +3,7 @@ import "date-fns";
 import { add, isToday, set, startOfWeek, differenceInMinutes, format } from "date-fns";
 import { CalendarEvent } from "../../../types/calendar";
 import classNames from "classnames";
+import Calendar from ".";
 
 export function CalendarWeek(props: CalendarWeekProps) {
   const [days, setDays] = useState(createDates(props.date));
@@ -10,18 +11,18 @@ export function CalendarWeek(props: CalendarWeekProps) {
   const containerNav = useRef<HTMLDivElement>(null);
   const containerOffset = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   // Set the container scroll position based on the current time.
-  //   const currentMinute = new Date().getHours() * 60;
-  //   if (container.current && containerNav.current && containerOffset.current) {
-  //     container.current.scrollTop =
-  //       ((container.current.scrollHeight -
-  //         containerNav.current.offsetHeight -
-  //         containerOffset.current.offsetHeight) *
-  //         currentMinute) /
-  //       1440;
-  //   }
-  // }, []);
+  useEffect(() => {
+    // Set the container scroll position based on the current time.
+    const currentMinute = new Date().getHours() * 60;
+    if (container.current && containerNav.current && containerOffset.current) {
+      container.current.scrollTop =
+        ((container.current.scrollHeight -
+          containerNav.current.offsetHeight -
+          containerOffset.current.offsetHeight) *
+          currentMinute) /
+        1440;
+    }
+  }, []);
 
   useEffect(() => {
     setDays(createDates(props.date));
@@ -160,6 +161,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     />
                   ))}
               </ol>
+              {days.filter((d) => d.isToday).length === 1 && <Calendar.WeekLine />}
             </div>
           </div>
         </div>
