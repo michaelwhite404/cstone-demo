@@ -5,6 +5,7 @@ import Select, { SingleValue } from "react-select";
 import { EmployeeModel } from "../../../../src/types/models";
 import DateSelector from "../../components/DateSelector";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
+import getTimes from "../../utils/getTimes";
 import "./AddEntry.sass";
 
 export default function AddEntry(props: AddEntryProps) {
@@ -33,17 +34,6 @@ export default function AddEntry(props: AddEntryProps) {
   };
 
   const handleSubmit = () => {
-    const getTimes = (time: string) => {
-      const arr = time.split(" ");
-      const timeSplit = [...arr[0].split(":"), arr[1]];
-      if (timeSplit[2] === "PM" && Number(timeSplit[0]) < 12) {
-        return { hours: +timeSplit[0] + 12, minutes: +timeSplit[1] };
-      }
-      if (timeSplit[2] === "AM" && Number(timeSplit[0]) === 12) {
-        return { hours: 0, minutes: +timeSplit[1] };
-      }
-      return { hours: +timeSplit[0], minutes: +timeSplit[1] };
-    };
     props.addTimesheetEntry({
       department: entry.department,
       description: entry.description,

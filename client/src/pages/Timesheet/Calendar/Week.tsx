@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import "date-fns";
-import { add, isToday, startOfWeek } from "date-fns";
+import { add, isToday, set, startOfWeek, differenceInMinutes, format } from "date-fns";
 import { CalendarEvent } from "../../../types/calendar";
 import classNames from "classnames";
 
@@ -146,7 +146,12 @@ export function CalendarWeek(props: CalendarWeekProps) {
                 className="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
                 style={{ gridTemplateRows: "1.75rem repeat(288, minmax(0, 1fr)) auto" }}
               >
-                <li
+                {props.events &&
+                  props.events.map((event) => (
+                    //@ts-ignore
+                    <Event key={event.id} event={event} />
+                  ))}
+                {/* <li
                   className="relative mt-px flex sm:col-start-3"
                   style={{ gridRow: "74 / span 12" }}
                 >
@@ -181,6 +186,15 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     </p>
                   </div>
                 </li>
+                <Event
+                  event={{
+                    date: new Date("December 22, 2021"),
+                    description: "Hmm I don't know yet but I will soon",
+                    id: "1",
+                    timeStart: "3:00 PM",
+                    timeEnd: "6:30 PM",
+                  }} 
+                />*/}
               </ol>
             </div>
           </div>
@@ -205,4 +219,27 @@ const createDates = (date: Date) => {
     };
   });
   return dates;
+};
+
+const Event = ({ event }: { event: Required<Omit<CalendarEvent, "timeLabel" | "color">> }) => {
+  const dayOfWeek = new Date(event.date).getDay() + 1;
+  const start = new Date(event.timeStart);
+  const end = new Date(event.timeEnd);
+  const beginningOfDay = set(new Date(event.date), { hours: 0, minutes: 0, seconds: 0 });
+  const rowStartOffset = 2;
+  const gridRowStart = differenceInMinutes(start, beginningOfDay) / 5 + rowStartOffset;
+  const gridRowEnd = `span ${differenceInMinutes(end, start) / 5}`;
+  return (
+    <li
+      className={`relative mt-px flex sm:col-start-${dayOfWeek}`}
+      style={{ gridRowStart, gridRowEnd }}
+    >
+      <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
+        <p className="order-1 font-semibold text-blue-700">{event.description}</p>
+        <p className="text-blue-500 group-hover:text-blue-700">
+          <time /* dateTime="2021-12-22T03:00" */>{format(new Date(event.timeStart), "p")}</time>
+        </p>
+      </div>
+    </li>
+  );
 };
