@@ -107,7 +107,12 @@ export default function Timesheet() {
         />
       )}
       {view === "week" && (
-        <Calendar.Week date={date} events={events} onEntryClick={showTimesheetEntry} />
+        <Calendar.Week
+          date={date}
+          setDate={setDate}
+          events={events}
+          onEntryClick={showTimesheetEntry}
+        />
       )}
       <Dialog
         isOpen={modalOpen}

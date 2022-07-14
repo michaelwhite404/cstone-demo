@@ -74,12 +74,14 @@ export function CalendarWeek(props: CalendarWeekProps) {
             ref={containerNav}
             className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
+            {/* Days of Week - Mobile */}
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
-              {/* Days of Week - Mobile */}
               {days.map((day, i) => {
-                const cN = classNames(
-                  { "rounded-full bg-indigo-600 text-white": day.isToday },
-                  { "text-gray-900": !day.isToday },
+                const className = classNames(
+                  { "rounded-full bg-indigo-600 text-white": day.isToday && day.isSelected },
+                  { "rounded-full bg-black text-white": !day.isToday && day.isSelected },
+                  { "text-gray-900": !day.isToday && !day.isSelected },
+                  { "text-indigo-600": day.isToday && !day.isSelected },
                   "mt-1 flex h-8 w-8 items-center justify-center font-semibold"
                 );
                 return (
@@ -87,9 +89,12 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     key={day.date}
                     type="button"
                     className="flex flex-col items-center pt-2 pb-3"
+                    onClick={() => props.setDate(new Date(`${day.date},`))}
                   >
                     {daysofWeek[i][0]}{" "}
-                    <span className={cN}>{day.date.split("-").pop()?.replace(/^0/, "")}</span>
+                    <span className={className}>
+                      {day.date.split("-").pop()?.replace(/^0/, "")}
+                    </span>
                   </button>
                 );
               })}
@@ -175,15 +180,18 @@ interface CalendarWeekProps {
   date: Date;
   events?: CalendarEvent[];
   onEntryClick?: (entryId: string) => void;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 const createDates = (date: Date) => {
   const weekStartDate = startOfWeek(date, { weekStartsOn: 0 });
+  console.log(date);
   const dates = Array.from({ length: 7 }).map((_, i) => {
     const thisDay = add(weekStartDate, { days: i });
     return {
       date: thisDay.toISOString().split("T")[0],
       isToday: isToday(thisDay),
+      isSelected: isSameDay(date, thisDay),
     };
   });
   return dates;
