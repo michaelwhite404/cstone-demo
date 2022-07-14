@@ -13,8 +13,8 @@ import LionsDenStudents from "./pages/LionsDen/LionsDenStudents";
 import Sessions from "./pages/LionsDen/Sessions";
 import Students2 from "./pages/Students2/Students2";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
-import Timesheet from "./pages/Timesheet";
 import Tools from "./pages/Tools";
+import * as Page from "./pages";
 
 export default function Routes() {
   const user = useAuth().user!;
@@ -32,7 +32,7 @@ export default function Routes() {
           <Route path="add" element={<AddDevice />} />
           <Route path=":slug" element={<DeviceData />} />
         </Route>
-        {user.timesheetEnabled && <Route path="timesheet" element={<Timesheet />} />}
+        {user.timesheetEnabled && <Route path="timesheet" element={<Page.Timesheet />} />}
         <Route path="lions-den" element={<LionsDen />}>
           <Route index element={<CurrentSession />} />
           <Route path="sessions" element={<Sessions />} />
@@ -42,6 +42,9 @@ export default function Routes() {
           <Route index element={<Tools />} />
           <Route path="short-url" element={<Tools.ShortUrl />} />
         </Route>
+        {["Admin", "Super Admin"].includes(user.role) && (
+          <Route path="users" element={<Page.Users />} />
+        )}
       </Route>
     </ReactRoutes>
   );
