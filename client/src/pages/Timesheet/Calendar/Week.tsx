@@ -185,7 +185,6 @@ interface CalendarWeekProps {
 
 const createDates = (date: Date) => {
   const weekStartDate = startOfWeek(date, { weekStartsOn: 0 });
-  console.log(date);
   const dates = Array.from({ length: 7 }).map((_, i) => {
     const thisDay = add(weekStartDate, { days: i });
     return {

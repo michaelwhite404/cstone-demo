@@ -1,14 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import ProfileButton from "../ProfileButton/ProfileButton";
-import navigation from "../../navigation";
+import { createUserNavigation } from "../../navigation";
 import "./Sidebar.sass";
 import { useAuth } from "../../hooks";
 
 export default function Sidebar(props: SidebarProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const user = useAuth().user!;
   const matchesURL = (url: string) =>
     url === "/" ? location.pathname === "/" : location.pathname.startsWith(url);
+  const navigation = createUserNavigation(user);
 
   return (
     <div className="sidebar-container">
