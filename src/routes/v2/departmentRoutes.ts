@@ -7,11 +7,9 @@ const { createDepartment, getAllDepartments, getOneDepartment, updateDepartment 
 const router = Router();
 
 router.use(v2auth.protect);
+router.use(v1auth.restrictTo("Super Admin", "Admin"));
 
-router
-  .route("/")
-  .get(getAllDepartments)
-  .post(v1auth.restrictTo("Super Admin", "Admin"), createDepartment);
+router.route("/").get(getAllDepartments).post(createDepartment);
 
 router.route("/:id").get(getOneDepartment).patch().delete();
 const updateRoutes: string[] = [];
