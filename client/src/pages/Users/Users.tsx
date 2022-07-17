@@ -19,9 +19,8 @@ export default function Users() {
           <input
             type="search"
             id="search"
-            className="block p-2 pl-10 w-full text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            className="block p-2 pl-10 w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Search"
-            required
           />
         </div>
         <div className="flex space-x-4">

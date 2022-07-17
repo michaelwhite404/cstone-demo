@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { EmployeeModel } from "../../../../src/types/models";
 import Tabs from "../../components/Tabs";
 import PageUsers from "./Users";
+import Departments from "./Departments";
 
 const tabs = [
   { title: "Users", name: "users", href: "" },
@@ -32,7 +33,7 @@ function Users() {
     <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
       {/* Header */}
       <div className="page-header">
-        <h1 style={{ marginBottom: "10px" }}>Users</h1>
+        <h1 style={{ marginBottom: "10px" }}>User Management</h1>
         <p>Manage the team and account permissions here</p>
       </div>
       <div className="my-4">
@@ -54,5 +55,6 @@ function Users() {
 }
 
 Users.Users = PageUsers;
+Users.Departments = Departments;
 
 export default Users;
