@@ -43,7 +43,11 @@ export default function Routes() {
           <Route path="short-url" element={<Tools.ShortUrl />} />
         </Route>
         {["Admin", "Super Admin"].includes(user.role) && (
-          <Route path="users" element={<Page.Users />} />
+          <Route path="users" element={<Page.Users />}>
+            <Route index element={<Page.Users.Users />} />
+            <Route path="departments" element={<h1>Departments</h1>} />
+            <Route path="groups" element={<h1>Groups</h1>} />
+          </Route>
         )}
       </Route>
     </ReactRoutes>
