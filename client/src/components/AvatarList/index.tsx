@@ -27,8 +27,15 @@ export default function AvatarList(props: AvatarListProps) {
               alt={user.name}
             />
             {tooltip && (
-              <div className="avatar-tooltip absolute z-30 -top-6 -left-10 bg-gray-400 text-white rounded px-3 whitespace-nowrap">
-                <span>{user.name}</span>
+              <div
+                className="avatar-tooltip absolute z-30 -top-6 -left-10 bg-gray-400 text-white rounded px-3 min-w-max left-1/2"
+                style={{ transform: "translate(-50%, 0)" }}
+              >
+                <div
+                  className="bg-gray-400 w-2 h-2 -bottom-1 absolute left-1/2 z-10"
+                  style={{ transform: "translate(-50%, 0) rotateZ(135deg)" }}
+                />
+                <span className="relative z-20 block">{user.name}</span>
               </div>
             )}
           </div>
