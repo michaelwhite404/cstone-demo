@@ -8,10 +8,10 @@ export default function DepartmentsTable({ departments }: { departments: Departm
       <table>
         <thead>
           <tr>
-            <th className="pl-4 sticky-header">Name</th>
-            <th className="sticky-header">Leaders</th>
-            <th className="sticky-header">Approvers</th>
-            <th className="sticky-header">Employees</th>
+            <th className="pl-4">Name</th>
+            <th className="">Leaders</th>
+            <th className="">Approvers</th>
+            <th className="">Employees</th>
           </tr>
         </thead>
         <tbody>
@@ -19,13 +19,13 @@ export default function DepartmentsTable({ departments }: { departments: Departm
             <tr key={department._id}>
               <td className="pl-4 py-1.5">{department.name}</td>
               <td className="py-1.5">
-                <AvatarList users={getUsers(department, "leaders")} />
+                <AvatarList users={getUsers(department, "leaders")} tooltip />
               </td>
               <td className="py-1.5">
-                <AvatarList users={getUsers(department, "approvers")} />
+                <AvatarList users={getUsers(department, "approvers")} tooltip />
               </td>
               <td className="py-1.5">
-                <AvatarList users={getUsers(department, "employees")} max={6} />
+                <AvatarList users={getUsers(department, "employees")} max={6} tooltip />
               </td>
             </tr>
           ))}
