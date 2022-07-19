@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Divider } from "@mui/material";
+import { Divider, Switch } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { EmployeeModel } from "../../../../src/types/models";
@@ -33,7 +33,7 @@ export default function UserData() {
   // }
 
   return (
-    <div className="flex flex-col h-full" style={{ padding: "10px 25px 25px" }}>
+    <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
       <div className="my-4 hover:underline cursor-pointer" onClick={goToUsersPage}>
         <BackButton />
         Back to users
@@ -52,29 +52,25 @@ export default function UserData() {
           <span className="text-lg font-light text-gray-500">{user?.title}</span>
         </div>
       </div>
-      <Divider className="py-2" />
-      <div className="mt-5 px-5 w-1/2">
-        <div className="mb-6">
-          {/* <div className="font-medium mb-1">Full Name</div>
-          <div className="text-gray-400">{user?.fullName}</div> */}
-          <LabeledInput2 name="fullName" label="Full Name" value={user?.fullName} />
+      <Divider className="py-3" />
+      <div className="mt-5 px-5 grid grid-cols-2 gap-6">
+        <div>
+          <LabeledInput2 name="firstName" label="First Name" value={user?.firstName} />
         </div>
-        <div className="mb-6">
-          {/* <div className="font-medium mb-1">Title</div>
-          <div className="text-gray-400">{user?.title}</div> */}
+        <div>
+          <LabeledInput2 name="lastName" label="Last Name" value={user?.lastName} />
+        </div>
+        <div className="col-span-2 w-3/5">
           <LabeledInput2 name="title" label="Title" value={user?.title} />
         </div>
-        <div className="mb-6">
-          {/* <div className="font-medium mb-1">Role</div>
-          <div className="text-gray-400">{user?.role}</div> */}
-          <div className="col-span-6 sm:col-span-3">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <div className="col-span-2 w-3/5">
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700">
               Role
             </label>
             <select
-              id="name"
-              name="name"
-              className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              name="role"
+              className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               value={user?.role}
             >
               <option>Super Admin</option>
@@ -86,7 +82,7 @@ export default function UserData() {
             </select>
           </div>
         </div>
-        <div className="mb-6">
+        <div className="col-span-2 w-3/5">
           <AddOnInput
             addOnSide="right"
             label="Email Address"
@@ -94,12 +90,38 @@ export default function UserData() {
             value={user?.email.split("@")[0]}
           />
         </div>
-
-        <div className="mb-6">
-          {/* <div className="font-medium mb-1">Slug</div>
-          <div className="text-gray-400">{user?.slug}</div> */}
-          <LabeledInput2 name="slug" label="Slug" value={user?.slug} />
+        <div className="col-span-2 w-3/5">
+          <LabeledInput2 name="slug" label="Slug" value={user?.slug} disabled />
         </div>
+        <div className="col-span-2 w-44">
+          <label htmlFor="homeroomGrade" className="block text-sm font-medium text-gray-700">
+            Homeroom Grade
+          </label>
+          <select
+            name="homeroomGrade"
+            className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            value={user?.homeroomGrade}
+          >
+            <option value="">None</option>
+            {Array.from({ length: 13 }).map((_, i) => (
+              <option>{i}</option>
+            ))}
+          </select>
+        </div>
+        <div className="">
+          <div className="flex align-center">
+            <label
+              htmlFor="timesheetEnabled"
+              className="block text-sm font-medium text-gray-700 mr-5"
+            >
+              Timesheet Enabled
+            </label>
+            <Switch checked={user?.timesheetEnabled} />
+          </div>
+        </div>
+      </div>
+      <div className="py-10 px-20">
+        <Divider />
       </div>
     </div>
   );
