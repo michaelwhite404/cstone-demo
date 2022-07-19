@@ -8,14 +8,18 @@ const key = "user";
 /** `GET` - Gets all employees
  *  - All authorized users can access this route
  */
-export const getAllEmployees: RequestHandler = factory.getAll(Model, key);
+export const getAllEmployees: RequestHandler = factory.getAll(
+  Model,
+  key,
+  {},
+  { path: "departments" }
+);
 
 /** `GET` - Gets a single employee
  *   - All authorized users can access this route
  */
 export const getOneEmployee: RequestHandler = factory.getOneById(Model, key, {
-  path: "approverOf leaderOf employeeOf",
-  select: "name",
+  path: "departments",
 });
 
 /** Adds current user id to params object */

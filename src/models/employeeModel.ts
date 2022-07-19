@@ -2,7 +2,7 @@ import { Model, model, Schema } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import slugify from "slugify";
-import { EmployeeDocument } from "@@types/models";
+import { DepartmentDocument, EmployeeDocument } from "@@types/models";
 
 const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema(
   {
@@ -89,6 +89,24 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
     toObject: { virtuals: true },
   }
 );
+
+employeeSchema
+  .virtual("departments", {
+    ref: "Department",
+    localField: "_id",
+    foreignField: "members.userId",
+    match: (doc: EmployeeDocument) => {
+      return { members: { $elemMatch: { userId: doc._id } } };
+    },
+  })
+  .get(function (docs: DepartmentDocument[] | undefined, _: any, employee: EmployeeDocument) {
+    return docs?.map((doc) => ({
+      _id: doc._id,
+      name: doc.name,
+      role: doc.members.find((member: any) => member.userId.toString() === employee._id.toString())
+        ?.role,
+    }));
+  });
 
 employeeSchema.virtual("employeeOf", {
   ref: "Department",

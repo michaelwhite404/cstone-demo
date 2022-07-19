@@ -61,6 +61,19 @@ const departmentSchema = new Schema({
       validate: [validEmployeeValidation, employeeValidation],
     },
   ],
+  members: [
+    {
+      userId: {
+        type: Types.ObjectId,
+        ref: "Employee",
+        validate: [validEmployeeValidation],
+      },
+      role: {
+        type: String,
+        enum: ["LEADER", "EMPLOYEE"],
+      },
+    },
+  ],
 } as SchemaDefinition);
 
 const Department = model<DepartmentDocument>("Department", departmentSchema);

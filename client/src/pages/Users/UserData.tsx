@@ -104,7 +104,7 @@ export default function UserData() {
           >
             <option value="">None</option>
             {Array.from({ length: 13 }).map((_, i) => (
-              <option>{i}</option>
+              <option key={i}>{i}</option>
             ))}
           </select>
         </div>

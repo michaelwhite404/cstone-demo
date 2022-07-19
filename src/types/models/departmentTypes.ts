@@ -8,6 +8,12 @@ export interface DepartmentModel {
   leaders: PopulatedDoc<EmployeeModel[]>;
   approvers: PopulatedDoc<EmployeeModel[]>;
   employees: PopulatedDoc<EmployeeModel>[];
+  members: DepartmentMember[];
+}
+
+interface DepartmentMember {
+  userId: PopulatedDoc<EmployeeModel>;
+  role: "LEADER" | "EMPLOYEE";
 }
 
 export interface DepartmentDocument extends DepartmentModel, Document {

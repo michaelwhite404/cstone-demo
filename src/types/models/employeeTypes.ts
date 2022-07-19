@@ -23,6 +23,11 @@ export interface EmployeeModel {
   active: boolean;
   slug: string;
   timesheetEnabled: boolean;
+  departments?: {
+    _id: DepartmentModel["_id"];
+    name: string;
+    role: "LEADER" | "EMPLOYEE";
+  }[];
   employeeOf?: DepartmentModel[];
   leaderOf?: DepartmentModel[];
   approverOf?: DepartmentModel[];
