@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { EmployeeModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import LabeledInput2 from "../../components/LabeledInput2";
+import { AddOnInput } from "../../components/Inputs";
 
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
@@ -86,25 +87,12 @@ export default function UserData() {
           </div>
         </div>
         <div className="mb-6">
-          {/* <div className="font-medium mb-1">Email</div>
-          <div className="text-gray-400">{user?.email}</div> */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-            <div className="mt-1 flex rounded-md shadow-sm">
-              <input
-                type="text"
-                name="email"
-                // id="company-website"
-                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md border focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300"
-                value={user?.email.split("@")[0]}
-              />
-              <span className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm select-none">
-                @cornerstone-schools.org
-              </span>
-            </div>
-          </div>
+          <AddOnInput
+            addOnSide="right"
+            label="Email Address"
+            addOnText="@cornerstone-schools.org"
+            value={user?.email.split("@")[0]}
+          />
         </div>
 
         <div className="mb-6">
