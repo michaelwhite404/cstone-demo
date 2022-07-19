@@ -5,6 +5,7 @@ import { EmployeeModel } from "../../../../src/types/models";
 import Tabs from "../../components/Tabs";
 import PageUsers from "./Users";
 import Departments from "./Departments";
+import UserData from "./UserData";
 
 const tabs = [
   { title: "Users", name: "users", href: "" },
@@ -56,5 +57,6 @@ function Users() {
 
 Users.Users = PageUsers;
 Users.Departments = Departments;
+Users.UserData = UserData;
 
 export default Users;

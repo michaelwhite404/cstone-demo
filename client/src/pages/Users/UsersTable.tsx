@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import { EmployeeModel } from "../../../../src/types/models";
 import TableWrapper from "../../components/TableWrapper";
 
@@ -27,7 +27,9 @@ export default function UsersTable(props: UsersTableProps) {
                 </div>
               </td>
               <td className="border-b text-gray-400">
-                <span className="text-blue-500 font-medium">{user.fullName}</span>
+                <Link to={`/users/${user.slug}`} state={{ fromUsersPage: true }}>
+                  <span className="text-blue-500 font-medium">{user.fullName}</span>
+                </Link>
               </td>
               <td className="border-b text-gray-400">{user.email}</td>
               <td className="border-b text-gray-400">{user.title}</td>
