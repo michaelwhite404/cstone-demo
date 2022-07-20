@@ -27,7 +27,7 @@ export default function UsersTable(props: UsersTableProps) {
                 </div>
               </td>
               <td className="border-b text-gray-400">
-                <Link to={`/users/${user.slug}`} state={{ fromUsersPage: true }}>
+                <Link to={`/users/${user.slug}`} state={{ fromUsersPage: true, user }}>
                   <span className="text-blue-500 font-medium">{user.fullName}</span>
                 </Link>
               </td>

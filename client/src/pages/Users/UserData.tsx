@@ -2,27 +2,34 @@ import axios from "axios";
 import { Divider, Switch } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { EmployeeModel } from "../../../../src/types/models";
+import { DepartmentModel, EmployeeModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import LabeledInput2 from "../../components/LabeledInput2";
 import { AddOnInput } from "../../components/Inputs";
+import DepartmentList from "./UserData/DepartmentList";
 
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
+  const [departments, setDepartments] = useState<DepartmentModel[]>([]);
   const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const getUser = async () => {
-    const res = await axios.get("/api/v2/users", { params: { slug } });
-    const { users } = res.data.data;
-    if (users.length === 1) setUser(users[0]);
-  };
-
   useEffect(() => {
+    const getUser = async () => {
+      const res = await axios.get("/api/v2/users", { params: { slug } });
+      const { users } = res.data.data;
+      if (users.length === 1) setUser(users[0]);
+    };
+
+    const getDepartments = async () => {
+      const res = await axios.get("/api/v2/departments");
+      setDepartments(res.data.data.departments);
+    };
     getUser();
-  }, []);
+    getDepartments();
+  }, [slug]);
 
   const goToUsersPage = () =>
     (location.state as any).fromUsersPage ? navigate(-1) : navigate("/users");
@@ -46,6 +53,7 @@ export default function UserData() {
             //@ts-ignore
             e.target.src = "../avatar_placeholder.png";
           }}
+          alt={user?.fullName}
         />
         <div className="ml-4 pt-4">
           <span className="block font-black mb-2.5 text-4xl">{user?.fullName}</span>
@@ -122,6 +130,16 @@ export default function UserData() {
       </div>
       <div className="py-10 px-20">
         <Divider />
+      </div>
+      <div className="mx-5">
+        <div className="grid grid-cols-12 gap-8">
+          <div className="h-96 bg-red-100 col-span-5">
+            <DepartmentList user={user} departments={departments} />
+          </div>
+          <div className="h-96 bg-green-100 col-span-7">
+            <h3 className="mb-6">Groups</h3>
+          </div>
+        </div>
       </div>
     </div>
   );
