@@ -7,30 +7,30 @@ import capitalize from "capitalize";
 
 const roles = ["Leader", "Employee"];
 
-const departments = [
-  { _id: "1", name: "Project" },
-  { _id: "2", name: "Lions Den" },
-  { _id: "3", name: "Substitute" },
-  { _id: "4", name: "Maintenance" },
-];
-
 interface DepartmentListProps {
   user?: EmployeeModel;
   departments: DepartmentModel[];
 }
 
 export default function DepartmentList(props: DepartmentListProps) {
+  const { departments, user } = props;
+
   const [query, setQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<{
     _id: string;
     name: string;
   }>();
+
+  const userDepartmentIds = user?.departments?.map((d) => d._id as string);
+  const pickableDepartments = departments.filter((d) => !userDepartmentIds?.includes(d._id));
+
   const filteredDepartments =
     query === ""
-      ? departments
-      : departments.filter((department) => {
+      ? pickableDepartments
+      : pickableDepartments.filter((department) => {
           return department.name.toLowerCase().includes(query.toLowerCase());
         });
+
   return (
     <>
       <h3 className="mb-6">Departments</h3>

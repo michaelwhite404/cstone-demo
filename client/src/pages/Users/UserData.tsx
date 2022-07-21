@@ -11,7 +11,7 @@ import DepartmentList from "./UserData/DepartmentList";
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
-  const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
+  // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,9 +35,9 @@ export default function UserData() {
     (location.state as any).fromUsersPage ? navigate(-1) : navigate("/users");
 
   let image = user?.image || "../avatar_placeholder.png";
-  // if (image && image.endsWith("=s96-c")) {
-  //   image = image.replace("=s96-c", "");
-  // }
+  if (image && image.endsWith("=s96-c")) {
+    image = image.replace("=s96-c", "");
+  }
 
   return (
     <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
@@ -49,10 +49,7 @@ export default function UserData() {
         <img
           className="rounded-full w-36 h-36 border-blue-400 border-solid border-4 p-1.5"
           src={image}
-          onError={(e) => {
-            //@ts-ignore
-            e.target.src = "../avatar_placeholder.png";
-          }}
+          onError={(e) => (e.currentTarget.src = "../avatar_placeholder.png")}
           alt={user?.fullName}
         />
         <div className="ml-4 pt-4">
