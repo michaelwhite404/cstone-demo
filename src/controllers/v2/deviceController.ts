@@ -1,14 +1,10 @@
 import capitalize from "capitalize";
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { google } from "googleapis";
 import { Types } from "mongoose";
 import { CheckoutLog, Device, ErrorLog, Student } from "@models";
-import { AppError, catchAsync } from "@utils";
-import { authController } from "@controllers/v2";
+import { admin, AppError, catchAsync } from "@utils";
 import { ErrorLogModel } from "@@types/models";
 import * as factory from "./handlerFactory";
-
-const { googleAuthJWT } = authController;
 
 const Model = Device;
 const key = "device";
@@ -167,12 +163,6 @@ export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) 
     requestedAt: req.requestTime,
     types,
   });
-});
-
-const scopes = ["https://www.googleapis.com/auth/admin.directory.device.chromeos"];
-const admin = google.admin({
-  version: "directory_v1",
-  auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
 });
 
 export const getDevicesFromGoogle = catchAsync(async (_, res) => {

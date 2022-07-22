@@ -1,14 +1,5 @@
-import { admin_directory_v1, google } from "googleapis";
-import { catchAsync } from "@utils";
-import { authController } from ".";
-
-const { googleAuthJWT } = authController;
-
-const scopes = ["https://www.googleapis.com/auth/admin.directory.orgunit"];
-const admin = google.admin({
-  version: "directory_v1",
-  auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
-});
+import { admin_directory_v1 } from "googleapis";
+import { admin, catchAsync } from "@utils";
 
 export const getAllOrgUnits = catchAsync(async (_, res) => {
   const result = await admin.orgunits.list({
