@@ -7,10 +7,13 @@ import BackButton from "../../components/BackButton";
 import LabeledInput2 from "../../components/LabeledInput2";
 import { AddOnInput } from "../../components/Inputs";
 import DepartmentList from "./UserData/DepartmentList";
+import { admin_directory_v1 } from "googleapis";
+import GroupList from "./UserData/GroupsList";
 
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
+  const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
   // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
@@ -27,9 +30,20 @@ export default function UserData() {
       const res = await axios.get("/api/v2/departments");
       setDepartments(res.data.data.departments);
     };
+
     getUser();
     getDepartments();
   }, [slug]);
+
+  useEffect(() => {
+    const getUserGroups = async () => {
+      if (user) {
+        const res = await axios.get(`/api/v2/groups/${user.email}`);
+        setGroups(res.data.data.groups);
+      }
+    };
+    getUserGroups();
+  }, [user]);
 
   const goToUsersPage = () =>
     (location.state as any).fromUsersPage ? navigate(-1) : navigate("/users");
@@ -130,11 +144,11 @@ export default function UserData() {
       </div>
       <div className="mx-5">
         <div className="grid grid-cols-12 gap-8">
-          <div className="h-96 bg-red-100 col-span-5">
+          <div className="col-span-6">
             <DepartmentList user={user} departments={departments} />
           </div>
-          <div className="h-96 bg-green-100 col-span-7">
-            <h3 className="mb-6">Groups</h3>
+          <div className="col-span-6">
+            <GroupList userGroups={groups} />
           </div>
         </div>
       </div>
