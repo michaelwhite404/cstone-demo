@@ -28,6 +28,7 @@ export interface EmployeeModel {
     name: string;
     role: "LEADER" | "EMPLOYEE";
   }[];
+  groups?: UserGroup[];
   employeeOf?: DepartmentModel[];
   leaderOf?: DepartmentModel[];
   approverOf?: DepartmentModel[];
@@ -40,6 +41,15 @@ type EmployeeRole =
   | "Instructor"
   | "Intern"
   | "Maintenance";
+
+export interface UserGroup {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  type: string;
+}
 
 export interface EmployeeDocument extends EmployeeModel, Document {
   _id: EmployeeModel["_id"];
