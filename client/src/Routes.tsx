@@ -47,7 +47,7 @@ export default function Routes() {
             <Route path="users" element={<Page.Users />}>
               <Route index element={<Page.Users.Users />} />
               <Route path="departments" element={<Page.Users.Departments />} />
-              <Route path="groups" element={<h1>Groups</h1>} />
+              <Route path="groups" element={<Page.Users.Groups />} />
             </Route>
             <Route path="users/:slug" element={<Page.Users.UserData />} />
           </Route>

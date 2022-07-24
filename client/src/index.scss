@@ -178,6 +178,10 @@ input {
   box-shadow: 0px 0px 0px 1px rgb(59, 130 ,246);
 }
 
+[id^="react-select"]:focus {
+  box-shadow: none !important
+}
+
 // ::placeholder {
 //   /* Chrome, Firefox, Opera, Safari 10.1+ */
 //   color: red;
