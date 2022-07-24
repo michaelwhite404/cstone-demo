@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { Employee } from "@models";
 import * as factory from "./handlerFactory";
-import { admin, AppError, catchAsync } from "@utils";
+import { admin, AppError, catchAsync, isObjectID } from "@utils";
 import { models } from "@@types";
 
 const Model = Employee;
@@ -21,7 +21,9 @@ export const getAllEmployees: RequestHandler = factory.getAll(
  *   - All authorized users can access this route
  */
 export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) => {
-  let query = Model.findById(req.params.id);
+  let query = isObjectID(req.params.id)
+    ? Model.findById(req.params.id)
+    : Model.findOne({ slug: req.params.id });
   if (req.query.projection === "FULL") query = query.populate({ path: "departments" });
   const user = await query;
   if (!user) return next(new AppError("No user found with that ID", 404));
