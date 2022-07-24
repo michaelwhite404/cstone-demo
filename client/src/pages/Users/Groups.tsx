@@ -70,7 +70,7 @@ export default function Groups() {
               return (
                 <tr
                   className={classNames(
-                    { "bg-indigo-100": selected },
+                    { "bg-indigo-50": selected },
                     { "hover:bg-gray-100": !selected }
                   )}
                   key={group.id}

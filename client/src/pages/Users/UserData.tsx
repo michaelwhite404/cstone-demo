@@ -9,9 +9,11 @@ import { AddOnInput } from "../../components/Inputs";
 import DepartmentList from "./UserData/DepartmentList";
 import { admin_directory_v1 } from "googleapis";
 import GroupList from "./UserData/GroupsList";
+import { grades } from "../../utils/grades";
 
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
+  const [userEdit, setUserEdit] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
   const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
   // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
@@ -23,7 +25,10 @@ export default function UserData() {
     const getUser = async () => {
       const res = await axios.get("/api/v2/users", { params: { slug } });
       const { users } = res.data.data;
-      if (users.length === 1) setUser(users[0]);
+      if (users.length === 1) {
+        setUser(users[0]);
+        setUserEdit(users[0]);
+      }
     };
 
     const getDepartments = async () => {
@@ -53,6 +58,12 @@ export default function UserData() {
     image = image.replace("=s96-c", "");
   }
 
+  const handleChange = <T extends HTMLElement>(e: React.ChangeEvent<T>) => {
+    console.log();
+    //@ts-ignore
+    setUserEdit({ ...userEdit, [e.target.name]: e.target.value });
+  };
+
   return (
     <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
       <div className="my-4 hover:underline cursor-pointer" onClick={goToUsersPage}>
@@ -74,13 +85,28 @@ export default function UserData() {
       <Divider className="py-3" />
       <div className="mt-5 px-5 grid grid-cols-2 gap-6">
         <div>
-          <LabeledInput2 name="firstName" label="First Name" value={user?.firstName} />
+          <LabeledInput2
+            name="firstName"
+            label="First Name"
+            value={userEdit?.firstName || ""}
+            onChange={handleChange}
+          />
         </div>
         <div>
-          <LabeledInput2 name="lastName" label="Last Name" value={user?.lastName} />
+          <LabeledInput2
+            name="lastName"
+            label="Last Name"
+            value={userEdit?.lastName || ""}
+            onChange={handleChange}
+          />
         </div>
         <div className="col-span-2 w-3/5">
-          <LabeledInput2 name="title" label="Title" value={user?.title} />
+          <LabeledInput2
+            name="title"
+            label="Title"
+            value={userEdit?.title || ""}
+            onChange={handleChange}
+          />
         </div>
         <div className="col-span-2 w-3/5">
           <div>
@@ -90,7 +116,8 @@ export default function UserData() {
             <select
               name="role"
               className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              value={user?.role}
+              value={userEdit?.role || ""}
+              onChange={handleChange}
             >
               <option>Super Admin</option>
               <option>Admin</option>
@@ -104,13 +131,15 @@ export default function UserData() {
         <div className="col-span-2 w-3/5">
           <AddOnInput
             addOnSide="right"
+            name="email"
             label="Email Address"
             addOnText="@cornerstone-schools.org"
-            value={user?.email.split("@")[0]}
+            value={userEdit?.email.split("@")[0] || ""}
+            onChange={handleChange}
           />
         </div>
         <div className="col-span-2 w-3/5">
-          <LabeledInput2 name="slug" label="Slug" value={user?.slug} disabled />
+          <LabeledInput2 name="slug" label="Slug" value={userEdit?.slug || ""} disabled readOnly />
         </div>
         <div className="col-span-2 w-44">
           <label htmlFor="homeroomGrade" className="block text-sm font-medium text-gray-700">
@@ -119,11 +148,14 @@ export default function UserData() {
           <select
             name="homeroomGrade"
             className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            value={user?.homeroomGrade}
+            value={userEdit?.homeroomGrade || ""}
+            onChange={handleChange}
           >
             <option value="">None</option>
-            {Array.from({ length: 13 }).map((_, i) => (
-              <option key={i}>{i}</option>
+            {grades.map((value, i) => (
+              <option key={value} value={i}>
+                {i === 0 ? "Kindergarten" : `${value} Grade`}
+              </option>
             ))}
           </select>
         </div>
@@ -135,7 +167,16 @@ export default function UserData() {
             >
               Timesheet Enabled
             </label>
-            <Switch checked={user?.timesheetEnabled} />
+            <Switch
+              name="timesheetEnabled"
+              checked={userEdit?.timesheetEnabled || false}
+              onChange={() =>
+                handleChange({
+                  //@ts-ignore
+                  target: { name: "timesheetEnabled", value: !userEdit?.timesheetEnabled },
+                })
+              }
+            />
           </div>
         </div>
       </div>

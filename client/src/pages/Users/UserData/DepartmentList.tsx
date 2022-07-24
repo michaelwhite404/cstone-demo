@@ -132,7 +132,7 @@ export default function DepartmentList(props: DepartmentListProps) {
               <Menu.Items className="z-10 focus:outline-none absolute right-0 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                 <div className="py-1">
                   {roles.map((role) => (
-                    <Menu.Item>
+                    <Menu.Item key={role}>
                       {({ active }) => (
                         <div
                           className={classNames(
@@ -178,7 +178,7 @@ export default function DepartmentList(props: DepartmentListProps) {
                   <Menu.Items className="z-10 focus:outline-none absolute right-0 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
                       {roles.map((role) => (
-                        <Menu.Item>
+                        <Menu.Item key={role}>
                           {({ active }) => (
                             <div
                               className={classNames(
