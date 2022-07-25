@@ -21,6 +21,7 @@ const scopes = [
   "https://www.googleapis.com/auth/admin.directory.device.chromeos",
   "https://www.googleapis.com/auth/admin.directory.orgunit",
   "https://www.googleapis.com/auth/admin.directory.group",
+  "https://www.googleapis.com/auth/admin.directory.user",
 ];
 export default google.admin({
   version: "directory_v1",

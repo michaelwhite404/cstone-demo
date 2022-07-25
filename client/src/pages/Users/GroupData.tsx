@@ -28,7 +28,7 @@ export default function GroupData() {
         <div>
           {group?.members!.map((member) => (
             <div key={member.email}>
-              {member.email} - {capitalize(member.role?.toLowerCase() || "")}
+              {member.fullName}: {member.email} - {capitalize(member.role?.toLowerCase() || "")}
             </div>
           ))}
         </div>
