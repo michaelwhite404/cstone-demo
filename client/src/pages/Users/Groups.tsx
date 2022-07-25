@@ -32,7 +32,6 @@ export default function Groups() {
 
   useLayoutEffect(() => {
     const isIndeterminate = selectedGroups.length > 0 && selectedGroups.length < groups.length;
-    console.log(selectedGroups.length, groups.length);
     setChecked(selectedGroups.length === groups.length);
     setIndeterminate(isIndeterminate);
     if (checkbox.current) checkbox.current.indeterminate = isIndeterminate;
@@ -91,7 +90,7 @@ export default function Groups() {
                     />
                   </td>
                   <td className="py-2.5 border-b border-gray-300">
-                    <Link to="/users/groups/id">
+                    <Link to={`/users/groups/${group.email!.split("@")[0]}`}>
                       <span className="text-blue-500 font-medium">{group.name}</span>
                     </Link>
                   </td>

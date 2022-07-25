@@ -4,6 +4,7 @@ export * from "./departmentTypes";
 export * from "./deviceTypes";
 export * from "./employeeTypes";
 export * from "./errorLogTypes";
+export * from "./groupTypes";
 export * from "./roomTypes";
 export * from "./shortUrlTypes";
 export * from "./studentTypes";

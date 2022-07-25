@@ -50,6 +50,7 @@ export default function Routes() {
               <Route path="groups" element={<Page.Users.Groups />} />
             </Route>
             <Route path="users/:slug" element={<Page.Users.UserData />} />
+            <Route path="users/groups/:slug" element={<Page.Users.GroupData />} />
           </Route>
         )}
       </Route>

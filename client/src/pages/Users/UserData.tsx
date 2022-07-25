@@ -7,7 +7,6 @@ import BackButton from "../../components/BackButton";
 import LabeledInput2 from "../../components/LabeledInput2";
 import { AddOnInput } from "../../components/Inputs";
 import DepartmentList from "./UserData/DepartmentList";
-import { admin_directory_v1 } from "googleapis";
 import GroupList from "./UserData/GroupsList";
 import { grades } from "../../utils/grades";
 
@@ -15,7 +14,6 @@ export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
   const [userEdit, setUserEdit] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
-  const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
   // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
@@ -23,14 +21,10 @@ export default function UserData() {
 
   useEffect(() => {
     const getUser = async () => {
-      const res = await axios.get("/api/v2/users", { params: { slug } });
-      const { users } = res.data.data;
-      if (users.length === 1) {
-        setUser(users[0]);
-        setUserEdit(users[0]);
-      }
+      const res = await axios.get(`/api/v2/users/${slug}`, { params: { projection: "FULL" } });
+      setUser(res.data.data.user);
+      setUserEdit(res.data.data.user);
     };
-
     const getDepartments = async () => {
       const res = await axios.get("/api/v2/departments");
       setDepartments(res.data.data.departments);
@@ -39,16 +33,6 @@ export default function UserData() {
     getUser();
     getDepartments();
   }, [slug]);
-
-  useEffect(() => {
-    const getUserGroups = async () => {
-      if (user) {
-        const res = await axios.get(`/api/v2/groups/${user.email}`);
-        setGroups(res.data.data.groups);
-      }
-    };
-    getUserGroups();
-  }, [user]);
 
   const goToUsersPage = () =>
     (location.state as any).fromUsersPage ? navigate(-1) : navigate("/users");
@@ -139,7 +123,14 @@ export default function UserData() {
           />
         </div>
         <div className="col-span-2 w-3/5">
-          <LabeledInput2 name="slug" label="Slug" value={userEdit?.slug || ""} disabled readOnly />
+          <LabeledInput2
+            className="bg-gray-200"
+            name="slug"
+            label="Slug"
+            value={userEdit?.slug || ""}
+            disabled
+            readOnly
+          />
         </div>
         <div className="col-span-2 w-44">
           <label htmlFor="homeroomGrade" className="block text-sm font-medium text-gray-700">
@@ -148,7 +139,7 @@ export default function UserData() {
           <select
             name="homeroomGrade"
             className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            value={userEdit?.homeroomGrade || ""}
+            value={String(userEdit?.homeroomGrade) || ""}
             onChange={handleChange}
           >
             <option value="">None</option>
@@ -189,7 +180,7 @@ export default function UserData() {
             <DepartmentList user={user} departments={departments} />
           </div>
           <div className="col-span-6">
-            <GroupList userGroups={groups} />
+            <GroupList userGroups={userEdit?.groups || []} />
           </div>
         </div>
       </div>

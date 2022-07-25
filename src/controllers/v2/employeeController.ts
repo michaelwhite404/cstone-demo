@@ -21,7 +21,7 @@ export const getAllEmployees: RequestHandler = factory.getAll(
  *   - All authorized users can access this route
  */
 export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) => {
-  let query = isObjectID(req.params.id)
+  let query = isObjectID(req.params.id.toString())
     ? Model.findById(req.params.id)
     : Model.findOne({ slug: req.params.id });
   if (req.query.projection === "FULL") query = query.populate({ path: "departments" });

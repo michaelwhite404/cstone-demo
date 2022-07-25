@@ -7,6 +7,7 @@ import PageUsers from "./Users";
 import Departments from "./Departments";
 import UserData from "./UserData";
 import Groups from "./Groups";
+import GroupData from "./GroupData";
 
 const tabs = [
   { title: "Users", name: "users", href: "" },
@@ -60,5 +61,6 @@ Users.Users = PageUsers;
 Users.Departments = Departments;
 Users.UserData = UserData;
 Users.Groups = Groups;
+Users.GroupData = GroupData;
 
 export default Users;
