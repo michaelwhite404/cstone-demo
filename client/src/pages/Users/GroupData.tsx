@@ -11,6 +11,7 @@ import classNames from "classnames";
 import TableWrapper from "../../components/TableWrapper";
 import GroupDataSlider from "./GroupDataSlider";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
+import GroupDataAdd from "./GroupDataAdd";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
@@ -24,7 +25,8 @@ export default function GroupData() {
     data: members,
     setSelectedData: setSelectedMembers,
   } = useChecker2(group?.members === undefined ? [] : group.members);
-  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -81,7 +83,7 @@ export default function GroupData() {
             <div className="mt-3 w-64 flex align-start justify-end">
               <button
                 className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                onClick={() => setOpen(true)}
+                onClick={() => setOpenEdit(true)}
               >
                 <PencilIcon className="w-4 mr-1.5" />
                 Edit Group Details
@@ -105,7 +107,7 @@ export default function GroupData() {
                 />
               </div>
               <div className="flex space-x-4">
-                <PrimaryButton text="+ Create Group" />
+                <PrimaryButton text="+ Add Members" onClick={() => setOpenAdd(true)} />
               </div>
             </div>
             <TableWrapper>
@@ -173,16 +175,19 @@ export default function GroupData() {
             {members.length === 0 && (
               <div>
                 <div className="flex justify-center align-center text-slate-400 mt-10">
-                  <img className="w-28 mr-5" src="../../empty_box.png" alt="Empty Box" />
+                  <img className="w-28 mr-10" src="../../empty_box.png" alt="Empty Box" />
                   This group doesn't have any members
                 </div>
                 <div className="text-center">
-                  <Button style={{ fontFamily: "inherit" }}>+ Add Members</Button>
+                  <Button style={{ fontFamily: "inherit" }} onClick={() => setOpenAdd(true)}>
+                    + Add Members
+                  </Button>
                   {/* <button className="text-blue-500 font-medium uppercase">Add Members</button> */}
                 </div>
               </div>
             )}
-            <GroupDataSlider open={open} setOpen={setOpen} data={data} />
+            <GroupDataSlider open={openEdit} setOpen={setOpenEdit} data={data} />
+            <GroupDataAdd open={openAdd} setOpen={setOpenAdd} groupName={group.name!} />
           </div>
         </>
       ) : (

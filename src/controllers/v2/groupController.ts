@@ -46,7 +46,7 @@ export const getGroup = catchAsync(async (req, res, next) => {
   }
 });
 
-export const createGroup = catchAsync(async (req, res, next) => {
+export const createGroup = catchAsync(async (req, res) => {
   const { data: group } = await admin.groups.insert({
     requestBody: {
       name: req.body.name,
