@@ -1,8 +1,10 @@
+import { SearchIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import classNames from "classnames";
 import { admin_directory_v1 } from "googleapis";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TableWrapper from "../../components/TableWrapper";
 import { APIResponse } from "../../types/apiResponses";
 // import GroupsTable from "./GroupsTable";
@@ -45,6 +47,22 @@ export default function Groups() {
 
   return (
     <div>
+      <div className="flex justify-between align-center">
+        <div className="relative">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <SearchIcon className="w-4" />
+          </div>
+          <input
+            type="search"
+            id="search"
+            className="block p-2 pl-10 w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Search"
+          />
+        </div>
+        <div className="flex space-x-4">
+          <PrimaryButton text="+ Create Group" />
+        </div>
+      </div>
       <TableWrapper>
         <table>
           <thead>

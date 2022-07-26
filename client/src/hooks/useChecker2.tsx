@@ -12,11 +12,12 @@ export default function useChecker2<T>(initialData: T[]) {
   const checkboxRef = useRef<HTMLInputElement | null>(null);
 
   useLayoutEffect(() => {
+    // console.log(data, initialData);
     const isIndeterminate = selectedData.length > 0 && selectedData.length < data.length;
     setChecked(selectedData.length === data.length);
     setIndeterminate(isIndeterminate);
     if (checkboxRef.current) checkboxRef.current.indeterminate = isIndeterminate;
-  }, [data.length, selectedData]);
+  }, [data, selectedData]);
 
   function toggleAll() {
     setSelectedData(checked || indeterminate ? [] : data);

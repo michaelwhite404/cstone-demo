@@ -7,6 +7,7 @@ export * as deviceErrorLogController from "./deviceErrorLogController";
 export * as employeeController from "./employeeController";
 export * as handlerFactory from "./handlerFactory";
 export * as helpers from "./helpers";
+export * as groupController from "./groupController";
 export * as orgUnitController from "./orgUnitController";
 export * as roomController from "./roomController";
 export * as shortUrlController from "./shortUrlController";

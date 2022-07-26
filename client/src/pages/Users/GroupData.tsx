@@ -1,15 +1,16 @@
 import { MailIcon as MailIconSolid } from "@heroicons/react/solid";
-import { MailIcon as MailIconOutline, PencilIcon } from "@heroicons/react/outline";
+import { MailIcon as MailIconOutline, PencilIcon, SearchIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GroupModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
-import { Divider } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { useChecker2 } from "../../hooks";
 import classNames from "classnames";
 import TableWrapper from "../../components/TableWrapper";
 import GroupDataSlider from "./GroupDataSlider";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
@@ -22,7 +23,7 @@ export default function GroupData() {
     selectedData: selectedMembers,
     data: members,
     setSelectedData: setSelectedMembers,
-  } = useChecker2(group?.members || []);
+  } = useChecker2(group?.members === undefined ? [] : group.members);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function GroupData() {
       try {
         const res = await axios.get(`/api/v2/groups/${slug}`);
         setGroup(res.data.data.group);
-        setMembers(res.data.data.group.members);
+        setMembers(res.data.data.group.members || []);
       } catch (err) {}
     };
 
@@ -91,6 +92,22 @@ export default function GroupData() {
             <Divider />
           </div>
           <div>
+            <div className="flex justify-between align-center">
+              <div className="relative">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <SearchIcon className="w-4" />
+                </div>
+                <input
+                  type="search"
+                  id="search"
+                  className="block p-2 pl-10 w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Search"
+                />
+              </div>
+              <div className="flex space-x-4">
+                <PrimaryButton text="+ Create Group" />
+              </div>
+            </div>
             <TableWrapper>
               <table>
                 <thead>
@@ -100,7 +117,7 @@ export default function GroupData() {
                         type="checkbox"
                         className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
                         ref={checkboxRef}
-                        checked={allSelected}
+                        checked={allSelected && members.length > 0}
                         onChange={toggleAll}
                       />
                     </th>
@@ -152,6 +169,19 @@ export default function GroupData() {
                 </tbody>
               </table>
             </TableWrapper>
+            {/* Empty State */}
+            {members.length === 0 && (
+              <div>
+                <div className="flex justify-center align-center text-slate-400 mt-10">
+                  <img className="w-28 mr-5" src="../../empty_box.png" alt="Empty Box" />
+                  This group doesn't have any members
+                </div>
+                <div className="text-center">
+                  <Button style={{ fontFamily: "inherit" }}>+ Add Members</Button>
+                  {/* <button className="text-blue-500 font-medium uppercase">Add Members</button> */}
+                </div>
+              </div>
+            )}
             <GroupDataSlider open={open} setOpen={setOpen} data={data} />
           </div>
         </>
