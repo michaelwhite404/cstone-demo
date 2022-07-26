@@ -9,6 +9,7 @@ import { Divider } from "@mui/material";
 import { useChecker2 } from "../../hooks";
 import classNames from "classnames";
 import TableWrapper from "../../components/TableWrapper";
+import GroupDataSlider from "./GroupDataSlider";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
@@ -22,6 +23,7 @@ export default function GroupData() {
     data: members,
     setSelectedData: setSelectedMembers,
   } = useChecker2(group?.members || []);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -34,6 +36,13 @@ export default function GroupData() {
 
     fetchGroup();
   }, [setMembers, slug]);
+
+  const data = {
+    name: group?.name || "",
+    description: group?.description || "",
+    email: group?.email || "",
+    aliases: group?.aliases || [],
+  };
 
   return (
     <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
@@ -69,7 +78,10 @@ export default function GroupData() {
               </div>
             </div>
             <div className="mt-3 w-64 flex align-start justify-end">
-              <button className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+              <button
+                className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                onClick={() => setOpen(true)}
+              >
                 <PencilIcon className="w-4 mr-1.5" />
                 Edit Group Details
               </button>
@@ -140,6 +152,7 @@ export default function GroupData() {
                 </tbody>
               </table>
             </TableWrapper>
+            <GroupDataSlider open={open} setOpen={setOpen} data={data} />
           </div>
         </>
       ) : (
