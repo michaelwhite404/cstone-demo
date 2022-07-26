@@ -43,7 +43,6 @@ export default function UserData() {
   }
 
   const handleChange = <T extends HTMLElement>(e: React.ChangeEvent<T>) => {
-    console.log();
     //@ts-ignore
     setUserEdit({ ...userEdit, [e.target.name]: e.target.value });
   };
