@@ -1,4 +1,5 @@
 import { CheckIcon } from "@heroicons/react/solid";
+import axios from "axios";
 import classNames from "classnames";
 import { admin_directory_v1 } from "googleapis";
 import { useEffect, useState } from "react";
@@ -17,12 +18,13 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
 
   useEffect(() => {
     const fetchGoogleUsers = async () => {
-      setGoogleUsers([]);
+      const res = await axios.get("/api/v2/users/from-google?active=true");
+      setGoogleUsers(res.data.data.users);
     };
     fetchGoogleUsers();
   }, []);
 
-  const displayValue = (option?: { one: string }) => option?.one || "";
+  const displayValue = (option?: admin_directory_v1.Schema$User) => option?.name?.fullName || "";
 
   return (
     <Modal open={open} setOpen={setOpen} disableOverlayClick>
@@ -34,15 +36,20 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           </div>
           <div className="flex justify-between">
             <Combobox
-              options={Array.from({ length: 50 }).map((_, i) => ({ one: i.toString() }))}
+              options={googleUsers}
               displayValue={displayValue}
               filterFunction={(option, currentValue) =>
-                option.one.toLowerCase().includes(currentValue.toLowerCase())
+                option.name!.fullName!.toLowerCase().includes(currentValue.toLowerCase())
               }
               renderItem={(option, { active, selected }) => (
                 <>
                   <span className={classNames("block truncate", selected && "font-semibold")}>
-                    {option.one}
+                    {option.name?.fullName}{" "}
+                    <span
+                      className={classNames("text-xs", active ? "text-white" : "text-gray-400")}
+                    >
+                      ({option.primaryEmail})
+                    </span>
                   </span>
 
                   {selected && (

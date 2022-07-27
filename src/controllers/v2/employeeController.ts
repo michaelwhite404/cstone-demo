@@ -65,3 +65,16 @@ const getUserGroups = async (email: string): Promise<models.UserGroup[] | undefi
     type: member.data.type!,
   }));
 };
+
+/** `GET` - Gets all users from Google
+ */
+export const getGoogleUsers: RequestHandler = catchAsync(async (req, res, next) => {
+  let query = "";
+  if (req.query.active === "true") query = query.concat("isSuspended=false");
+  const result = await admin.users.list({
+    customer: process.env.GOOGLE_CUSTOMER_ID,
+    maxResults: 500,
+    query,
+  });
+  res.sendJson(200, { users: result.data.users });
+});

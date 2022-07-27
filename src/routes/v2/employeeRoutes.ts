@@ -15,6 +15,7 @@ employeeRouter.patch("/update-password", v1auth.updatePassword);
 
 employeeRouter.route("/").get(employeeController.getAllEmployees).post(v2auth.createEmployee);
 employeeRouter.route("/me").get(employeeController.getMe, employeeController.getOneEmployee);
+employeeRouter.get("/from-google", employeeController.getGoogleUsers);
 employeeRouter
   .route("/:id")
   .get(employeeController.getOneEmployee) /* .patch(employeeController.updateUser) */;
