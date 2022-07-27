@@ -1,9 +1,11 @@
-import { CheckIcon } from "@heroicons/react/solid";
+import { CheckIcon, PlusIcon } from "@heroicons/react/solid";
 import axios from "axios";
+import capitalize from "capitalize";
 import classNames from "classnames";
 import { admin_directory_v1 } from "googleapis";
 import { useEffect, useState } from "react";
 import Combobox from "../../components/Combobox";
+import Menu from "../../components/Menu";
 import Modal from "../../components/Modal";
 
 interface GroupDataAddProps {
@@ -15,6 +17,11 @@ interface GroupDataAddProps {
 export default function GroupDataAdd(props: GroupDataAddProps) {
   const { open, setOpen } = props;
   const [googleUsers, setGoogleUsers] = useState<admin_directory_v1.Schema$User[]>([]);
+  const [memberToAdd, setMemberToAdd] = useState<{
+    user?: admin_directory_v1.Schema$User;
+    role: string;
+  }>({ role: "MEMBER" });
+  const [futureMembers, setFutureMembers] = useState([]);
 
   useEffect(() => {
     const fetchGoogleUsers = async () => {
@@ -26,6 +33,18 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
 
   const displayValue = (option?: admin_directory_v1.Schema$User) => option?.name?.fullName || "";
 
+  const roleOptions = ["MEMBER", "MANAGER", "OWNER"].map((role) => ({
+    label: capitalize(role.toLowerCase()),
+    value: role,
+  }));
+
+  const handleComboboxChange = (value?: admin_directory_v1.Schema$User) =>
+    value && setMemberToAdd({ ...memberToAdd, user: value });
+
+  const handleRoleChange = ({ value }: { value: string }) => {
+    setMemberToAdd({ ...memberToAdd, role: value });
+  };
+
   return (
     <Modal open={open} setOpen={setOpen} disableOverlayClick>
       <div className="font-medium text-xl mb-5">Add Members</div>
@@ -34,37 +53,53 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           <div className="uppercase text-gray-400 text-xs font-medium mb-2">
             Add members to {props.groupName}
           </div>
-          <div className="flex justify-between">
-            <Combobox
-              options={googleUsers}
-              displayValue={displayValue}
-              filterFunction={(option, currentValue) =>
-                option.name!.fullName!.toLowerCase().includes(currentValue.toLowerCase())
-              }
-              renderItem={(option, { active, selected }) => (
-                <>
-                  <span className={classNames("block truncate", selected && "font-semibold")}>
-                    {option.name?.fullName}{" "}
-                    <span
-                      className={classNames("text-xs", active ? "text-white" : "text-gray-400")}
-                    >
-                      ({option.primaryEmail})
+          <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto auto" }}>
+            <div>
+              <Combobox
+                options={googleUsers}
+                displayValue={displayValue}
+                filterFunction={(user, currentValue) =>
+                  user.name!.fullName!.toLowerCase().includes(currentValue.toLowerCase()) ||
+                  user.primaryEmail!.toLowerCase().includes(currentValue.toLowerCase())
+                }
+                onChange={handleComboboxChange}
+                renderItem={(user, { active, selected }) => (
+                  <>
+                    <span className={classNames("block truncate", selected && "font-semibold")}>
+                      {user.name?.fullName}{" "}
+                      <span
+                        className={classNames("text-xs", active ? "text-white" : "text-gray-400")}
+                      >
+                        ({user.primaryEmail})
+                      </span>
                     </span>
-                  </span>
 
-                  {selected && (
-                    <span
-                      className={classNames(
-                        "absolute inset-y-0 left-0 flex items-center pl-1.5",
-                        active ? "text-white" : "text-blue-600"
-                      )}
-                    >
-                      <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                  )}
-                </>
-              )}
-            />
+                    {selected && (
+                      <span
+                        className={classNames(
+                          "absolute inset-y-0 left-0 flex items-center pl-1.5",
+                          active ? "text-white" : "text-blue-600"
+                        )}
+                      >
+                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                    )}
+                  </>
+                )}
+              />
+            </div>
+            <div>
+              <Menu options={roleOptions} onChange={handleRoleChange} />
+            </div>
+            <div>
+              <button
+                type="button"
+                className="disabled:bg-gray-300 w-full inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
+                disabled
+              >
+                <PlusIcon className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
         <div>
@@ -75,8 +110,9 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
       <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
         <button
           type="button"
-          className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+          className="disabled:bg-gray-300 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
           onClick={() => setOpen(false)}
+          disabled
         >
           Add to Group
         </button>

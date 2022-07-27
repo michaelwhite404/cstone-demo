@@ -9,6 +9,7 @@ interface ComboboxProps<T> {
   renderItem: (option: T, propArg: OptionRenderPropArg) => ReactNode;
   filterFunction: (option: T, currentValue: string) => boolean;
   placeholder?: string;
+  onChange?: (value?: T) => void;
 }
 
 interface OptionRenderPropArg {
@@ -20,15 +21,20 @@ interface OptionRenderPropArg {
 export default function Comboboxxxxxx<T>(props: ComboboxProps<T>) {
   const { options, displayValue, filterFunction, renderItem, placeholder } = props;
 
-  const [selectedOption, setSelectedOption] = useState<T[]>();
+  const [selectedOption, setSelectedOption] = useState<T>();
 
   const [query, setQuery] = useState("");
 
   const filteredOptions =
     query === "" ? options : options.filter((option) => filterFunction(option, query));
 
+  const handleChange = (value: T | undefined) => {
+    props.onChange?.(value);
+    setSelectedOption(value);
+  };
+
   return (
-    <Combobox as="div" value={selectedOption} onChange={setSelectedOption} className="flex-1">
+    <Combobox as="div" value={selectedOption} onChange={handleChange} className="flex-1">
       {({ open }) => (
         <div className="relative">
           <Combobox.Button className="w-full">
