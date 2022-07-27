@@ -12,10 +12,16 @@ interface GroupDataAddProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   groupName: string;
+  addMembersToGroup: (
+    users: {
+      email: string;
+      role: string;
+    }[]
+  ) => Promise<void>;
 }
 
 export default function GroupDataAdd(props: GroupDataAddProps) {
-  const { open, setOpen } = props;
+  const { addMembersToGroup, groupName, open, setOpen } = props;
   const [googleUsers, setGoogleUsers] = useState<admin_directory_v1.Schema$User[]>([]);
   const [memberToAdd, setMemberToAdd] = useState<{
     user?: admin_directory_v1.Schema$User;
@@ -64,7 +70,10 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
   const handleDelete = (email: string) =>
     setFutureMembers(futureMembers.filter((m) => m.user.primaryEmail !== email));
 
-  const addMembersToGroup = () => {};
+  const submit = () => {
+    const usersArg = futureMembers.map((fM) => ({ email: fM.user.primaryEmail!, role: fM.role }));
+    addMembersToGroup(usersArg).then(close);
+  };
 
   return (
     <Modal open={open} setOpen={setOpen} disableOverlayClick onClose={close}>
@@ -72,7 +81,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
       <div>
         <div className="mb-5">
           <div className="uppercase text-gray-400 text-xs font-medium mb-2">
-            Add members to {props.groupName}
+            Add members to {groupName}
           </div>
           <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto auto" }}>
             <div>
@@ -163,7 +172,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
         <button
           type="button"
           className="disabled:bg-gray-300 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-          onClick={close}
+          onClick={submit}
           disabled={futureMembers.length === 0}
         >
           Add to Group
@@ -171,7 +180,6 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
         <button
           type="button"
           className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-          onClick={close}
         >
           Cancel
         </button>

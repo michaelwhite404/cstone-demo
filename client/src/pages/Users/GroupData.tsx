@@ -1,20 +1,24 @@
 import { MailIcon as MailIconSolid } from "@heroicons/react/solid";
 import { MailIcon as MailIconOutline, PencilIcon, SearchIcon } from "@heroicons/react/outline";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GroupModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import { Button, Divider } from "@mui/material";
-import { useChecker2 } from "../../hooks";
+import { useChecker2, useToasterContext } from "../../hooks";
 import classNames from "classnames";
 import TableWrapper from "../../components/TableWrapper";
 import GroupDataSlider from "./GroupDataSlider";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import GroupDataAdd from "./GroupDataAdd";
+import { APIError, APIResponse } from "../../types/apiResponses";
+import { admin_directory_v1 } from "googleapis";
+import pluralize from "pluralize";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
+  const { showToaster } = useToasterContext();
   const { slug } = useParams();
   const {
     setData: setMembers,
@@ -28,23 +32,38 @@ export default function GroupData() {
   const [openEdit, setOpenEdit] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
 
-  useEffect(() => {
-    const fetchGroup = async () => {
-      try {
-        const res = await axios.get(`/api/v2/groups/${slug}`);
-        setGroup(res.data.data.group);
-        setMembers(res.data.data.group.members || []);
-      } catch (err) {}
-    };
+  const fetchGroup = useCallback(async () => {
+    try {
+      const res = await axios.get(`/api/v2/groups/${slug}`);
+      setGroup(res.data.data.group);
+      setMembers(res.data.data.group.members || []);
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
+  }, [setMembers, showToaster, slug]);
 
+  useEffect(() => {
     fetchGroup();
-  }, [setMembers, slug]);
+  }, [fetchGroup]);
 
   const data = {
     name: group?.name || "",
     description: group?.description || "",
     email: group?.email || "",
     aliases: group?.aliases || [],
+  };
+
+  const addMembersToGroup = async (users: { email: string; role: string }[]) => {
+    interface Res {
+      members: admin_directory_v1.Schema$Member[];
+    }
+    axios
+      .post<APIResponse<Res>>(`/api/v2/groups/${slug}/members`, { users })
+      .then((res) => {
+        showToaster(pluralize("members", res.data.data.members.length, true) + " added", "success");
+        fetchGroup();
+      })
+      .catch(() => showToaster("There was a problem with the request. Please try again", "danger"));
   };
 
   return (
@@ -187,7 +206,12 @@ export default function GroupData() {
               </div>
             )}
             <GroupDataSlider open={openEdit} setOpen={setOpenEdit} data={data} />
-            <GroupDataAdd open={openAdd} setOpen={setOpenAdd} groupName={group.name!} />
+            <GroupDataAdd
+              open={openAdd}
+              setOpen={setOpenAdd}
+              groupName={group.name!}
+              addMembersToGroup={addMembersToGroup}
+            />
           </div>
         </>
       ) : (

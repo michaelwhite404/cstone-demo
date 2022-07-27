@@ -83,7 +83,7 @@ export const addMembersToGroup = catchAsync(async (req, res, next) => {
   ) as PromiseFulfilledResult<GaxiosResponse<admin_directory_v1.Schema$Member>>[];
   const members = fulfilled.map((r) => r.value.data);
 
-  res.sendJson(201, { members });
+  res.sendJson(200, { members });
 });
 
 {
