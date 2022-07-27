@@ -1,4 +1,4 @@
-import { CheckIcon, PlusIcon } from "@heroicons/react/solid";
+import { CheckIcon, PlusIcon, XCircleIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import capitalize from "capitalize";
 import classNames from "classnames";
@@ -21,7 +21,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
     user?: admin_directory_v1.Schema$User;
     role: string;
   }>({ role: "MEMBER" });
-  const [futureMembers, setFutureMembers] = useState([]);
+  const [futureMembers, setFutureMembers] = useState<Required<typeof memberToAdd>[]>([]);
 
   useEffect(() => {
     const fetchGoogleUsers = async () => {
@@ -48,6 +48,17 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
   const close = () => {
     setOpen(false);
     setMemberToAdd({ role: "MEMBER" });
+    setFutureMembers([]);
+  };
+
+  const addMember = () => {
+    if (memberToAdd.user && memberToAdd.role) {
+      setGoogleUsers(
+        [...googleUsers].filter((user) => user.primaryEmail !== memberToAdd.user?.primaryEmail)
+      );
+      setFutureMembers([{ user: memberToAdd.user, role: memberToAdd.role }, ...futureMembers]);
+      setMemberToAdd({ role: "MEMBER" });
+    }
   };
 
   return (
@@ -61,6 +72,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto auto" }}>
             <div>
               <Combobox
+                value={memberToAdd.user}
                 options={googleUsers}
                 displayValue={displayValue}
                 filterFunction={(user, currentValue) =>
@@ -101,6 +113,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
                 type="button"
                 className="disabled:bg-gray-300 w-full inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
                 disabled={!memberToAdd.user}
+                onClick={addMember}
               >
                 <PlusIcon className="w-5 h-5" />
               </button>
@@ -111,7 +124,30 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           <div className="uppercase text-gray-400 text-xs font-medium mb-2">
             Members to Add ({futureMembers.length})
           </div>
-          <div className="h-32"></div>
+          <div className="h-32 overflow-scroll">
+            <div>
+              {futureMembers.map((m) => (
+                <div className="flex justify-between items-center py-2">
+                  <div>
+                    <div className="font-medium">{m.user.name?.fullName}</div>
+                    <div className="font-light text-gray-400 text-xs">{m.user.primaryEmail}</div>
+                  </div>
+                  <div className="flex items-center">
+                    <div>
+                      <div className="flex items-center rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                        {capitalize(m.role.toLowerCase())}
+                      </div>
+                    </div>
+                    <div className="mx-3 flex items-center">
+                      <button type="button" className="text-gray-500 hover:text-red-400">
+                        <XCircleIcon className="w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
@@ -119,7 +155,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           type="button"
           className="disabled:bg-gray-300 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
           onClick={close}
-          disabled
+          disabled={futureMembers.length === 0}
         >
           Add to Group
         </button>
