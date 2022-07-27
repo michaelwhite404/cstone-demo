@@ -45,8 +45,13 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
     setMemberToAdd({ ...memberToAdd, role: value });
   };
 
+  const close = () => {
+    setOpen(false);
+    setMemberToAdd({ role: "MEMBER" });
+  };
+
   return (
-    <Modal open={open} setOpen={setOpen} disableOverlayClick>
+    <Modal open={open} setOpen={setOpen} disableOverlayClick onClose={close}>
       <div className="font-medium text-xl mb-5">Add Members</div>
       <div>
         <div className="mb-5">
@@ -95,7 +100,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
               <button
                 type="button"
                 className="disabled:bg-gray-300 w-full inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-auto sm:text-sm"
-                disabled
+                disabled={!memberToAdd.user}
               >
                 <PlusIcon className="w-5 h-5" />
               </button>
@@ -103,7 +108,9 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           </div>
         </div>
         <div>
-          <div className="uppercase text-gray-400 text-xs font-medium mb-2">Members to Add</div>
+          <div className="uppercase text-gray-400 text-xs font-medium mb-2">
+            Members to Add ({futureMembers.length})
+          </div>
           <div className="h-32"></div>
         </div>
       </div>
@@ -111,7 +118,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
         <button
           type="button"
           className="disabled:bg-gray-300 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-          onClick={() => setOpen(false)}
+          onClick={close}
           disabled
         >
           Add to Group
@@ -119,7 +126,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
         <button
           type="button"
           className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-          onClick={() => setOpen(false)}
+          onClick={close}
         >
           Cancel
         </button>

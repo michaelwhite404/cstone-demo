@@ -7,6 +7,7 @@ interface ModalProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactNode;
   disableOverlayClick?: boolean;
+  onClose?: () => void;
 }
 
 export default function Modal(props: ModalProps) {
@@ -15,7 +16,7 @@ export default function Modal(props: ModalProps) {
       <Dialog
         as="div"
         className="relative z-10"
-        onClose={props.disableOverlayClick ? () => {} : props.setOpen}
+        onClose={props.disableOverlayClick ? () => {} : props.onClose?.() || (() => {})}
       >
         <Transition.Child
           as={Fragment}
@@ -45,7 +46,7 @@ export default function Modal(props: ModalProps) {
                   <button
                     type="button"
                     className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    onClick={() => props.setOpen(false)}
+                    onClick={() => props.onClose?.()}
                   >
                     <span className="sr-only">Close</span>
                     <XIcon className="h-6 w-6" aria-hidden="true" />
