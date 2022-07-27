@@ -7,4 +7,6 @@ groupRouter.route("/").get(groupController.getAllGroups).post(groupController.cr
 
 groupRouter.route("/:group").get(groupController.getGroup);
 
+groupRouter.route("/:group/members").post(groupController.addMembersToGroup);
+
 export default groupRouter;

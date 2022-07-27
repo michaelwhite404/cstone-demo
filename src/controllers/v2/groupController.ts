@@ -1,5 +1,6 @@
 import { models } from "@@types";
-import { admin, AppError, catchAsync } from "@utils";
+import { admin, AppError, catchAsync, isObject } from "@utils";
+import { GaxiosResponse } from "gaxios";
 import { admin_directory_v1 } from "googleapis";
 
 export const getAllGroups = catchAsync(async (_, res, _2) => {
@@ -57,3 +58,42 @@ export const createGroup = catchAsync(async (req, res) => {
 
   res.sendJson(201, { group });
 });
+
+export const addMembersToGroup = catchAsync(async (req, res, next) => {
+  if (!req.body.users || !Array.isArray(req.body.users)) {
+    return next(new AppError("The request body must have an array for the property `users`.", 400));
+  }
+  const validObjects = (req.body.users as any[]).filter(
+    (user) => isObject(user) && typeof user.email === "string" && typeof user.role == "string"
+  );
+  const requests = validObjects.map((user) =>
+    admin.members.insert({
+      groupKey: `${req.params.group}@cornerstone-schools.org`,
+      requestBody: {
+        email: user.email,
+        role: user.role,
+      },
+    })
+  );
+
+  const responses = await Promise.allSettled(requests);
+
+  const fulfilled = responses.filter(
+    (response) => response.status === "fulfilled"
+  ) as PromiseFulfilledResult<GaxiosResponse<admin_directory_v1.Schema$Member>>[];
+  const members = fulfilled.map((r) => r.value.data);
+
+  res.sendJson(201, { members });
+});
+
+{
+  /* 
+
+{
+  "users": [
+    { "email": "mwhite1@cornerstone-schools.org", role: "MEMBER"}
+  ]
+}
+
+*/
+}

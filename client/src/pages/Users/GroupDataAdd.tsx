@@ -61,6 +61,11 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
     }
   };
 
+  const handleDelete = (email: string) =>
+    setFutureMembers(futureMembers.filter((m) => m.user.primaryEmail !== email));
+
+  const addMembersToGroup = () => {};
+
   return (
     <Modal open={open} setOpen={setOpen} disableOverlayClick onClose={close}>
       <div className="font-medium text-xl mb-5">Add Members</div>
@@ -127,7 +132,7 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
           <div className="h-32 overflow-scroll">
             <div>
               {futureMembers.map((m) => (
-                <div className="flex justify-between items-center py-2">
+                <div className="flex justify-between items-center py-2" key={m.user.id}>
                   <div>
                     <div className="font-medium">{m.user.name?.fullName}</div>
                     <div className="font-light text-gray-400 text-xs">{m.user.primaryEmail}</div>
@@ -139,7 +144,11 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
                       </div>
                     </div>
                     <div className="mx-3 flex items-center">
-                      <button type="button" className="text-gray-500 hover:text-red-400">
+                      <button
+                        type="button"
+                        className="text-gray-500 hover:text-red-400"
+                        onClick={() => handleDelete(m.user.primaryEmail!)}
+                      >
                         <XCircleIcon className="w-5" />
                       </button>
                     </div>
