@@ -3,6 +3,8 @@ import { admin, AppError, catchAsync, isObject } from "@utils";
 import { GaxiosResponse } from "gaxios";
 import { admin_directory_v1 } from "googleapis";
 
+// const domainEnding = "@cornerstone-schools.org"
+
 export const getAllGroups = catchAsync(async (_, res, _2) => {
   res.sendJson(200, {
     groups:
@@ -86,9 +88,31 @@ export const addMembersToGroup = catchAsync(async (req, res, next) => {
   res.sendJson(200, { members });
 });
 
-export const updateGroup = catchAsync(async (req, res, next) => {
-  admin.groups.patch({
-    groupKey: `${req.params.group}@cornerstone-schools.org`,
-    requestBody: {},
-  });
+export const updateGroup = catchAsync(async (req, res) => {
+  const groupKey = `${req.params.group}@cornerstone-schools.org`;
+  const { name, description, email /* , aliases  */ } = req.body;
+  const requests = [
+    admin.groups.patch({
+      groupKey,
+      requestBody: { name, description, email },
+    }),
+  ];
+
+  // if (aliases) {
+  //   if (!Array.isArray(aliases)) {
+  //     return next(new AppError("The `aliases` property must be an array", 400));
+  //   }
+  //   if (!aliases.every((alias: any) => typeof alias === "string" && alias.endsWith(domainEnding))) {
+  //     return next(new AppError(`Each alias must end with \`${domainEnding}\``, 400));
+  //   }
+  //   requests.push(admin.groups.aliases.insert({
+  //     groupKey,
+  //     requestBody: {
+  //       // alias:
+  //     }
+  //   }))
+  // }
+
+  const [{ data: group }] = await Promise.all(requests);
+  res.sendJson(200, { group });
 });

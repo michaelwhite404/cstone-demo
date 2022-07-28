@@ -5,7 +5,7 @@ const groupRouter = Router();
 
 groupRouter.route("/").get(groupController.getAllGroups).post(groupController.createGroup);
 
-groupRouter.route("/:group").get(groupController.getGroup);
+groupRouter.route("/:group").get(groupController.getGroup).patch(groupController.updateGroup);
 
 groupRouter.route("/:group/members").post(groupController.addMembersToGroup);
 

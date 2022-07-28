@@ -70,9 +70,23 @@ export default function GroupData() {
         setMembers(
           [...members, ...membersWithName].sort((a, b) => a.email!.localeCompare(b.email!))
         );
-        showToaster(pluralize("members", returnedMembers.length, true) + " added", "success");
+        showToaster(
+          pluralize("members", returnedMembers.length, true) +
+            " added. It might take some time for changes to be reflected.",
+          "success"
+        );
       })
       .catch(() => showToaster("There was a problem with the request. Please try again", "danger"));
+  };
+
+  const updateGroup = async (data: { name: string; description: string; email: string }) => {
+    try {
+      const res = await axios.patch(`/api/v2/groups/${slug}`, data);
+      setGroup({ members, ...res.data.data.group });
+      showToaster("Group Updated!", "success");
+    } catch (err: any) {
+      showToaster(err.response.data.message, "danger");
+    }
   };
 
   return (
@@ -218,7 +232,12 @@ export default function GroupData() {
                 </div>
               </div>
             )}
-            <GroupDataSlider open={openEdit} setOpen={setOpenEdit} data={data} />
+            <GroupDataSlider
+              open={openEdit}
+              setOpen={setOpenEdit}
+              data={data}
+              updateGroup={updateGroup}
+            />
             <GroupDataAdd
               open={openAdd}
               setOpen={setOpenAdd}

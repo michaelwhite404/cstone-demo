@@ -13,9 +13,15 @@ interface GroupDataSliderProps {
     email: string;
     aliases: string[];
   };
+  updateGroup: (data: { name: string; description: string; email: string }) => Promise<void>;
 }
 
-export default function GroupDataSlider({ open, setOpen, data }: GroupDataSliderProps) {
+export default function GroupDataSlider({
+  open,
+  setOpen,
+  data,
+  updateGroup,
+}: GroupDataSliderProps) {
   const [group, setGroup] = useState(data);
   const [alias, setAlias] = useState("");
 
@@ -40,15 +46,21 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
     setGroup(copiedGroup);
   };
 
-  const handleClose = () => {
+  const close = () => {
     setOpen(false);
     setGroup(data);
     setAlias("");
   };
 
+  const handleSubmit = () =>
+    updateGroup(group).then(() => {
+      setOpen(false);
+      setAlias("");
+    });
+
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={handleClose}>
+      <Dialog as="div" className="relative z-10" onClose={close}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -87,7 +99,7 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
                             <button
                               type="button"
                               className="rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-                              onClick={handleClose}
+                              onClick={close}
                             >
                               <span className="sr-only">Close panel</span>
                               <XIcon className="h-6 w-6" aria-hidden="true" />
@@ -152,7 +164,9 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
                                 value={group.email.split("@")[0]}
                               />
                             </div>
-                            <div>
+                            {/* Aliases */}
+                            {/*
+                             <div>
                               <div className="space-y-1">
                                 <div className="flex flex-col">
                                   <div className="flex-grow">
@@ -212,6 +226,7 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
                                 </div>
                               )}
                             </div>
+                             */}
                           </div>
                         </div>
                       </div>
@@ -221,7 +236,7 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
                       <button
                         type="button"
                         className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        onClick={handleClose}
+                        onClick={close}
                       >
                         Cancel
                       </button>
@@ -229,6 +244,7 @@ export default function GroupDataSlider({ open, setOpen, data }: GroupDataSlider
                         type="submit"
                         className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300"
                         disabled={isEqual(data, group)}
+                        onClick={handleSubmit}
                       >
                         Save
                       </button>
