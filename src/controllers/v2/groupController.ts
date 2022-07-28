@@ -86,14 +86,9 @@ export const addMembersToGroup = catchAsync(async (req, res, next) => {
   res.sendJson(200, { members });
 });
 
-{
-  /* 
-
-{
-  "users": [
-    { "email": "mwhite1@cornerstone-schools.org", role: "MEMBER"}
-  ]
-}
-
-*/
-}
+export const updateGroup = catchAsync(async (req, res, next) => {
+  admin.groups.patch({
+    groupKey: `${req.params.group}@cornerstone-schools.org`,
+    requestBody: {},
+  });
+});

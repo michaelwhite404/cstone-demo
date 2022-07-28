@@ -3,7 +3,7 @@ import { MailIcon as MailIconOutline, PencilIcon, SearchIcon } from "@heroicons/
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { GroupModel } from "../../../../src/types/models";
+import { GroupMember, GroupModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import { Button, Divider } from "@mui/material";
 import { useChecker2, useToasterContext } from "../../hooks";
@@ -15,6 +15,7 @@ import GroupDataAdd from "./GroupDataAdd";
 import { APIError, APIResponse } from "../../types/apiResponses";
 import { admin_directory_v1 } from "googleapis";
 import pluralize from "pluralize";
+import capitalize from "capitalize";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
@@ -53,15 +54,23 @@ export default function GroupData() {
     aliases: group?.aliases || [],
   };
 
-  const addMembersToGroup = async (users: { email: string; role: string }[]) => {
+  const addMembersToGroup = async (users: { name: string; email: string; role: string }[]) => {
     interface Res {
       members: admin_directory_v1.Schema$Member[];
     }
     axios
       .post<APIResponse<Res>>(`/api/v2/groups/${slug}/members`, { users })
       .then((res) => {
-        showToaster(pluralize("members", res.data.data.members.length, true) + " added", "success");
-        fetchGroup();
+        const returnedMembers = res.data.data.members;
+        // fetchGroup();
+        const membersWithName: GroupMember[] = returnedMembers.map((member) => ({
+          ...member,
+          fullName: users.find((user) => user.email === member.email)!.name,
+        }));
+        setMembers(
+          [...members, ...membersWithName].sort((a, b) => a.email!.localeCompare(b.email!))
+        );
+        showToaster(pluralize("members", returnedMembers.length, true) + " added", "success");
       })
       .catch(() => showToaster("There was a problem with the request. Please try again", "danger"));
   };
@@ -144,7 +153,8 @@ export default function GroupData() {
                     </th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>User Type</th>
+                    <th>Role</th>
+                    <th>Type</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -182,7 +192,10 @@ export default function GroupData() {
                           {member.email}
                         </td>
                         <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                          {member.type}
+                          {capitalize(member.role?.toLowerCase() || "")}
+                        </td>
+                        <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                          {capitalize(member.type?.toLowerCase() || "")}
                         </td>
                       </tr>
                     );

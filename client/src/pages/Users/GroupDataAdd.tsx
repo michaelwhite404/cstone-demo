@@ -14,6 +14,7 @@ interface GroupDataAddProps {
   groupName: string;
   addMembersToGroup: (
     users: {
+      name: string;
       email: string;
       role: string;
     }[]
@@ -71,7 +72,11 @@ export default function GroupDataAdd(props: GroupDataAddProps) {
     setFutureMembers(futureMembers.filter((m) => m.user.primaryEmail !== email));
 
   const submit = () => {
-    const usersArg = futureMembers.map((fM) => ({ email: fM.user.primaryEmail!, role: fM.role }));
+    const usersArg = futureMembers.map((fM) => ({
+      name: fM.user.name!.fullName!,
+      email: fM.user.primaryEmail!,
+      role: fM.role,
+    }));
     addMembersToGroup(usersArg).then(close);
   };
 
