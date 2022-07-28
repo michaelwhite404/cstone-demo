@@ -1,13 +1,13 @@
 import { SearchIcon } from "@heroicons/react/outline";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import classNames from "classnames";
 import { admin_directory_v1 } from "googleapis";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TableWrapper from "../../components/TableWrapper";
-import { APIResponse } from "../../types/apiResponses";
-// import GroupsTable from "./GroupsTable";
+import { APIError, APIResponse } from "../../types/apiResponses";
+import CreateGroup from "./CreateGroup";
 
 export default function Groups() {
   const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
@@ -15,6 +15,7 @@ export default function Groups() {
   const checkbox = useRef<HTMLInputElement | null>(null);
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     axios
@@ -45,6 +46,19 @@ export default function Groups() {
     setIndeterminate(false);
   }
 
+  const createGroup = async (data: { name: string; email: string; description: string }) => {
+    try {
+      const res = await axios.post<APIResponse<{ group: admin_directory_v1.Schema$Group }>>(
+        "/api/v2/groups",
+        data
+      );
+      const { group } = res.data.data;
+      setGroups([...groups, group].sort((a, b) => a.name!.localeCompare(b.name!)));
+    } catch (err) {
+      throw new Error((err as AxiosError<APIError>).response!.data.message);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between align-center">
@@ -60,7 +74,7 @@ export default function Groups() {
           />
         </div>
         <div className="flex space-x-4">
-          <PrimaryButton text="+ Create Group" />
+          <PrimaryButton text="+ Create Group" onClick={() => setModalOpen(true)} />
         </div>
       </div>
       <TableWrapper>
@@ -122,6 +136,7 @@ export default function Groups() {
           </tbody>
         </table>
       </TableWrapper>
+      <CreateGroup open={modalOpen} setOpen={setModalOpen} createGroup={createGroup} />
     </div>
   );
 }

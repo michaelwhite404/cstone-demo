@@ -15,8 +15,9 @@ export function WeekLine() {
       style={{ gridTemplateRows: "1.75rem repeat(1440, minmax(0, 1fr)) auto" }}
     >
       <div
-        className={`relative mt-px flex sm:col-start-${dayOfWeek} bg-red-500 align-center z-10`}
-        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2" }}
+        // sm:col-start-${dayOfWeek}
+        className={`relative mt-px flex bg-red-500 align-center z-10`}
+        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2", gridColumnStart: dayOfWeek }}
       >
         <div className="relative left-2">
           <div
