@@ -1,12 +1,15 @@
 import { FilterIcon, SearchIcon } from "@heroicons/react/outline";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { EmployeeModel } from "../../../../src/types/models";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import { useDocTitle } from "../../hooks";
+import AddUser from "./AddUser";
 import UsersTable from "./UsersTable";
 
 export default function Users() {
   useDocTitle("Users | Cornerstone App");
+  const [modalOpen, setModalOpen] = useState(false);
   const { users } = useOutletContext<{ users: EmployeeModel[] }>();
 
   return (
@@ -31,10 +34,11 @@ export default function Users() {
               0
             </div>
           </button>
-          <PrimaryButton text="+ Add User" />
+          <PrimaryButton text="+ Add User" onClick={() => setModalOpen(true)} />
         </div>
       </div>
       <UsersTable users={users} />
+      <AddUser open={modalOpen} setOpen={setModalOpen} />
     </div>
   );
 }
