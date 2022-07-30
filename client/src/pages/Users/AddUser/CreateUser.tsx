@@ -16,6 +16,9 @@ interface CreateUserProps {
   createUser: (data: CreateUserArgs) => Promise<EmployeeModel>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setCreatedUser: React.Dispatch<React.SetStateAction<EmployeeModel | undefined>>;
+  user: UserToCreate;
+  setUser: React.Dispatch<React.SetStateAction<UserToCreate>>;
+  close: () => void;
 }
 type ValueOf<T> = T[keyof T];
 
@@ -32,39 +35,19 @@ const settings = [
   },
 ];
 
-const initialUser = {
-  firstName: "",
-  lastName: "",
-  email: "@cornerstone-schools.org",
-  title: "",
-  homeroomGrade: "" as string | number,
-  role: "",
-  timesheetEnabled: false,
-  password: "",
-  changePasswordAtNextLogin: true,
-};
-
-const u = {
-  timesheetEnabled: true,
-  _id: "5f46c201ed966900171f2afd",
-  firstName: "Michael",
-  lastName: "White",
-  title: "Technology Specialist",
-  email: "mwhite1@cornerstone-schools.org",
-  role: "Super Admin",
-  fullName: "Michael White",
-  slug: "michael-white",
-  lastLogin: "2022-07-21T23:50:38.097Z",
-  passwordChangedAt: "2020-08-26T20:59:15.538Z",
-  googleId: "103305635693235521950",
-  image: "https://lh3.googleusercontent.com/a/AItbvmk8fT0nIKiRHaRLuRz4rvS20eBWAXkgScNDCnWC=s96-c",
-  homeroomGrade: 7,
-  active: true,
-  createdAt: "",
-};
+interface UserToCreate {
+  firstName: string;
+  lastName: string;
+  email: string;
+  title: string;
+  homeroomGrade: string | number;
+  role: string;
+  timesheetEnabled: boolean;
+  password: string;
+  changePasswordAtNextLogin: boolean;
+}
 
 export default function CreateUser(props: CreateUserProps) {
-  const [user, setUser] = useState(initialUser);
   const [formErrors, setFormErrors] = useState({
     firstName: { valid: true, message: "" },
     lastName: { valid: true, message: "" },
@@ -73,6 +56,7 @@ export default function CreateUser(props: CreateUserProps) {
   });
   const [selected, setSelected] = useState(settings[0].value);
   const { showToaster } = useToasterContext();
+  const { close, user, setUser } = props;
 
   const createRandomPassword = () => Math.random().toString(36).substring(2, 10);
 
@@ -83,7 +67,7 @@ export default function CreateUser(props: CreateUserProps) {
 
     try {
       // @ts-ignore
-      props.setCreatedUser({ ...u, password: createUserArgs.password });
+      props.setCreatedUser({ ...user, password: createUserArgs.password });
       props.setStep((step) => step + 1);
     } catch (err) {
       showToaster((err as any).response.data.message, "danger");
@@ -120,13 +104,6 @@ export default function CreateUser(props: CreateUserProps) {
       default:
         break;
     }
-  };
-
-  const reset = () => setUser(initialUser);
-
-  const close = () => {
-    props.setOpen(false);
-    reset();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
