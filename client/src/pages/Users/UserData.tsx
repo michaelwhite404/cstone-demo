@@ -19,12 +19,15 @@ export default function UserData() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const locationState = location.state as any;
+
   useEffect(() => {
     const getUser = async () => {
       const res = await axios.get(`/api/v2/users/${slug}`, { params: { projection: "FULL" } });
       setUser(res.data.data.user);
       setUserEdit(res.data.data.user);
     };
+
     const getDepartments = async () => {
       const res = await axios.get("/api/v2/departments");
       setDepartments(res.data.data.departments);
@@ -34,8 +37,7 @@ export default function UserData() {
     getDepartments();
   }, [slug]);
 
-  const goToUsersPage = () =>
-    (location.state as any).fromUsersPage ? navigate(-1) : navigate("/users");
+  const goToUsersPage = () => (locationState.fromUsersPage ? navigate(-1) : navigate("/users"));
 
   let image = user?.image || "../avatar_placeholder.png";
   if (image && image.endsWith("=s96-c")) {

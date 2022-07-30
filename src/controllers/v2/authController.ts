@@ -18,7 +18,7 @@ export const createEmployee = catchAsync(
       return next(new AppError("You are not authorized to create a user with that role", 403));
     }
 
-    const newEmployee = await Employee.create({
+    const user = await Employee.create({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       title: req.body.title,
@@ -33,12 +33,12 @@ export const createEmployee = catchAsync(
 
     // Remove password from output
     // @ts-ignore
-    newEmployee.password = undefined;
+    user.password = undefined;
 
     res.status(200).json({
       status: "success",
       data: {
-        newEmployee,
+        user,
       },
     });
   }
