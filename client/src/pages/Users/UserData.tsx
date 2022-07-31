@@ -51,24 +51,26 @@ export default function UserData() {
 
   return (
     <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
-      <div className="my-4 hover:underline cursor-pointer" onClick={goToUsersPage}>
+      <div className="my-4 hover:underline cursor-pointer max-w-fit" onClick={goToUsersPage}>
         <BackButton />
         Back to users
       </div>
       <div className="flex px-5">
         <img
-          className="rounded-full w-36 h-36 border-blue-400 border-solid border-4 p-1.5"
+          className="rounded-full md:w-36 md:h-36 w-28 h-28 border-blue-400 border-solid border-4 p-1 md:p-1.5"
           src={image}
           onError={(e) => (e.currentTarget.src = "../avatar_placeholder.png")}
           alt={user?.fullName}
         />
         <div className="ml-4 pt-4">
-          <span className="block font-black mb-2.5 text-4xl">{user?.fullName}</span>
-          <span className="text-lg font-light text-gray-500">{user?.title}</span>
+          <span className="block font-black mb-1 md:mb-2.5 text-2xl md:text-4xl">
+            {user?.fullName}
+          </span>
+          <span className="md:text-lg text-md font-light text-gray-500">{user?.title}</span>
         </div>
       </div>
       <Divider className="py-3" />
-      <div className="mt-5 px-5 grid grid-cols-2 gap-6">
+      <div className="mt-5 px-5 grid md:grid-cols-2 grid-cols-1 gap-6">
         <div>
           <LabeledInput2
             name="firstName"
@@ -85,7 +87,7 @@ export default function UserData() {
             onChange={handleChange}
           />
         </div>
-        <div className="col-span-2 w-3/5">
+        <div className="md:col-span-2 md:w-3/5">
           <LabeledInput2
             name="title"
             label="Title"
@@ -93,7 +95,7 @@ export default function UserData() {
             onChange={handleChange}
           />
         </div>
-        <div className="col-span-2 w-3/5">
+        <div className="md:col-span-2 md:w-3/5">
           <div>
             <label htmlFor="role" className="block text-sm font-medium text-gray-700">
               Role
@@ -113,7 +115,7 @@ export default function UserData() {
             </select>
           </div>
         </div>
-        <div className="col-span-2 w-3/5">
+        <div className="md:col-span-2 md:w-3/5">
           <AddOnInput
             addOnSide="right"
             name="email"
@@ -123,7 +125,7 @@ export default function UserData() {
             onChange={handleChange}
           />
         </div>
-        <div className="col-span-2 w-3/5">
+        <div className="md:col-span-2 md:w-3/5">
           <LabeledInput2
             className="bg-gray-200"
             name="slug"
@@ -133,7 +135,7 @@ export default function UserData() {
             readOnly
           />
         </div>
-        <div className="col-span-2 w-44">
+        <div className="md:col-span-2 md:w-44">
           <label htmlFor="homeroomGrade" className="block text-sm font-medium text-gray-700">
             Homeroom Grade
           </label>
@@ -176,11 +178,15 @@ export default function UserData() {
         <Divider />
       </div>
       <div className="mx-5">
-        <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-6">
+        <div className="flex flex-col md:flex-row">
+          <div className="flex-1">
             <DepartmentList user={user} departments={departments} />
           </div>
-          <div className="col-span-6">
+          <div className="px-5 py-5 md:py-0">
+            <Divider className="hidden md:block" orientation="vertical" />
+            <Divider className="md:hidden" orientation="horizontal" />
+          </div>
+          <div className="flex-1">
             <GroupList userGroups={userEdit?.groups || []} />
           </div>
         </div>
