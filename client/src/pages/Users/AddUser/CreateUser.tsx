@@ -67,12 +67,12 @@ export default function CreateUser(props: CreateUserProps) {
 
     try {
       // @ts-ignore
-      props.setCreatedUser({ ...user, password: createUserArgs.password });
+      const newUser = await props.createUser(createUserArgs);
+      props.setCreatedUser({ ...newUser, password: createUserArgs.password });
       props.setStep((step) => step + 1);
     } catch (err) {
       showToaster((err as any).response.data.message, "danger");
     }
-    // const newUser = await props.createUser(createUserArgs);
   };
 
   const handleErrorChange = (key: keyof typeof formErrors, value: ValueOf<typeof formErrors>) =>
