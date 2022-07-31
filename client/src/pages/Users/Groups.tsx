@@ -61,20 +61,24 @@ export default function Groups() {
 
   return (
     <div>
-      <div className="flex justify-between align-center">
-        <div className="relative">
+      <div className="sm:flex justify-between align-center">
+        <div className="relative mb-2 sm:mb-0">
           <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <SearchIcon className="w-4" />
           </div>
           <input
             type="search"
             id="search"
-            className="block p-2 pl-10 w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            className="block p-2 pl-10 w-full sm:w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Search"
           />
         </div>
         <div className="flex space-x-4">
-          <PrimaryButton text="+ Create Group" onClick={() => setModalOpen(true)} />
+          <PrimaryButton
+            className="w-full sm:w-auto"
+            text="+ Create Group"
+            onClick={() => setModalOpen(true)}
+          />
         </div>
       </div>
       <TableWrapper>
@@ -91,7 +95,9 @@ export default function Groups() {
                 />
               </th>
               <th scope="col">Group Name</th>
-              <th scope="col">Email Address</th>
+              <th scope="col" className="md:table-cell hidden">
+                Email Address
+              </th>
               <th scope="col">Members</th>
             </tr>
           </thead>
@@ -125,8 +131,11 @@ export default function Groups() {
                     <Link to={`/users/groups/${group.email!.split("@")[0]}`}>
                       <span className="text-blue-500 font-medium">{group.name}</span>
                     </Link>
+                    <div className="md:hidden text-gray-400">{group.email}</div>
                   </td>
-                  <td className="py-2.5 border-b border-gray-300 text-gray-400">{group.email}</td>
+                  <td className="py-2.5 hidden md:table-cell border-b border-gray-300 text-gray-400">
+                    {group.email}
+                  </td>
                   <td className="py-2.5 border-b border-gray-300 text-gray-400">
                     {group.directMembersCount}
                   </td>
