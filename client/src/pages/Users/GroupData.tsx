@@ -97,7 +97,7 @@ export default function GroupData() {
       </div>
       {group ? (
         <>
-          <div className="flex justify-between">
+          <div className="flex sm:justify-between flex-col sm:flex-row">
             <div className="flex-1">
               <div className="mb-5">
                 <h1 className="mb-1">{group?.name}</h1>
@@ -122,7 +122,7 @@ export default function GroupData() {
                 ))}
               </div>
             </div>
-            <div className="mt-3 w-64 flex align-start justify-end">
+            <div className="mt-3 sm:w-60 flex align-start justify-end">
               <button
                 className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 onClick={() => setOpenEdit(true)}
@@ -136,24 +136,28 @@ export default function GroupData() {
             <Divider />
           </div>
           <div>
-            <div className="flex justify-between align-center">
-              <div className="relative">
+            <div className="sm:flex justify-between align-center">
+              <div className="relative mb-2 sm:mb-0">
                 <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                   <SearchIcon className="w-4" />
                 </div>
                 <input
                   type="search"
                   id="search"
-                  className="block p-2 pl-10 w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  className="block p-2 pl-10 w-full sm:w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Search"
                 />
               </div>
               <div className="flex space-x-4">
-                <PrimaryButton text="+ Add Members" onClick={() => setOpenAdd(true)} />
+                <PrimaryButton
+                  className="w-full sm:w-auto"
+                  text="+ Add Members"
+                  onClick={() => setOpenAdd(true)}
+                />
               </div>
             </div>
             <TableWrapper>
-              <table>
+              <table className="table-auto">
                 <thead>
                   <tr>
                     <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8 border-b">
@@ -166,9 +170,9 @@ export default function GroupData() {
                       />
                     </th>
                     <th>Name</th>
-                    <th>Email</th>
+                    <th className="hidden md:table-cell">Email</th>
                     <th>Role</th>
-                    <th>Type</th>
+                    <th className="hidden sm:table-cell">Type</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -198,17 +202,24 @@ export default function GroupData() {
                           />
                         </td>
                         <td className="py-2.5 border-b border-gray-300">
-                          <Link to={``}>
-                            <span className="text-blue-500 font-medium">{member.fullName}</span>
-                          </Link>
+                          <div>
+                            <Link to={``}>
+                              <span className="text-blue-500 font-medium">{member.fullName}</span>
+                            </Link>
+                            <div className="text-gray-400 text-xs md:hidden">{member.email}</div>
+                            <div className="sm:hidden text-gray-400 mt-1 text-xs">
+                              <span className="capitalize font-medium">TYPE: </span>
+                              {capitalize(member.type?.toLowerCase() || "")}
+                            </div>
+                          </div>
                         </td>
-                        <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                        <td className="py-2.5 border-b border-gray-300 text-gray-400 hidden md:table-cell">
                           {member.email}
                         </td>
-                        <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                        <td className="py-2.5 border-b border-gray-300 text-gray-400 md:w-1/6 w-1/6 pr-4">
                           {capitalize(member.role?.toLowerCase() || "")}
                         </td>
-                        <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                        <td className="py-2.5 border-b border-gray-300 text-gray-400 md:w-1/12 w-1/6 hidden sm:table-cell pr-4">
                           {capitalize(member.type?.toLowerCase() || "")}
                         </td>
                       </tr>
