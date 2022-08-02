@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
@@ -94,5 +94,17 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   // GRANT ACCESS TO PROTECTED ROUTE
   next();
 });
+
+export const gChatProtect: RequestHandler = (req, _, next) => {
+  const key = process.env.G_CHAT_KEY;
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (token !== key) {
+    next(new AppError("Only Google Chat can add spaces property to users", 401));
+  }
+  next();
+};
 
 export const restrictTo = v1restrictTo;

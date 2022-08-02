@@ -68,7 +68,7 @@ const getUserGroups = async (email: string): Promise<models.UserGroup[] | undefi
 
 /** `GET` - Gets all users from Google
  */
-export const getGoogleUsers: RequestHandler = catchAsync(async (req, res, next) => {
+export const getGoogleUsers: RequestHandler = catchAsync(async (req, res) => {
   let query = "";
   if (req.query.active === "true") query = query.concat("isSuspended=false");
   const result = await admin.users.list({
@@ -77,4 +77,12 @@ export const getGoogleUsers: RequestHandler = catchAsync(async (req, res, next) 
     query,
   });
   res.sendJson(200, { users: result.data.users });
+});
+
+export const addToSpace = catchAsync(async (req, res, next) => {
+  const employee = await Employee.findOne({ email: req.body.email });
+  if (!employee) return next(new AppError("User not found", 404));
+  employee.space = req.body.space;
+  employee.save();
+  res.status(201).send({ status: "success", message: "User added to space" });
 });

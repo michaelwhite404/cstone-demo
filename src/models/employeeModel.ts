@@ -83,6 +83,11 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
       type: Boolean,
       default: false,
     },
+    space: {
+      type: String,
+      required: false,
+      select: false,
+    },
   },
   {
     toJSON: { virtuals: true },

@@ -9,8 +9,10 @@ employeeRouter.post("/logout", v1auth.logout);
 employeeRouter.post("/google", v2auth.googleLogin);
 // employeeRouter.post("/forgot-password", v1auth.forgotPassword); // TODO: Re-do method
 // router.patch("/reset-password/:token", v1auth.resetPassword);  // TODO: Re-do method
+employeeRouter.patch("/spaces", v2auth.gChatProtect, employeeController.addToSpace);
 
 employeeRouter.use(v2auth.protect);
+
 employeeRouter.patch("/update-password", v1auth.updatePassword);
 
 employeeRouter.route("/").get(employeeController.getAllEmployees).post(v2auth.createEmployee);

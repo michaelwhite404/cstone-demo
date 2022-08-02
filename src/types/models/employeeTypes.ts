@@ -32,6 +32,7 @@ export interface EmployeeModel {
   employeeOf?: DepartmentModel[];
   leaderOf?: DepartmentModel[];
   approverOf?: DepartmentModel[];
+  space: string;
 }
 
 type EmployeeRole =
