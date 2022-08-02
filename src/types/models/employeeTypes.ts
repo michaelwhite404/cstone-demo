@@ -23,16 +23,12 @@ export interface EmployeeModel {
   active: boolean;
   slug: string;
   timesheetEnabled: boolean;
-  departments?: {
-    _id: DepartmentModel["_id"];
-    name: string;
-    role: "LEADER" | "EMPLOYEE";
-  }[];
+  departments?: UserDepartment[];
   groups?: UserGroup[];
   employeeOf?: DepartmentModel[];
   leaderOf?: DepartmentModel[];
   approverOf?: DepartmentModel[];
-  space: string;
+  space?: string;
 }
 
 type EmployeeRole =
@@ -50,6 +46,12 @@ export interface UserGroup {
   role: string;
   status: string;
   type: string;
+}
+
+interface UserDepartment {
+  _id: DepartmentModel["_id"];
+  name: string;
+  role: "LEADER" | "EMPLOYEE";
 }
 
 export interface EmployeeDocument extends EmployeeModel, Document {

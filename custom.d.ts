@@ -14,6 +14,7 @@ interface Employee {
     _id: ObjectId;
     name: string;
   }[];
+  space?: string;
 }
 declare namespace Express {
   import { ObjectId } from "mongoose";

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import pluralize from "pluralize";
-import { TimesheetEntry } from "@models";
-import { AppError, APIFeatures, catchAsync, distinctArrays, chat } from "@utils";
+import { Employee, TimesheetEntry } from "@models";
+import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
 const Model = TimesheetEntry;
@@ -78,16 +78,18 @@ export const getOneTimesheetEntry = catchAsync(
  */
 export const createTimeSheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.employee.timesheetEnabled)
+    const employee = await Employee.populate(req.employee, { path: "departments" });
+
+    if (!employee.timesheetEnabled)
       return next(new AppError("You are not authorized to create timesheet entries", 403));
 
-    const { employeeOf } = req.employee!;
-    if (employeeOf) {
-      const dept = employeeOf.find((dept) => dept._id.toString() === req.body.department);
-      if (!dept) {
-        next(new AppError("You are not a member of this department", 403));
-      }
-    }
+    // const d
+    const { departments } = employee;
+
+    const foundDepartment = departments?.find(
+      (d) => d._id.toString() === req.body.department && d.role === "EMPLOYEE"
+    );
+    if (!foundDepartment) return next(new AppError("You are not a member of this department", 403));
 
     const timesheetEntry = await Model.create({
       employeeId: req.employee._id,
@@ -104,12 +106,25 @@ export const createTimeSheetEntry = catchAsync(
         timesheetEntry,
       },
     });
-    await chat.spaces.messages.create({
-      parent: "spaces/xDMtAEAAAAE",
-      requestBody: {
-        text: JSON.stringify(timesheetEntry.toJSON()),
-      },
-    });
+
+    //  Submission test
+    //     if (employee.space) {
+    //       const format = (date: Date) => moment(date).format("h:mm A");
+    //       await chat.spaces.messages.create({
+    //         parent: employee.space,
+    //         requestBody: {
+    //           text: `Timesheet submitted!
+
+    // Date: ${new Date(timesheetEntry.timeStart).toLocaleDateString()}
+
+    // Description: ${timesheetEntry.description}
+    // Time Start: ${format(new Date(timesheetEntry.timeStart))}
+    // Time End: ${format(new Date(timesheetEntry.timeEnd))}
+    // Department: ${foundDepartment.name}
+    //   `,
+    //         },
+    //       });
+    //     }
   }
 );
 

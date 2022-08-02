@@ -86,7 +86,7 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
     space: {
       type: String,
       required: false,
-      select: false,
+      // select: false,
     },
   },
   {
