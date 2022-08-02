@@ -11,4 +11,5 @@ export * from "./studentTypes";
 export * from "./textbookLogTypes";
 export * from "./textbookSetTypes";
 export * from "./textbookTypes";
+export * from "./ticketTypes";
 export * from "./timesheetEntryTypes";
