@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import pluralize from "pluralize";
 import { TimesheetEntry } from "@models";
-import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
+import { AppError, APIFeatures, catchAsync, distinctArrays, chat } from "@utils";
 import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
 const Model = TimesheetEntry;
@@ -102,6 +102,12 @@ export const createTimeSheetEntry = catchAsync(
       requestedAt: req.requestTime,
       data: {
         timesheetEntry,
+      },
+    });
+    await chat.spaces.messages.create({
+      parent: "spaces/xDMtAEAAAAE",
+      requestBody: {
+        text: JSON.stringify(timesheetEntry.toJSON()),
       },
     });
   }

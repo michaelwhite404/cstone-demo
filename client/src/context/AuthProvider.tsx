@@ -32,7 +32,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     async function fetchMe() {
       axios
-        .get("/api/v2/users/me")
+        .get("/api/v2/users/me", { params: { projection: "FULL" } })
         .then((res) => {
           setUser(res.data.data.user);
           setIsAuthenticated(true);
@@ -71,7 +71,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setUser(res.data.data.employee);
       handleAuthSuccess();
       return res.data.data.employee as EmployeeModel;
-    } catch (err) {
+    } catch (err: any) {
       throw Error(err.response.data.message as string);
     }
   };
@@ -85,7 +85,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setUser(res.data.data.employee);
       handleAuthSuccess();
       return res.data.data.employee as EmployeeModel;
-    } catch (err) {
+    } catch (err: any) {
       throw Error(err.response.data.message as string);
     }
   };

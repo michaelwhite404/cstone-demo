@@ -1,6 +1,7 @@
 export { default as APIFeatures } from "./apiFeatures";
 export { default as AppError } from "./appError";
 export { default as admin } from "./admin";
+export * from "./admin";
 export { default as camelCaseToText } from "./camelCaseToText";
 export { default as camelize } from "./camelize";
 export { default as catchAsync } from "./catchAsync";

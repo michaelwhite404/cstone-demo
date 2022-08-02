@@ -218,7 +218,11 @@ const Event = ({
   });
 
   return (
-    <li className={className} style={{ gridRowStart, gridRowEnd }} onClick={onClick}>
+    <li
+      className={className}
+      style={{ gridRowStart, gridRowEnd, gridColumnStart: dayOfWeek }}
+      onClick={onClick}
+    >
       <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
         <p className="order-1 font-semibold text-blue-700">{event.description}</p>
         <p className="text-blue-500 group-hover:text-blue-700">

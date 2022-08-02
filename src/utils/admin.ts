@@ -27,3 +27,12 @@ export default google.admin({
   version: "directory_v1",
   auth: googleAuthJWT(scopes, process.env.GOOGLE_ADMIN_EMAIL),
 });
+
+export const chat = google.chat({
+  version: "v1",
+  auth: new google.auth.JWT({
+    email: process.env.GOOGLE_CHAT_SERVICE_ACCOUNT_CLIENT_EMAIL,
+    key: process.env.GOOGLE_CHAT_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    scopes: ["https://www.googleapis.com/auth/chat.bot"],
+  }),
+});

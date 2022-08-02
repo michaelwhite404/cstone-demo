@@ -72,7 +72,12 @@ export default function AddEntry(props: AddEntryProps) {
               indicatorSeparator: () => {}, // removes the "stick"
             }}
             options={
-              props.user?.employeeOf?.map((dept) => ({ label: dept.name, value: dept._id })) || []
+              props.user?.departments
+                ?.filter((d) => d.role === "EMPLOYEE")
+                .map((dept) => ({
+                  label: dept.name,
+                  value: dept._id,
+                })) || []
             }
             value={getDept()}
             onChange={(newValue) => handleSelectChange(newValue, "department")}
