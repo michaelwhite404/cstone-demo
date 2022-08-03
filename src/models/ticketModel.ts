@@ -1,7 +1,13 @@
 import { TicketDocument } from "@@types/models";
-import { Model, model, Schema, Types } from "mongoose";
+import { Model, model, ObjectId, Schema, Types } from "mongoose";
+import FKHelper from "@models/helpers/foreignKeyHelper";
+import { Department } from "@models";
 
-const statusEnum = ["COMPLETE"];
+const statusEnum = ["COMPLETE", "NOT_STARTED"];
+
+const validDepartmentValidation = {
+  validator: async (id: ObjectId) => FKHelper(Department, id),
+};
 
 const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema({
   title: {
@@ -17,9 +23,10 @@ const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema({
   },
   department: {
     type: Types.ObjectId,
-    ref: "Employee",
+    ref: "Department",
     maxlength: 500,
     required: [true, "Each ticket must be associated with a department"],
+    validate: [validDepartmentValidation],
   },
   status: {
     type: String,

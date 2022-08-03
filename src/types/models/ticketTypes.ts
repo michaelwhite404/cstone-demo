@@ -17,7 +17,7 @@ export interface TicketDocument extends TicketModel, Document {
   _id: Types.ObjectId;
 }
 
-type TicketStatus = "COMPLETE";
+type TicketStatus = "COMPLETE" | "NOT_STARTED";
 type TicketPriority = "URGENT" | "HIGH" | "MEDIUM" | "LOW";
 interface TicketUpdate {
   description: string;
