@@ -3,7 +3,7 @@ import { Model, model, ObjectId, Schema, Types } from "mongoose";
 import FKHelper from "@models/helpers/foreignKeyHelper";
 import { Department } from "@models";
 
-const statusEnum = ["COMPLETE", "NOT_STARTED"];
+const statusEnum = ["OPEN", "CLOSED"];
 
 const validDepartmentValidation = {
   validator: async (id: ObjectId) => FKHelper(Department, id),

@@ -6,7 +6,7 @@ const ticketRouter = Router();
 
 ticketRouter.use(protect);
 ticketRouter.route("/").get(ticketController.getAllTickets).post(ticketController.createTicket);
-
-ticketRouter.route("/:id").get(ticketController.getTicket).patch(ticketController.addTicketUpdate);
+ticketRouter.route("/:id").get(ticketController.getTicket);
+ticketRouter.post("/:id/update", ticketController.addTicketUpdate);
 
 export default ticketRouter;

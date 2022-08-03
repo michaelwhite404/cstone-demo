@@ -9,6 +9,7 @@ export { default as Room } from "./roomModel";
 export { default as ShortUrl } from "./shortUrlModel";
 export { default as Student } from "./studentModel";
 export { default as Ticket } from "./ticketModel";
+export * from "./ticketUpdateModel";
 export { default as TextbookLog } from "./textbookLogModel";
 export { default as Textbook } from "./textbookModel";
 export { default as TextbookSet } from "./textbookSetModel";
