@@ -9,6 +9,7 @@ export interface TicketModel {
   updates: TicketUpdate[];
   priority: TicketPriority;
   submittedBy: PopulatedDoc<EmployeeModel>;
+  assignedTo: PopulatedDoc<EmployeeModel[]>;
   createdAt: Date;
   updatedAt: Date;
 }

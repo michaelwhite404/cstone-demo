@@ -44,6 +44,12 @@ const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema({
     required: [true, "Each ticket must be associated with a department"],
     immutable: true,
   },
+  assignedTo: [
+    {
+      type: Types.ObjectId,
+      ref: "Employee",
+    },
+  ],
   createdAt: {
     type: Date,
     default: () => Date.now(),

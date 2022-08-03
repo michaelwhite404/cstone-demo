@@ -28,19 +28,26 @@ export const getTicket = catchAsync(async (req, res, next) => {
   res.sendJson(200, { ticket });
 });
 
-export const createTicket = catchAsync(async (req, res) => {
+export const createTicket = catchAsync(async (req, res, next) => {
+  const dept = await Department.findById(req.body.department);
+  if (!dept) return next(new AppError("There is no department with the given department id", 404));
+  const assignedTo = dept.members.filter((m) => m.role === "LEADER").map((m) => m.userId);
+  const { title, description, department, priority } = req.body;
+
   const response = await Ticket.create({
-    title: req.body.title,
-    description: req.body.description,
-    department: req.body.department,
-    status: "NOT_STARTED",
-    priority: req.body.priority,
+    title,
+    description,
+    department,
+    priority,
+    assignedTo,
     submittedBy: req.employee._id,
+    status: "NOT_STARTED",
     createdAt: new Date(req.requestTime),
     updatedAt: new Date(req.requestTime),
   });
+
   const ticket = await Ticket.populate(response, {
-    path: "department submittedBy",
+    path: "department submittedBy assignedTo",
     select: "name email fullName",
   });
   res.sendJson(201, { ticket });
