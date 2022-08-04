@@ -9,8 +9,8 @@ const ticketQuery = (employee: any) =>
     // @ts-ignore
   }).populate({
     path: "department submittedBy assignedTo updates",
-    select: "name email fullName comment assign op",
-    populate: { path: "assign", select: "fullName email" },
+    select: "name email fullName comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email" },
   });
 
 export const getAllTickets = catchAsync(async (req, res) => {
@@ -72,8 +72,9 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore
   }).populate({
-    path: "department submittedBy assignedTo",
-    select: "name email fullName members",
+    path: "department submittedBy assignedTo updates",
+    select: "name email fullName memebers comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email" },
   });
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
   if (ticket.submittedBy._id.toString() === req.employee._id.toString()) {
@@ -87,7 +88,17 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
   let newTicket;
   switch (req.body.type) {
     case "COMMENT":
-      await TicketComment.create({ ...data, comment: req.body.comment });
+      const ticketComment = await (
+        await TicketComment.create({ ...data, comment: req.body.comment })
+      ).toJSON();
+      ticketComment.createdBy = {
+        _id: req.employee._id,
+        fullName: req.employee.fullName,
+        email: req.employee.email,
+        id: req.employee._id,
+      };
+      ticket.updates.push(ticketComment);
+      newTicket = ticket;
       break;
     case "ASSIGN":
       // Make sure valid employee
@@ -136,15 +147,19 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       const req1 = await ticket.save();
       const req2 = TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
       [newTicket] = await Promise.all([req1, req2]);
-      // const newAssigned = assignedIds.filter(ids => ids !== emp._id)
-      // ticket.assignedTo = newAssigned
       break;
 
     case "TAG":
+      return next(new AppError("Not implemented", 400));
       await TicketTag.create({ ...data, tag: req.body.tag });
       break;
     default:
-      return next(new AppError("", 400));
+      return next(
+        new AppError(
+          'The property `type` must be one of the following values: "COMMENT", "ASSIGN", "TAG"',
+          400
+        )
+      );
   }
 
   res.sendJson(200, { ticket: newTicket });

@@ -1,4 +1,5 @@
-import { model, Schema, Types } from "mongoose";
+import { TicketCommentDocument } from "@@types/models";
+import { Model, model, Schema, Types } from "mongoose";
 
 const ticketSchema /*:  Schema<TicketDocument, Model<TicketDocument>> */ = new Schema({
   // type: {
@@ -25,7 +26,7 @@ const ticketSchema /*:  Schema<TicketDocument, Model<TicketDocument>> */ = new S
 
 const TicketUpdate = model("TicketUpdate", ticketSchema);
 
-export const TicketComment = TicketUpdate.discriminator(
+export const TicketComment: Model<TicketCommentDocument> = TicketUpdate.discriminator(
   "COMMENT",
   new Schema({
     comment: {

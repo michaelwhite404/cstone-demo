@@ -1,12 +1,12 @@
 import { Document, PopulatedDoc, Types } from "mongoose";
-import { DepartmentModel, EmployeeModel } from ".";
+import { DepartmentModel, EmployeeModel, TicketAssign, TicketComment, TicketTag } from ".";
 
 export interface TicketModel {
   _id: any;
   description: string;
   department: PopulatedDoc<DepartmentModel>;
   status: TicketStatus;
-  updates: TicketUpdate[];
+  updates: (TicketComment | TicketAssign | TicketTag)[];
   priority: TicketPriority;
   submittedBy: PopulatedDoc<EmployeeModel>;
   assignedTo: PopulatedDoc<EmployeeModel[]>;
@@ -20,8 +20,3 @@ export interface TicketDocument extends TicketModel, Document {
 
 type TicketStatus = "COMPLETE" | "NOT_STARTED";
 type TicketPriority = "URGENT" | "HIGH" | "MEDIUM" | "LOW";
-interface TicketUpdate {
-  description: string;
-  date: Date;
-  status: TicketStatus;
-}
