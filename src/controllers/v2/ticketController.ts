@@ -1,5 +1,5 @@
 import { Department, Employee, Ticket, TicketAssign, TicketComment, TicketTag } from "@models";
-import { EmployeeModel, TicketDocument } from "@@types/models";
+import { EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
 
 const ticketQuery = (employee: any) =>
@@ -8,8 +8,9 @@ const ticketQuery = (employee: any) =>
     $or: [{ submittedBy: employee._id }, { assignedTo: { $in: employee._id } }],
     // @ts-ignore
   }).populate({
-    path: "department submittedBy assignedTo",
-    select: "name email fullName",
+    path: "department submittedBy assignedTo updates",
+    select: "name email fullName comment assign op",
+    populate: { path: "assign", select: "fullName email" },
   });
 
 export const getAllTickets = catchAsync(async (req, res) => {
@@ -66,7 +67,7 @@ export const createTicket = catchAsync(async (req, res, next) => {
 });
 
 export const addTicketUpdate = catchAsync(async (req, res, next) => {
-  const ticket: TicketDocument = await Ticket.findOne({
+  const ticket = await Ticket.findOne({
     // Either was created by requesting user or assigned to requesting user
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore
@@ -83,36 +84,68 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
     createdBy: req.employee._id,
     ticket: ticket._id,
   };
-  let update;
+  let newTicket;
   switch (req.body.type) {
     case "COMMENT":
-      update = await TicketComment.create({ ...data, comment: req.body.comment });
+      await TicketComment.create({ ...data, comment: req.body.comment });
       break;
     case "ASSIGN":
+      // Make sure valid employee
+      const emp = await Employee.findOne({ _id: req.body.assign, active: true });
+      if (!emp)
+        return next(
+          new AppError("There is no active user with the id you are trying to assign", 400)
+        );
+      if (!["ADD", "REMOVE"].includes(req.body.op))
+        return next(new AppError("`op` property must be have the value `ADD` or `REMOVE`", 400));
       const assignedIds = (ticket.assignedTo as Pick<EmployeeModel, "_id">[]).map((e) =>
         e._id.toString()
       );
-      // If employee is valid and employee is not in the assignedTo list
-      if (assignedIds.includes(req.body.assign))
-        return next(
-          new AppError("The user you are trying to assign is already assigned to this ticket", 400)
-        );
-      const emp = await Employee.findById(req.body.assign);
-      if (!emp)
-        return next(new AppError("There is user with the id you are trying to assign", 400));
-      update = await TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
-      /**
-       *
-       * // Update assignedToProperty in ticket
-       *
-       */
+      // If operation is add
+      if (req.body.op === "ADD") {
+        // If employee is not in the assignedTo list
+        if (assignedIds.includes(req.body.assign))
+          return next(
+            new AppError(
+              "The user you are trying to assign is already assigned to this ticket",
+              400
+            )
+          );
+        const req1 = Ticket.findByIdAndUpdate(
+          ticket._id,
+          {
+            $push: { assignedTo: emp._id },
+          },
+          { new: true }
+        ).populate({
+          path: "department submittedBy assignedTo",
+          select: "name email fullName",
+        });
+        const req2 = TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
+        [newTicket] = await Promise.all([req1, req2]);
+        break;
+      }
+      // If operation is remove
+      if (!assignedIds.includes(req.body.assign)) {
+        return next(new AppError("The user is not assigned to this ticket", 400));
+      }
+      const newAssigned = (ticket.assignedTo as EmployeeModel[]).filter(
+        (e) => e._id.toString() !== emp._id.toString()
+      );
+      ticket.assignedTo = newAssigned;
+      const req1 = await ticket.save();
+      const req2 = TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
+      [newTicket] = await Promise.all([req1, req2]);
+      // const newAssigned = assignedIds.filter(ids => ids !== emp._id)
+      // ticket.assignedTo = newAssigned
       break;
+
     case "TAG":
-      update = await TicketTag.create({ ...data, tag: req.body.tag });
+      await TicketTag.create({ ...data, tag: req.body.tag });
       break;
     default:
       return next(new AppError("", 400));
   }
 
-  res.sendJson(200, update);
+  res.sendJson(200, { ticket: newTicket });
 });

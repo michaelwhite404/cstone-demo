@@ -9,78 +9,73 @@ const validDepartmentValidation = {
   validator: async (id: ObjectId) => FKHelper(Department, id),
 };
 
-const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema({
-  title: {
-    type: String,
-    maxlength: 256,
-    required: [true, "Each error must have a title"],
-    immutable: true,
-  },
-  description: {
-    type: String,
-    required: [true, "Each ticket must have an description of the issue"],
-    immutable: true,
-  },
-  department: {
-    type: Types.ObjectId,
-    ref: "Department",
-    maxlength: 500,
-    required: [true, "Each ticket must be associated with a department"],
-    validate: [validDepartmentValidation],
-  },
-  status: {
-    type: String,
-    enum: statusEnum,
-    required: [true, "Each ticket must have a status"],
-  },
-  priority: {
-    type: String,
-    enum: ["URGENT", "HIGH", "MEDIUM", "LOW"],
-    required: [true, "Each ticket must have a priority level"],
-  },
-  submittedBy: {
-    type: Types.ObjectId,
-    ref: "Employee",
-    required: [true, "Each ticket must be associated with a department"],
-    immutable: true,
-  },
-  assignedTo: [
-    {
+const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema(
+  {
+    title: {
+      type: String,
+      maxlength: 256,
+      required: [true, "Each error must have a title"],
+      immutable: true,
+    },
+    description: {
+      type: String,
+      required: [true, "Each ticket must have an description of the issue"],
+      immutable: true,
+    },
+    department: {
+      type: Types.ObjectId,
+      ref: "Department",
+      maxlength: 500,
+      required: [true, "Each ticket must be associated with a department"],
+      validate: [validDepartmentValidation],
+    },
+    status: {
+      type: String,
+      enum: statusEnum,
+      required: [true, "Each ticket must have a status"],
+    },
+    priority: {
+      type: String,
+      enum: ["URGENT", "HIGH", "MEDIUM", "LOW"],
+      required: [true, "Each ticket must have a priority level"],
+    },
+    submittedBy: {
       type: Types.ObjectId,
       ref: "Employee",
+      required: [true, "Each ticket must be associated with a department"],
+      immutable: true,
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: () => Date.now(),
-    required: true,
-    immutable: true,
-  },
-  updatedAt: {
-    type: Date,
-    default: () => Date.now(),
-    required: true,
-  },
-  updates: [
-    {
-      description: {
-        type: String,
-        maxlength: 500,
-        required: [true, "Please describe the update to the device error"],
+    assignedTo: [
+      {
+        type: Types.ObjectId,
+        ref: "Employee",
       },
-      date: {
-        type: Date,
-        default: () => Date.now(),
-      },
-      status: {
-        type: String,
-        enum: statusEnum,
-        required: [true, "Each ticket update must have a status"],
-      },
+    ],
+    createdAt: {
+      type: Date,
+      default: () => Date.now(),
+      required: true,
+      immutable: true,
     },
-  ],
+    updatedAt: {
+      type: Date,
+      default: () => Date.now(),
+      required: true,
+    },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+ticketSchema.virtual("updates", {
+  ref: "TicketUpdate",
+  foreignField: "ticket",
+  localField: "_id",
+  match: (ticket: TicketDocument) => ({ ticket: ticket._id }),
 });
 
-const Ticket = model("Ticket", ticketSchema);
+const Ticket: Model<TicketDocument> = model<TicketDocument>("Ticket", ticketSchema);
 
 export default Ticket;
