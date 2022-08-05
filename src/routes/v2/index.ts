@@ -15,6 +15,7 @@ import aftercareRouter from "./aftercareRoutes";
 import groupRouter from "./groupRoutes";
 import chatRouter from "./chatRoutes";
 import ticketRouter from "./ticketRoutes";
+import reimbursementRouter from "./reimbursementRoutes";
 
 const v2Router = Router();
 
@@ -31,7 +32,7 @@ v2Router.use("/aftercare", aftercareRouter);
 v2Router.use("/groups", groupRouter);
 v2Router.use("/tickets", ticketRouter);
 v2Router.use("/chat", chatRouter);
-// v2Router.use("/employee-leave" /*, employeeLeaveRouter */);
+v2Router.use("/reimbursements", reimbursementRouter);
 // v2Router.use("/reimbursement" /* , reimbursementRouter */);
 // v2Router.use("/ideas" /* ,ideaRouter */);
 

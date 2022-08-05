@@ -28,6 +28,20 @@ const uploadBase64Image = async (base64String: string, key: string) => {
   return await s3.upload(params).promise();
 };
 
+const uploadFile = async (file: Express.Multer.File, key: string) => {
+  const type = file.mimetype.split("/")[1];
+
+  const params = {
+    Bucket: AWS_BUCKET_NAME!,
+    Key: `${key}.${type}`, // type is not required
+    Body: file.buffer,
+    ContentEncoding: "buffer",
+    ContentType: file.mimetype,
+  };
+
+  return await s3.upload(params).promise();
+};
+
 function getFileStream(fileKey: string) {
   const downloadParams = {
     Key: fileKey,
@@ -40,4 +54,5 @@ function getFileStream(fileKey: string) {
 export default {
   uploadBase64Image,
   getFileStream,
+  uploadFile,
 };

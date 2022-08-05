@@ -10,6 +10,7 @@ export * as helpers from "./helpers";
 export * as groupController from "./groupController";
 export * as orgUnitController from "./orgUnitController";
 export * as roomController from "./roomController";
+export * as reimbursementController from "./reimbursementController";
 export * as shortUrlController from "./shortUrlController";
 export * as singleTextbookController from "./singleTextbookController";
 export * as studentController from "./studentController";
