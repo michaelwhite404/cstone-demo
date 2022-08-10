@@ -4,6 +4,7 @@ interface Employee {
   email: string;
   role: string;
   timesheetEnabled: boolean;
+  homeroomGrade?: number;
   employeeOf?: {
     employees: ObjectId[];
     _id: ObjectId;

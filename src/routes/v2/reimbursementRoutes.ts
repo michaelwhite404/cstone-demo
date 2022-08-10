@@ -3,13 +3,14 @@ import { authController as v2auth, reimbursementController } from "@controllers/
 import multer from "multer";
 
 const upload = multer();
-const employeeLeaveRouter = Router();
+const reimbursementRouter = Router();
 
-employeeLeaveRouter.use(v2auth.protect);
+reimbursementRouter.use(v2auth.protect);
 
-employeeLeaveRouter
+reimbursementRouter
   .route("/")
   .get(reimbursementController.getAllReimbursements)
   .post(upload.single("receipt"), reimbursementController.createReimbursement);
 
-export default employeeLeaveRouter;
+reimbursementRouter.route("/:id").get(reimbursementController.getReimbursement);
+export default reimbursementRouter;

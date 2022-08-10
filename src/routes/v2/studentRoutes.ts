@@ -12,7 +12,7 @@ studentRouter
   .post(studentController.createStudent);
 
 studentRouter.get("/group", studentController.groupSudentsByGrade);
-
+studentRouter.patch("/update-password", studentController.updateStudentGooglePassword);
 studentRouter
   .route("/:id")
   .get(studentController.getOneStudent)
