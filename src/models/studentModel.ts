@@ -33,6 +33,8 @@ const studentSchema = new Schema(
     schoolEmail: {
       type: String,
       required: true,
+      validate: (value: any) =>
+        typeof value === "string" && value.endsWith("@cornerstone-schools.org"),
     },
     personalEmail: {
       type: String,
@@ -47,6 +49,7 @@ const studentSchema = new Schema(
       type: String,
       required: false,
     },
+    googleId: String,
     mainPhoto: {
       type: String,
     },

@@ -12,6 +12,7 @@ export interface StudentModel {
   personalEmail?: string;
   status: "Active" | "Inactive" | "Graduate";
   customID?: string;
+  googleId?: string;
   mainPhoto?: string;
   createdAt: Date;
   lastUpdate: Date;
