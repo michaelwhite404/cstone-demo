@@ -2,6 +2,7 @@ import { Document, PopulatedDoc } from "mongoose";
 import { EmployeeModel } from ".";
 
 export interface ReimbursementModel {
+  _id: any;
   user: PopulatedDoc<EmployeeModel>;
   date: Date;
   amount: number;
@@ -21,4 +22,6 @@ export interface ReimbursementModel {
   };
 }
 
-export interface ReimbursementDocument extends ReimbursementModel, Document {}
+export interface ReimbursementDocument extends ReimbursementModel, Document {
+  _id: any;
+}

@@ -17,3 +17,4 @@ export * as studentController from "./studentController";
 export * as textbookController from "./textbookController";
 export * as timesheetController from "./timesheetController";
 export * as ticketController from "./ticketController";
+export * as leaveController from "./leaveController";

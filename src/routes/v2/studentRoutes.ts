@@ -11,7 +11,7 @@ studentRouter
   .get(studentController.getAllStudents)
   .post(studentController.createStudent);
 
-studentRouter.get("/group", studentController.groupSudentsByGrade);
+studentRouter.get("/group", studentController.groupStudentsByGrade);
 studentRouter.patch("/update-password", studentController.updateStudentGooglePassword);
 studentRouter
   .route("/:id")

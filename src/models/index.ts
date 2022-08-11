@@ -5,6 +5,7 @@ export { default as Department } from "./departmentModel";
 export { default as Device } from "./deviceModel";
 export { default as Employee } from "./employeeModel";
 export { default as ErrorLog } from "./errorLogModel";
+export { default as Leave } from "./leaveModel";
 export { default as Room } from "./roomModel";
 export { default as Reimbursement } from "./reimbursementModel";
 export { default as ShortUrl } from "./shortUrlModel";

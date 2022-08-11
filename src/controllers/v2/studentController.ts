@@ -55,7 +55,7 @@ export const updateStudent = factory.updateOne(Model, key);
 /** `DELETE` - Deletes student */
 export const deleteStudent = factory.deleteOne(Model, "Student");
 
-export const groupSudentsByGrade = catchAsync(async (_: Request, res: Response) => {
+export const groupStudentsByGrade = catchAsync(async (_: Request, res: Response) => {
   const grades = await Student.aggregate([
     { $match: { status: "Active" } },
     {
