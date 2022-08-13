@@ -11,7 +11,6 @@ import CurrentSession from "./pages/LionsDen/CurrentSession";
 import LionsDen from "./pages/LionsDen/LionsDen";
 import LionsDenStudents from "./pages/LionsDen/LionsDenStudents";
 import Sessions from "./pages/LionsDen/Sessions";
-import Students2 from "./pages/Students2/Students2";
 import TextbooksTest from "./pages/TextbooksTest/TextbooksTest";
 import Tools from "./pages/Tools";
 import * as Page from "./pages";
@@ -24,7 +23,11 @@ export default function Routes() {
       <Route path="/" element={<AppContainer />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Navigate to="/" replace />} />
-        <Route path="students" element={<Students2 />} />
+        <Route path="students" element={<Page.Students />}>
+          <Route index element={<Page.Students.EmptyState />} />
+          <Route path="add" element={<div>Add</div>} />
+          <Route path=":slug" element={<div>Slug</div>} />
+        </Route>
         <Route path="textbooks" element={<TextbooksTest />} />
         <Route path="devices" element={<Devices />} />
         <Route path="/devices/:deviceType" element={<DeviceType2 />}>

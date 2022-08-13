@@ -6,8 +6,10 @@ import SideTable from "../../components/SideTable/SideTable";
 import { Row } from "react-table";
 import PageHeader from "../../components/PageHeader";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
+import { Outlet } from "react-router-dom";
+import EmptyState from "./EmptyState";
 
-export default function Students2() {
+function Students2() {
   const [students, setStudents] = useState<StudentModel[]>([]);
   const [filter, setFilter] = useState("");
   useDocTitle("Students | Cornerstone App");
@@ -61,6 +63,7 @@ export default function Students2() {
           <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
         </div>
       </SideTable>
+      <Outlet />
     </div>
   );
 }
@@ -71,3 +74,7 @@ const Comp = ({ fullName, schoolEmail }: { fullName: string; schoolEmail: string
     <div style={{ fontSize: 11.5, color: "#9f9f9f" }}>{schoolEmail}</div>
   </div>
 );
+
+Students2.EmptyState = EmptyState;
+
+export default Students2;

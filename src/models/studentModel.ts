@@ -75,11 +75,18 @@ const studentSchema = new Schema(
   }
 );
 
-studentSchema.virtual("textbooksCheckedOut", {
+studentSchema.virtual("textbooks", {
   ref: "Textbook",
   foreignField: "lastUser",
   localField: "_id",
   match: { status: "Checked Out" },
+});
+
+studentSchema.virtual("devices", {
+  ref: "Device",
+  foreignField: "lastUser",
+  localField: "_id",
+  match: { $or: [{ status: "Assigned" }, { status: "Checked Out" }] },
 });
 
 studentSchema.pre<StudentDocument>("save", function (next) {

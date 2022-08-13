@@ -1,4 +1,3 @@
-import { TicketAssign } from "@models";
 import { Document, PopulatedDoc } from "mongoose";
 import { EmployeeModel, TicketModel } from ".";
 
@@ -9,31 +8,31 @@ interface TicketUpdateBase {
   ticket: PopulatedDoc<TicketModel>;
 }
 
-export interface TicketComment extends TicketUpdateBase {
+export interface TicketCommentModel extends TicketUpdateBase {
   __t: "COMMENT";
   comment: string;
 }
 
-export interface TicketAssign extends TicketUpdateBase {
+export interface TicketAssignModel extends TicketUpdateBase {
   __t: "ASSIGN";
   assign: PopulatedDoc<EmployeeModel>;
   op: "ADD" | "REMOVE";
 }
 
-export interface TicketTag extends TicketUpdateBase {
+export interface TicketTagModel extends TicketUpdateBase {
   __t: "TAG";
 }
 
-export interface TicketCommentDocument extends TicketComment, Document {
+export interface TicketCommentDocument extends TicketCommentModel, Document {
   _id: any;
 }
 
-export interface TicketAssignDocument extends TicketComment, Document {
+export interface TicketAssignDocument extends TicketCommentModel, Document {
   _id: any;
 }
 
-export interface TicketTagDocument extends TicketComment, Document {
+export interface TicketTagDocument extends TicketCommentModel, Document {
   _id: any;
 }
 
-export type TicketUpdate = TicketComment | TicketAssign | TicketTag;
+export type TicketUpdate = TicketCommentModel | TicketAssignModel | TicketTagModel;
