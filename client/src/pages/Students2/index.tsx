@@ -9,6 +9,7 @@ import SideTableFilter from "../../components/SideTable/SideTableFilter";
 import { Outlet } from "react-router-dom";
 import EmptyState from "./EmptyState";
 import CreateStudent from "./CreateStudent";
+import StudentDetails from "./StudentDetails";
 
 function Students2() {
   const [students, setStudents] = useState<StudentModel[]>([]);
@@ -80,5 +81,6 @@ const Comp = ({ fullName, schoolEmail }: { fullName: string; schoolEmail: string
 
 Students2.EmptyState = EmptyState;
 Students2.CreateStudent = CreateStudent;
+Students2.StudentDetails = StudentDetails;
 
 export default Students2;
