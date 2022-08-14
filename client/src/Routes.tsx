@@ -25,7 +25,7 @@ export default function Routes() {
         <Route path="dashboard" element={<Navigate to="/" replace />} />
         <Route path="students" element={<Page.Students />}>
           <Route index element={<Page.Students.EmptyState />} />
-          <Route path="add" element={<div>Add</div>} />
+          <Route path="add" element={<Page.Students.CreateStudent />} />
           <Route path=":slug" element={<div>Slug</div>} />
         </Route>
         <Route path="textbooks" element={<TextbooksTest />} />

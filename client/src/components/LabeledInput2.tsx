@@ -10,7 +10,7 @@ export default function LabeledInput2(props: LabeledInput2Props) {
       </label>
       <div className="mt-1">
         <input
-          type={"text" || type}
+          type={type || "text"}
           name={name}
           id={id}
           className={
@@ -28,5 +28,5 @@ export default function LabeledInput2(props: LabeledInput2Props) {
 
 interface LabeledInput2Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  type?: "email" | "text";
+  type?: "email" | "text" | "password";
 }

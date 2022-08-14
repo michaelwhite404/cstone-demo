@@ -8,6 +8,7 @@ import PageHeader from "../../components/PageHeader";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
 import { Outlet } from "react-router-dom";
 import EmptyState from "./EmptyState";
+import CreateStudent from "./CreateStudent";
 
 function Students2() {
   const [students, setStudents] = useState<StudentModel[]>([]);
@@ -63,7 +64,9 @@ function Students2() {
           <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
         </div>
       </SideTable>
-      <Outlet />
+      <main className="main-content">
+        <Outlet />
+      </main>
     </div>
   );
 }
@@ -76,5 +79,6 @@ const Comp = ({ fullName, schoolEmail }: { fullName: string; schoolEmail: string
 );
 
 Students2.EmptyState = EmptyState;
+Students2.CreateStudent = CreateStudent;
 
 export default Students2;
