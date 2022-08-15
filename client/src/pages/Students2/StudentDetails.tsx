@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { StudentModel } from "../../../../src/types/models";
+import FadeIn from "../../components/FadeIn";
 import { useToasterContext } from "../../hooks";
 import { APIStudentResponse } from "../../types/apiResponses";
 import { numberToGrade } from "../../utils/grades";
@@ -9,25 +10,33 @@ import "./StudentDetails.scss";
 import StudentDevicesTable from "./StudentDevicesTable";
 import StudentTextbooksTable from "./StudentTextbooksTable";
 
+interface StudentDetailProps {
+  student: StudentModel | undefined;
+  setSelectedStudent: React.Dispatch<React.SetStateAction<StudentModel | undefined>>;
+}
+
 export default function StudentDetails() {
   const location = useLocation();
-  const [student, setStudent] = useState<StudentModel | undefined>(() =>
-    (location.state as any)?.newStudent
-      ? (location.state as { newStudent: true; student: StudentModel }).student
-      : undefined
-  );
+  // const [student, setStudent] = useState<StudentModel | undefined>(() =>
+  //   (location.state as any)?.newStudent
+  //     ? (location.state as { newStudent: true; student: StudentModel }).student
+  //     : undefined
+  // );
   const { slug } = useParams<{ slug: string }>();
   const { showToaster } = useToasterContext();
+  const { student, setSelectedStudent } = useOutletContext<StudentDetailProps>();
 
   useEffect(() => {
     const fetchStudent = async () => {
+      //Chnage with skeleton implement
+      setSelectedStudent(undefined);
       try {
         const res = await axios.get<APIStudentResponse>(`/api/v2/students/${slug}`, {
           params: {
             projection: "FULL",
           },
         });
-        setStudent(res.data.data.student);
+        setSelectedStudent(res.data.data.student);
       } catch (err) {
         showToaster("Could not fetch student. Plese try again", "danger");
       }
@@ -43,7 +52,7 @@ export default function StudentDetails() {
   return (
     <div className="pb-8">
       {student && (
-        <>
+        <FadeIn>
           <div
             className="z-10"
             style={{ filter: "drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5))" }}
@@ -107,7 +116,7 @@ export default function StudentDetails() {
             </div>
             <div className="mt-10">
               <div className="font-medium text-gray-700 text-base">Textbooks Checked Out</div>
-              {student.textbooks.length > 0 ? (
+              {student.textbooks && student.textbooks.length > 0 ? (
                 <StudentTextbooksTable textbooks={student.textbooks} />
               ) : (
                 <div className="text-gray-500 mt-1">
@@ -117,7 +126,7 @@ export default function StudentDetails() {
             </div>
             <div className="mt-10">
               <div className="font-medium text-gray-700 text-base">Devices</div>
-              {student.devices.length > 0 ? (
+              {student.devices && student.devices.length > 0 ? (
                 <StudentDevicesTable devices={student.devices} />
               ) : (
                 <div className="text-gray-500 mt-1">
@@ -126,7 +135,7 @@ export default function StudentDetails() {
               )}
             </div>
           </div>
-        </>
+        </FadeIn>
       )}
     </div>
   );
