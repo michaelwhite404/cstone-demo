@@ -47,7 +47,7 @@ export const getMe: RequestHandler = (req, _, next) => {
   next();
 };
 
-const getUserGroups = async (email: string): Promise<models.UserGroup[] | undefined> => {
+export const getUserGroups = async (email: string): Promise<models.UserGroup[] | undefined> => {
   // prettier-ignore
   const { data: { groups } } = await admin.groups.list({ userKey: email });
   if (!groups) return undefined;

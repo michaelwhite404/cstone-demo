@@ -22,7 +22,11 @@ export default function StudentDetails() {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const res = await axios.get<APIStudentResponse>(`/api/v2/students/${slug}`);
+        const res = await axios.get<APIStudentResponse>(`/api/v2/students/${slug}`, {
+          params: {
+            projection: "FULL",
+          },
+        });
         setStudent(res.data.data.student);
       } catch (err) {
         showToaster("Could not fetch student. Plese try again", "danger");
@@ -86,6 +90,22 @@ export default function StudentDetails() {
               </div>
             </div>
             <div className="mt-10">
+              <div className="font-medium text-gray-700 text-base">Groups</div>
+              <div className="text-gray-500 mt-1">
+                {student.groups && student.groups.length > 0 ? (
+                  <div>
+                    {student.groups.map((group) => (
+                      <div className="mb-1" key={group.id}>
+                        {group.name}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div>{student.firstName} is not a part of any groups</div>
+                )}
+              </div>
+            </div>
+            <div className="mt-10">
               <div className="font-medium text-gray-700 text-base">Textbooks Checked Out</div>
               {student.textbooks.length > 0 ? (
                 <StudentTextbooksTable textbooks={student.textbooks} />
@@ -97,7 +117,7 @@ export default function StudentDetails() {
             </div>
             <div className="mt-10">
               <div className="font-medium text-gray-700 text-base">Devices</div>
-              {student.textbooks.length > 0 ? (
+              {student.devices.length > 0 ? (
                 <StudentDevicesTable devices={student.devices} />
               ) : (
                 <div className="text-gray-500 mt-1">

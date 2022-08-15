@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { Student } from "@models";
-import { admin, AppError, catchAsync, ordinal } from "@utils";
+import { admin, AppError, catchAsync, isObjectID, ordinal } from "@utils";
 import { handlerFactory as factory } from ".";
 import { GaxiosResponse } from "googleapis-common";
 import { admin_directory_v1 } from "googleapis";
 import pluralize from "pluralize";
 import { StudentDocument } from "@@types/models";
+import { getUserGroups } from "./employeeController";
+import { models } from "@@types";
 
 const Model = Student;
 const key = "student";
@@ -13,20 +15,44 @@ const key = "student";
 /** `GET` - Gets all students */
 export const getAllStudents = factory.getAll(Student, `${key}s`);
 /** `GET` - Gets a single student */
-export const getOneStudent = factory.getOneById(Model, key, [
-  {
-    path: "textbooks",
-    select: "textbookSet quality bookNumber teacherCheckOut -lastUser",
-    populate: {
-      path: "teacherCheckOut textbookSet",
-      select: "fullName email title class",
+export const getOneStudent = catchAsync(async (req, res, next) => {
+  let query = isObjectID(req.params.id.toString())
+    ? Model.findById(req.params.id)
+    : Model.findOne({ slug: req.params.id });
+
+  const student = await query.populate([
+    {
+      path: "textbooks",
+      select: "textbookSet quality bookNumber teacherCheckOut -lastUser",
+      populate: {
+        path: "teacherCheckOut textbookSet",
+        select: "fullName email title class",
+      },
     },
-  },
-  {
-    path: "devices",
-    select: "status name brand deviceType slug -checkouts",
-  },
-]);
+    {
+      path: "devices",
+      select: "status name brand deviceType slug -checkouts",
+    },
+  ]);
+
+  if (!student) {
+    return next(new AppError("There is no student with this id", 404));
+  }
+  let groups: models.UserGroup[] | undefined;
+  if (req.query.projection === "FULL") {
+    groups = await getUserGroups(student.schoolEmail);
+  }
+  const { id, __v, ...s } = student.toJSON();
+
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    data: {
+      student: { ...s, groups },
+    },
+  });
+});
+
 /** `POST` - Creates a single student */
 export const createStudent = catchAsync(async (req, res, next) => {
   const { password, ...body } = req.body;

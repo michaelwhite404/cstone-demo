@@ -6,7 +6,7 @@ import SideTable from "../../components/SideTable/SideTable";
 import { Row } from "react-table";
 import PageHeader from "../../components/PageHeader";
 import SideTableFilter from "../../components/SideTable/SideTableFilter";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import EmptyState from "./EmptyState";
 import CreateStudent from "./CreateStudent";
 import StudentDetails from "./StudentDetails";
@@ -72,12 +72,23 @@ function Students2() {
   );
 }
 
-const Comp = ({ fullName, schoolEmail }: { fullName: string; schoolEmail: string }) => (
-  <div style={{ padding: "10px 20px" }}>
-    <div>{fullName}</div>
-    <div style={{ fontSize: 11.5, color: "#9f9f9f" }}>{schoolEmail}</div>
-  </div>
-);
+const Comp = ({
+  fullName,
+  schoolEmail,
+  slug,
+}: {
+  fullName: string;
+  schoolEmail: string;
+  slug: string;
+}) => {
+  const navigate = useNavigate();
+  return (
+    <div style={{ padding: "10px 20px" }} onClick={() => navigate(`/students/${slug}`)}>
+      <div>{fullName}</div>
+      <div style={{ fontSize: 11.5, color: "#9f9f9f" }}>{schoolEmail}</div>
+    </div>
+  );
+};
 
 Students2.EmptyState = EmptyState;
 Students2.CreateStudent = CreateStudent;

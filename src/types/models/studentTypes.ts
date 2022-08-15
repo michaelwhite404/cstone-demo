@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { DeviceModel, EmployeeModel, TextbookModel, TextbookQuality } from ".";
+import { DeviceModel, EmployeeModel, TextbookModel, TextbookQuality, UserGroup } from ".";
 
 export interface StudentModel {
   /** Id of the student */
@@ -21,6 +21,7 @@ export interface StudentModel {
   aftercare: boolean;
   textbooks: StudentTextbook[];
   devices: StudentDevice[];
+  groups?: UserGroup[];
 }
 
 export interface StudentDocument extends StudentModel, Document {
