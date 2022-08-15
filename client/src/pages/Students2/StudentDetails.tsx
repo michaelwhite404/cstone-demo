@@ -6,6 +6,7 @@ import { useToasterContext } from "../../hooks";
 import { APIStudentResponse } from "../../types/apiResponses";
 import { numberToGrade } from "../../utils/grades";
 import "./StudentDetails.scss";
+import StudentTextbooksTable from "./StudentTextbooksTable";
 
 export default function StudentDetails() {
   const location = useLocation();
@@ -72,6 +73,7 @@ export default function StudentDetails() {
                 </div>
               </div>
               <div className="mt-10">
+                {/* Basic Information */}
                 <div className="grid grid-cols-2 gap-5">
                   <div>
                     <div className="font-medium text-gray-700 text-base">Status</div>
@@ -86,6 +88,10 @@ export default function StudentDetails() {
                     <div className="text-gray-500">{student.aftercare ? "Yes" : "No"}</div>
                   </div>
                 </div>
+              </div>
+              <div className="mt-10">
+                <div className="font-medium text-gray-700 text-base">Textbooks</div>
+                <StudentTextbooksTable textbooks={student.textbooks} />
               </div>
             </div>
           </>
