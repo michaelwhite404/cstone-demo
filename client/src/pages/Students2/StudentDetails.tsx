@@ -4,6 +4,8 @@ import { useLocation, useParams } from "react-router-dom";
 import { StudentModel } from "../../../../src/types/models";
 import { useToasterContext } from "../../hooks";
 import { APIStudentResponse } from "../../types/apiResponses";
+import { numberToGrade } from "../../utils/grades";
+import "./StudentDetails.scss";
 
 export default function StudentDetails() {
   const location = useLocation();
@@ -20,7 +22,6 @@ export default function StudentDetails() {
       try {
         const res = await axios.get<APIStudentResponse>(`/api/v2/students/${slug}`);
         setStudent(res.data.data.student);
-        console.log("FETCHED");
       } catch (err) {
         showToaster("Could not fetch student. Plese try again", "danger");
       }
@@ -35,8 +36,61 @@ export default function StudentDetails() {
 
   return (
     <div>
-      StudentDetails
-      {JSON.stringify(student)}
+      <div>
+        {student && (
+          <>
+            <div
+              className="z-10"
+              style={{ filter: "drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5))" }}
+            >
+              <div className="student-cover-image"></div>
+            </div>
+            <div className="mx-12 -mt-28 z-20 relative">
+              <div className="flex items-end">
+                <div className="mr-5">
+                  {/* School Image */}
+                  <div
+                    className="w-40 rounded-md border-[3px] border-white overflow-hidden"
+                    style={{ boxShadow: "0 0 10px 2px rgb(0 0 0 / 51%)" }}
+                  >
+                    <img
+                      className="bg-gray-600 p-4"
+                      src="/Cornerstone-Logo.png"
+                      alt="Cornerstone Logo"
+                    />
+                  </div>
+                </div>
+                <div className="pb-3">
+                  <h1 className="font-medium text-3xl mb-1">{student.fullName}</h1>
+                  <div className="text-gray-500 font-light text-lg">
+                    {student.status === "Active"
+                      ? student.grade! === 0
+                        ? "Kindergarten"
+                        : `${numberToGrade(student.grade!)} Grade`
+                      : student.status}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-10">
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <div className="font-medium text-gray-700 text-base">Status</div>
+                    <div className="text-gray-500">{student.status}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-700 text-base">School Email</div>
+                    <div className="text-gray-500">{student.schoolEmail}</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-700 text-base">Aftercare</div>
+                    <div className="text-gray-500">{student.aftercare ? "Yes" : "No"}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

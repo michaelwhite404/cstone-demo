@@ -19,7 +19,7 @@ export const getOneStudent = factory.getOneById(Model, key, [
     select: "textbookSet quality bookNumber teacherCheckOut -lastUser",
     populate: {
       path: "teacherCheckOut textbookSet",
-      select: "fullName email",
+      select: "fullName email title class",
     },
   },
   {
