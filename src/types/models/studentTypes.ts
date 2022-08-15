@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { EmployeeModel, TextbookModel, TextbookQuality } from ".";
+import { DeviceModel, EmployeeModel, TextbookModel, TextbookQuality } from ".";
 
 export interface StudentModel {
   /** Id of the student */
@@ -20,6 +20,7 @@ export interface StudentModel {
   /** Denotes if a student is in aftercare */
   aftercare: boolean;
   textbooks: StudentTextbook[];
+  devices: StudentDevice[];
 }
 
 export interface StudentDocument extends StudentModel, Document {
@@ -38,3 +39,8 @@ export interface StudentTextbook {
   };
   teacherCheckOut: Pick<EmployeeModel, "_id" | "title" | "email" | "fullName">;
 }
+
+export type StudentDevice = Pick<
+  DeviceModel,
+  "_id" | "status" | "name" | "brand" | "slug" | "deviceType"
+>;
