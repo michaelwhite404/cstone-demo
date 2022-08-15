@@ -73,6 +73,11 @@ function Students2() {
     setPageState("student");
     navigate(`/students/${student.slug}`);
   };
+  const handleBack = () => {
+    setPageState("blank");
+    setSelected(undefined);
+    navigate(`/students`);
+  };
 
   return (
     <div style={{ display: "flex", height: "100%" }}>
@@ -98,6 +103,7 @@ function Students2() {
           context={{
             student: selected,
             setSelectedStudent: setSelected,
+            onBack: handleBack,
           }}
         />
       </main>

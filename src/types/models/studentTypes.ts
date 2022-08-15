@@ -19,8 +19,8 @@ export interface StudentModel {
   slug: string;
   /** Denotes if a student is in aftercare */
   aftercare: boolean;
-  textbooks: StudentTextbook[];
-  devices: StudentDevice[];
+  textbooks?: StudentTextbook[];
+  devices?: StudentDevice[];
   groups?: UserGroup[];
 }
 
