@@ -32,8 +32,8 @@ export const getTicket = catchAsync(async (req, res, next) => {
     // @ts-ignore
   }).populate({
     path: "department submittedBy assignedTo updates",
-    select: "name email image fullName comment assign op date createdBy",
-    populate: { path: "assign createdBy", select: "fullName email" },
+    select: "name email image slug fullName comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email image slug" },
   });
 
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
