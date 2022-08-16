@@ -2,6 +2,7 @@ import { TicketDocument } from "@@types/models";
 import { Model, model, ObjectId, Schema, Types } from "mongoose";
 import FKHelper from "@models/helpers/foreignKeyHelper";
 import { Department } from "@models";
+import Increment from "./incrementModel";
 
 const statusEnum = ["OPEN", "CLOSED"];
 
@@ -11,6 +12,11 @@ const validDepartmentValidation = {
 
 const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema(
   {
+    ticketId: {
+      type: Number,
+      min: 100,
+      immutable: true,
+    },
     title: {
       type: String,
       maxlength: 256,
@@ -74,6 +80,16 @@ ticketSchema.virtual("updates", {
   foreignField: "ticket",
   localField: "_id",
   match: (ticket: TicketDocument) => ({ ticket: ticket._id }),
+});
+
+ticketSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    const id = await Increment.getNextId("Ticket", 100);
+    this.ticketId = id; // Incremented
+    next();
+  } else {
+    next();
+  }
 });
 
 const Ticket: Model<TicketDocument> = model<TicketDocument>("Ticket", ticketSchema);

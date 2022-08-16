@@ -16,6 +16,7 @@ export interface TicketModel {
 
 export interface TicketDocument extends TicketModel, Document {
   _id: Types.ObjectId;
+  ticketId: number;
 }
 
 type TicketStatus = "COMPLETE" | "NOT_STARTED";

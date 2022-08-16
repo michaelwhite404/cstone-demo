@@ -5,6 +5,7 @@ export * from "./deviceTypes";
 export * from "./employeeTypes";
 export * from "./errorLogTypes";
 export * from "./groupTypes";
+export * from "./incrementTypes";
 export * from "./leaveTypes";
 export * from "./reimbursementTypes";
 export * from "./roomTypes";
