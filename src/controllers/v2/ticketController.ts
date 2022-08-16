@@ -2,17 +2,6 @@ import { Department, Employee, Ticket, TicketAssign, TicketComment, TicketTag } 
 import { EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
 
-const ticketQuery = (employee: any) =>
-  Ticket.findOne({
-    // Either was created by requesting user or assigned to requesting user
-    $or: [{ submittedBy: employee._id }, { assignedTo: { $in: employee._id } }],
-    // @ts-ignore
-  }).populate({
-    path: "department submittedBy assignedTo updates",
-    select: "name email fullName comment assign op date createdBy",
-    populate: { path: "assign createdBy", select: "fullName email" },
-  });
-
 export const getAllTickets = catchAsync(async (req, res) => {
   const query = Ticket.find({
     // Either was created by requesting user or assigned to requesting user
@@ -35,7 +24,18 @@ export const getAllTickets = catchAsync(async (req, res) => {
 });
 
 export const getTicket = catchAsync(async (req, res, next) => {
-  const ticket = await ticketQuery(req.employee);
+  if (isNaN(+req.params.id)) return next(new AppError("Ticket id must be a number", 400));
+  const ticket = await Ticket.findOne({
+    ticketId: +req.params.id,
+    // Either was created by requesting user or assigned to requesting user
+    $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
+    // @ts-ignore
+  }).populate({
+    path: "department submittedBy assignedTo updates",
+    select: "name email fullName comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email" },
+  });
+
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
 
   res.sendJson(200, { ticket });
@@ -67,7 +67,9 @@ export const createTicket = catchAsync(async (req, res, next) => {
 });
 
 export const addTicketUpdate = catchAsync(async (req, res, next) => {
+  if (isNaN(+req.params.id)) return next(new AppError("Ticket id must be a number", 400));
   const ticket = await Ticket.findOne({
+    ticketId: Number(req.params.id),
     // Either was created by requesting user or assigned to requesting user
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore

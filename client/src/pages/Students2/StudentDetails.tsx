@@ -98,7 +98,7 @@ export default function StudentDetails() {
               >
                 <div className="student-cover-image"></div>
               </div>
-              <div className="mx-12 -mt-28 z-20 relative">
+              <div className="md:mx-12 mx-6 -mt-28 z-20 relative">
                 <div className="flex items-end">
                   <div className="mr-5">
                     {/* School Image */}
@@ -122,7 +122,7 @@ export default function StudentDetails() {
                 </div>
                 <div className="mt-10">
                   {/* Basic Information */}
-                  <div className="grid grid-cols-2 gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                       <div className="font-medium text-gray-700 text-base">Status</div>
                       <div className="text-gray-500">{student.status}</div>
@@ -191,6 +191,7 @@ export default function StudentDetails() {
                         />
                       </div>
                       <PrimaryButton
+                        className="mt-1"
                         text="Reset"
                         disabled={passwordReset.length < 8}
                         onClick={resetPassword}

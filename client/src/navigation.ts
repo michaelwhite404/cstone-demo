@@ -6,6 +6,7 @@ const navigation = [
   { name: "Students", href: "/students", icon: Icon.AcademicCapIcon, show: () => true },
   { name: "Textbooks", href: "/textbooks", icon: Icon.BookOpenIcon, show: () => true },
   { name: "Devices", href: "/devices", icon: Icon.DesktopComputerIcon, show: () => true },
+  { name: "Tickets", href: "/tickets", icon: Icon.TicketIcon, show: () => true },
   {
     name: "Timesheet",
     href: "/timesheet",

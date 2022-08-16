@@ -3,6 +3,8 @@ import { DepartmentModel, EmployeeModel, TicketUpdate } from ".";
 
 export interface TicketModel {
   _id: any;
+  ticketId: number;
+  title: string;
   description: string;
   department: PopulatedDoc<DepartmentModel>;
   status: TicketStatus;
