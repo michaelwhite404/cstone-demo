@@ -11,6 +11,7 @@ export { default as Reimbursement } from "./reimbursementModel";
 export { default as ShortUrl } from "./shortUrlModel";
 export { default as Student } from "./studentModel";
 export { default as Ticket } from "./ticketModel";
+export { default as TicketTag } from "./ticketTagModel";
 export * from "./ticketUpdateModel";
 export { default as TextbookLog } from "./textbookLogModel";
 export { default as Textbook } from "./textbookModel";

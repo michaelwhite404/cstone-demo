@@ -1,4 +1,8 @@
-import { TicketAssignDocument, TicketCommentDocument, TicketTagDocument } from "@@types/models";
+import {
+  TicketAssignUpdateDocument,
+  TicketCommentUpdateDocument,
+  TicketTagDocument,
+} from "@@types/models";
 import { Model, model, Schema, Types } from "mongoose";
 
 const ticketSchema /*:  Schema<TicketDocument, Model<TicketDocument>> */ = new Schema({
@@ -26,7 +30,7 @@ const ticketSchema /*:  Schema<TicketDocument, Model<TicketDocument>> */ = new S
 
 const TicketUpdate = model("TicketUpdate", ticketSchema);
 
-export const TicketComment: Model<TicketCommentDocument> = TicketUpdate.discriminator(
+export const TicketCommentUpdate: Model<TicketCommentUpdateDocument> = TicketUpdate.discriminator(
   "COMMENT",
   new Schema({
     comment: {
@@ -36,7 +40,7 @@ export const TicketComment: Model<TicketCommentDocument> = TicketUpdate.discrimi
   })
 );
 
-export const TicketAssign: Model<TicketAssignDocument> = TicketUpdate.discriminator(
+export const TicketAssignUpdate: Model<TicketAssignUpdateDocument> = TicketUpdate.discriminator(
   "ASSIGN",
   new Schema({
     assign: {
@@ -52,7 +56,7 @@ export const TicketAssign: Model<TicketAssignDocument> = TicketUpdate.discrimina
   })
 );
 
-export const TicketTag: Model<TicketTagDocument> = TicketUpdate.discriminator(
+export const TicketTagUpdate: Model<TicketTagDocument> = TicketUpdate.discriminator(
   "TAG",
   new Schema({
     tag: {
@@ -67,7 +71,7 @@ export const TicketTag: Model<TicketTagDocument> = TicketUpdate.discriminator(
   })
 );
 
-export const TicketStatus = TicketUpdate.discriminator(
+export const TicketStatusUpdate = TicketUpdate.discriminator(
   "STATUS",
   new Schema({
     status: {

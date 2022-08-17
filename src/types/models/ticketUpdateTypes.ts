@@ -8,31 +8,34 @@ interface TicketUpdateBase {
   ticket: PopulatedDoc<TicketModel>;
 }
 
-export interface TicketCommentModel extends TicketUpdateBase {
+export interface TicketCommentUpdateModel extends TicketUpdateBase {
   __t: "COMMENT";
   comment: string;
 }
 
-export interface TicketAssignModel extends TicketUpdateBase {
+export interface TicketAssignUpdateModel extends TicketUpdateBase {
   __t: "ASSIGN";
   assign: PopulatedDoc<EmployeeModel>;
   op: "ADD" | "REMOVE";
 }
 
-export interface TicketTagModel extends TicketUpdateBase {
+export interface TicketTagUpdateModel extends TicketUpdateBase {
   __t: "TAG";
 }
 
-export interface TicketCommentDocument extends TicketCommentModel, Document {
+export interface TicketCommentUpdateDocument extends TicketCommentUpdateModel, Document {
   _id: any;
 }
 
-export interface TicketAssignDocument extends TicketCommentModel, Document {
+export interface TicketAssignUpdateDocument extends TicketCommentUpdateModel, Document {
   _id: any;
 }
 
-export interface TicketTagDocument extends TicketCommentModel, Document {
+export interface TicketTagUpdateDocument extends TicketCommentUpdateModel, Document {
   _id: any;
 }
 
-export type TicketUpdate = TicketCommentModel | TicketAssignModel | TicketTagModel;
+export type TicketUpdate =
+  | TicketCommentUpdateModel
+  | TicketAssignUpdateModel
+  | TicketTagUpdateModel;

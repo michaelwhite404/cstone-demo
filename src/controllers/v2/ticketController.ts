@@ -1,4 +1,11 @@
-import { Department, Employee, Ticket, TicketAssign, TicketComment, TicketTag } from "@models";
+import {
+  Department,
+  Employee,
+  Ticket,
+  TicketAssignUpdate,
+  TicketCommentUpdate,
+  TicketTagUpdate,
+} from "@models";
 import { EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
 
@@ -90,8 +97,8 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
   let newTicket;
   switch (req.body.type) {
     case "COMMENT":
-      const ticketComment = await (
-        await TicketComment.create({ ...data, comment: req.body.comment })
+      const ticketComment = (
+        await TicketCommentUpdate.create({ ...data, comment: req.body.comment })
       ).toJSON();
       ticketComment.createdBy = {
         _id: req.employee._id,
@@ -134,7 +141,11 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
           path: "department submittedBy assignedTo",
           select: "name email fullName",
         });
-        const req2 = TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
+        const req2 = TicketAssignUpdate.create({
+          ...data,
+          assign: req.body.assign,
+          op: req.body.op,
+        });
         [newTicket] = await Promise.all([req1, req2]);
         break;
       }
@@ -147,13 +158,12 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       );
       ticket.assignedTo = newAssigned;
       const req1 = await ticket.save();
-      const req2 = TicketAssign.create({ ...data, assign: req.body.assign, op: req.body.op });
+      const req2 = TicketAssignUpdate.create({ ...data, assign: req.body.assign, op: req.body.op });
       [newTicket] = await Promise.all([req1, req2]);
       break;
-
     case "TAG":
-      return next(new AppError("Not implemented", 400));
-      await TicketTag.create({ ...data, tag: req.body.tag });
+      // return next(new AppError("Not implemented", 400));
+      await TicketTagUpdate.create({ ...data, tag: req.body.tag });
       break;
     default:
       return next(

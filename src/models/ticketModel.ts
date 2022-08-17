@@ -57,6 +57,7 @@ const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema(
         ref: "Employee",
       },
     ],
+    tags: [{ type: Types.ObjectId, ref: "TicketTag" }],
     createdAt: {
       type: Date,
       default: () => Date.now(),
