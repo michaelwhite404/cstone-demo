@@ -13,11 +13,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { EmployeeModel, TicketModel } from "../../../../src/types/models";
-import { useAuth, useToasterContext } from "../../hooks";
+import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import { APIError, APITicketResponse } from "../../types/apiResponses";
 import ActivityFeed from "./ActivityFeed";
 
 export default function TicketDetails() {
+  useDocTitle("Tickets | Cornerstone App");
   const [ticket, setTicket] = useState<TicketModel>();
   const [comment, setComment] = useState("");
   const { ticketId } = useParams<"ticketId">();

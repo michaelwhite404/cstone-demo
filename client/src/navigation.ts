@@ -7,6 +7,7 @@ const navigation = [
   { name: "Textbooks", href: "/textbooks", icon: Icon.BookOpenIcon, show: () => true },
   { name: "Devices", href: "/devices", icon: Icon.DesktopComputerIcon, show: () => true },
   { name: "Tickets", href: "/tickets", icon: Icon.TicketIcon, show: () => true },
+  { name: "Requests", href: "/requests", icon: Icon.PaperAirplaneIcon, show: () => true },
   {
     name: "Timesheet",
     href: "/timesheet",

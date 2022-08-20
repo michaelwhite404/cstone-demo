@@ -87,10 +87,8 @@ ticketSchema.pre("save", async function (next) {
   if (this.isNew) {
     const id = await Increment.getNextId("Ticket", 100);
     this.ticketId = id; // Incremented
-    next();
-  } else {
-    next();
   }
+  next();
 });
 
 const Ticket: Model<TicketDocument> = model<TicketDocument>("Ticket", ticketSchema);

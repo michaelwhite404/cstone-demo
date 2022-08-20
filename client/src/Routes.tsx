@@ -49,6 +49,11 @@ export default function Routes() {
           <Route index element={<Page.Tickets />} />
           <Route path=":ticketId" element={<Page.Tickets.TicketDetails />} />
         </Route>
+        <Route path="requests">
+          <Route index element={<Page.Requests />} />
+          <Route path="leaves" element={<Page.Requests.Leaves />} />
+          <Route path="reimbursements" element={<Page.Requests.Reimbursements />} />
+        </Route>
         {["Admin", "Super Admin"].includes(user.role) && (
           <Route>
             <Route path="users" element={<Page.Users />}>

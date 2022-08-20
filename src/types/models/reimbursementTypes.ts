@@ -15,13 +15,15 @@ export interface ReimbursementModel {
   purpose: string;
   createdAt: Date;
   receipt: string;
-  approval?: {
-    user: PopulatedDoc<EmployeeModel>;
-    date: Date;
-    approved: boolean;
-  };
+  approval?: ReimbursementApproval;
 }
 
 export interface ReimbursementDocument extends ReimbursementModel, Document {
   _id: any;
+}
+
+interface ReimbursementApproval {
+  user: PopulatedDoc<EmployeeModel>;
+  date: Date;
+  approved: boolean;
 }
