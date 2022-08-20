@@ -6,28 +6,51 @@ import {
   LockOpenIcon,
   PencilIcon,
 } from "@heroicons/react/solid";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { format } from "date-fns";
 import pluralize from "pluralize";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { EmployeeModel, TicketModel } from "../../../../src/types/models";
-import { useAuth } from "../../hooks";
+import { useAuth, useToasterContext } from "../../hooks";
+import { APIError, APITicketResponse } from "../../types/apiResponses";
 import ActivityFeed from "./ActivityFeed";
 
 export default function TicketDetails() {
   const [ticket, setTicket] = useState<TicketModel>();
+  const [comment, setComment] = useState("");
   const { ticketId } = useParams<"ticketId">();
   const { user } = useAuth();
+  const { showToaster } = useToasterContext();
   useEffect(() => {
     const fetchTicket = async () => {
-      const res = await axios.get(`/api/v2/tickets/${ticketId}`);
+      const res = await axios.get<APITicketResponse>(`/api/v2/tickets/${ticketId}`);
       setTicket(res.data.data.ticket);
     };
 
     fetchTicket();
   }, [ticketId]);
+
+  const updateComment = async () => {
+    const res = await axios.post<APITicketResponse>(`/api/v2/tickets/${ticketId}/update`, {
+      type: "COMMENT",
+      comment,
+    });
+    return res.data.data.ticket;
+  };
+
+  const handleCommentUpdate = async () => {
+    try {
+      const ticket = await updateComment();
+      console.log(ticket);
+      setTicket(ticket);
+      setComment("");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
+  };
+
   return (
     <>
       {ticket && (
@@ -84,7 +107,7 @@ export default function TicketDetails() {
                         <div className="flex items-center space-x-2">
                           <ChatAltIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                           <span className="text-gray-900 text-sm font-medium">
-                            {pluralize("updates", ticket.updates.length, true)}
+                            {pluralize("updates", ticket.updates?.length || 0, true)}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -119,7 +142,7 @@ export default function TicketDetails() {
                             ))}
                           </ul>
                         </div>
-                        <div>
+                        {/* <div>
                           <h2 className="text-sm font-medium text-gray-500">Tags</h2>
                           <ul className="mt-2 leading-8">
                             <li className="inline">
@@ -153,7 +176,7 @@ export default function TicketDetails() {
                               </Link>{" "}
                             </li>
                           </ul>
-                        </div>
+                        </div> */}
                       </div>
                     </aside>
                     <div className="py-3 xl:pt-6 xl:pb-0">
@@ -174,7 +197,7 @@ export default function TicketDetails() {
                       </div>
                       <div className="pt-6">
                         {/* Activity feed*/}
-                        <ActivityFeed updates={ticket.updates} />
+                        {ticket.updates && <ActivityFeed updates={ticket.updates} />}
                         <div className="mt-6">
                           <div className="flex space-x-3">
                             <div className="flex-shrink-0">
@@ -183,6 +206,7 @@ export default function TicketDetails() {
                                   className="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white"
                                   src={user!.image}
                                   alt={user!.fullName}
+                                  onError={(e) => (e.currentTarget.src = "/avatar_placeholder.png")}
                                 />
 
                                 <span className="absolute -bottom-0.5 -right-1 bg-white rounded-tl px-0.5 py-px">
@@ -194,7 +218,7 @@ export default function TicketDetails() {
                               </div>
                             </div>
                             <div className="min-w-0 flex-1">
-                              <form action="#">
+                              <div>
                                 <div>
                                   <label htmlFor="comment" className="sr-only">
                                     Comment
@@ -205,7 +229,8 @@ export default function TicketDetails() {
                                     rows={3}
                                     className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border border-gray-300 rounded-md"
                                     placeholder="Leave a comment"
-                                    defaultValue={""}
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
                                   />
                                 </div>
                                 <div className="mt-6 flex items-center justify-end space-x-4">
@@ -222,11 +247,12 @@ export default function TicketDetails() {
                                   <button
                                     type="submit"
                                     className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                                    onClick={handleCommentUpdate}
                                   >
                                     Comment
                                   </button>
                                 </div>
-                              </form>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -245,7 +271,7 @@ export default function TicketDetails() {
                   <div className="flex items-center space-x-2">
                     <ChatAltIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     <span className="text-gray-900 text-sm font-medium">
-                      {pluralize("updates", ticket.updates.length, true)}
+                      {pluralize("updates", ticket.updates?.length || 0, true)}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -276,7 +302,7 @@ export default function TicketDetails() {
                       ))}
                     </ul>
                   </div>
-                  <div>
+                  {/* <div>
                     <h2 className="text-sm font-medium text-gray-500">Tags</h2>
                     <ul className="mt-2 leading-8">
                       <li className="inline">
@@ -310,7 +336,7 @@ export default function TicketDetails() {
                         </Link>{" "}
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
               </aside>
             </div>

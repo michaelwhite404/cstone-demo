@@ -1,4 +1,4 @@
-import { AttendanceStat } from "../../../src/types/models";
+import { AttendanceStat, TicketModel } from "../../../src/types/models";
 import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
@@ -40,3 +40,5 @@ export interface APICurrentSessionResponse extends APIResponse<CurrentSession> {
 
 export interface APIShortUrlResponse extends APIResponse<{ shortUrl: ShortUrlModel }> {}
 export interface APIShortUrlsResponse extends APIResponse<{ shortUrls: ShortUrlModel[] }> {}
+
+export interface APITicketResponse extends APIResponse<{ ticket: TicketModel }> {}

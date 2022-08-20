@@ -1,6 +1,5 @@
 import { TicketUpdate } from "../../../../src/types/models";
-import Comment from "./Comment";
-import Assign from "./Assign";
+import { Assign, Comment } from "./ActivityUpdate";
 
 export default function ActivityFeed({ updates }: { updates: TicketUpdate[] }) {
   return (

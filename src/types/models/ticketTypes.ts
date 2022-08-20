@@ -8,7 +8,7 @@ export interface TicketModel {
   description: string;
   department: PopulatedDoc<DepartmentModel>;
   status: TicketStatus;
-  updates: TicketUpdate[];
+  updates?: TicketUpdate[];
   priority: TicketPriority;
   submittedBy: PopulatedDoc<EmployeeModel>;
   assignedTo: PopulatedDoc<EmployeeModel[]>;

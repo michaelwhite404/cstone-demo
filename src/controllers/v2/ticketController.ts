@@ -4,6 +4,7 @@ import {
   Ticket,
   TicketAssignUpdate,
   TicketCommentUpdate,
+  TicketTag,
   TicketTagUpdate,
 } from "@models";
 import { EmployeeModel } from "@@types/models";
@@ -82,8 +83,8 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
     // @ts-ignore
   }).populate({
     path: "department submittedBy assignedTo updates",
-    select: "name email fullName memebers comment assign op date createdBy",
-    populate: { path: "assign createdBy", select: "fullName email" },
+    select: "name email image slug fullName comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email image slug" },
   });
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
   if (ticket.submittedBy._id.toString() === req.employee._id.toString()) {
@@ -106,7 +107,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
         email: req.employee.email,
         id: req.employee._id,
       };
-      ticket.updates.push(ticketComment);
+      ticket.updates ? ticket.updates.push(ticketComment) : (ticket.updates = [ticketComment]);
       newTicket = ticket;
       break;
     case "ASSIGN":
@@ -133,9 +134,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
           );
         const req1 = Ticket.findByIdAndUpdate(
           ticket._id,
-          {
-            $push: { assignedTo: emp._id },
-          },
+          { $push: { assignedTo: emp._id } },
           { new: true }
         ).populate({
           path: "department submittedBy assignedTo",
@@ -162,7 +161,15 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       [newTicket] = await Promise.all([req1, req2]);
       break;
     case "TAG":
-      // return next(new AppError("Not implemented", 400));
+      // Make sure label is valid
+      const tag = await TicketTag.findOne({ name: req.body.tag });
+      if (!tag) return next(new AppError("There is no label with the name ${}", 400));
+      // Make sure operation is either add or remove
+
+      // If operation is add
+
+      // If operation is remove
+
       await TicketTagUpdate.create({ ...data, tag: req.body.tag });
       break;
     default:
