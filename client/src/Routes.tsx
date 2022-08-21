@@ -51,7 +51,9 @@ export default function Routes() {
         </Route>
         <Route path="requests">
           <Route index element={<Page.Requests />} />
-          <Route path="leaves" element={<Page.Requests.Leaves />} />
+          <Route path="leaves" element={<Page.Requests.Leaves />}>
+            <Route path=":leaveId" element={<Page.Requests.Leaves.Detail />} />
+          </Route>
           <Route path="reimbursements" element={<Page.Requests.Reimbursements />} />
         </Route>
         {["Admin", "Super Admin"].includes(user.role) && (
