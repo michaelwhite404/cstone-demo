@@ -7,12 +7,15 @@ import { LeaveModel } from "../../../../../src/types/models";
 import TableWrapper from "../../../components/TableWrapper";
 import { Link, Outlet, useParams } from "react-router-dom";
 import Detail from "./Detail";
+import BadgeColor from "../../../components/Badge/BadgeColor";
+import Badge from "../../../components/Badge/Badge";
 
 function Leaves() {
   useDocTitle("Leave Requests | Cornerstone App");
-  const params = useParams();
+  const params = useParams<"leaveId">();
   const [leaves, setLeaves] = useState<LeaveModel[]>([]);
   const [open, setOpen] = useState(false);
+  const selected = leaves.find((leave) => leave._id === params.leaveId);
   useEffect(() => {
     const getLeaves = async () => {
       const res = await axios.get("/api/v2/leaves");
@@ -25,6 +28,12 @@ function Leaves() {
   useEffect(() => {
     params.leaveId ? setOpen(true) : setOpen(false);
   }, [params]);
+
+  const badgeObj: { [x: string]: BadgeColor } = {
+    Approved: "emerald",
+    Pending: "yellow",
+    Rejected: "red",
+  };
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -52,10 +61,15 @@ function Leaves() {
                   return (
                     <tr key={leave._id}>
                       <td className="pl-6 py-2 w-[35%]">
-                        <div>
+                        <div className="pr-6 md:w-[350px]">
                           <Link to={`/requests/leaves/${leave._id}`} state={{ fromLeaves: true }}>
                             <div className="text-gray-900 font-medium">{leave.reason}</div>
                           </Link>
+                          {leave.comments && (
+                            <div className="hidden md:block whitespace-nowrap overflow-hidden overflow-ellipsis">
+                              {leave.comments}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td>
@@ -65,7 +79,9 @@ function Leaves() {
                           {format(new Date(leave.dateEnd), "P")}
                         </div>
                       </td>
-                      <td>{status}</td>
+                      <td>
+                        <Badge color={badgeObj[status]} text={status} />
+                      </td>
                     </tr>
                   );
                 })}
@@ -73,8 +89,48 @@ function Leaves() {
             </table>
           </TableWrapper>
         </div>
+        <div className="block sm:hidden">
+          <TableWrapper>
+            <div className="sticky-header px-4 py-2">
+              <span className="show-entry-label">Requests</span>
+            </div>
+            <ul className="bg-white">
+              {leaves.map((leave) => {
+                const status = leave.approval
+                  ? leave.approval.approved
+                    ? "Approved"
+                    : "Rejected"
+                  : "Pending";
+                return (
+                  <li key={leave._id}>
+                    <Link to={`/requests/leaves/${leave._id}`} state={{ fromLeaves: true }}>
+                      <div className="p-4 space-y-0.5">
+                        <div className="text-gray-900 font-medium">{leave.reason}</div>
+                        {leave.comments && (
+                          <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                            {leave.comments}
+                          </div>
+                        )}
+                        <div className="flex text-gray-400">
+                          {format(new Date(leave.dateStart), "P")}
+                          <ArrowNarrowRightIcon className="mx-2 w-4" />
+                          {format(new Date(leave.dateEnd), "P")}
+                        </div>
+                        <div>
+                          <div className="mt-2">
+                            <Badge color={badgeObj[status]} text={status} />
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </TableWrapper>
+        </div>
       </div>
-      <Outlet context={{ open, setOpen }} />
+      <Outlet context={{ open, setOpen, selected }} />
       {/* <Detail open={open} setOpen={setOpen} /> */}
     </div>
   );

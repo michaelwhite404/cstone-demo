@@ -24,7 +24,8 @@ export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) 
   let query = isObjectID(req.params.id.toString())
     ? Model.findById(req.params.id)
     : Model.findOne({ slug: req.params.id });
-  if (req.query.projection === "FULL") query = query.populate({ path: "departments" });
+  query = query.populate({ path: "departments" });
+  // if (req.query.projection === "FULL")
   const user = await query;
   if (!user) return next(new AppError("No user found with that ID", 404));
   let groups: models.UserGroup[] | undefined;

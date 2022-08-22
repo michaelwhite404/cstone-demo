@@ -5,6 +5,8 @@ interface Employee {
   role: string;
   timesheetEnabled: boolean;
   homeroomGrade?: number;
+  image?: string;
+  slug: string;
   employeeOf?: {
     employees: ObjectId[];
     _id: ObjectId;

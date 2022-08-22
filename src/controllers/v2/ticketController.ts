@@ -104,6 +104,8 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       ticketComment.createdBy = {
         _id: req.employee._id,
         fullName: req.employee.fullName,
+        image: req.employee.image,
+        slug: req.employee.slug,
         email: req.employee.email,
         id: req.employee._id,
       };

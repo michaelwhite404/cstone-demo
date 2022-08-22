@@ -18,7 +18,7 @@ const links = [
 ];
 
 function Requests() {
-  useDocTitle("Dashboard | Cornerstone App");
+  useDocTitle("Requests | Cornerstone App");
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">

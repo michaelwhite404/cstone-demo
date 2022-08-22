@@ -32,7 +32,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     async function fetchMe() {
       axios
-        .get("/api/v2/users/me", { params: { projection: "FULL" } })
+        .get("/api/v2/users/me" /* { params: { projection: "FULL" } } */)
         .then((res) => {
           setUser(res.data.data.user);
           setIsAuthenticated(true);
