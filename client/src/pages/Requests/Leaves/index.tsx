@@ -10,6 +10,7 @@ import Detail from "./Detail";
 import BadgeColor from "../../../components/Badge/BadgeColor";
 import Badge from "../../../components/Badge/Badge";
 import AddLeave from "./AddLeave";
+import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 
 function Leaves() {
   useDocTitle("Leave Requests | Cornerstone App");
@@ -39,8 +40,14 @@ function Leaves() {
 
   return (
     <div style={{ padding: "10px 25px 25px" }}>
-      <div className="page-header">
-        <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>Leave Requests</h1>
+      <div className="sm:flex sm:justify-between  sm:align-center">
+        <div className="page-header">
+          <h1 style={{ textTransform: "capitalize", marginBottom: "10px" }}>Leave Requests</h1>
+          <p>View and create leave requests</p>
+        </div>
+        <div className="flex justify-end sm:block sm:mt-4">
+          <PrimaryButton text="+ Create Leave" onClick={() => setModalOpen(true)} />
+        </div>
       </div>
       <div>
         <div className="hidden sm:block">
