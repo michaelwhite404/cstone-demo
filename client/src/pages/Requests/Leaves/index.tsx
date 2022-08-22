@@ -9,12 +9,14 @@ import { Link, Outlet, useParams } from "react-router-dom";
 import Detail from "./Detail";
 import BadgeColor from "../../../components/Badge/BadgeColor";
 import Badge from "../../../components/Badge/Badge";
+import AddLeave from "./AddLeave";
 
 function Leaves() {
   useDocTitle("Leave Requests | Cornerstone App");
   const params = useParams<"leaveId">();
   const [leaves, setLeaves] = useState<LeaveModel[]>([]);
-  const [open, setOpen] = useState(false);
+  const [slideOpen, setSlideOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const selected = leaves.find((leave) => leave._id === params.leaveId);
   useEffect(() => {
     const getLeaves = async () => {
@@ -26,7 +28,7 @@ function Leaves() {
   }, []);
 
   useEffect(() => {
-    params.leaveId ? setOpen(true) : setOpen(false);
+    params.leaveId ? setSlideOpen(true) : setSlideOpen(false);
   }, [params]);
 
   const badgeObj: { [x: string]: BadgeColor } = {
@@ -130,8 +132,8 @@ function Leaves() {
           </TableWrapper>
         </div>
       </div>
-      <Outlet context={{ open, setOpen, selected }} />
-      {/* <Detail open={open} setOpen={setOpen} /> */}
+      <AddLeave open={modalOpen} setOpen={setModalOpen} setLeaves={setLeaves} />
+      <Outlet context={{ open: slideOpen, setOpen: setSlideOpen, selected }} />
     </div>
   );
 }

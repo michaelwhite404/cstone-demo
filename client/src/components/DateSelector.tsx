@@ -5,6 +5,7 @@ import LabeledInput from "./Inputs/LabeledInput";
 interface DateSelectorProps {
   onChange?: (date: Date) => void;
   label?: string;
+  maxDate?: Date;
 }
 
 export default function DateSelector(props: DateSelectorProps) {
@@ -65,6 +66,7 @@ export default function DateSelector(props: DateSelectorProps) {
         justifyContent: "flex-end",
         position: "relative",
         zIndex: 10,
+        width: "100%",
       }}
     >
       <DateInput ref={inputRef} />
@@ -73,7 +75,7 @@ export default function DateSelector(props: DateSelectorProps) {
           ref={pickerRef}
           selected={date}
           onChange={onDateSelect}
-          maxDate={new Date()}
+          maxDate={props.maxDate || new Date()}
           style={{ position: "absolute", top: "100%" }}
         />
       )}

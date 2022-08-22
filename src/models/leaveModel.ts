@@ -1,5 +1,6 @@
 import { LeaveDocument } from "@@types/models";
 import { Model, model, Schema, Types } from "mongoose";
+import { isSameDay, isBefore } from "date-fns";
 
 const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
   user: {
@@ -17,9 +18,9 @@ const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
     validate: {
       validator: function (): boolean {
         // @ts-ignore
-        return this.dateStart < this.dateEnd;
+        return isSameDay(this.dateStart, this.dateEnd) || isBefore(this.dateStart, this.dateEnd);
       },
-      message: "Start date must be before end date",
+      message: "Start date must be on or before end date",
     },
   },
   reason: {

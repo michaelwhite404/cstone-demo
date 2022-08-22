@@ -125,12 +125,14 @@ export default function Detail() {
                                 <div>{format(new Date(selected.dateEnd), "P")}</div>
                               </FadeIn>
                             </div>
-                            <div className="col-span-2">
-                              <FadeIn delay={125}>
-                                <div className="show-entry-label">Comments</div>
-                                <div>{selected.comments}</div>
-                              </FadeIn>
-                            </div>
+                            {selected.comments && (
+                              <div className="col-span-2">
+                                <FadeIn delay={125}>
+                                  <div className="show-entry-label">Comments</div>
+                                  <div>{selected.comments}</div>
+                                </FadeIn>
+                              </div>
+                            )}
                             {/* {selected.approval && (
                               <>
                                 <div className="col-span-2">

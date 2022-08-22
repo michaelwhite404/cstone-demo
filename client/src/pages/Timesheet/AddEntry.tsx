@@ -83,7 +83,7 @@ export default function AddEntry(props: AddEntryProps) {
             onChange={(newValue) => handleSelectChange(newValue, "department")}
           />
         </div>
-        <div className="col-span-2" id="date-selector">
+        <div className="col-span-2 date-selector">
           <DateSelector label="Date" onChange={handleDateChange} />
         </div>
         <div>
