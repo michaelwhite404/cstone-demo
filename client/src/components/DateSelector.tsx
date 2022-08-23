@@ -1,11 +1,13 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import DatePicker from "sassy-datepicker";
 import LabeledInput from "./Inputs/LabeledInput";
+import "./DateSelector.sass";
 
 interface DateSelectorProps {
   onChange?: (date: Date) => void;
   label?: string;
   maxDate?: Date;
+  fill?: boolean;
 }
 
 export default function DateSelector(props: DateSelectorProps) {
@@ -59,6 +61,7 @@ export default function DateSelector(props: DateSelectorProps) {
 
   return (
     <div
+      className={`date-selector ${props.fill ? "fill" : ""}`}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -66,7 +69,6 @@ export default function DateSelector(props: DateSelectorProps) {
         justifyContent: "flex-end",
         position: "relative",
         zIndex: 10,
-        // width: "100%",
       }}
     >
       <DateInput ref={inputRef} />

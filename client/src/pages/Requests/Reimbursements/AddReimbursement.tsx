@@ -120,7 +120,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className=" relative bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:max-w-5xl sm:w-full">
-                <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+                <div className="block absolute top-0 right-0 pt-4 pr-4">
                   <button
                     type="button"
                     className="rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -138,7 +138,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                 </div>
                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-9">
+                    <div className="col-span-12 sm:col-span-9">
                       <LabeledInput2
                         label="Check Payee"
                         name="payee"
@@ -146,11 +146,12 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         onChange={handleChange}
                       />
                     </div>
-                    <div className="col-span-3">
+                    <div className="col-span-12 sm:col-span-3">
                       <DateSelector
                         label="Purchase Date"
                         maxDate={new Date("Dec 31, 9999")}
                         onChange={(date) => setData({ ...data, date })}
+                        fill
                       />
                     </div>
                     <div className="col-span-12">
@@ -161,7 +162,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         onChange={addressChange}
                       />
                     </div>
-                    <div className="col-span-6">
+                    <div className="col-span-12 sm:col-span-6">
                       <LabeledInput2
                         label="City"
                         name="city"
@@ -169,27 +170,44 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         onChange={addressChange}
                       />
                     </div>
-                    <div className="col-span-3">
+                    <div className="col-span-6 sm:col-span-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700">State</label>
                         <div className="mt-1">
-                          <select
-                            name="state"
-                            value={data.address.state}
-                            onChange={addressChange}
-                            className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
-                            style={{ boxShadow: "0px 0px 2px #aeaeae" }}
-                          >
-                            {stateList.map((state) => (
-                              <option key={state.value} value={state.value}>
-                                {state.text}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="hidden md:block">
+                            <select
+                              name="state"
+                              value={data.address.state}
+                              onChange={addressChange}
+                              className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
+                              style={{ boxShadow: "0px 0px 2px #aeaeae" }}
+                            >
+                              {stateList.map((state) => (
+                                <option key={state.value} value={state.value}>
+                                  {state.text}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="block md:hidden">
+                            <select
+                              name="state"
+                              value={data.address.state}
+                              onChange={addressChange}
+                              className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
+                              style={{ boxShadow: "0px 0px 2px #aeaeae", lineHeight: "1.5rem" }}
+                            >
+                              {stateList.map((state) => (
+                                <option key={state.value} value={state.value}>
+                                  {state.value}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="col-span-3">
+                    <div className="col-span-6 sm:col-span-3">
                       <LabeledInput2
                         label="Zip"
                         name="zip"
@@ -197,7 +215,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         onChange={addressChange}
                       />
                     </div>
-                    <div className="col-span-3">
+                    <div className="col-span-12 sm:col-span-3">
                       <div>
                         <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
                           Amount
@@ -217,7 +235,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         </div>
                       </div>
                     </div>
-                    <div className="col-span-9">
+                    <div className="col-span-12 sm:col-span-9">
                       <LabeledInput2
                         label="Purpose"
                         name="purpose"
@@ -256,7 +274,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         </div>
                       </div>
                       {needed && (
-                        <div className="flex items-start">
+                        <div className="w-full">
                           <DateSelector
                             label="Date Needed"
                             maxDate={new Date("Dec 31, 9999")}
