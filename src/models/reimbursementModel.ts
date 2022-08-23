@@ -3,6 +3,11 @@ import { Model, model, Schema, Types } from "mongoose";
 
 const reimbursementSchema: Schema<ReimbursementDocument, Model<ReimbursementDocument>> = new Schema(
   {
+    payee: {
+      type: String,
+      required: true,
+      minLength: 1,
+    },
     user: {
       type: Types.ObjectId,
       ref: "Employee",
@@ -41,6 +46,14 @@ const reimbursementSchema: Schema<ReimbursementDocument, Model<ReimbursementDocu
     purpose: {
       type: String,
       required: true,
+    },
+    dateNeeded: {
+      type: Date,
+      required: false,
+    },
+    specialInstructions: {
+      type: String,
+      required: false,
     },
     createdAt: {
       type: Date,

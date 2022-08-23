@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import React from "react";
 import { ReimbursementModel } from "../../../../../src/types/models";
 import TableWrapper from "../../../components/TableWrapper";
 

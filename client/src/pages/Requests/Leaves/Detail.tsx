@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { ArrowLeftIcon, XIcon } from "@heroicons/react/solid";
+import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
 import React, { Fragment, useCallback, useEffect } from "react";
 import { useOutletContext, useNavigate, useLocation } from "react-router-dom";

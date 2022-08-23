@@ -1,13 +1,15 @@
 import { format } from "date-fns";
 import React from "react";
+import { RM } from ".";
 import { ReimbursementModel } from "../../../../../src/types/models";
 import TableWrapper from "../../../components/TableWrapper";
 
 interface ReimbursementTableProps {
-  reimbursements: ReimbursementModel[];
+  reimbursements: RM[];
+  select: (reimbursement: RM) => void;
 }
 
-export default function ReimbursementTable({ reimbursements }: ReimbursementTableProps) {
+export default function ReimbursementTable({ reimbursements, select }: ReimbursementTableProps) {
   return (
     <TableWrapper>
       <table>
@@ -27,7 +29,10 @@ export default function ReimbursementTable({ reimbursements }: ReimbursementTabl
             >
               <td className="pl-6 py-1.5 w-40">{format(new Date(reimbursement.date), "P")}</td>
               <td className="text-gray-700 font-medium w-2/5">
-                <div className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[240px]">
+                <div
+                  className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[240px]"
+                  onClick={() => select(reimbursement)}
+                >
                   {reimbursement.purpose}
                 </div>
               </td>

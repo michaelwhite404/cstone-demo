@@ -3,6 +3,7 @@ import { EmployeeModel } from ".";
 
 export interface ReimbursementModel {
   _id: any;
+  payee: string;
   user: PopulatedDoc<EmployeeModel>;
   date: Date;
   amount: number;
@@ -13,6 +14,8 @@ export interface ReimbursementModel {
     zip: string;
   };
   purpose: string;
+  dateNeeded?: Date;
+  specialInstructions?: string;
   createdAt: Date;
   receipt: string;
   approval?: ReimbursementApproval;

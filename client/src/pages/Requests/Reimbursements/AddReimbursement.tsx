@@ -53,8 +53,13 @@ export default function AddReimbursement(props: AddLeaveProps) {
           formData.append(`address[${aKey}]`, data.address[aKey]);
         }
       } else {
-        if (thisKey === "amount") formData.append(key, String(+data.amount * 100));
-        else if (thisKey === "date") formData.append(key, data.date.toISOString());
+        if (thisKey === "amount") {
+          let amount = data.amount;
+          if (amount.includes(".")) {
+            amount = amount.split(".").join("");
+          }
+          formData.append(key, amount);
+        } else if (thisKey === "date") formData.append(key, data.date.toISOString());
         else if (thisKey === "dateNeeded") {
           if (needed) formData.append(key, data.dateNeeded.toISOString());
         } else formData.append(key, data[thisKey]);

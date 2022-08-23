@@ -35,12 +35,15 @@ export const approveReimbursement = catchAsync(async (req, res, next) => {
 });
 
 export const createReimbursement = catchAsync(async (req, res, next) => {
-  const { date, amount, address, purpose } = req.body;
+  const { date, amount, address, purpose, payee } = req.body;
   if (!(req.file?.fieldname === "receipt")) {
     return next(new AppError("Each reimbursement must have a receipt to upload", 400));
   }
+
+  console.log(amount);
   const reimbursement = await Model.create({
     user: req.employee._id,
+    payee,
     date,
     amount,
     address,
