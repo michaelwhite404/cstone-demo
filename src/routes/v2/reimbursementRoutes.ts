@@ -12,5 +12,15 @@ reimbursementRouter
   .get(reimbursementController.getAllReimbursements)
   .post(upload.single("receipt"), reimbursementController.createReimbursement);
 
+reimbursementRouter.post("/test", upload.single("receipt"), (req, res) => {
+  console.log(req.file);
+  console.log("------------");
+  console.log(req.body);
+  console.log("------------");
+  console.log(req.employee);
+
+  res.send("DONE");
+});
+
 reimbursementRouter.route("/:id").get(reimbursementController.getReimbursement);
 export default reimbursementRouter;

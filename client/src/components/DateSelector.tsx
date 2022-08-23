@@ -66,7 +66,7 @@ export default function DateSelector(props: DateSelectorProps) {
         justifyContent: "flex-end",
         position: "relative",
         zIndex: 10,
-        width: "100%",
+        // width: "100%",
       }}
     >
       <DateInput ref={inputRef} />

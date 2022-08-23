@@ -1,11 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
-import { isBefore, isSameDay, startOfDay } from "date-fns";
+import { startOfDay } from "date-fns";
 import { ChangeEventHandler, Fragment, useState } from "react";
 import DateSelector from "../../../components/DateSelector";
 import LabeledInput2 from "../../../components/LabeledInput2";
-import { useToasterContext } from "../../../hooks";
+import { useToasterContext, useToggle } from "../../../hooks";
 import { APIError } from "../../../types/apiResponses";
 import stateList from "../../../utils/stateList";
 import Dropzone from "./Dropzone";
@@ -15,8 +15,9 @@ interface AddLeaveProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const initialData = {
+  payee: "",
   date: startOfDay(new Date()),
-  amount: 0,
+  amount: "",
   address: {
     street: "",
     city: "",
@@ -30,33 +31,60 @@ const initialData = {
 
 export default function AddReimbursement(props: AddLeaveProps) {
   const [data, setData] = useState(initialData);
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<CustomFile[] | null>(null);
+  const [needed, toggleNeeded] = useToggle(false);
 
   const { showToaster } = useToasterContext();
   const close = () => {
     props.setOpen(false);
     setData(initialData);
+    if (needed) toggleNeeded();
+    setFiles(null);
   };
   const submit = async () => {
-    // try {
-    //   const res = await axios.post("/api/v2", data);
-    //   close();
-    // } catch (err) {
-    //   showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
-    // }
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
+    const formData = new FormData();
+    formData.append("receipt", files![0]);
+    for (var key in data) {
+      let thisKey = key as keyof typeof data;
+      if (thisKey === "address") {
+        for (let addressKey in data.address) {
+          let aKey = addressKey as keyof typeof data.address;
+          formData.append(`address[${aKey}]`, data.address[aKey]);
+        }
+      } else {
+        if (thisKey === "amount") formData.append(key, String(+data.amount * 100));
+        else if (thisKey === "date") formData.append(key, data.date.toISOString());
+        else if (thisKey === "dateNeeded") {
+          if (needed) formData.append(key, data.dateNeeded.toISOString());
+        } else formData.append(key, data[thisKey]);
+      }
+    }
+    try {
+      const res = await axios.post("/api/v2/reimbursements", formData, config);
+      console.log(res.data);
+      close();
+      showToaster("Reimbursement request submitted", "success");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
   };
 
-  const submittable = false;
+  const submittable =
+    // @ts-ignore
+    Object.keys(data.address).every((key) => data.address[key].length > 0) &&
+    data.payee.length > 0 &&
+    data.purpose.length > 0 &&
+    files?.length === 1 &&
+    /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(data.amount);
 
-  // const handleDateChange = (date: Date, name: string) =>
-  //   setData({ ...data, [name]: startOfDay(date) });
-  const handleChange: ChangeEventHandler<HTMLTextAreaElement | HTMLSelectElement> = (e) =>
+  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) =>
     setData({ ...data, [e.target.name]: e.target.value });
 
-  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) =>
-    setFile(e.target.files ? e.target.files[0] : null);
+  // const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) =>
+  //   setFile(e.target.files ? e.target.files[0] : null);
 
-  const streetAddressChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
+  const addressChange: ChangeEventHandler<HTMLSelectElement | HTMLInputElement> = (e) => {
     setData({ ...data, address: { ...data.address, [e.target.name]: e.target.value } });
   };
 
@@ -105,14 +133,36 @@ export default function AddReimbursement(props: AddLeaveProps) {
                 </div>
                 <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="grid grid-cols-12 gap-4">
-                    <div className="col-span-8">
-                      <LabeledInput2 label="Check Payee" />
+                    <div className="col-span-9">
+                      <LabeledInput2
+                        label="Check Payee"
+                        name="payee"
+                        value={data.payee}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <DateSelector
+                        label="Purchase Date"
+                        maxDate={new Date("Dec 31, 9999")}
+                        onChange={(date) => setData({ ...data, date })}
+                      />
                     </div>
                     <div className="col-span-12">
-                      <LabeledInput2 label="Street Address" />
+                      <LabeledInput2
+                        label="Street Address"
+                        name="street"
+                        value={data.address.street}
+                        onChange={addressChange}
+                      />
                     </div>
                     <div className="col-span-6">
-                      <LabeledInput2 label="City" />
+                      <LabeledInput2
+                        label="City"
+                        name="city"
+                        value={data.address.city}
+                        onChange={addressChange}
+                      />
                     </div>
                     <div className="col-span-3">
                       <div>
@@ -121,7 +171,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                           <select
                             name="state"
                             value={data.address.state}
-                            onChange={streetAddressChange}
+                            onChange={addressChange}
                             className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
                             style={{ boxShadow: "0px 0px 2px #aeaeae" }}
                           >
@@ -135,14 +185,87 @@ export default function AddReimbursement(props: AddLeaveProps) {
                       </div>
                     </div>
                     <div className="col-span-3">
-                      <LabeledInput2 label="Zip" />
+                      <LabeledInput2
+                        label="Zip"
+                        name="zip"
+                        value={data.address.zip}
+                        onChange={addressChange}
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <div>
+                        <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                          Amount
+                        </label>
+                        <div className="mt-1 relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 sm:text-sm">$</span>
+                          </div>
+                          <input
+                            type="text"
+                            name="amount"
+                            className="placeholder:text-gray-300 py-2 pl-7 pr-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md"
+                            placeholder="25.00"
+                            style={{ boxShadow: "0px 0px 2px #aeaeae" }}
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-9">
+                      <LabeledInput2
+                        label="Purpose"
+                        name="purpose"
+                        value={data.purpose}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-span-12">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Special Instructions
+                      </label>
+                      <textarea
+                        name="specialInstructions"
+                        className="min-h-[40px] h-20 mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-span-12 my-2">
+                      <div className="relative flex items-start">
+                        <div className="flex items-center h-5">
+                          <input
+                            id="needed"
+                            name="needed"
+                            type="checkbox"
+                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                            checked={needed}
+                            onChange={toggleNeeded}
+                          />
+                        </div>
+                        <div className="ml-3 text-sm mb-2">
+                          <label htmlFor="needed" className="font-medium text-gray-700 select-none">
+                            <p className="text-gray-500">
+                              I need a reimbursement by a specific date
+                            </p>
+                          </label>
+                        </div>
+                      </div>
+                      {needed && (
+                        <div className="flex items-start">
+                          <DateSelector
+                            label="Date Needed"
+                            maxDate={new Date("Dec 31, 9999")}
+                            onChange={(dateNeeded) => setData({ ...data, dateNeeded })}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="col-span-12">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Receipt
                         </label>
-                        <Dropzone />
+                        <Dropzone maxFiles={1} onFilesChange={setFiles} />
                       </div>
                     </div>
                   </div>
@@ -171,4 +294,8 @@ export default function AddReimbursement(props: AddLeaveProps) {
       </Dialog>
     </Transition.Root>
   );
+}
+
+interface CustomFile extends File {
+  preview: string;
 }
