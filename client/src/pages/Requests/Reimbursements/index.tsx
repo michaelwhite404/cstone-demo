@@ -1,9 +1,23 @@
 import { Divider } from "@mui/material";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import AddReimbursement from "./AddReimbursement";
+import ReimbursementList from "./ReimbursementList";
+import ReimbursementTable from "./ReimbursementTable";
 
 export default function Reimbursements() {
+  const [reimbursements, setReimbursements] = useState<ReimbursementModel[]>([]);
+  useEffect(() => {
+    const fetchReimbursements = async () => {
+      const res = await axios.get("/api/v2/reimbursements");
+      setReimbursements(res.data.data.reimbursements);
+    };
+
+    fetchReimbursements();
+  }, []);
+
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <div style={{ padding: "10px 25px 25px" }}>
@@ -19,7 +33,12 @@ export default function Reimbursements() {
         </div>
       </div>
       <div>
-        <Divider />
+        <div className="hidden sm:block">
+          <ReimbursementTable reimbursements={reimbursements} />
+        </div>
+        <div className="sm:hidden block">
+          <ReimbursementList reimbursements={reimbursements} />
+        </div>
       </div>
       <AddReimbursement open={modalOpen} setOpen={setModalOpen} />
     </div>
