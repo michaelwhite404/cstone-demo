@@ -4,7 +4,7 @@ import * as v1auth from "@controllers/v1/authController";
 
 const employeeRouter = Router();
 
-employeeRouter.post("/login", v1auth.login);
+employeeRouter.post("/login", v2auth.login);
 employeeRouter.post("/logout", v1auth.logout);
 employeeRouter.post("/google", v2auth.googleLogin);
 // employeeRouter.post("/forgot-password", v1auth.forgotPassword); // TODO: Re-do method
