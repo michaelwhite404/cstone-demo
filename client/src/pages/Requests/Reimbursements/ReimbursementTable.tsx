@@ -1,7 +1,6 @@
 import { format } from "date-fns";
-import React from "react";
 import { RM } from ".";
-import { ReimbursementModel } from "../../../../../src/types/models";
+import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 
 interface ReimbursementTableProps {
@@ -42,7 +41,9 @@ export default function ReimbursementTable({ reimbursements, select }: Reimburse
                   currency: "USD",
                 })}
               </td>
-              <td>{reimbursement.approval ? "DONE" : "Pending"}</td>
+              <td>
+                <ApprovalBadge status={reimbursement.status} />
+              </td>
             </tr>
           ))}
         </tbody>

@@ -35,7 +35,7 @@ export const approveReimbursement = catchAsync(async (req, res, next) => {
 });
 
 export const createReimbursement = catchAsync(async (req, res, next) => {
-  const { date, amount, address, purpose, payee } = req.body;
+  const { date, amount, address, purpose, payee, specialInstructions, dateNeeded } = req.body;
   if (!(req.file?.fieldname === "receipt")) {
     return next(new AppError("Each reimbursement must have a receipt to upload", 400));
   }
@@ -48,6 +48,8 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     amount,
     address,
     purpose,
+    specialInstructions,
+    dateNeeded,
     createdAt: new Date(),
   });
   try {

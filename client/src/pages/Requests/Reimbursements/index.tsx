@@ -1,21 +1,24 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
-import AddReimbursement from "./AddReimbursement";
-import Detail from "./Detail";
-import ReimbursementList from "./ReimbursementList";
-import ReimbursementTable from "./ReimbursementTable";
+import Tabs2 from "../../../components/Tabs2";
+import { useAuth } from "../../../hooks";
+import MyReimbursements from "./MyReimbursements";
 
 export interface RM extends ReimbursementModel {
   selected: boolean;
   status: "Approved" | "Rejected" | "Pending";
 }
 
+type PageState = "MY_REIMBURSEMENTS" | "APPROVALS";
+
 export default function Reimbursements() {
+  const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
+  const user = useAuth().user!;
   useEffect(() => {
     const fetchReimbursements = async () => {
       const reimbursements = (await axios.get("/api/v2/reimbursements")).data.data
@@ -46,6 +49,8 @@ export default function Reimbursements() {
     setSlideOpen(true);
   };
 
+  const isLeader = user.departments?.some((d) => d.role === "LEADER");
+
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="sm:flex sm:justify-between  sm:align-center">
@@ -59,20 +64,23 @@ export default function Reimbursements() {
           <PrimaryButton text="+ Create Reimbursement" onClick={() => setModalOpen(true)} />
         </div>
       </div>
-      <div>
-        <div className="hidden sm:block">
-          <ReimbursementTable reimbursements={reimbursements} select={select} />
-        </div>
-        <div className="sm:hidden block">
-          <ReimbursementList reimbursements={reimbursements} />
-        </div>
-      </div>
-      <AddReimbursement open={modalOpen} setOpen={setModalOpen} />
-      <Detail
-        open={slideOpen}
-        setOpen={setSlideOpen}
+      {isLeader && (
+        <Tabs2
+          tabs={[
+            { name: "My Reimbursements", current: true },
+            { name: "Approvals", current: false },
+          ]}
+        />
+      )}
+      <MyReimbursements
+        reimbursements={reimbursements}
+        select={select}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        slideOpen={slideOpen}
+        setSlideOpen={setSlideOpen}
         setReimbursements={setReimbursements}
-        reimbursement={selected}
+        selected={selected}
       />
     </div>
   );

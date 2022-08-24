@@ -1,9 +1,10 @@
 import { format } from "date-fns";
-import { ReimbursementModel } from "../../../../../src/types/models";
+import { RM } from ".";
+import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 
 interface ReimbursementListProps {
-  reimbursements: ReimbursementModel[];
+  reimbursements: RM[];
 }
 
 export default function ReimbursementList({ reimbursements }: ReimbursementListProps) {
@@ -24,6 +25,9 @@ export default function ReimbursementList({ reimbursements }: ReimbursementListP
                 <div className="font-medium">{reimbursement.purpose}</div>
                 <div className="text-gray-400 text-xs">
                   {format(new Date(reimbursement.date), "P")}
+                </div>
+                <div className="mt-1.5">
+                  <ApprovalBadge status={reimbursement.status} />
                 </div>
               </div>
               <div className="text-gray-500">
