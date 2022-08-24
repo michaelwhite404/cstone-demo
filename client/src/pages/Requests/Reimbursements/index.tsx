@@ -61,27 +61,39 @@ export default function Reimbursements() {
           <p>View and create reimbursement requests</p>
         </div>
         <div className="flex justify-end sm:block sm:mt-4">
-          <PrimaryButton text="+ Create Reimbursement" onClick={() => setModalOpen(true)} />
+          <PrimaryButton
+            className="w-full sm:w-auto"
+            text="+ Create Reimbursement"
+            onClick={() => setModalOpen(true)}
+          />
         </div>
       </div>
       {isLeader && (
-        <Tabs2
-          tabs={[
-            { name: "My Reimbursements", current: true },
-            { name: "Approvals", current: false },
-          ]}
-        />
+        <div className="sm:mt-0 mt-3">
+          <Tabs2
+            tabs={[
+              { name: "My Reimbursements", value: "MY_REIMBURSEMENTS" },
+              { name: "Approvals", value: "APPROVALS" },
+            ]}
+            value={pageState}
+            onChange={(tab) => setPageState(tab.value)}
+          />
+        </div>
       )}
-      <MyReimbursements
-        reimbursements={reimbursements}
-        select={select}
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        slideOpen={slideOpen}
-        setSlideOpen={setSlideOpen}
-        setReimbursements={setReimbursements}
-        selected={selected}
-      />
+      {pageState === "MY_REIMBURSEMENTS" ? (
+        <MyReimbursements
+          reimbursements={reimbursements}
+          select={select}
+          modalOpen={modalOpen}
+          setModalOpen={setModalOpen}
+          slideOpen={slideOpen}
+          setSlideOpen={setSlideOpen}
+          setReimbursements={setReimbursements}
+          selected={selected}
+        />
+      ) : (
+        <div>Approvals</div>
+      )}
     </div>
   );
 }

@@ -300,7 +300,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                     onClick={submit}
                     disabled={!submittable}
                   >
-                    Create Leave
+                    Create Reimbursement
                   </button>
                   <button
                     type="button"

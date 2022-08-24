@@ -46,7 +46,11 @@ function Leaves() {
           <p>View and create leave requests</p>
         </div>
         <div className="flex justify-end sm:block sm:mt-4">
-          <PrimaryButton text="+ Create Leave" onClick={() => setModalOpen(true)} />
+          <PrimaryButton
+            className="w-full sm:w-auto"
+            text="+ Create Leave"
+            onClick={() => setModalOpen(true)}
+          />
         </div>
       </div>
       <div>

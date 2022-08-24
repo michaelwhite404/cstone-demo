@@ -34,7 +34,7 @@ export default function MyReimbursements(props: Props) {
           <ReimbursementTable reimbursements={reimbursements} select={select} />
         </div>
         <div className="sm:hidden block">
-          <ReimbursementList reimbursements={reimbursements} />
+          <ReimbursementList reimbursements={reimbursements} select={select} />
         </div>
       </div>
       <AddReimbursement open={modalOpen} setOpen={setModalOpen} />

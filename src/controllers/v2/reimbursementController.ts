@@ -40,7 +40,6 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     return next(new AppError("Each reimbursement must have a receipt to upload", 400));
   }
 
-  console.log(amount);
   const reimbursement = await Model.create({
     user: req.employee._id,
     payee,

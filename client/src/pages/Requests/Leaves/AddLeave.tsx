@@ -53,7 +53,7 @@ export default function AddLeave(props: AddLeaveProps) {
     "Professional Leave",
     "Leave without Pay",
     "Jury Duty Leave",
-    "Funearal Leave",
+    "Funeral Leave",
     "Vacation (Year-round staff only)",
     "DC Paid Family Leave",
     "COVID-Related",

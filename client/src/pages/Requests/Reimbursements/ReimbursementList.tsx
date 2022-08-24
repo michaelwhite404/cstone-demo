@@ -5,9 +5,10 @@ import TableWrapper from "../../../components/TableWrapper";
 
 interface ReimbursementListProps {
   reimbursements: RM[];
+  select: (reimbursement: RM) => void;
 }
 
-export default function ReimbursementList({ reimbursements }: ReimbursementListProps) {
+export default function ReimbursementList({ reimbursements, select }: ReimbursementListProps) {
   return (
     <TableWrapper>
       <div className="sticky-header px-4 py-2">
@@ -16,12 +17,13 @@ export default function ReimbursementList({ reimbursements }: ReimbursementListP
       <ul>
         {reimbursements.map((reimbursement, i) => (
           <li key={reimbursement._id}>
-            <div
-              className={`flex justify-between align-center p-3 ${
+            <button
+              className={`w-full flex justify-between align-center p-4 ${
                 i !== reimbursements.length - 1 ? "border-b border-gray-200" : ""
               }`}
+              onClick={() => select(reimbursement)}
             >
-              <div>
+              <div className="flex flex-col items-start">
                 <div className="font-medium">{reimbursement.purpose}</div>
                 <div className="text-gray-400 text-xs">
                   {format(new Date(reimbursement.date), "P")}
@@ -36,7 +38,7 @@ export default function ReimbursementList({ reimbursements }: ReimbursementListP
                   currency: "USD",
                 })}
               </div>
-            </div>
+            </button>
           </li>
         ))}
       </ul>
