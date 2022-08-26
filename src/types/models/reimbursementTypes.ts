@@ -1,5 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { EmployeeModel } from ".";
+import { EmployeeModel, DepartmentModel } from ".";
 
 export interface ReimbursementModel {
   _id: any;
@@ -18,6 +18,7 @@ export interface ReimbursementModel {
   specialInstructions?: string;
   createdAt: Date;
   receipt: string;
+  sendTo: PopulatedDoc<EmployeeModel>;
   approval?: ReimbursementApproval;
 }
 

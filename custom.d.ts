@@ -7,6 +7,7 @@ interface Employee {
   homeroomGrade?: number;
   image?: string;
   slug: string;
+  departments?: UserDepartment[];
   employeeOf?: {
     employees: ObjectId[];
     _id: ObjectId;
@@ -19,6 +20,13 @@ interface Employee {
   }[];
   space?: string;
 }
+
+interface UserDepartment {
+  _id: DepartmentModel["_id"];
+  name: string;
+  role: "LEADER" | "EMPLOYEE";
+}
+
 declare namespace Express {
   import { ObjectId } from "mongoose";
   import { Send } from "express";

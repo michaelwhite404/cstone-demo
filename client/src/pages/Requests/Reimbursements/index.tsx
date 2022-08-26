@@ -16,6 +16,7 @@ type PageState = "MY_REIMBURSEMENTS" | "APPROVALS";
 export default function Reimbursements() {
   const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
+  const [approvals, setApprovals] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
   const user = useAuth().user!;
@@ -32,7 +33,28 @@ export default function Reimbursements() {
             : "Rejected"
           : ("Pending" as RM["status"]),
       }));
-      setReimbursements(r);
+      const data = reimbursements.reduce(
+        (prevVal, nextVal) => {
+          const r = {
+            ...nextVal,
+            selected: false,
+            status: nextVal.approval
+              ? nextVal.approval.approved
+                ? "Approved"
+                : "Rejected"
+              : ("Pending" as RM["status"]),
+          };
+          if (r.user._id === user._id) prevVal.reimbursements.push(r);
+          if (r.sendTo._id === user._id) prevVal.approvals.push(r);
+          return prevVal;
+        },
+        {
+          reimbursements: [] as RM[],
+          approvals: [] as RM[],
+        }
+      );
+      setReimbursements(data.reimbursements);
+      setApprovals(data.approvals);
     };
 
     fetchReimbursements();

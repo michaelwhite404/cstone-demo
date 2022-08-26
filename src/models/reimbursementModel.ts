@@ -62,6 +62,11 @@ const reimbursementSchema: Schema<ReimbursementDocument, Model<ReimbursementDocu
     receipt: {
       type: String,
     },
+    sendTo: {
+      type: Types.ObjectId,
+      ref: "Employee",
+      // required: true,
+    },
     approval: {
       user: {
         type: Types.ObjectId,
