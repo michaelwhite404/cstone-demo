@@ -1,5 +1,5 @@
 import { Document, PopulatedDoc } from "mongoose";
-import { EmployeeModel, DepartmentModel } from ".";
+import { EmployeeModel } from ".";
 
 export interface ReimbursementModel {
   _id: any;

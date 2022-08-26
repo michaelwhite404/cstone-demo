@@ -4,6 +4,8 @@ import { ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
 import { useAuth } from "../../../hooks";
+import Approvals from "./Approvals";
+import Detail from "./Detail";
 import MyReimbursements from "./MyReimbursements";
 
 export interface RM extends ReimbursementModel {
@@ -16,7 +18,6 @@ type PageState = "MY_REIMBURSEMENTS" | "APPROVALS";
 export default function Reimbursements() {
   const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
-  const [approvals, setApprovals] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
   const user = useAuth().user!;
@@ -33,31 +34,15 @@ export default function Reimbursements() {
             : "Rejected"
           : ("Pending" as RM["status"]),
       }));
-      const data = reimbursements.reduce(
-        (prevVal, nextVal) => {
-          const r = {
-            ...nextVal,
-            selected: false,
-            status: nextVal.approval
-              ? nextVal.approval.approved
-                ? "Approved"
-                : "Rejected"
-              : ("Pending" as RM["status"]),
-          };
-          if (r.user._id === user._id) prevVal.reimbursements.push(r);
-          if (r.sendTo._id === user._id) prevVal.approvals.push(r);
-          return prevVal;
-        },
-        {
-          reimbursements: [] as RM[],
-          approvals: [] as RM[],
-        }
-      );
-      setReimbursements(data.reimbursements);
-      setApprovals(data.approvals);
+
+      // if (r.user._id === user._id) prevVal.reimbursements.push(r);
+      // if (r.sendTo._id === user._id) prevVal.approvals.push(r);
+
+      setReimbursements(r);
     };
 
     fetchReimbursements();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selected = reimbursements.find((r) => r.selected);
@@ -104,18 +89,23 @@ export default function Reimbursements() {
       )}
       {pageState === "MY_REIMBURSEMENTS" ? (
         <MyReimbursements
-          reimbursements={reimbursements}
+          reimbursements={reimbursements.filter((r) => r.user._id === user._id)}
           select={select}
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
-          slideOpen={slideOpen}
-          setSlideOpen={setSlideOpen}
-          setReimbursements={setReimbursements}
-          selected={selected}
         />
       ) : (
-        <div>Approvals</div>
+        <Approvals
+          reimbursements={reimbursements.filter((r) => r.sendTo._id === user._id)}
+          select={select}
+        />
       )}
+      <Detail
+        open={slideOpen}
+        setOpen={setSlideOpen}
+        setReimbursements={setReimbursements}
+        reimbursement={selected}
+      />
     </div>
   );
 }

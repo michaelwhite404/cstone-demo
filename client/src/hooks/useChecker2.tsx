@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 export default function useChecker2<T>(initialData: T[]) {
   const [data, setData] = useState<T[]>(initialData);
-  const [selectedData, setSelectedData] = useState<T[]>(initialData);
+  const [selectedData, setSelectedData] = useState<T[]>([]);
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const checkboxRef = useRef<HTMLInputElement | null>(null);
