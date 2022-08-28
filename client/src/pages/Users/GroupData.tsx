@@ -19,17 +19,17 @@ import capitalize from "capitalize";
 
 export default function GroupData() {
   const [group, setGroup] = useState<GroupModel>();
+  const [m, setM] = useState<GroupMember[]>([]);
   const { showToaster } = useToasterContext();
   const { slug } = useParams();
   const {
-    setData: setMembers,
     allSelected,
     checkboxRef,
     toggleAll,
     selectedData: selectedMembers,
     data: members,
     setSelectedData: setSelectedMembers,
-  } = useChecker2(group?.members === undefined ? [] : group.members);
+  } = useChecker2(m);
   const [openEdit, setOpenEdit] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
 
@@ -37,17 +37,17 @@ export default function GroupData() {
     try {
       const res = await axios.get(`/api/v2/groups/${slug}`);
       setGroup(res.data.data.group);
-      setMembers(res.data.data.group.members || []);
+      setM(res.data.data.group.members || []);
     } catch (err) {
       showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
     }
-  }, [setMembers, showToaster, slug]);
+  }, [showToaster, slug]);
 
   useEffect(() => {
     fetchGroup();
   }, [fetchGroup]);
 
-  const data = {
+  const groupData = {
     name: group?.name || "",
     description: group?.description || "",
     email: group?.email || "",
@@ -67,9 +67,7 @@ export default function GroupData() {
           ...member,
           fullName: users.find((user) => user.email === member.email)!.name,
         }));
-        setMembers(
-          [...members, ...membersWithName].sort((a, b) => a.email!.localeCompare(b.email!))
-        );
+        setM([...members, ...membersWithName].sort((a, b) => a.email!.localeCompare(b.email!)));
         showToaster(
           pluralize("members", returnedMembers.length, true) +
             " added. It might take some time for changes to be reflected.",
@@ -246,7 +244,7 @@ export default function GroupData() {
             <GroupDataSlider
               open={openEdit}
               setOpen={setOpenEdit}
-              data={data}
+              data={groupData}
               updateGroup={updateGroup}
             />
             <GroupDataAdd

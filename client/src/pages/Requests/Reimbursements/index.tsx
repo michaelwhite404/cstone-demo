@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ReimbursementModel } from "../../../../../src/types/models";
+import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
 import { useAuth } from "../../../hooks";
+import { APIReimbursementResponse } from "../../../types/apiResponses";
+import AddReimbursement from "./AddReimbursement";
 import Approvals from "./Approvals";
 import Detail from "./Detail";
 import MyReimbursements from "./MyReimbursements";
@@ -21,26 +23,22 @@ export default function Reimbursements() {
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
   const user = useAuth().user!;
+
+  const getStatus = (approval?: ReimbursementApproval) =>
+    approval ? (approval.approved ? "Approved" : "Rejected") : ("Pending" as RM["status"]);
+
+  const fetchReimbursements = async () => {
+    const reimbursements = (await axios.get("/api/v2/reimbursements")).data.data
+      .reimbursements as ReimbursementModel[];
+    const r = reimbursements.map((r) => ({
+      ...r,
+      selected: false,
+      status: getStatus(r.approval),
+    }));
+    setReimbursements(r);
+  };
+
   useEffect(() => {
-    const fetchReimbursements = async () => {
-      const reimbursements = (await axios.get("/api/v2/reimbursements")).data.data
-        .reimbursements as ReimbursementModel[];
-      const r = reimbursements.map((r) => ({
-        ...r,
-        selected: false,
-        status: r.approval
-          ? r.approval.approved
-            ? "Approved"
-            : "Rejected"
-          : ("Pending" as RM["status"]),
-      }));
-
-      // if (r.user._id === user._id) prevVal.reimbursements.push(r);
-      // if (r.sendTo._id === user._id) prevVal.approvals.push(r);
-
-      setReimbursements(r);
-    };
-
     fetchReimbursements();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -54,6 +52,13 @@ export default function Reimbursements() {
     copy[index].selected = true;
     setReimbursements(copy);
     setSlideOpen(true);
+  };
+
+  const finalizeReimbursement = async (id: string, approved: boolean) => {
+    const res = await axios.post<APIReimbursementResponse>(`/api/v2/reimbursements/${id}/approve`, {
+      approved,
+    });
+    return res.data.data.reimbursement;
   };
 
   const isLeader = user.departments?.some((d) => d.role === "LEADER");
@@ -91,20 +96,19 @@ export default function Reimbursements() {
         <MyReimbursements
           reimbursements={reimbursements.filter((r) => r.user._id === user._id)}
           select={select}
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
         />
       ) : (
-        <Approvals
-          reimbursements={reimbursements.filter((r) => r.sendTo._id === user._id)}
-          select={select}
-        />
+        <Approvals reimbursements={reimbursements} select={select} user={user} />
       )}
+      <AddReimbursement open={modalOpen} setOpen={setModalOpen} />
       <Detail
         open={slideOpen}
         setOpen={setSlideOpen}
         setReimbursements={setReimbursements}
         reimbursement={selected}
+        user={user}
+        finalizeReimbursement={finalizeReimbursement}
+        getStatus={getStatus}
       />
     </div>
   );

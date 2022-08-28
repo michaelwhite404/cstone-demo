@@ -12,5 +12,11 @@ reimbursementRouter
   .get(reimbursementController.getAllReimbursements)
   .post(upload.single("receipt"), reimbursementController.createReimbursement);
 
+reimbursementRouter.post(
+  "/:id/approve",
+  reimbursementController.checkCanApprove,
+  reimbursementController.approveReimbursement
+);
+
 reimbursementRouter.route("/:id").get(reimbursementController.getReimbursement);
 export default reimbursementRouter;

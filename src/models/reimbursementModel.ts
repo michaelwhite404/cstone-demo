@@ -65,7 +65,7 @@ const reimbursementSchema: Schema<ReimbursementDocument, Model<ReimbursementDocu
     sendTo: {
       type: Types.ObjectId,
       ref: "Employee",
-      // required: true,
+      required: true,
     },
     approval: {
       user: {

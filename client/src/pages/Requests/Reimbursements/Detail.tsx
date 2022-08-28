@@ -3,14 +3,24 @@ import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
 import React, { Fragment } from "react";
 import { RM } from ".";
+import {
+  EmployeeModel,
+  ReimbursementApproval,
+  ReimbursementModel,
+} from "../../../../../src/types/models";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import FadeIn from "../../../components/FadeIn";
+import { useToasterContext } from "../../../hooks";
+import ConfirmButtons from "./ConfirmButtons";
 
 interface DetailProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   reimbursement?: RM;
   setReimbursements: React.Dispatch<React.SetStateAction<RM[]>>;
+  user: EmployeeModel;
+  finalizeReimbursement: (id: string, approved: boolean) => Promise<ReimbursementModel>;
+  getStatus: (approval?: ReimbursementApproval) => "Approved" | "Rejected" | "Pending";
 }
 
 function wait(ms: number) {
@@ -18,12 +28,34 @@ function wait(ms: number) {
 }
 
 export default function Detail(props: DetailProps) {
-  const { open, setOpen, reimbursement, setReimbursements } = props;
+  const { showError } = useToasterContext();
+  const { open, setOpen, reimbursement, setReimbursements, user, finalizeReimbursement } = props;
 
   const handleClose = async () => {
     setOpen(false);
     await wait(500);
     setReimbursements((rms) => rms.map((r) => ({ ...r, selected: false })));
+  };
+
+  const canApprove = reimbursement?.sendTo?._id === user._id && !reimbursement?.approval;
+
+  const submitApproval = async (approved: boolean) => {
+    if (reimbursement) {
+      finalizeReimbursement(reimbursement._id, approved)
+        .then((newReimbursement) =>
+          setReimbursements((rs) => {
+            const copy = [...rs];
+            const index = copy.findIndex((r) => r._id === reimbursement._id);
+            copy[index] = {
+              ...copy[index],
+              status: props.getStatus(newReimbursement.approval),
+              approval: newReimbursement.approval,
+            };
+            return copy;
+          })
+        )
+        .catch((err) => showError(err));
+    }
   };
 
   return (
@@ -58,12 +90,12 @@ export default function Detail(props: DetailProps) {
                     <div className="flex h-full flex-col overflow-y-scroll bg-white px-7 pb-6 shadow-xl">
                       <div className="z-10 flex justify-between align-center sticky top-0 bg-white pt-7 pb-2">
                         <div className="flex align-center">
-                          <span
+                          <button
                             className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                             onClick={() => handleClose()}
                           >
                             <ArrowLeftIcon className="w-4" />
-                          </span>
+                          </button>
                           <span className="text-xl font-semibold ml-4">
                             {reimbursement.purpose}
                           </span>
@@ -73,6 +105,7 @@ export default function Detail(props: DetailProps) {
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
                         {/* Replace with your content */}
                         <div className="absolute inset-0">
+                          {canApprove && <ConfirmButtons submitApproval={submitApproval} />}
                           <div className="mt-10 grid gap-8 grid-cols-2">
                             <div>
                               <FadeIn delay={125}>

@@ -58,9 +58,9 @@ export const checkCanApprove = catchAsync(async (req, res, next) => {
   if (reimbursement.sendTo.toString() !== req.employee._id.toString()) {
     return next(new AppError("You are not authorized to approve this reimbursement", 403));
   }
-  if (reimbursement.approval)
+  if (reimbursement.approval?.date)
     return next(new AppError("This reimbursement request has already been finalized", 400));
-  res.locals.reimbursement;
+  res.locals.reimbursement = reimbursement;
   next();
 });
 

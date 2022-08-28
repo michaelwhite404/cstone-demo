@@ -1,18 +1,12 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
-// interface useChecker2Props<T> {
-//   data: T[];
-// }
-
-export default function useChecker2<T>(initialData: T[]) {
-  const [data, setData] = useState<T[]>(initialData);
+export default function useChecker2<T>(data: T[]) {
   const [selectedData, setSelectedData] = useState<T[]>([]);
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const checkboxRef = useRef<HTMLInputElement | null>(null);
 
   useLayoutEffect(() => {
-    // console.log(data, initialData);
     const isIndeterminate = selectedData.length > 0 && selectedData.length < data.length;
     setChecked(selectedData.length === data.length);
     setIndeterminate(isIndeterminate);
@@ -38,7 +32,6 @@ export default function useChecker2<T>(initialData: T[]) {
   return {
     isIndeterminite: indeterminate,
     data,
-    setData,
     selectedData,
     setSelectedData,
     allSelected: checked,

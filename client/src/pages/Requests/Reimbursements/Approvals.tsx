@@ -1,22 +1,49 @@
+import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { format } from "date-fns";
-import React from "react";
 import { RM } from ".";
+import { EmployeeModel } from "../../../../../src/types/models";
+import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 import { useChecker2 } from "../../../hooks";
 
 interface Props {
   reimbursements: RM[];
   select: (reimbursement: RM) => void;
+  user: EmployeeModel;
 }
 
-export default function Approvals({ reimbursements, select }: Props) {
-  const { allSelected, checkboxRef, data, toggleAll, selectedData, setSelectedData } =
-    useChecker2(reimbursements);
+export default function Approvals({ reimbursements, select, user }: Props) {
+  const { allSelected, checkboxRef, data, toggleAll, selectedData, setSelectedData } = useChecker2(
+    reimbursements.filter((r) => r.sendTo?._id === user._id)
+  );
 
   return (
     <div>
       <div>
+        <div className="mt-4 sm:h-14 sm:flex items-center justify-between">
+          <span className="text-xl font-bold text-gray-900">Pending ({data.length})</span>
+          <div
+            className={`${
+              selectedData.length ? "sm:block flex" : "hidden"
+            } space-x-3  pt-2 sm:pt-0`}
+          >
+            <button
+              type="button"
+              className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+              <CheckIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+              Approve {allSelected ? "All" : ""}
+            </button>
+            <button
+              type="button"
+              className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              <XIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+              Reject {allSelected ? "All" : ""}
+            </button>
+          </div>
+        </div>
         <TableWrapper>
           <table className="table-auto">
             <thead>
@@ -82,7 +109,7 @@ export default function Approvals({ reimbursements, select }: Props) {
                       {reimbursement.user.fullName}
                     </td>
                     <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                      {reimbursement.status}
+                      <ApprovalBadge status={reimbursement.status} />
                     </td>
                   </tr>
                 );

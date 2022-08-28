@@ -26,7 +26,7 @@ export interface ReimbursementDocument extends ReimbursementModel, Document {
   _id: any;
 }
 
-interface ReimbursementApproval {
+export interface ReimbursementApproval {
   user: PopulatedDoc<EmployeeModel>;
   date: Date;
   approved: boolean;
