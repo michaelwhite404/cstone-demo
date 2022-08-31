@@ -26,7 +26,7 @@ const departmentMemberSchema = new Schema({
   },
 });
 
-departmentMemberSchema.index({ departmentId: 1, memberId: 1 });
+departmentMemberSchema.index({ departmentId: 1, memberId: 1 }, { unique: true });
 
 const DepartmentMember = model("DepartmentMember", departmentMemberSchema);
 

@@ -40,27 +40,27 @@ const departmentSchema = new Schema({
     unique: true,
     trim: true,
   } as SchemaTypeOptions<string>,
-  leaders: [
-    {
-      type: Types.ObjectId,
-      ref: "Employee",
-      validate: [validEmployeeValidation],
-    },
-  ],
-  approvers: [
-    {
-      type: Types.ObjectId,
-      ref: "Employee",
-      validate: [validEmployeeValidation, approverValidation],
-    },
-  ],
-  employees: [
-    {
-      type: Types.ObjectId,
-      ref: "Employee",
-      validate: [validEmployeeValidation, employeeValidation],
-    },
-  ],
+  // leaders: [
+  //   {
+  //     type: Types.ObjectId,
+  //     ref: "Employee",
+  //     validate: [validEmployeeValidation],
+  //   },
+  // ],
+  // approvers: [
+  //   {
+  //     type: Types.ObjectId,
+  //     ref: "Employee",
+  //     validate: [validEmployeeValidation, approverValidation],
+  //   },
+  // ],
+  // employees: [
+  //   {
+  //     type: Types.ObjectId,
+  //     ref: "Employee",
+  //     validate: [validEmployeeValidation, employeeValidation],
+  //   },
+  // ],
   members: [
     {
       userId: {
