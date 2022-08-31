@@ -2,6 +2,7 @@ export { default as AftercareAttendanceEntry } from "./aftercareAttendanceEntryM
 export { default as AftercareSession } from "./aftercareSessionModel";
 export { default as CheckoutLog } from "./checkoutLogModel";
 export { default as Department } from "./departmentModel";
+export { default as DepartmentMember } from "./departmentMemberModel";
 export { default as Device } from "./deviceModel";
 export { default as Employee } from "./employeeModel";
 export { default as ErrorLog } from "./errorLogModel";
