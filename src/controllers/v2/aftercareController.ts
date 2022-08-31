@@ -10,6 +10,7 @@ import { RequestHandler } from "express";
 import validator from "validator";
 import { addDays } from "date-fns";
 import { io } from "@server";
+import { aftercareEvent } from "@events/AftercareEvent";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
@@ -143,10 +144,11 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
   entry.lateSignOut = new Date().getHours() >= 18;
   entry.signature = data.Key;
   await entry.save();
-  io.emit("aftercareSignOutSuccess");
   res.sendJson(200, {
     entry,
   });
+  io.emit("aftercareSignOutSuccess");
+  aftercareEvent.signOut(entry);
 });
 
 export const createAttendanceEntries = catchAsync(async (req, res, next) => {

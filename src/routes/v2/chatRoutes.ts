@@ -1,3 +1,4 @@
+import { AftercareAttendanceEntry } from "@models";
 import { catchAsync } from "@utils";
 import { chat } from "@utils";
 import { Router } from "express";
@@ -69,6 +70,49 @@ chatRouter.get(
       },
     });
     res.sendJson(200, response.data);
+  })
+);
+
+chatRouter.get(
+  "/test",
+  catchAsync(async (req, res, next) => {
+    const dropIns: number | undefined = 2;
+    if (dropIns) {
+      await chat.spaces.messages.create({
+        parent: "spaces/xDMtAEAAAAE",
+        requestBody: {
+          text: `Claire Washington now has ${dropIns} drop ins.`,
+          cards: [
+            {
+              header: {
+                title: "Lions Den",
+                subtitle: '<font color="#b0b0b0">Drop In Update</font>',
+                imageUrl: "https://i.ibb.co/Msb2RDD/Lion-Light-Blue.png",
+              },
+              sections: [
+                {
+                  widgets: [
+                    {
+                      keyValue: {
+                        topLabel: "Student",
+                        content: "Claire Washington",
+                      },
+                    },
+                    {
+                      keyValue: {
+                        topLabel: "Drop Ins",
+                        content: `${dropIns}`,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    }
+    res.sendJson(200, { hello: "world" });
   })
 );
 
