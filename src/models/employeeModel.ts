@@ -2,7 +2,7 @@ import { Model, model, Schema } from "mongoose";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import slugify from "slugify";
-import { DepartmentDocument, EmployeeDocument } from "@@types/models";
+import { EmployeeDocument } from "@@types/models";
 
 const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Schema(
   {
@@ -95,43 +95,10 @@ const employeeSchema: Schema<EmployeeDocument, Model<EmployeeDocument>> = new Sc
   }
 );
 
-employeeSchema
-  .virtual("departments", {
-    ref: "Department",
-    localField: "_id",
-    foreignField: "members.userId",
-    match: (doc: EmployeeDocument) => {
-      return { members: { $elemMatch: { userId: doc._id } } };
-    },
-  })
-  .get(function (docs: DepartmentDocument[] | undefined, _: any, employee: EmployeeDocument) {
-    return docs?.map((doc) => ({
-      _id: doc._id,
-      name: doc.name,
-      role: doc.members.find((member: any) => member.userId.toString() === employee._id.toString())
-        ?.role,
-    }));
-  });
-
-employeeSchema.virtual("employeeOf", {
-  ref: "Department",
+employeeSchema.virtual("departments", {
+  ref: "DepartmentMember",
   localField: "_id",
-  foreignField: "employees",
-  match: (doc: EmployeeDocument) => ({ employees: { $in: [doc._id] } }),
-});
-
-employeeSchema.virtual("leaderOf", {
-  ref: "Department",
-  localField: "_id",
-  foreignField: "leaders",
-  match: (doc: EmployeeDocument) => ({ leaders: { $in: [doc._id] } }),
-});
-
-employeeSchema.virtual("approverOf", {
-  ref: "Department",
-  localField: "_id",
-  foreignField: "approvers",
-  match: (doc: EmployeeDocument) => ({ approvers: { $in: [doc._id] } }),
+  foreignField: "member",
 });
 
 employeeSchema.pre<EmployeeDocument>("save", function (next) {

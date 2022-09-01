@@ -29,7 +29,7 @@ export default function AddEntry(props: AddEntryProps) {
   const handleDateChange = (d: Date) => setEntry({ ...entry, date: d });
 
   const getDept = () => {
-    const dept = props.user?.employeeOf?.find((dept) => dept._id === entry.department);
+    const dept = props.user!.departments?.find((dept) => dept._id === entry.department);
     return dept ? { label: dept.name, value: dept._id } : undefined;
   };
 

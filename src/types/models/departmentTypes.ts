@@ -5,10 +5,8 @@ export interface DepartmentModel {
   /** Id of the department */
   _id: any;
   name: string;
-  leaders: PopulatedDoc<EmployeeModel[]>;
-  approvers: PopulatedDoc<EmployeeModel[]>;
-  employees: PopulatedDoc<EmployeeModel>[];
-  members: DepartmentMember[];
+  membersCount?: number;
+  members?: DepartmentMember[];
 }
 
 interface DepartmentMember {

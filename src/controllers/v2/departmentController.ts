@@ -6,17 +6,22 @@ import * as factory from "./handlerFactory";
 const Model = Department;
 const key = "department";
 
-const populate = { path: "leaders approvers employees" };
-
 /** `GET` - Gets all departments
  *  - All authernicated users can access this route
  */
-export const getAllDepartments: RequestHandler = factory.getAll(Model, `${key}s`, {}, populate);
+export const getAllDepartments: RequestHandler = factory.getAll(
+  Model,
+  `${key}s`,
+  {},
+  { path: "membersCount" }
+);
 
 /** `GET` - Gets a single department
  *  - All authernicated users can access this route
  */
-export const getOneDepartment: RequestHandler = factory.getOneById(Model, key, populate);
+export const getOneDepartment: RequestHandler = factory.getOneById(Model, key, {
+  path: "members membersCount",
+});
 
 /** `POST` - Creates a new department
  *  - Only users with the role `Super Admin` or `Admin` can access this route

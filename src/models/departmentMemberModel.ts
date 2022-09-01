@@ -3,7 +3,7 @@ import { Schema, Types, model, ObjectId } from "mongoose";
 import FKHelper from "./helpers/foreignKeyHelper";
 
 const departmentMemberSchema = new Schema({
-  departmentId: {
+  department: {
     type: Types.ObjectId,
     ref: "Department",
     validate: {
@@ -11,7 +11,7 @@ const departmentMemberSchema = new Schema({
     },
     required: true,
   },
-  memberId: {
+  member: {
     type: Types.ObjectId,
     ref: "Employee",
     validate: {
@@ -26,7 +26,7 @@ const departmentMemberSchema = new Schema({
   },
 });
 
-departmentMemberSchema.index({ departmentId: 1, memberId: 1 }, { unique: true });
+departmentMemberSchema.index({ department: 1, member: 1 }, { unique: true });
 
 const DepartmentMember = model("DepartmentMember", departmentMemberSchema);
 

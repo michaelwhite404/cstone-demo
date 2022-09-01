@@ -80,10 +80,7 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   const decoded: DecodedPayload = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
   // console.log(decoded);
   // 3.) Check if employee still exists
-  const freshEmployee = await Employee.findById(decoded.id).populate({
-    path: "approverOf leaderOf employeeOf",
-    select: "name",
-  });
+  const freshEmployee = await Employee.findById(decoded.id);
   if (!freshEmployee) {
     return next(new AppError("The user belonging to this token no longer exists.", 401));
   }

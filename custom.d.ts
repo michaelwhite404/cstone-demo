@@ -8,16 +8,6 @@ interface Employee {
   image?: string;
   slug: string;
   departments?: UserDepartment[];
-  employeeOf?: {
-    employees: ObjectId[];
-    _id: ObjectId;
-    name: string;
-  }[];
-  approverOf?: {
-    employees: ObjectId[];
-    _id: ObjectId;
-    name: string;
-  }[];
   space?: string;
 }
 

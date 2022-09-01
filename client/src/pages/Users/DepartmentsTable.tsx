@@ -1,5 +1,6 @@
-import { DepartmentModel, EmployeeModel } from "../../../../src/types/models";
-import AvatarList from "../../components/AvatarList";
+import { Link } from "react-router-dom";
+import { DepartmentModel } from "../../../../src/types/models";
+// import AvatarList from "../../components/AvatarList";
 import TableWrapper from "../../components/TableWrapper";
 
 export default function DepartmentsTable({ departments }: { departments: DepartmentModel[] }) {
@@ -8,25 +9,19 @@ export default function DepartmentsTable({ departments }: { departments: Departm
       <table>
         <thead>
           <tr>
-            <th className="pl-4">Name</th>
-            <th className="">Leaders</th>
-            <th className="">Approvers</th>
-            <th className="">Employees</th>
+            <th className="pl-6">Department Name</th>
+            <th className="">Members</th>
           </tr>
         </thead>
         <tbody>
           {departments.map((department) => (
             <tr key={department._id}>
-              <td className="pl-4 py-1.5">{department.name}</td>
-              <td className="py-1.5">
-                <AvatarList users={getUsers(department, "leaders")} tooltip />
+              <td className="pl-6 py-2 text-blue-500 font-medium border-b ">
+                <Link to="#">
+                  <span className="text-blue-500 font-medium">{department.name}</span>
+                </Link>
               </td>
-              <td className="py-1.5">
-                <AvatarList users={getUsers(department, "approvers")} tooltip />
-              </td>
-              <td className="py-1.5">
-                <AvatarList users={getUsers(department, "employees")} max={6} tooltip />
-              </td>
+              <td className="py-2 text-gray-400 border-b ">{department.membersCount}</td>
             </tr>
           ))}
         </tbody>
@@ -34,6 +29,3 @@ export default function DepartmentsTable({ departments }: { departments: Departm
     </TableWrapper>
   );
 }
-
-const getUsers = (department: DepartmentModel, role: "leaders" | "approvers" | "employees") =>
-  (department[role] as EmployeeModel[]).map((user) => ({ name: user.fullName, src: user.image }));

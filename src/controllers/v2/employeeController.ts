@@ -14,7 +14,7 @@ export const getAllEmployees: RequestHandler = factory.getAll(
   Model,
   key,
   {},
-  { path: "departments" }
+  { path: "departments test" }
 );
 
 /** `GET` - Gets a single employee
@@ -24,7 +24,7 @@ export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) 
   let query = isObjectID(req.params.id.toString())
     ? Model.findById(req.params.id)
     : Model.findOne({ slug: req.params.id });
-  query = query.populate({ path: "departments" });
+  query = query.populate({ path: "departments", populate: "department" });
   // if (req.query.projection === "FULL")
   const user = await query;
   if (!user) return next(new AppError("No user found with that ID", 404));
@@ -33,14 +33,24 @@ export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) 
     groups = await getUserGroups(user.email);
   }
   const { id, __v, ...u } = user.toJSON();
+
   res.status(200).json({
     status: "success",
     requestedAt: req.requestTime,
     data: {
-      user: { ...u, groups },
+      user: { ...formatDepartments(u), groups },
     },
   });
 });
+
+const formatDepartments = (user: any) => {
+  user.departments = user.departments.map((d: any) => ({
+    _id: d._id,
+    name: d.department.name,
+    role: d.role,
+  }));
+  return user;
+};
 
 /** Adds current user id to params object */
 export const getMe: RequestHandler = (req, _, next) => {

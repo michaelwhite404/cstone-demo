@@ -25,9 +25,6 @@ export interface EmployeeModel {
   timesheetEnabled: boolean;
   departments?: UserDepartment[];
   groups?: UserGroup[];
-  employeeOf?: DepartmentModel[];
-  leaderOf?: DepartmentModel[];
-  approverOf?: DepartmentModel[];
   space?: string;
 }
 
