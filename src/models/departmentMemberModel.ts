@@ -26,6 +26,27 @@ const departmentMemberSchema = new Schema({
   },
 });
 
+departmentMemberSchema.pre(["find", "findOne"], function () {
+  this.populate({
+    path: "member",
+    select: "fullName email",
+  });
+});
+
+departmentMemberSchema.post(["find", "findOne"], function (data) {
+  const makeMember = (info: any) => ({
+    _id: info.member._id,
+    fullName: info.member.fullName,
+    email: info.member.email,
+    role: info.role,
+  });
+  if (Array.isArray(data)) {
+    return data.map((d) => (d._doc = makeMember(d)));
+  }
+  console.log(data._doc);
+  return (data._doc = makeMember(data));
+});
+
 departmentMemberSchema.index({ department: 1, member: 1 }, { unique: true });
 
 const DepartmentMember = model("DepartmentMember", departmentMemberSchema);

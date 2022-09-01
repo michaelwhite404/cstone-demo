@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { DepartmentModel } from "../../../../src/types/models";
+import DepartmentDetails from "./DepartmentDetails";
 import DepartmentsTable from "./DepartmentsTable";
 
 export default function Departments() {
@@ -21,3 +22,5 @@ export default function Departments() {
     </div>
   );
 }
+
+Departments.Detail = DepartmentDetails;

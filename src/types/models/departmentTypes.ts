@@ -1,4 +1,4 @@
-import { Document, PopulatedDoc } from "mongoose";
+import { Document } from "mongoose";
 import { EmployeeModel } from ".";
 
 export interface DepartmentModel {
@@ -10,7 +10,9 @@ export interface DepartmentModel {
 }
 
 interface DepartmentMember {
-  userId: PopulatedDoc<EmployeeModel>;
+  _id: EmployeeModel["_id"];
+  fullName: string;
+  email: String;
   role: "LEADER" | "MEMBER";
 }
 

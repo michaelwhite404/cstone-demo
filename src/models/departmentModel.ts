@@ -23,11 +23,27 @@ departmentSchema.virtual("membersCount", {
   count: true,
 });
 
-departmentSchema.virtual("members", {
-  ref: "DepartmentMember",
-  foreignField: "department",
-  localField: "_id",
-});
+departmentSchema
+  .virtual("members", {
+    ref: "DepartmentMember",
+    foreignField: "department",
+    localField: "_id",
+    options: {
+      populate: {
+        path: "member",
+        select: "fullName email",
+      },
+    },
+  })
+  .get((data: any[]) => {
+    if (!data) return;
+    return data.map((dm) => ({
+      _id: dm.member._id,
+      fullName: dm.member.fullName,
+      email: dm.member.email,
+      role: dm.role,
+    }));
+  });
 
 const Department = model<DepartmentDocument>("Department", departmentSchema);
 

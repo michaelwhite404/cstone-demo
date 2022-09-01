@@ -17,7 +17,7 @@ export default function DepartmentsTable({ departments }: { departments: Departm
           {departments.map((department) => (
             <tr key={department._id}>
               <td className="pl-6 py-2 text-blue-500 font-medium border-b ">
-                <Link to="#">
+                <Link to={department._id}>
                   <span className="text-blue-500 font-medium">{department.name}</span>
                 </Link>
               </td>
