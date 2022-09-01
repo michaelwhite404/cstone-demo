@@ -45,7 +45,7 @@ export const getOneEmployee: RequestHandler = catchAsync(async (req, res, next) 
 
 const formatDepartments = (user: any) => {
   user.departments = user.departments.map((d: any) => ({
-    _id: d._id,
+    _id: d.department._id,
     name: d.department.name,
     role: d.role,
   }));

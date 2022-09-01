@@ -5,6 +5,9 @@ import { Employee, TimesheetEntry } from "@models";
 import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
+const getLeaderDepartments = (employee: Request["employee"]) =>
+  employee.departments?.filter((d) => d.role === "LEADER") || [];
+
 const Model = TimesheetEntry;
 
 /** `GET` - Gets all timesheet entries
@@ -12,10 +15,11 @@ const Model = TimesheetEntry;
  *  - Department approvers can view all timesheet entries pertaining to that department
  */
 export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Response) => {
+  const leaderDepartments = getLeaderDepartments(req.employee);
   let query: Query<TimesheetEntryDocument[], TimesheetEntryDocument, {}, TimesheetEntryDocument>;
-  if (req.employee.approverOf && req.employee.approverOf.length > 0) {
+  if (leaderDepartments.length > 0) {
     query = Model.find({
-      $or: [{ department: { $in: req.employee.approverOf } }, { employeeId: req.employee._id }],
+      $or: [{ department: { $in: leaderDepartments } }, { employeeId: req.employee._id }],
     });
   } else {
     query = Model.find({ employeeId: req.employee._id });
@@ -41,12 +45,13 @@ export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Respo
  */
 export const getOneTimesheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const leaderDepartments = getLeaderDepartments(req.employee);
     // prettier-ignore
     let query: Query<TimesheetEntryDocument | null, TimesheetEntryDocument, {}, TimesheetEntryDocument>
-    if (req.employee.approverOf && req.employee.approverOf.length > 0) {
+    if (leaderDepartments.length > 0) {
       query = Model.findOne({
         $or: [
-          { department: { $in: req.employee.approverOf }, _id: req.params.id },
+          { department: { $in: leaderDepartments }, _id: req.params.id },
           { employeeId: req.employee._id, _id: req.params.id },
         ],
       });
@@ -187,10 +192,10 @@ export const deleteTimesheetEntry = catchAsync(
 export const approveTimesheets = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // Get apprrover departments
-    const approverDepartments = req.employee.approverOf;
-    if (!approverDepartments || approverDepartments.length < 1)
+    const leaderDepartments = getLeaderDepartments(req.employee);
+    if (!leaderDepartments || leaderDepartments.length < 1)
       return next(new AppError("You do not have access to approvals", 403));
-    const approverDepartmentsIds = approverDepartments.map((d) => d._id.toString());
+    const leaderDepartmentsIds = leaderDepartments.map((d) => d._id.toString());
     // Destructure body approvals and rejections
     const { approve: bodyApprove, reject: bodyReject } = req.body;
     const approvalData = { exists: Boolean(bodyApprove), isArray: Array.isArray(bodyApprove) };
@@ -211,7 +216,7 @@ export const approveTimesheets = catchAsync(
     // Get approvable timesheets
     const timesheets = await Model.find({
       _id: { $in: allBodyIds },
-      department: { $in: approverDepartmentsIds },
+      department: { $in: leaderDepartmentsIds },
       status: "Pending",
     });
 

@@ -63,6 +63,15 @@ export const googleLogin = catchAsync(async (req: Request, res: Response, next: 
   createSendToken(employee, 200, res);
 });
 
+const formatDepartments = (user: any) => {
+  user.departments = user.departments.map((d: any) => ({
+    _id: d.department._id,
+    name: d.department.name,
+    role: d.role,
+  }));
+  return user;
+};
+
 export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   // 1) Getting token and check if it's there
   let token;
@@ -80,7 +89,10 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   const decoded: DecodedPayload = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
   // console.log(decoded);
   // 3.) Check if employee still exists
-  const freshEmployee = await Employee.findById(decoded.id);
+  const freshEmployee = await Employee.findById(decoded.id).populate({
+    path: "departments",
+    populate: "department",
+  });
   if (!freshEmployee) {
     return next(new AppError("The user belonging to this token no longer exists.", 401));
   }
@@ -88,6 +100,7 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   if (freshEmployee.changedPasswordAfter(decoded.iat)) {
     return next(new AppError("User recently changed password. Please log in again!", 401));
   }
+  formatDepartments(freshEmployee);
   req.employee = freshEmployee;
   res.locals.employee = freshEmployee;
   // GRANT ACCESS TO PROTECTED ROUTE
