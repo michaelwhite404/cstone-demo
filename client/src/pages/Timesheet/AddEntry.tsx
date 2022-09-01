@@ -73,7 +73,7 @@ export default function AddEntry(props: AddEntryProps) {
             }}
             options={
               props.user?.departments
-                ?.filter((d) => d.role === "EMPLOYEE")
+                ?.filter((d) => d.role === "MEMBER")
                 .map((dept) => ({
                   label: dept.name,
                   value: dept._id,

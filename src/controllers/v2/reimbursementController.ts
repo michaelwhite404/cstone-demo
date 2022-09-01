@@ -26,7 +26,7 @@ export const getAllReimbursements = catchAsync(async (req, res) => {
 
 export const getReimbursement = catchAsync(async (req, res) => {
   let query: Query<ReimbursementDocument | null, ReimbursementDocument, {}, ReimbursementDocument>;
-  const leaderDepartments = req.employee.departments?.filter((d) => d.role === "EMPLOYEE");
+  const leaderDepartments = req.employee.departments?.filter((d) => d.role === "MEMBER");
   if (leaderDepartments && leaderDepartments.length > 0) {
     query = Model.findOne({
       $or: [

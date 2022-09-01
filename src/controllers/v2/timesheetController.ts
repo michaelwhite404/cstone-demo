@@ -92,7 +92,7 @@ export const createTimeSheetEntry = catchAsync(
     const { departments } = employee;
 
     const foundDepartment = departments?.find(
-      (d) => d._id.toString() === req.body.department && d.role === "EMPLOYEE"
+      (d) => d._id.toString() === req.body.department && d.role === "MEMBER"
     );
     if (!foundDepartment) return next(new AppError("You are not a member of this department", 403));
 

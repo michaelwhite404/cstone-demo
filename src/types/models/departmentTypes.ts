@@ -11,7 +11,7 @@ export interface DepartmentModel {
 
 interface DepartmentMember {
   userId: PopulatedDoc<EmployeeModel>;
-  role: "LEADER" | "EMPLOYEE";
+  role: "LEADER" | "MEMBER";
 }
 
 export interface DepartmentDocument extends DepartmentModel, Document {

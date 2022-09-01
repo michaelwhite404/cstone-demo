@@ -14,7 +14,7 @@ interface Employee {
 interface UserDepartment {
   _id: DepartmentModel["_id"];
   name: string;
-  role: "LEADER" | "EMPLOYEE";
+  role: "LEADER" | "MEMBER";
 }
 
 declare namespace Express {

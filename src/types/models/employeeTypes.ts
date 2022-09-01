@@ -48,7 +48,7 @@ export interface UserGroup {
 interface UserDepartment {
   _id: DepartmentModel["_id"];
   name: string;
-  role: "LEADER" | "EMPLOYEE";
+  role: "LEADER" | "MEMBER";
 }
 
 export interface EmployeeDocument extends EmployeeModel, Document {
