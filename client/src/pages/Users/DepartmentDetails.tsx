@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DepartmentModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
+import DepartmentMembersTable from "./DepartmentMembersTable";
 
 export default function DepartmentDetails() {
   const [department, setDepartment] = useState<DepartmentModel>();
@@ -10,7 +11,6 @@ export default function DepartmentDetails() {
   useEffect(() => {
     const fetchDepartment = async () => {
       const res = await axios.get(`/api/v2/departments/${id}`);
-      console.log(res.data.data.department);
       setDepartment(res.data.data.department);
     };
 
@@ -28,7 +28,14 @@ export default function DepartmentDetails() {
           <div className="mb-5">
             <h1>{department?.name}</h1>
           </div>
-          <div></div>
+          <div>
+            <h2>Settings</h2>
+            <div>Can accept tickets</div>
+          </div>
+          <div>
+            <h2>Members</h2>
+            <DepartmentMembersTable department={department} />
+          </div>
         </div>
       )}
     </div>

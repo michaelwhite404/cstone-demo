@@ -20,6 +20,7 @@ class AftercareEvent {
       await chat.spaces.messages.create({
         parent: "spaces/xDMtAEAAAAE",
         requestBody: {
+          text: `${entry.student.fullName} now has ${dropIns} drop ins.`,
           cards: [
             {
               header: {
