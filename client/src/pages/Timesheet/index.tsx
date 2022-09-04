@@ -55,7 +55,7 @@ export default function Timesheet() {
       params: {
         "timeStart[gte]": start(date, view),
         "timeStart[lte]": end(date, view),
-        employeeId: user?._id,
+        employee: user?._id,
       },
     });
     const entries = res.data.data.timesheetEntries as TimesheetModel[];

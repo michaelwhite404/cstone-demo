@@ -21,7 +21,7 @@ const timesheetEntrySchema: Schema<
   TimesheetEntryDocument,
   Model<TimesheetEntryDocument>
 > = new Schema({
-  employeeId: {
+  employee: {
     type: Types.ObjectId,
     ref: "Employee",
     required: [true, "Each timesheet entry must have an employee id"],

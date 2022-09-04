@@ -4,7 +4,7 @@ import { DepartmentModel, EmployeeModel } from ".";
 export interface TimesheetModel {
   /** Id of the timesheet entry */
   _id: any;
-  employeeId: PopulatedDoc<EmployeeModel>;
+  employee: PopulatedDoc<EmployeeModel>;
   timeStart: Date;
   timeEnd: Date;
   department: PopulatedDoc<DepartmentModel>;

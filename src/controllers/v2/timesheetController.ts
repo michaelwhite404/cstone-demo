@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { FilterQuery, Query, UpdateQuery } from "mongoose";
 import pluralize from "pluralize";
-import { Employee, TimesheetEntry } from "@models";
+import { TimesheetEntry } from "@models";
 import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
@@ -19,10 +19,10 @@ export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Respo
   let query: Query<TimesheetEntryDocument[], TimesheetEntryDocument, {}, TimesheetEntryDocument>;
   if (leaderDepartments.length > 0) {
     query = Model.find({
-      $or: [{ department: { $in: leaderDepartments } }, { employeeId: req.employee._id }],
+      $or: [{ department: { $in: leaderDepartments } }, { employee: req.employee._id }],
     });
   } else {
-    query = Model.find({ employeeId: req.employee._id });
+    query = Model.find({ employee: req.employee._id });
   }
 
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
@@ -52,14 +52,14 @@ export const getOneTimesheetEntry = catchAsync(
       query = Model.findOne({
         $or: [
           { department: { $in: leaderDepartments }, _id: req.params.id },
-          { employeeId: req.employee._id, _id: req.params.id },
+          { employee: req.employee._id, _id: req.params.id },
         ],
       });
     } else {
-      query = Model.findOne({ employeeId: req.employee._id, _id: req.params.id });
+      query = Model.findOne({ employee: req.employee._id, _id: req.params.id });
     }
     query.populate({
-      path: "employeeId finalizedBy department",
+      path: "employee finalizedBy department",
       select: "fullName email role name",
     });
     const timesheetEntry = await query;
@@ -83,12 +83,11 @@ export const getOneTimesheetEntry = catchAsync(
  */
 export const createTimeSheetEntry = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const employee = await Employee.populate(req.employee, { path: "departments" });
+    const { employee } = req;
 
     if (!employee.timesheetEnabled)
       return next(new AppError("You are not authorized to create timesheet entries", 403));
 
-    // const d
     const { departments } = employee;
 
     const foundDepartment = departments?.find(
@@ -97,7 +96,7 @@ export const createTimeSheetEntry = catchAsync(
     if (!foundDepartment) return next(new AppError("You are not a member of this department", 403));
 
     const timesheetEntry = await Model.create({
-      employeeId: req.employee._id,
+      employee: req.employee._id,
       timeStart: req.body.timeStart,
       timeEnd: req.body.timeEnd,
       department: req.body.department,
@@ -141,7 +140,7 @@ export const updateTimesheetEntry = catchAsync(
     const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
-    if (timesheetEntry.employeeId.toString() !== req.employee._id.toString())
+    if (timesheetEntry.employee.toString() !== req.employee._id.toString())
       return next(new AppError("You cannot update this timesheet entry", 403));
 
     if (timesheetEntry.status !== "Pending")
@@ -173,7 +172,7 @@ export const deleteTimesheetEntry = catchAsync(
     const timesheetEntry = await Model.findById(req.params.id);
 
     if (!timesheetEntry) return next(new AppError("No timesheet entry found with that ID", 404));
-    if (timesheetEntry.employeeId.toString() !== req.employee._id.toString())
+    if (timesheetEntry.employee.toString() !== req.employee._id.toString())
       return next(new AppError("You cannot delete this timesheet entry", 403));
 
     if (timesheetEntry.status === "Approved")
