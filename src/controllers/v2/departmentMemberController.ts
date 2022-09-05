@@ -1,5 +1,6 @@
+import { Document } from "mongoose";
 import { DepartmentMember } from "@models";
-import { AppError, catchAsync } from "@utils";
+import { AppError, catchAsync, isObject, isObjectID } from "@utils";
 import { RequestHandler } from "express";
 import * as factory from "./handlerFactory";
 
@@ -8,10 +9,36 @@ export const getAllDepartmentMembers = catchAsync(async (req, res) => {
   res.sendJson(200, { members: members.map(makeMember) });
 });
 
-export const createDepartmentMember = factory.createOne(DepartmentMember, "member");
-export const addDepartmentIdToBody: RequestHandler = (req, _, next) => (
-  (req.body.department = req.params.departmentId), next()
-);
+export const createDepartmentMembers = catchAsync(async (req, res, next) => {
+  if (!req.body.users || !Array.isArray(req.body.users)) {
+    return next(new AppError("The request body must have an array for the property `users`.", 400));
+  }
+  const validObjects = (req.body.users as any[]).filter(
+    (user) =>
+      isObject(user) &&
+      typeof user.id === "string" &&
+      isObjectID(user.id) &&
+      typeof user.role == "string"
+  );
+
+  const requests = validObjects.map((obj) =>
+    DepartmentMember.create({
+      member: obj.id,
+      department: req.params.departmentId,
+      role: obj.role,
+    })
+  );
+
+  const responses = await Promise.allSettled(requests);
+
+  const fulfilled = responses.filter(
+    (response) => response.status === "fulfilled"
+  ) as PromiseFulfilledResult<Document>[];
+  const dms = fulfilled.map((r) => r.value);
+  const members = await DepartmentMember.populate(dms, { path: "member" });
+
+  res.sendJson(200, { members: members.map(makeMember) });
+});
 
 export const getDepartmentMember = catchAsync(async (req, res, next) => {
   const member = await DepartmentMember.findOne({

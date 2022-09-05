@@ -3,18 +3,14 @@ import { departmentMemberController } from "@controllers/v2";
 
 const {
   getAllDepartmentMembers,
-  createDepartmentMember,
-  addDepartmentIdToBody,
+  createDepartmentMembers,
   getDepartmentMember,
   removeDepartmentMember,
 } = departmentMemberController;
 
 const memberRouter = Router({ mergeParams: true });
 
-memberRouter
-  .route("/")
-  .get(getAllDepartmentMembers)
-  .post(addDepartmentIdToBody, createDepartmentMember);
+memberRouter.route("/").get(getAllDepartmentMembers).post(createDepartmentMembers);
 
 memberRouter.route("/:id").get(getDepartmentMember).delete(removeDepartmentMember);
 

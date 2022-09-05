@@ -38,7 +38,6 @@ export default function AddDepartmentUserModal(props: Props) {
     user?: EmployeeModel;
     role: Role;
   }>({ role: "MEMBER" });
-  // const [futureMembers, setFutureMembers] = useState<Required<typeof memberToAdd>[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -72,7 +71,6 @@ export default function AddDepartmentUserModal(props: Props) {
   const close = () => {
     setOpen(false);
     setMemberToAdd({ role: "MEMBER" });
-    // setFutureMembers([]);
   };
 
   const addMember = () => {
