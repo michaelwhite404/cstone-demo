@@ -3,10 +3,11 @@ import axios from "axios";
 import capitalize from "capitalize";
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
-import { EmployeeModel } from "../../../../src/types/models";
+import { DepartmentModel, EmployeeModel } from "../../../../src/types/models";
 import Combobox from "../../components/Combobox";
 import Menu from "../../components/Menu";
 import Modal from "../../components/Modal";
+import { APIUsersResponse } from "../../types/apiResponses";
 
 interface Props {
   open: boolean;
@@ -19,34 +20,45 @@ interface Props {
       role: string;
     }[]
   ) => Promise<void>;
+  currentUsers: NonNullable<DepartmentModel["members"]>;
 }
 
 type Role = "MEMBER" | "LEADER";
 
+interface PotentialMember {
+  user?: EmployeeModel;
+  role?: Role;
+}
+type FutureMember = Required<PotentialMember>;
+
 export default function AddDepartmentUserModal(props: Props) {
   const { open, setOpen, departmentName, addMembersToGroup } = props;
-  const [users, setUsers] = useState<EmployeeModel[]>([]);
+  const [users, setUsers] = useState<PotentialMember[]>([]);
   const [memberToAdd, setMemberToAdd] = useState<{
     user?: EmployeeModel;
     role: Role;
   }>({ role: "MEMBER" });
-  const [futureMembers, setFutureMembers] = useState<Required<typeof memberToAdd>[]>([]);
+  // const [futureMembers, setFutureMembers] = useState<Required<typeof memberToAdd>[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await axios.get("/api/v2/users?active=true");
-      setUsers(res.data.data.users);
+      const { users } = (await axios.get<APIUsersResponse>("/api/v2/users?active=true")).data.data;
+      const potentialMembers: PotentialMember[] = users.map((user) => ({ user }));
+      const currentUsersIds = props.currentUsers.map((user) => user._id as string);
+      setUsers(potentialMembers.filter(({ user }) => !currentUsersIds.includes(user?._id)));
     };
     fetchUsers();
-  }, []);
+  }, [props.currentUsers]);
+
+  const futureMembers = users.filter((u) => u.role) as FutureMember[];
 
   const roleOptions = ["MEMBER", "LEADER"].map((role) => ({
     label: capitalize(role.toLowerCase()),
     value: role,
   }));
 
-  const handleComboboxChange = (value?: EmployeeModel) =>
-    value && setMemberToAdd({ ...memberToAdd, user: value });
+  const handleComboboxChange = (value?: PotentialMember) =>
+    value && setMemberToAdd({ ...memberToAdd, user: value.user });
 
   //@ts-ignore
   const handleRoleChange: (value: { label: string; value: string }) => void = ({
@@ -60,19 +72,32 @@ export default function AddDepartmentUserModal(props: Props) {
   const close = () => {
     setOpen(false);
     setMemberToAdd({ role: "MEMBER" });
-    setFutureMembers([]);
+    // setFutureMembers([]);
   };
 
   const addMember = () => {
     if (memberToAdd.user && memberToAdd.role) {
-      setUsers([...users].filter((user) => user.email !== memberToAdd.user?.email));
-      setFutureMembers([{ user: memberToAdd.user, role: memberToAdd.role }, ...futureMembers]);
+      // setUsers([...users].filter((user) => user.email !== memberToAdd.user?.email));
+      const index = users.findIndex(({ user }) => user?._id === memberToAdd.user?._id);
+      if (index > -1) {
+        const copy = [...users];
+        copy[index].role = memberToAdd.role;
+        setUsers(copy);
+      }
+
+      // setFutureMembers([{ user: memberToAdd.user, role: memberToAdd.role }, ...futureMembers]);
       setMemberToAdd({ role: "MEMBER" });
     }
   };
 
-  const handleDelete = (email: string) =>
-    setFutureMembers(futureMembers.filter((m) => m.user.email !== email));
+  const handleDelete = (email: string) => {
+    const copy = [...users];
+    const i = copy.findIndex(({ user }) => user?.email === email);
+    if (i > -1) {
+      copy[i].role = undefined;
+      setUsers(copy);
+    }
+  };
 
   const submit = () => {
     const usersArg = futureMembers.map((fM) => ({
@@ -83,7 +108,7 @@ export default function AddDepartmentUserModal(props: Props) {
     addMembersToGroup(usersArg).then(close);
   };
 
-  const displayValue = (option?: EmployeeModel) => option?.fullName || "";
+  const displayValue = (option?: PotentialMember) => option?.user?.fullName || "";
 
   return (
     <Modal open={open} setOpen={setOpen} disableOverlayClick onClose={close}>
@@ -96,22 +121,23 @@ export default function AddDepartmentUserModal(props: Props) {
           <div className="grid gap-2" style={{ gridTemplateColumns: "1fr auto auto" }}>
             <div>
               <Combobox
-                value={memberToAdd.user}
-                options={users}
+                value={memberToAdd}
+                options={users.filter(({ role }) => !role)}
                 displayValue={displayValue}
-                filterFunction={(user, currentValue) =>
-                  user.fullName!.toLowerCase().includes(currentValue.toLowerCase()) ||
-                  user.email!.toLowerCase().includes(currentValue.toLowerCase())
+                filterFunction={({ user }, currentValue) =>
+                  user?.fullName!.toLowerCase().includes(currentValue.toLowerCase()) ||
+                  user?.email!.toLowerCase().includes(currentValue.toLowerCase()) ||
+                  false
                 }
                 onChange={handleComboboxChange}
-                renderItem={(user, { active, selected }) => (
+                renderItem={({ user }, { active, selected }) => (
                   <>
                     <span className={classNames("block truncate", selected && "font-semibold")}>
-                      {user.fullName}{" "}
+                      {user?.fullName}{" "}
                       <span
                         className={classNames("text-xs", active ? "text-white" : "text-gray-400")}
                       >
-                        ({user.email})
+                        ({user?.email})
                       </span>
                     </span>
 
@@ -130,7 +156,7 @@ export default function AddDepartmentUserModal(props: Props) {
               />
             </div>
             <div>
-              <Menu options={roleOptions} onChange={handleRoleChange} />
+              <Menu options={roleOptions} onChange={handleRoleChange} value={memberToAdd.role} />
             </div>
             <div>
               <button
@@ -185,7 +211,7 @@ export default function AddDepartmentUserModal(props: Props) {
           onClick={submit}
           disabled={futureMembers.length === 0}
         >
-          Add to Group
+          Add to Department
         </button>
         <button
           type="button"

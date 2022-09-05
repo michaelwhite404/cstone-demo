@@ -1,4 +1,9 @@
-import { AttendanceStat, ReimbursementModel, TicketModel } from "../../../src/types/models";
+import {
+  AttendanceStat,
+  EmployeeModel,
+  ReimbursementModel,
+  TicketModel,
+} from "../../../src/types/models";
 import { CheckoutLogModel } from "../../../src/types/models/checkoutLogTypes";
 import { DeviceModel } from "../../../src/types/models/deviceTypes";
 import { ErrorLogModel } from "../../../src/types/models/errorLogTypes";
@@ -47,3 +52,6 @@ export interface APIReimbursementResponse
   extends APIResponse<{ reimbursement: ReimbursementModel }> {}
 export interface APIReimbursementsResponse
   extends APIResponse<{ reimbursements: ReimbursementModel[] }> {}
+
+export interface APIUserResponse extends APIResponse<{ user: EmployeeModel }> {}
+export interface APIUsersResponse extends APIResponse<{ users: EmployeeModel[] }> {}

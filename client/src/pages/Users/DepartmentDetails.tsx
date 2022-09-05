@@ -4,13 +4,20 @@ import { useParams } from "react-router-dom";
 import { DepartmentModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
+import Tabs2 from "../../components/Tabs2";
 import { useToasterContext } from "../../hooks";
 import AddDepartmentUserModal from "./AddDepartmentUserModal";
 import DepartmentMembersTable from "./DepartmentMembersTable";
 
+const tabs = [
+  { name: "Members", value: "MEMBERS" },
+  { name: "Settings", value: "SETTINGS" },
+];
+
 export default function DepartmentDetails() {
   const [department, setDepartment] = useState<DepartmentModel>();
   const [open, setOpen] = useState(false);
+  const [pageState, setPageState] = useState("MEMBERS");
   const { id } = useParams<"id">();
   const { showToaster } = useToasterContext();
   useEffect(() => {
@@ -54,22 +61,34 @@ export default function DepartmentDetails() {
       </div>
       {department && (
         <div>
-          <div className="mb-5">
+          <div className="flex justify-between items-center">
             <h1>{department?.name}</h1>
+            <PrimaryButton
+              className="sm:w-auto"
+              text="+ Add Members"
+              onClick={() => setOpen(true)}
+            />
           </div>
-          <div>
-            <h2>Settings</h2>
-            <div>Can accept tickets</div>
-          </div>
-          <div>
-            <div className="flex justify-between">
-              <h2>Members</h2>
+          <Tabs2 tabs={tabs} value={pageState} onChange={(tab) => setPageState(tab.value)} />
+          <div className="mt-6">
+            {/* <div className="sm:flex justify-between">
+              <div className="relative mb-2 sm:mb-0">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <SearchIcon className="w-4" />
+                </div>
+                <input
+                  type="search"
+                  id="search"
+                  className="block p-2 pl-10 w-full sm:w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Search for members"
+                />
+              </div>
               <PrimaryButton
                 className="w-full sm:w-auto"
                 text="+ Add Members"
                 onClick={() => setOpen(true)}
               />
-            </div>
+            </div> */}
             <DepartmentMembersTable department={department} />
           </div>
           <AddDepartmentUserModal
@@ -77,6 +96,7 @@ export default function DepartmentDetails() {
             setOpen={setOpen}
             departmentName={department.name}
             addMembersToGroup={addMembersToGroup}
+            currentUsers={department.members || []}
           />
         </div>
       )}

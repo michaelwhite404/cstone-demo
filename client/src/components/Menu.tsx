@@ -1,11 +1,12 @@
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import classNames from "classnames";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface MenuProps {
   options: Option[];
   onChange?: (value: Option) => void;
+  value?: string;
 }
 
 interface Option {
@@ -14,7 +15,17 @@ interface Option {
 }
 
 export default function Menuuuu(props: MenuProps) {
-  const [selectedOption, setSelectedOption] = useState<Option>(props.options[0]);
+  const [selectedOption, setSelectedOption] = useState<Option>(
+    (props.value && props.options.find((option) => option.value === props.value)) ||
+      props.options[0]
+  );
+
+  useEffect(() => {
+    props.value &&
+      setSelectedOption(
+        props.options.find((option) => option.value === props.value) || props.options[0]
+      );
+  }, [props.options, props.value]);
 
   const handleChange = (value: Option) => {
     props.onChange?.(value);
