@@ -37,12 +37,14 @@ departmentSchema
   })
   .get((data: any[]) => {
     if (!data) return;
-    return data.map((dm) => ({
-      _id: dm.member._id,
-      fullName: dm.member.fullName,
-      email: dm.member.email,
-      role: dm.role,
-    }));
+    return data
+      .map((dm) => ({
+        _id: dm.member._id,
+        fullName: dm.member.fullName,
+        email: dm.member.email,
+        role: dm.role,
+      }))
+      .sort((a, b) => a.fullName!.localeCompare(b.fullName!));
   });
 
 const Department = model<DepartmentDocument>("Department", departmentSchema);

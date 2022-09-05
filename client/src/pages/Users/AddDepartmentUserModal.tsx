@@ -15,8 +15,7 @@ interface Props {
   departmentName: string;
   addMembersToGroup: (
     users: {
-      name: string;
-      email: string;
+      id: string;
       role: string;
     }[]
   ) => Promise<void>;
@@ -99,8 +98,7 @@ export default function AddDepartmentUserModal(props: Props) {
 
   const submit = () => {
     const usersArg = futureMembers.map((fM) => ({
-      name: fM.user.fullName!,
-      email: fM.user.email!,
+      id: fM.user._id,
       role: fM.role,
     }));
     addMembersToGroup(usersArg).then(close);

@@ -1,4 +1,5 @@
 import { Department, Employee } from "@models";
+import { DepartmentMemberDocument } from "@@types/models";
 import { Schema, Types, model, ObjectId } from "mongoose";
 import FKHelper from "./helpers/foreignKeyHelper";
 
@@ -35,6 +36,9 @@ departmentMemberSchema.pre(["find", "findOne"], function () {
 
 departmentMemberSchema.index({ department: 1, member: 1 }, { unique: true });
 
-const DepartmentMember = model("DepartmentMember", departmentMemberSchema);
+const DepartmentMember = model<DepartmentMemberDocument>(
+  "DepartmentMember",
+  departmentMemberSchema
+);
 
 export default DepartmentMember;

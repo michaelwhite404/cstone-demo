@@ -1,4 +1,5 @@
 import axios from "axios";
+import pluralize from "pluralize";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DepartmentModel } from "../../../../src/types/models";
@@ -30,28 +31,28 @@ export default function DepartmentDetails() {
     fetchDepartment();
   }, [id]);
 
-  const addMembersToGroup = async (users: { name: string; email: string; role: string }[]) => {
-    // interface Res {
-    //   members: admin_directory_v1.Schema$Member[];
-    // }
-    // axios
-    //   .post<APIResponse<Res>>(`/api/v2/groups/${slug}/members`, { users })
-    //   .then((res) => {
-    //     const returnedMembers = res.data.data.members;
-    //     // fetchGroup();
-    //     const membersWithName: GroupMember[] = returnedMembers.map((member) => ({
-    //       ...member,
-    //       fullName: users.find((user) => user.email === member.email)!.name,
-    //     }));
-    //     setM([...members, ...membersWithName].sort((a, b) => a.email!.localeCompare(b.email!)));
-    //     showToaster(
-    //       pluralize("members", returnedMembers.length, true) +
-    //         " added. It might take some time for changes to be reflected.",
-    //       "success"
-    //     );
-    //   })
-    //   .catch(() => showToaster("There was a problem with the request. Please try again", "danger"));
-    showToaster("Not implemented yet", "danger");
+  const addMembersToGroup = async (users: { id: string; role: string }[]) => {
+    if (department) {
+      axios
+        .post(`/api/v2/departments/${department._id}/members`, { users })
+        .then((res) => {
+          const returnedMembers = res.data.data.members as NonNullable<DepartmentModel["members"]>;
+
+          const oldMembers = department.members ? [...department.members] : [];
+          const newMembersList = [...oldMembers, ...returnedMembers].sort((a, b) =>
+            a.email!.localeCompare(b.email!)
+          );
+          setDepartment({
+            ...department,
+            membersCount: newMembersList.length,
+            members: newMembersList,
+          });
+          showToaster(pluralize("members", returnedMembers.length, true) + " added!", "success");
+        })
+        .catch(() =>
+          showToaster("There was a problem with the request. Please try again", "danger")
+        );
+    }
   };
 
   return (

@@ -1,11 +1,11 @@
 import { Document } from "mongoose";
 import { DepartmentMember } from "@models";
 import { AppError, catchAsync, isObject, isObjectID } from "@utils";
-import { RequestHandler } from "express";
-import * as factory from "./handlerFactory";
 
 export const getAllDepartmentMembers = catchAsync(async (req, res) => {
-  const members = await DepartmentMember.find({ department: req.params.departmentId });
+  const members = await DepartmentMember.find({ department: req.params.departmentId }).sort(
+    "fullName"
+  );
   res.sendJson(200, { members: members.map(makeMember) });
 });
 

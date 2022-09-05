@@ -12,7 +12,7 @@ export interface DepartmentModel {
 interface DepartmentMember {
   _id: EmployeeModel["_id"];
   fullName: string;
-  email: String;
+  email: string;
   role: "LEADER" | "MEMBER";
 }
 

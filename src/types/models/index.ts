@@ -1,5 +1,6 @@
 export * from "./aftercareTypes";
 export * from "./checkoutLogTypes";
+export * from "./departmentMemberTypes";
 export * from "./departmentTypes";
 export * from "./deviceTypes";
 export * from "./employeeTypes";
