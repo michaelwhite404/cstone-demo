@@ -8,6 +8,7 @@ import Tabs2 from "../../components/Tabs2";
 import { useToasterContext } from "../../hooks";
 import AddDepartmentUserModal from "./AddDepartmentUserModal";
 import DepartmentMembersTable from "./DepartmentMembersTable";
+import DepartmentSettings from "./DepartmentSettings";
 
 const tabs = [
   { name: "Members", value: "MEMBERS" },
@@ -89,7 +90,8 @@ export default function DepartmentDetails() {
                 onClick={() => setOpen(true)}
               />
             </div> */}
-            <DepartmentMembersTable department={department} />
+            {pageState === "MEMBERS" && <DepartmentMembersTable department={department} />}
+            {pageState === "SETTINGS" && <DepartmentSettings />}
           </div>
           <AddDepartmentUserModal
             open={open}
