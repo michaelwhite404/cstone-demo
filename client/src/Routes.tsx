@@ -36,11 +36,13 @@ export default function Routes() {
           <Route path=":slug" element={<DeviceData />} />
         </Route>
         {user.timesheetEnabled && <Route path="timesheet" element={<Page.Timesheet />} />}
-        <Route path="lions-den" element={<LionsDen />}>
-          <Route index element={<CurrentSession />} />
-          <Route path="sessions" element={<Sessions />} />
-          <Route path="students" element={<LionsDenStudents />} />
-        </Route>
+        {user.departments && user.departments.find((dept) => dept.name === "Lion's Den") && (
+          <Route path="lions-den" element={<LionsDen />}>
+            <Route index element={<CurrentSession />} />
+            <Route path="sessions" element={<Sessions />} />
+            <Route path="students" element={<LionsDenStudents />} />
+          </Route>
+        )}
         <Route path="tools">
           <Route index element={<Tools />} />
           <Route path="short-url" element={<Tools.ShortUrl />} />
