@@ -5,7 +5,7 @@ export interface DepartmentMemberModel {
   /** Id of the department member connection*/
   _id: any;
   department: PopulatedDoc<DepartmentDocument>;
-  employee: PopulatedDoc<EmployeeDocument>;
+  member: PopulatedDoc<EmployeeDocument>;
   role: "LEADER" | "MEMBER";
 }
 

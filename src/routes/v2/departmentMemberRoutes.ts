@@ -11,7 +11,6 @@ const {
 const memberRouter = Router({ mergeParams: true });
 
 memberRouter.route("/").get(getAllDepartmentMembers).post(createDepartmentMembers);
-
 memberRouter.route("/:id").get(getDepartmentMember).delete(removeDepartmentMember);
 
 export default memberRouter;

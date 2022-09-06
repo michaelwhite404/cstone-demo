@@ -40,7 +40,7 @@ export default function DepartmentDetails() {
 
           const oldMembers = department.members ? [...department.members] : [];
           const newMembersList = [...oldMembers, ...returnedMembers].sort((a, b) =>
-            a.email!.localeCompare(b.email!)
+            a.fullName!.localeCompare(b.fullName!)
           );
           setDepartment({
             ...department,
