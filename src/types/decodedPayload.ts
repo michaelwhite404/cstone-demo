@@ -1,5 +1,5 @@
 export interface DecodedPayload {
-  /** Id of the user */
+  /** Id or email of the user */
   id: string;
   /** Date the token was issued (seconds since Unix epoch) */
   iat: number;

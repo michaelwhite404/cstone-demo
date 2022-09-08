@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { Employee } from "@models";
 import { EmployeeModel } from "@@types/models";
 import { DecodedPayload } from "@@types";
-import { AppError, catchAsync, makePassword } from "@utils";
+import { AppError, catchAsync, isObjectID, makePassword } from "@utils";
 import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 
 /**
@@ -87,9 +87,11 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   // 2.) Verification token
   // @ts-ignore
   const decoded: DecodedPayload = await promisify(jwt.verify)(token, process.env.JWT_SECRET!);
-  // console.log(decoded);
   // 3.) Check if employee still exists
-  const freshEmployee = await Employee.findById(decoded.id).populate({
+  const employeeQuery = isObjectID(decoded.id)
+    ? Employee.findById(decoded.id)
+    : Employee.findOne({ email: decoded.id });
+  const freshEmployee = await employeeQuery.populate({
     path: "departments",
     populate: "department",
   });
