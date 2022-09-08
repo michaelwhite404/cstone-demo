@@ -13,10 +13,21 @@ interface Props {
   user: EmployeeModel;
 }
 
+const headings = ["Purpose", "Date", "Amount", "Submitted By", "Status"];
+
 export default function Approvals({ reimbursements, select, user }: Props) {
-  const { allSelected, checkboxRef, data, toggleAll, selectedData, setSelectedData } = useChecker2(
-    reimbursements.filter((r) => r.sendTo?._id === user._id)
+  const approvals = reimbursements.filter((r) => r.sendTo?._id === user._id);
+  const { pending, finalized } = approvals.reduce(
+    (prev, reimbursement) => {
+      reimbursement.approval
+        ? prev.finalized.push(reimbursement)
+        : prev.pending.push(reimbursement);
+      return prev;
+    },
+    { pending: [] as RM[], finalized: [] as RM[] }
   );
+  const { allSelected, checkboxRef, data, toggleAll, selectedData, setSelectedData } =
+    useChecker2(pending);
 
   return (
     <div>
@@ -57,11 +68,9 @@ export default function Approvals({ reimbursements, select, user }: Props) {
                     onChange={toggleAll}
                   />
                 </th>
-                <th>Date</th>
-                <th>Purpose</th>
-                <th>Amount</th>
-                <th>Submitted By</th>
-                <th>Status</th>
+                {headings.map((h) => (
+                  <th key={h}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -90,16 +99,64 @@ export default function Approvals({ reimbursements, select, user }: Props) {
                         }
                       />
                     </td>
-                    <td className="py-2.5 border-b border-gray-300">
-                      {format(new Date(reimbursement.date), "P")}
-                    </td>
+
                     <td
                       onClick={() => select(reimbursement)}
-                      className="py-2.5 border-b border-gray-300 text-gray-400 "
+                      className="py-2.5 border-b border-gray-300 font-medium text-blue-500 cursor-pointer"
                     >
                       {reimbursement.purpose}
                     </td>
+                    <td className="py-2.5 border-b border-gray-300">
+                      {format(new Date(reimbursement.date), "P")}
+                    </td>
                     <td className="py-2.5  border-b border-gray-300 text-gray-400 ">
+                      {(reimbursement.amount / 100).toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })}
+                    </td>
+                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                      {reimbursement.user.fullName}
+                    </td>
+                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                      <ApprovalBadge status={reimbursement.status} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </TableWrapper>
+      </div>
+      <div>
+        <div className="mt-4 sm:h-14 sm:flex items-center justify-between">
+          <span className="text-xl font-bold text-gray-900">Finalized ({finalized.length})</span>
+        </div>
+        <TableWrapper>
+          <table className="table-auto">
+            <thead>
+              <tr>
+                {headings.map((h, i) => (
+                  <th className={classNames({ "pl-8": i === 0 })} key={h}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {finalized.map((reimbursement) => {
+                return (
+                  <tr className={"hover:bg-gray-100"} key={reimbursement._id}>
+                    <td
+                      onClick={() => select(reimbursement)}
+                      className="py-2.5 border-b border-gray-300 pl-8 font-medium text-blue-500 cursor-pointer"
+                    >
+                      {reimbursement.purpose}
+                    </td>
+                    <td className="py-2.5 border-b border-gray-300">
+                      {format(new Date(reimbursement.date), "P")}
+                    </td>
+                    <td className="py-2.5 border-b border-gray-300 text-gray-400 ">
                       {(reimbursement.amount / 100).toLocaleString("en-US", {
                         style: "currency",
                         currency: "USD",

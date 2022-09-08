@@ -8,7 +8,10 @@ const Model = Reimbursement;
 export const getAllReimbursements = catchAsync(async (req, res) => {
   const query = Model.find({
     $or: [{ sendTo: req.employee._id }, { user: req.employee._id }],
-  }).populate({ path: "user sendTo", select: "fullName slug email" });
+  }).populate([
+    { path: "user sendTo", select: "fullName slug email" },
+    { path: "approval", populate: { path: "user", select: "fullName email" } },
+  ]);
 
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
   const reimbursements = await features.query;
@@ -37,10 +40,10 @@ export const getReimbursement = catchAsync(async (req, res) => {
   } else {
     query = Model.findOne({ user: req.employee._id, _id: req.params.id });
   }
-  const reimbursement = await query.populate({
-    path: "user sendTo",
-    select: "fullName slug email",
-  });
+  const reimbursement = await query.populate([
+    { path: "user sendTo", select: "fullName slug email" },
+    { path: "approval", populate: { path: "user", select: "fullName email" } },
+  ]);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -53,9 +56,12 @@ export const getReimbursement = catchAsync(async (req, res) => {
 });
 
 export const checkCanApprove = catchAsync(async (req, res, next) => {
-  const reimbursement = await Reimbursement.findById(req.params.id);
+  const reimbursement = await Reimbursement.findById(req.params.id).populate({
+    path: "user sendTo",
+    select: "fullName slug email",
+  });
   if (!reimbursement) return next(new AppError("There is no reimbursement with this id", 404));
-  if (reimbursement.sendTo.toString() !== req.employee._id.toString()) {
+  if (reimbursement.sendTo._id.toString() !== req.employee._id.toString()) {
     return next(new AppError("You are not authorized to approve this reimbursement", 403));
   }
   if (reimbursement.approval?.date)
@@ -84,7 +90,13 @@ export const approveReimbursement = catchAsync(async (req, res, next) => {
     approved,
   };
   await reimbursement.save();
-  res.sendJson(200, { reimbursement });
+  const jsonReimbursement = reimbursement.toJSON();
+  jsonReimbursement.approval!.user = {
+    _id: req.employee._id,
+    fullName: req.employee.fullName,
+    email: req.employee.email,
+  };
+  res.sendJson(200, { reimbursement: jsonReimbursement });
 });
 
 export const createReimbursement = catchAsync(async (req, res, next) => {

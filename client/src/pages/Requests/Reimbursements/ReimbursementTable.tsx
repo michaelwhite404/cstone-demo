@@ -14,8 +14,8 @@ export default function ReimbursementTable({ reimbursements, select }: Reimburse
       <table>
         <thead>
           <tr>
-            <th className="pl-6">Date</th>
-            <th>Purpose</th>
+            <th className="pl-8">Purpose</th>
+            <th>Date</th>
             <th>Amount</th>
             <th>Approval</th>
           </tr>
@@ -26,14 +26,16 @@ export default function ReimbursementTable({ reimbursements, select }: Reimburse
               key={reimbursement._id}
               className={i !== reimbursements.length - 1 ? "border-b border-gray-200" : ""}
             >
-              <td className="pl-6 py-1.5 w-40">{format(new Date(reimbursement.date), "P")}</td>
-              <td className="text-gray-700 font-medium w-2/5">
+              <td className="pl-8 text-blue-500 font-medium w-2/5">
                 <div
-                  className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[240px]"
+                  className="cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[240px]"
                   onClick={() => select(reimbursement)}
                 >
                   {reimbursement.purpose}
                 </div>
+              </td>
+              <td className="py-1.5 w-40 text-gray-700">
+                {format(new Date(reimbursement.date), "P")}
               </td>
               <td>
                 {(reimbursement.amount / 100).toLocaleString("en-US", {
