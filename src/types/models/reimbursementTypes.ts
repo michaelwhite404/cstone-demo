@@ -20,6 +20,7 @@ export interface ReimbursementModel {
   receipt: string;
   sendTo: PopulatedDoc<EmployeeModel>;
   approval?: ReimbursementApproval;
+  message?: string;
 }
 
 export interface ReimbursementDocument extends ReimbursementModel, Document {

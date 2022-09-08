@@ -117,3 +117,100 @@ chatRouter.get(
 );
 
 export default chatRouter;
+
+chatRouter.get(
+  "/test2",
+  catchAsync(async (req, res, next) => {
+    const response = await chat.spaces.messages.update({
+      name: "spaces/xDMtAEAAAAE/messages/jSgDrEaV4rI.jSgDrEaV4rI",
+      updateMask: "cards",
+      requestBody: {
+        cards: [
+          {
+            header: {
+              title: "Reimbursement Request",
+              subtitle: "Michael White",
+              imageUrl: "https://i.ibb.co/qMHwLwK/Reimbursement-Blue.png",
+            },
+            sections: [
+              {
+                widgets: [
+                  {
+                    keyValue: {
+                      topLabel: "Payee Name",
+                      content: "Michael White",
+                    },
+                  },
+                  {
+                    keyValue: {
+                      topLabel: "Purchase Date",
+                      content: "9/7/2022",
+                    },
+                  },
+                  {
+                    keyValue: {
+                      topLabel: "Amount",
+                      content: "$65.75",
+                    },
+                  },
+                ],
+              },
+              {
+                widgets: [
+                  {
+                    buttons: [
+                      {
+                        textButton: {
+                          text: "APPROVE",
+                          onClick: {
+                            action: {
+                              actionMethodName: "idk",
+                            },
+                          },
+                        },
+                      },
+                      {
+                        textButton: {
+                          text: "REJECT",
+                          onClick: {
+                            openLink: {
+                              url: "https://example.com",
+                            },
+                          },
+                        },
+                      },
+                      {
+                        textButton: {
+                          text: "OPEN IN APP",
+                          onClick: {
+                            openLink: {
+                              url: "http://localhost:3000/requests/reimbursements",
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            cardActions: [
+              {
+                actionLabel: "idk",
+                onClick: {
+                  openLink: {
+                    url: "https://example.com/feedback",
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    res.status(200).json({
+      data: response,
+    });
+  })
+);

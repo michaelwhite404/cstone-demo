@@ -81,6 +81,10 @@ const reimbursementSchema: Schema<ReimbursementDocument, Model<ReimbursementDocu
         // required: true,
       },
     },
+    message: {
+      type: String,
+      select: false,
+    },
   }
 );
 

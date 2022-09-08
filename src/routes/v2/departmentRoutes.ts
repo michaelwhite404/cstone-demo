@@ -8,12 +8,12 @@ const { createDepartment, getAllDepartments, getOneDepartment, getMyLeaders } = 
 const router = Router();
 
 router.use(v2auth.protect);
+router.get("/my-leaders", getMyLeaders);
 router.use(v1auth.restrictTo("Super Admin", "Admin"));
 
 router.use("/:departmentId/members", memberRouter);
 
 router.route("/").get(getAllDepartments).post(createDepartment);
-router.get("/my-leaders", getMyLeaders);
 router.route("/:id").get(getOneDepartment).patch().delete();
 
 export default router;
