@@ -2,6 +2,7 @@ import { Reimbursement } from "@models";
 import { ReimbursementDocument } from "@@types/models";
 import { APIFeatures, AppError, catchAsync, s3 } from "@utils";
 import { Query } from "mongoose";
+import { reimbursementEvent } from "@events";
 
 const Model = Reimbursement;
 
@@ -106,7 +107,7 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     return next(new AppError("Each reimbursement must have a receipt to upload", 400));
   }
 
-  const reimbursement = await Model.create({
+  let reimbursement = await Model.create({
     user: req.employee._id,
     payee,
     date,
@@ -123,9 +124,15 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     const { Key } = await s3.uploadFile(req.file, fileKey);
     reimbursement.receipt = `${req.protocol}://${req.headers.host}/images/${Key}`;
     await reimbursement.save();
+    reimbursement = await Reimbursement.populate(reimbursement, {
+      path: "user sendTo",
+      select: "fullName slug email",
+    });
   } catch (err) {
     await reimbursement.remove();
     throw err;
   }
   res.sendJson(201, { reimbursement });
+
+  reimbursementEvent.submit(reimbursement);
 });

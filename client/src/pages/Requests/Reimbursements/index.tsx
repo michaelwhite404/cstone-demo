@@ -100,7 +100,11 @@ export default function Reimbursements() {
       ) : (
         <Approvals reimbursements={reimbursements} select={select} user={user} />
       )}
-      <AddReimbursement open={modalOpen} setOpen={setModalOpen} />
+      <AddReimbursement
+        open={modalOpen}
+        setOpen={setModalOpen}
+        setReimbursements={setReimbursements}
+      />
       <Detail
         open={slideOpen}
         setOpen={setSlideOpen}

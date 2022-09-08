@@ -2,17 +2,19 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import { startOfDay } from "date-fns";
-import { ChangeEventHandler, Fragment, useState } from "react";
+import { ChangeEventHandler, Fragment, useEffect, useState } from "react";
+import { RM } from ".";
 import DateSelector from "../../../components/DateSelector";
 import LabeledInput2 from "../../../components/LabeledInput2";
 import { useToasterContext, useToggle } from "../../../hooks";
-import { APIError } from "../../../types/apiResponses";
+import { APIError, APIResponse } from "../../../types/apiResponses";
 import stateList from "../../../utils/stateList";
 import Dropzone from "./Dropzone";
 
 interface AddLeaveProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setReimbursements: React.Dispatch<React.SetStateAction<RM[]>>;
 }
 const initialData = {
   payee: "",
@@ -27,14 +29,54 @@ const initialData = {
   purpose: "",
   dateNeeded: startOfDay(new Date()),
   specialInstructions: "",
+  sendTo: "",
 };
+
+interface DepartmentLeader {
+  _id: string;
+  fullName: string;
+  email: string;
+  department: {
+    _id: string;
+    name: string;
+  };
+}
 
 export default function AddReimbursement(props: AddLeaveProps) {
   const [data, setData] = useState(initialData);
   const [files, setFiles] = useState<CustomFile[] | null>(null);
   const [needed, toggleNeeded] = useToggle(false);
-
+  const [myLeaders, setMyLeaders] = useState<Omit<DepartmentLeader, "department">[]>([]);
   const { showToaster } = useToasterContext();
+
+  useEffect(() => {
+    const getMyLeaders = async () => {
+      const uniqueIds: string[] = [];
+      const res = await axios.get<APIResponse<{ leaders: DepartmentLeader[] }>>(
+        "/api/v2/departments/my-leaders"
+      );
+      const leaders = res.data.data.leaders
+        .map((l) => {
+          const { department, ...leader } = l;
+          return leader;
+        })
+        .filter((leader) => {
+          const isDuplicate = uniqueIds.includes(leader._id);
+
+          if (!isDuplicate) {
+            uniqueIds.push(leader._id);
+
+            return true;
+          }
+
+          return false;
+        });
+      setMyLeaders(leaders);
+      if (leaders[0]) setData((data) => ({ ...data, sendTo: leaders[0]._id }));
+    };
+    getMyLeaders();
+  }, []);
+
   const close = () => {
     props.setOpen(false);
     setData(initialData);
@@ -55,9 +97,9 @@ export default function AddReimbursement(props: AddLeaveProps) {
       } else {
         if (thisKey === "amount") {
           let amount = data.amount;
-          if (amount.includes(".")) {
-            amount = amount.split(".").join("");
-          }
+          amount.includes(".")
+            ? (amount = amount.split(".").join(""))
+            : (amount = (+amount * 100).toString());
           formData.append(key, amount);
         } else if (thisKey === "date") formData.append(key, data.date.toISOString());
         else if (thisKey === "dateNeeded") {
@@ -67,7 +109,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
     }
     try {
       const res = await axios.post("/api/v2/reimbursements", formData, config);
-      console.log(res.data);
+      props.setReimbursements((r) => [{ ...res.data.data.reimbursement, status: "Pending" }, ...r]);
       close();
       showToaster("Reimbursement request submitted", "success");
     } catch (err) {
@@ -83,8 +125,9 @@ export default function AddReimbursement(props: AddLeaveProps) {
     files?.length === 1 &&
     /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/.test(data.amount);
 
-  const handleChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) =>
-    setData({ ...data, [e.target.name]: e.target.value });
+  const handleChange: ChangeEventHandler<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  > = (e) => setData({ ...data, [e.target.name]: e.target.value });
 
   // const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) =>
   //   setFile(e.target.files ? e.target.files[0] : null);
@@ -282,6 +325,24 @@ export default function AddReimbursement(props: AddLeaveProps) {
                           />
                         </div>
                       )}
+                    </div>
+                    <div className="col-span-6">
+                      <label className="block text-sm font-medium text-gray-700">Send To</label>
+                      <div className="mt-1">
+                        <select
+                          name="sendTo"
+                          value={data.sendTo}
+                          onChange={handleChange}
+                          className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
+                          style={{ boxShadow: "0px 0px 2px #aeaeae" }}
+                        >
+                          {myLeaders.map((leader) => (
+                            <option key={leader._id} value={leader._id}>
+                              {leader.fullName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                     <div className="col-span-12">
                       <div>
