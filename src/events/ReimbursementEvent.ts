@@ -13,7 +13,6 @@ class ReimbursementEvent {
         parent: employee.space,
         requestBody: {
           text: `${reimbursement.user.fullName} created a reimbursement request.`,
-
           cards: [
             {
               header: {

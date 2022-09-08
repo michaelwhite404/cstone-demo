@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
@@ -22,20 +23,35 @@ export default function Reimbursements() {
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
+  const location = useLocation();
   const user = useAuth().user!;
 
   const getStatus = (approval?: ReimbursementApproval) =>
     approval ? (approval.approved ? "Approved" : "Rejected") : ("Pending" as RM["status"]);
 
-  const fetchReimbursements = async () => {
+  const fetchReimbursements = async (): Promise<RM[]> => {
+    const reimbursementId = location.hash.replace("#", "");
+    window.history.replaceState(
+      "",
+      document.title,
+      window.location.pathname + window.location.search
+    );
     const reimbursements = (await axios.get("/api/v2/reimbursements")).data.data
       .reimbursements as ReimbursementModel[];
     const r = reimbursements.map((r) => ({
       ...r,
-      selected: false,
+      selected: r._id === reimbursementId,
       status: getStatus(r.approval),
     }));
     setReimbursements(r);
+    const selected = r.find((re) => re.selected);
+    if (selected) {
+      selected.sendTo._id === user._id &&
+        selected.user._id !== user._id &&
+        setPageState("APPROVALS");
+      setSlideOpen(true);
+    }
+    return r;
   };
 
   useEffect(() => {
