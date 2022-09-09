@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
-import { useAuth, useSocket, useToasterContext } from "../../../hooks";
+import { useAuth, useDocTitle, useSocket, useToasterContext } from "../../../hooks";
 import { APIReimbursementResponse } from "../../../types/apiResponses";
 import AddReimbursement from "./AddReimbursement";
 import Approvals from "./Approvals";
@@ -20,6 +20,7 @@ type PageState = "MY_REIMBURSEMENTS" | "APPROVALS";
 
 export default function Reimbursements() {
   const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
+  useDocTitle("Reimbursement Requests | Cornerstone App");
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
@@ -129,7 +130,12 @@ export default function Reimbursements() {
           <Tabs2
             tabs={[
               { name: "My Reimbursements", value: "MY_REIMBURSEMENTS" },
-              { name: "Approvals", value: "APPROVALS" },
+              {
+                name: "Approvals",
+                value: "APPROVALS",
+                count: reimbursements.filter((r) => r.sendTo._id === user._id && !r.approval)
+                  .length,
+              },
             ]}
             value={pageState}
             onChange={(tab) => setPageState(tab.value)}

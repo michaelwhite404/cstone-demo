@@ -2,11 +2,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import { isBefore, isSameDay, startOfDay } from "date-fns";
-import { ChangeEventHandler, Fragment, useState } from "react";
+import { ChangeEventHandler, Fragment, useEffect, useState } from "react";
 import { LeaveModel } from "../../../../../src/types/models";
 import DateSelector from "../../../components/DateSelector";
 import { useToasterContext } from "../../../hooks";
-import { APIError } from "../../../types/apiResponses";
+import { APIError, APIResponse } from "../../../types/apiResponses";
+import "./AddLeave.sass";
 
 interface AddLeaveProps {
   open: boolean;
@@ -18,14 +19,54 @@ const initialData = {
   dateEnd: startOfDay(new Date()),
   reason: "",
   comments: "",
+  sendTo: "",
 };
+
+interface DepartmentLeader {
+  _id: string;
+  fullName: string;
+  email: string;
+  department: {
+    _id: string;
+    name: string;
+  };
+}
 
 export default function AddLeave(props: AddLeaveProps) {
   const [data, setData] = useState(initialData);
+  const [myLeaders, setMyLeaders] = useState<Omit<DepartmentLeader, "department">[]>([]);
   const { showToaster } = useToasterContext();
+  useEffect(() => {
+    const getMyLeaders = async () => {
+      const uniqueIds: string[] = [];
+      const res = await axios.get<APIResponse<{ leaders: DepartmentLeader[] }>>(
+        "/api/v2/departments/my-leaders"
+      );
+      const leaders = res.data.data.leaders
+        .map((l) => {
+          const { department, ...leader } = l;
+          return leader;
+        })
+        .filter((leader) => {
+          const isDuplicate = uniqueIds.includes(leader._id);
+
+          if (!isDuplicate) {
+            uniqueIds.push(leader._id);
+
+            return true;
+          }
+
+          return false;
+        });
+      setMyLeaders(leaders);
+      if (leaders[0]) setData((data) => ({ ...data, sendTo: leaders[0]._id }));
+    };
+    getMyLeaders();
+  }, []);
+
   const close = () => {
     props.setOpen(false);
-    setData(initialData);
+    setData({ ...initialData, sendTo: myLeaders[0]._id || "" });
   };
   const submit = async () => {
     try {
@@ -41,6 +82,7 @@ export default function AddLeave(props: AddLeaveProps) {
   const submittable =
     (isSameDay(data.dateStart, data.dateEnd) || isBefore(data.dateStart, data.dateEnd)) &&
     data.reason.length > 0;
+  // && data.sendTo.length > 0
 
   const handleDateChange = (date: Date, name: string) =>
     setData({ ...data, [name]: startOfDay(date) });
@@ -103,14 +145,15 @@ export default function AddLeave(props: AddLeaveProps) {
                   <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     {/* <TextInput label="" /> */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="flex date-selector">
+                      <div className="flex add-leave-date-selector">
                         <DateSelector
                           label="Date Start"
                           maxDate={new Date("Dec 31, 9999")}
                           onChange={(date) => handleDateChange(date, "dateStart")}
+                          align="left"
                         />
                       </div>
-                      <div className="flex date-selector">
+                      <div className="flex add-leave-date-selector">
                         <DateSelector
                           label="Date End"
                           maxDate={new Date("Dec 31, 9999")}
@@ -142,6 +185,23 @@ export default function AddLeave(props: AddLeaveProps) {
                           className="min-h-[40px] mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           onChange={handleChange}
                         />
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-sm font-medium text-gray-700">Send To</label>
+                        <div className="mt-1">
+                          <select
+                            name="sendTo"
+                            value={data.sendTo}
+                            onChange={handleChange}
+                            className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          >
+                            {myLeaders.map((leader) => (
+                              <option key={leader._id} value={leader._id}>
+                                {leader.fullName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
                     </div>
                   </div>

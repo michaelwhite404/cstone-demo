@@ -8,6 +8,7 @@ interface DateSelectorProps {
   label?: string;
   maxDate?: Date;
   fill?: boolean;
+  align?: "left" | "right";
 }
 
 export default function DateSelector(props: DateSelectorProps) {
@@ -16,7 +17,7 @@ export default function DateSelector(props: DateSelectorProps) {
   const inputRef = useRef<HTMLLabelElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
 
-  const { label } = props;
+  const { label, align = "right" } = props;
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside, false);
@@ -59,6 +60,8 @@ export default function DateSelector(props: DateSelectorProps) {
     );
   });
 
+  const a = align === "left" ? { left: 0 } : { right: 0 };
+
   return (
     <div
       className={`date-selector ${props.fill ? "fill" : ""}`}
@@ -78,7 +81,11 @@ export default function DateSelector(props: DateSelectorProps) {
           selected={date}
           onChange={onDateSelect}
           maxDate={props.maxDate || new Date()}
-          style={{ position: "absolute", top: "100%" }}
+          style={{
+            position: "absolute",
+            top: "100%",
+            ...a,
+          }}
         />
       )}
     </div>

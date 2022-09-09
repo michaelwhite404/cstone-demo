@@ -14,7 +14,7 @@ export default function ReimbursementList({ reimbursements, select }: Reimbursem
       <div className="sticky-header px-4 py-2">
         <span className="show-entry-label">Requests</span>
       </div>
-      <ul>
+      <ul className="bg-white">
         {reimbursements.map((reimbursement, i) => (
           <li key={reimbursement._id}>
             <button

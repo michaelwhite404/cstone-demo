@@ -26,6 +26,7 @@ const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
   reason: {
     type: String,
     required: true,
+    minLength: 1,
   },
   comments: {
     type: String,
@@ -34,6 +35,11 @@ const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
   createdAt: {
     type: Date,
     default: () => new Date(),
+  },
+  sendTo: {
+    type: Types.ObjectId,
+    ref: "Employee",
+    required: true,
   },
   approval: {
     user: {
@@ -48,6 +54,10 @@ const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
       type: Boolean,
       // required: true,
     },
+  },
+  message: {
+    type: String,
+    select: false,
   },
 });
 

@@ -9,13 +9,17 @@ export interface LeaveModel {
   reason: string;
   comments?: string;
   createdAt: Date;
-  approval?: {
-    user: PopulatedDoc<EmployeeModel>;
-    date: Date;
-    approved: boolean;
-  };
+  sendTo: PopulatedDoc<EmployeeModel>;
+  approval?: LeaveApproval;
+  message?: string;
 }
 
 export interface LeaveDocument extends LeaveModel, Document {
   _id: any;
+}
+
+export interface LeaveApproval {
+  user: PopulatedDoc<EmployeeModel>;
+  date: Date;
+  approved: boolean;
 }
