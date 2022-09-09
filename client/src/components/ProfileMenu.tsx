@@ -1,12 +1,16 @@
 import { Menu, MenuItem } from "@blueprintjs/core";
-import { useAuth, useToasterContext } from "../hooks";
+import { useAuth, useSocket, useToasterContext } from "../hooks";
 
 export default function ProfileMenu() {
   const { showToaster } = useToasterContext();
   const { logout } = useAuth();
+  const socket = useSocket();
   const handleLogout = () => {
     logout()
-      .then(() => showToaster("Logged out successfully", "success"))
+      .then(() => {
+        showToaster("Logged out successfully", "success");
+        socket?.disconnect();
+      })
       .catch(() => showToaster("There was an error logging out", "danger"));
   };
   return (

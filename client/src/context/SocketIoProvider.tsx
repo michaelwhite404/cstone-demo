@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { useAuth } from "../hooks";
 
 export const SocketIoContext = createContext<Socket | undefined>(undefined);
 const uri =
@@ -9,11 +10,13 @@ const uri =
 
 export default function SocketIoProvider({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket>();
+  const { user } = useAuth();
 
   useEffect(() => {
     const newSocket = io(uri);
     setSocket(newSocket);
-  }, []);
+    newSocket.emit("userConnected", user);
+  }, [user]);
 
   return <SocketIoContext.Provider value={socket}>{children}</SocketIoContext.Provider>;
 }

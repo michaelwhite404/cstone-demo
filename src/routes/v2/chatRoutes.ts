@@ -1,4 +1,5 @@
 import { AftercareAttendanceEntry } from "@models";
+import { io } from "@server";
 import { catchAsync } from "@utils";
 import { chat } from "@utils";
 import { Router } from "express";
@@ -188,5 +189,17 @@ chatRouter.get(
     res.status(200).json({
       data: response,
     });
+  })
+);
+
+chatRouter.get(
+  "/test3",
+  catchAsync(async (req, res, next) => {
+    const sockets = await io.fetchSockets();
+    const me = sockets.find(
+      (socket) => socket.data?.user?.email === "mwhite1@cornerstone-schools.org"
+    );
+    console.log(me?.data);
+    res.send("DONE");
   })
 );
