@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
-import { useAuth } from "../../../hooks";
+import { useAuth, useSocket, useToasterContext } from "../../../hooks";
 import { APIReimbursementResponse } from "../../../types/apiResponses";
 import AddReimbursement from "./AddReimbursement";
 import Approvals from "./Approvals";
@@ -25,6 +25,8 @@ export default function Reimbursements() {
   const [slideOpen, setSlideOpen] = useState(false);
   const location = useLocation();
   const user = useAuth().user!;
+  const socket = useSocket();
+  const { showToaster } = useToasterContext();
 
   const getStatus = (approval?: ReimbursementApproval) =>
     approval ? (approval.approved ? "Approved" : "Rejected") : ("Pending" as RM["status"]);
@@ -59,6 +61,24 @@ export default function Reimbursements() {
     fetchReimbursements();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const handleFinalize = (finalized: ReimbursementModel) => {
+      const index = reimbursements.findIndex((r) => r._id === finalized._id);
+      if (index === -1) return;
+      const copy = [...reimbursements];
+      const status = getStatus(finalized.approval);
+      copy[index].approval = finalized.approval;
+      copy[index].status = status;
+      setReimbursements(copy);
+    };
+
+    socket?.on("finalizeReimbursement", handleFinalize);
+
+    return () => {
+      socket?.off("finalizeReimbursement", handleFinalize);
+    };
+  }, [reimbursements, socket, showToaster, user]);
 
   const selected = reimbursements.find((r) => r.selected);
 

@@ -79,7 +79,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
 
   const close = () => {
     props.setOpen(false);
-    setData(initialData);
+    setData({ ...initialData, sendTo: myLeaders[0]._id || "" });
     if (needed) toggleNeeded();
     setFiles(null);
   };

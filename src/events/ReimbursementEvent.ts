@@ -1,11 +1,12 @@
 import { ReimbursementDocument } from "@@types/models";
 import { Employee, Reimbursement } from "@models";
+import { io } from "@server";
 import { chat } from "@utils";
 import { format } from "date-fns";
 
 const URL =
   process.env.NODE_ENV! === "development"
-    ? "http://localhost:8080"
+    ? "http://localhost:3000"
     : "https://app.cornerstone-schools.org";
 
 class ReimbursementEvent {
@@ -94,7 +95,7 @@ class ReimbursementEvent {
                             text: "OPEN IN APP",
                             onClick: {
                               openLink: {
-                                url: `http://localhost:3000/requests/reimbursements#${reimbursement._id}`,
+                                url: `${URL}/requests/reimbursements#${reimbursement._id}`,
                               },
                             },
                           },
@@ -114,7 +115,15 @@ class ReimbursementEvent {
   }
 
   async finalize(reimbursement: ReimbursementDocument) {
-    reimbursement = (await Reimbursement.findById(reimbursement).select("+message"))!;
+    reimbursement = (await Reimbursement.findById(reimbursement)
+      .populate("user sendTo")
+      .select("+message"))!;
+    const sendingEmails: string[] = [reimbursement.sendTo.email, reimbursement.user.email];
+    const sockets = await io.fetchSockets();
+    const sendSockets = sockets.filter((socket) => sendingEmails.includes(socket.data.user?.email));
+    console.log(sendSockets);
+    sendSockets.forEach((socket) => io.to(socket.id).emit("finalizeReimbursement", reimbursement));
+    /****** */
     if (!reimbursement || !reimbursement.message) return;
     await chat.spaces.messages.update({
       name: reimbursement.message,
@@ -170,7 +179,7 @@ class ReimbursementEvent {
                           text: "OPEN IN APP",
                           onClick: {
                             openLink: {
-                              url: `http://localhost:3000/requests/reimbursements#${reimbursement._id}`,
+                              url: `${URL}/requests/reimbursements#${reimbursement._id}`,
                             },
                           },
                         },
