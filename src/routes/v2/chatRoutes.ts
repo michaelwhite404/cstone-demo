@@ -122,14 +122,14 @@ chatRouter.get(
   "/test2",
   catchAsync(async (req, res, next) => {
     const response = await chat.spaces.messages.update({
-      name: "spaces/xDMtAEAAAAE/messages/jSgDrEaV4rI.jSgDrEaV4rI",
+      name: "spaces/xDMtAEAAAAE/messages/cC-1IpyA3ME.cC-1IpyA3ME",
       updateMask: "cards",
       requestBody: {
         cards: [
           {
             header: {
               title: "Reimbursement Request",
-              subtitle: "Michael White",
+              subtitle: "Lab Equiptment",
               imageUrl: "https://i.ibb.co/qMHwLwK/Reimbursement-Blue.png",
             },
             sections: [
@@ -138,19 +138,25 @@ chatRouter.get(
                   {
                     keyValue: {
                       topLabel: "Payee Name",
-                      content: "Michael White",
+                      content: "Fake User",
                     },
                   },
                   {
                     keyValue: {
                       topLabel: "Purchase Date",
-                      content: "9/7/2022",
+                      content: "09/08/2022",
                     },
                   },
                   {
                     keyValue: {
                       topLabel: "Amount",
-                      content: "$65.75",
+                      content: "$45.00",
+                    },
+                  },
+                  {
+                    keyValue: {
+                      topLabel: "Status",
+                      content: "Approved",
                     },
                   },
                 ],
@@ -159,26 +165,6 @@ chatRouter.get(
                 widgets: [
                   {
                     buttons: [
-                      {
-                        textButton: {
-                          text: "APPROVE",
-                          onClick: {
-                            action: {
-                              actionMethodName: "idk",
-                            },
-                          },
-                        },
-                      },
-                      {
-                        textButton: {
-                          text: "REJECT",
-                          onClick: {
-                            openLink: {
-                              url: "https://example.com",
-                            },
-                          },
-                        },
-                      },
                       {
                         textButton: {
                           text: "OPEN IN APP",
@@ -192,16 +178,6 @@ chatRouter.get(
                     ],
                   },
                 ],
-              },
-            ],
-            cardActions: [
-              {
-                actionLabel: "idk",
-                onClick: {
-                  openLink: {
-                    url: "https://example.com/feedback",
-                  },
-                },
               },
             ],
           },

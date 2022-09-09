@@ -31,11 +31,12 @@ export default function Reimbursements() {
 
   const fetchReimbursements = async (): Promise<RM[]> => {
     const reimbursementId = location.hash.replace("#", "");
-    window.history.replaceState(
-      "",
-      document.title,
-      window.location.pathname + window.location.search
-    );
+    reimbursementId &&
+      window.history.replaceState(
+        "",
+        document.title,
+        window.location.pathname + window.location.search
+      );
     const reimbursements = (await axios.get("/api/v2/reimbursements")).data.data
       .reimbursements as ReimbursementModel[];
     const r = reimbursements.map((r) => ({

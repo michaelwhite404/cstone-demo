@@ -326,7 +326,7 @@ export default function AddReimbursement(props: AddLeaveProps) {
                         </div>
                       )}
                     </div>
-                    <div className="col-span-6">
+                    <div className="col-span-12 sm:col-span-6">
                       <label className="block text-sm font-medium text-gray-700">Send To</label>
                       <div className="mt-1">
                         <select

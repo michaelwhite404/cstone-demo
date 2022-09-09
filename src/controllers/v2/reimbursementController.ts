@@ -98,6 +98,7 @@ export const approveReimbursement = catchAsync(async (req, res, next) => {
     email: req.employee.email,
   };
   res.sendJson(200, { reimbursement: jsonReimbursement });
+  reimbursementEvent.finalize(reimbursement);
 });
 
 export const createReimbursement = catchAsync(async (req, res, next) => {
@@ -133,6 +134,5 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     throw err;
   }
   res.sendJson(201, { reimbursement });
-
   reimbursementEvent.submit(reimbursement);
 });
