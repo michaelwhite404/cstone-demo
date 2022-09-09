@@ -26,9 +26,14 @@ export default function AppContainer() {
         );
       }
     });
+    socket?.on("submittedReimbursement", (reimbursement: ReimbursementModel) => {
+      // @ts-ignore
+      showToaster("You have received a reimbusement request", "none", "envelope");
+    });
 
     return () => {
       socket?.off("finalizeReimbursement");
+      socket?.off("submittedReimbursement");
     };
   }, [showToaster, socket, user._id]);
 

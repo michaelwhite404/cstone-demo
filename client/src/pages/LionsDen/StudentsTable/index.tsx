@@ -54,14 +54,16 @@ export default function StudentTable({ students, removeStudents }: StudentTableP
         />
       ),
       className: "sm:w-24 w-20",
+      key: "Checkbox",
     },
     {
       comp: main === "unchecked" ? "Student" : <RemoveButton />,
       className: "",
+      key: "Student",
     },
-    { comp: "Grade", className: "hidden sm:table-cell" },
-    { comp: "Days Present", className: "hidden sm:table-cell" },
-    { comp: "Late Pickup", className: "hidden sm:table-cell" },
+    { comp: "Grade", className: "hidden sm:table-cell", key: "Grade" },
+    { comp: "Days Present", className: "hidden sm:table-cell", key: "Days" },
+    { comp: "Late Pickup", className: "hidden sm:table-cell", key: "Late" },
   ];
 
   useEffect(() => {
@@ -92,7 +94,9 @@ export default function StudentTable({ students, removeStudents }: StudentTableP
         <thead>
           <tr>
             {headings.map((h) => (
-              <th className={h.className}>{h.comp}</th>
+              <th className={h.className} key={h.key}>
+                {h.comp}
+              </th>
             ))}
           </tr>
         </thead>

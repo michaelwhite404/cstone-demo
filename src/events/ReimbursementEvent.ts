@@ -12,10 +12,13 @@ const URL =
 class ReimbursementEvent {
   async submit(reimbursement: ReimbursementDocument) {
     reimbursement = await Reimbursement.populate(reimbursement, "user sendTo");
-    // const employee = await Employee.findById(reimbursement.sendTo);
-    // if (!employee) return;
-
+    // Do not send submit notifications to self
     if (reimbursement.sendTo._id.toString() === reimbursement.user._id.toString()) return;
+    const sockets = await io.fetchSockets();
+    const foundSocket = sockets.find(
+      (socket) => reimbursement.sendTo.email === socket.data.user?.email
+    );
+    if (foundSocket) io.to(foundSocket.id).emit("submittedReimbursement", reimbursement);
     if (reimbursement.sendTo.space) {
       const response = await chat.spaces.messages.create({
         parent: reimbursement.sendTo.space,

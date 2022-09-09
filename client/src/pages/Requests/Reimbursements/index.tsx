@@ -73,10 +73,17 @@ export default function Reimbursements() {
       setReimbursements(copy);
     };
 
-    socket?.on("finalizeReimbursement", handleFinalize);
+    const handleSubmitted = (reimbursement: ReimbursementModel) => {
+      const copy = [...reimbursements];
+      copy.unshift({ ...reimbursement, selected: false, status: "Pending" });
+      setReimbursements(copy);
+    };
 
+    socket?.on("finalizeReimbursement", handleFinalize);
+    socket?.on("submittedReimbursement", handleSubmitted);
     return () => {
       socket?.off("finalizeReimbursement", handleFinalize);
+      socket?.off("submittedReimbursement", handleSubmitted);
     };
   }, [reimbursements, socket, showToaster, user]);
 
