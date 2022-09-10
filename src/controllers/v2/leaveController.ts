@@ -1,11 +1,31 @@
 import { Leave } from "@models";
-import { AppError, catchAsync } from "@utils";
+import { APIFeatures, AppError, catchAsync } from "@utils";
 import { handlerFactory as factory } from ".";
 
 const Model = Leave;
 const key = "leave";
 
-export const getAllLeaves = factory.getAll(Model, key);
+export const getAllLeaves = catchAsync(async (req, res) => {
+  const query = Model.find({
+    $or: [{ sendTo: req.employee._id }, { user: req.employee._id }],
+  }).populate([
+    { path: "user sendTo", select: "fullName slug email" },
+    { path: "approval", populate: { path: "user", select: "fullName email" } },
+  ]);
+
+  const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
+  const leaves = await features.query;
+
+  // SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    requestedAt: req.requestTime,
+    results: leaves.length,
+    data: {
+      leaves,
+    },
+  });
+});
 
 export const getLeave = factory.getOneById(Model, key);
 
