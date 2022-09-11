@@ -1,6 +1,7 @@
 import { LeaveDocument } from "@@types/models";
 import { Model, model, Schema, Types } from "mongoose";
 import { isSameDay, isBefore } from "date-fns";
+import { Employee } from "@models";
 
 const leaveSchema: Schema<LeaveDocument, Model<LeaveDocument>> = new Schema({
   user: {

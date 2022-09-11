@@ -1,5 +1,5 @@
 import { Leave } from "@models";
-import { APIFeatures, AppError, catchAsync } from "@utils";
+import { APIFeatures, AppError, catchAsync, getUserLeaders } from "@utils";
 import { handlerFactory as factory } from ".";
 
 const Model = Leave;
@@ -54,15 +54,28 @@ export const approveLeave = catchAsync(async (req, res, next) => {
   res.sendJson(200, { leave });
 });
 
-export const createLeave = catchAsync(async (req, res) => {
-  const { dateStart, dateEnd, reason, comments } = req.body;
-  const leave = await Model.create({
+export const createLeave = catchAsync(async (req, res, next) => {
+  const { dateStart, dateEnd, reason, comments, sendTo } = req.body;
+  // Is user leader
+  const leaders = await getUserLeaders(req.employee);
+  if (!leaders.map((l) => l._id.toString() as string).includes(sendTo)) {
+    return next(
+      new AppError("Please send your leave request to a person who leads your department", 400)
+    );
+  }
+
+  let leave = await Model.create({
     user: req.employee._id,
     dateStart,
     dateEnd,
     reason,
     comments,
+    sendTo,
     createdAt: new Date(),
+  });
+  leave = await Model.populate(leave, {
+    path: "user sendTo",
+    select: "fullName slug email",
   });
   res.sendJson(201, { leave });
 });

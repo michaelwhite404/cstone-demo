@@ -8,6 +8,7 @@ export { default as catchAsync } from "./catchAsync";
 export { default as datesAreOnSameDay } from "./datesAreOnSameDay";
 export { default as distinctArrays } from "./distinctArrays";
 export { default as Email } from "./email";
+export { default as getUserLeaders } from "./getUserLeaders";
 export { default as isObject } from "./isObject";
 export { default as isObjectID } from "./isObjectID";
 export { default as makePassword } from "./makePassword";

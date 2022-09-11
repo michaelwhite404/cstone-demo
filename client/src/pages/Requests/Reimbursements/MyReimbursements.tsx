@@ -11,15 +11,13 @@ interface Props {
 export default function MyReimbursements(props: Props) {
   const { reimbursements, select } = props;
   return (
-    <>
-      <div>
-        <div className="hidden sm:block">
-          <ReimbursementTable reimbursements={reimbursements} select={select} />
-        </div>
-        <div className="sm:hidden block">
-          <ReimbursementList reimbursements={reimbursements} select={select} />
-        </div>
+    <div>
+      <div className="hidden sm:block">
+        <ReimbursementTable reimbursements={reimbursements} select={select} />
       </div>
-    </>
+      <div className="sm:hidden block">
+        <ReimbursementList reimbursements={reimbursements} select={select} />
+      </div>
+    </div>
   );
 }

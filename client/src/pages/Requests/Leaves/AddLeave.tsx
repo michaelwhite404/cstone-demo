@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
-import { isBefore, isSameDay, startOfDay } from "date-fns";
+import { endOfDay, isBefore, isSameDay, startOfDay } from "date-fns";
 import { ChangeEventHandler, Fragment, useEffect, useState } from "react";
 import { LeaveModel } from "../../../../../src/types/models";
 import DateSelector from "../../../components/DateSelector";
@@ -16,7 +16,7 @@ interface AddLeaveProps {
 }
 const initialData = {
   dateStart: startOfDay(new Date()),
-  dateEnd: startOfDay(new Date()),
+  dateEnd: endOfDay(new Date()),
   reason: "",
   comments: "",
   sendTo: "",
@@ -178,14 +178,6 @@ export default function AddLeave(props: AddLeaveProps) {
                           ))}
                         </select>
                       </div>
-                      <div className="col-span-2 mt-2">
-                        <label className="block text-sm font-medium text-gray-700">Comments</label>
-                        <textarea
-                          name="comments"
-                          className="min-h-[40px] mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          onChange={handleChange}
-                        />
-                      </div>
                       <div className="col-span-2">
                         <label className="block text-sm font-medium text-gray-700">Send To</label>
                         <div className="mt-1">
@@ -202,6 +194,14 @@ export default function AddLeave(props: AddLeaveProps) {
                             ))}
                           </select>
                         </div>
+                      </div>
+                      <div className="col-span-2 mt-2">
+                        <label className="block text-sm font-medium text-gray-700">Comments</label>
+                        <textarea
+                          name="comments"
+                          className="min-h-[40px] mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          onChange={handleChange}
+                        />
                       </div>
                     </div>
                   </div>
