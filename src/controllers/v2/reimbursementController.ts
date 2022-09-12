@@ -1,6 +1,6 @@
 import { Reimbursement } from "@models";
 import { ReimbursementDocument } from "@@types/models";
-import { APIFeatures, AppError, catchAsync, s3 } from "@utils";
+import { APIFeatures, AppError, catchAsync, getUserLeaders, s3 } from "@utils";
 import { Query } from "mongoose";
 import { reimbursementEvent } from "@events";
 
@@ -106,6 +106,13 @@ export const createReimbursement = catchAsync(async (req, res, next) => {
     req.body;
   if (!(req.file?.fieldname === "receipt")) {
     return next(new AppError("Each reimbursement must have a receipt to upload", 400));
+  }
+  // Is user leader
+  const leaders = await getUserLeaders(req.employee);
+  if (!leaders.map((l) => l._id.toString() as string).includes(sendTo)) {
+    return next(
+      new AppError("Please send your leave request to a person who leads your department", 400)
+    );
   }
 
   let reimbursement = await Model.create({

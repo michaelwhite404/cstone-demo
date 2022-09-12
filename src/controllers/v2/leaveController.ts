@@ -1,4 +1,5 @@
 import { Leave } from "@models";
+import { LeaveDocument } from "@@types/models";
 import { APIFeatures, AppError, catchAsync, getUserLeaders } from "@utils";
 import { handlerFactory as factory } from ".";
 
@@ -29,6 +30,21 @@ export const getAllLeaves = catchAsync(async (req, res) => {
 
 export const getLeave = factory.getOneById(Model, key);
 
+export const checkCanApprove = catchAsync(async (req, res, next) => {
+  const leave = await Leave.findById(req.params.id).populate({
+    path: "user sendTo",
+    select: "fullName slug email",
+  });
+  if (!leave) return next(new AppError("There is no leave with this id", 404));
+  if (leave.sendTo._id.toString() !== req.employee._id.toString()) {
+    return next(new AppError("You are not authorized to approve this leave", 403));
+  }
+  if (leave.approval?.date)
+    return next(new AppError("This leave request has already been finalized", 400));
+  res.locals.leave = leave;
+  next();
+});
+
 export const approveLeave = catchAsync(async (req, res, next) => {
   // BODY: { approved: true } || { approved: false }
   const { approved } = req.body;
@@ -41,16 +57,14 @@ export const approveLeave = catchAsync(async (req, res, next) => {
   if (value === undefined)
     return next(new AppError("The property `approved` should be a boolean value", 400));
   // VALID
-  const leave = await Leave.findById(req.params.id);
-  if (!leave) return next(new AppError("There is no leave with this id", 404));
-  if (leave.approval)
-    return next(new AppError("This leave request has already been finalized", 400));
+  let leave = res.locals.leave as LeaveDocument;
   leave.approval = {
     user: req.employee._id,
     date: new Date(req.requestTime),
     approved,
   };
   await leave.save();
+  await leave.populate({ path: "approval.user", select: "fullName email" }).execPopulate();
   res.sendJson(200, { leave });
 });
 
