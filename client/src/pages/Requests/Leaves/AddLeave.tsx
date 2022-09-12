@@ -3,7 +3,7 @@ import { XIcon } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import { endOfDay, isBefore, isSameDay, startOfDay } from "date-fns";
 import { ChangeEventHandler, Fragment, useEffect, useState } from "react";
-import { LeaveModel } from "../../../../../src/types/models";
+import { Leave } from ".";
 import DateSelector from "../../../components/DateSelector";
 import { useToasterContext } from "../../../hooks";
 import { APIError, APIResponse } from "../../../types/apiResponses";
@@ -12,7 +12,7 @@ import "./AddLeave.sass";
 interface AddLeaveProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setLeaves: React.Dispatch<React.SetStateAction<LeaveModel[]>>;
+  setLeaves: React.Dispatch<React.SetStateAction<Leave[]>>;
 }
 const initialData = {
   dateStart: startOfDay(new Date()),

@@ -1,17 +1,17 @@
 import { ArrowNarrowRightIcon } from "@heroicons/react/outline";
 import { format } from "date-fns";
 import React from "react";
-import { Link } from "react-router-dom";
-import { LeaveModel } from "../../../../../src/types/models";
+import { Leave } from ".";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 
 interface Props {
-  leaves: LeaveModel[];
+  leaves: Leave[];
+  select: (r: Leave) => void;
 }
 
 export default function MyLeavesList(props: Props) {
-  const { leaves } = props;
+  const { leaves, select } = props;
   return (
     <TableWrapper>
       <div className="sticky-header px-4 py-2">
@@ -29,26 +29,24 @@ export default function MyLeavesList(props: Props) {
               key={leave._id}
               className={i !== leaves.length - 1 ? "border-b border-gray-200" : ""}
             >
-              <Link to={`/requests/leaves/${leave._id}`} state={{ fromLeaves: true }}>
-                <div className="p-4 space-y-0.5">
-                  <div className="text-gray-900 font-medium">{leave.reason}</div>
-                  {leave.comments && (
-                    <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {leave.comments}
-                    </div>
-                  )}
-                  <div className="flex text-gray-400">
-                    {format(new Date(leave.dateStart), "P")}
-                    <ArrowNarrowRightIcon className="mx-2 w-4" />
-                    {format(new Date(leave.dateEnd), "P")}
+              <div className="p-4 space-y-0.5" onClick={() => select(leave)}>
+                <div className="text-gray-900 font-medium">{leave.reason}</div>
+                {leave.comments && (
+                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    {leave.comments}
                   </div>
-                  <div>
-                    <div className="mt-2">
-                      <ApprovalBadge status={status} />
-                    </div>
+                )}
+                <div className="flex text-gray-400">
+                  {format(new Date(leave.dateStart), "P")}
+                  <ArrowNarrowRightIcon className="mx-2 w-4" />
+                  {format(new Date(leave.dateEnd), "P")}
+                </div>
+                <div>
+                  <div className="mt-2">
+                    <ApprovalBadge status={status} />
                   </div>
                 </div>
-              </Link>
+              </div>
             </li>
           );
         })}

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth, useDocTitle } from "../../../hooks";
-import { LeaveModel } from "../../../../../src/types/models";
-import { Outlet, useParams } from "react-router-dom";
+import { LeaveApproval, LeaveModel } from "../../../../../src/types/models";
 import Detail from "./Detail";
 import AddLeave from "./AddLeave";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
@@ -10,33 +9,49 @@ import Tabs2 from "../../../components/Tabs2";
 import MyLeaves from "./MyLeaves";
 
 type PageState = "MY_LEAVES" | "APPROVALS";
+const getStatus = (approval?: LeaveApproval): Leave["status"] =>
+  approval ? (approval.approved ? "Approved" : "Rejected") : "Pending";
+
+export interface Leave extends LeaveModel {
+  selected: boolean;
+  status: "Approved" | "Rejected" | "Pending";
+}
 
 function Leaves() {
+  useDocTitle("Leave Requests | Cornerstone App");
   const [pageState, setPageState] = useState<PageState>("MY_LEAVES");
   const [loaded, setLoaded] = useState(false);
-  useDocTitle("Leave Requests | Cornerstone App");
-  const params = useParams<"leaveId">();
-  const [leaves, setLeaves] = useState<LeaveModel[]>([]);
+  const [leaves, setLeaves] = useState<Leave[]>([]);
   const [slideOpen, setSlideOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const user = useAuth().user!;
-  const selected = leaves.find((leave) => leave._id === params.leaveId);
   useEffect(() => {
     const getLeaves = async () => {
       setLoaded(false);
-      const res = await axios.get("/api/v2/leaves");
-      setLeaves(res.data.data.leaves);
+      const leaves = (await axios.get("/api/v2/leaves")).data.data.leaves as LeaveModel[];
+      const l = leaves.map((leave) => ({
+        ...leave,
+        selected: false,
+        status: getStatus(leave.approval),
+      }));
+      setLeaves(l);
       setLoaded(true);
     };
 
     getLeaves();
   }, []);
 
-  useEffect(() => {
-    params.leaveId ? setSlideOpen(true) : setSlideOpen(false);
-  }, [params]);
-
   const isLeader = user.departments?.some((d) => d.role === "LEADER");
+  const selected = leaves.find((leave) => leave.selected);
+
+  const select = (r: Leave) => {
+    const copy = [...leaves];
+    const index = copy.findIndex((record) => record._id === r._id);
+    if (index === -1) return;
+    copy[index].selected = true;
+    setLeaves(copy);
+    setSlideOpen(true);
+  };
 
   return (
     <div className="relative h-[100vh]" style={{ padding: "10px 25px 25px" }}>
@@ -61,7 +76,7 @@ function Leaves() {
               {
                 name: "Approvals",
                 value: "APPROVALS",
-                // count: leaves.filter((r) => r.sendTo._id === user._id && !r.approval).length,
+                count: leaves.filter((r) => r.sendTo._id === user._id && !r.approval).length,
               },
             ]}
             value={pageState}
@@ -69,9 +84,18 @@ function Leaves() {
           />
         </div>
       )}
-      {loaded && <MyLeaves leaves={leaves.filter((l) => l.user._id === user._id)} />}
+      {loaded && (
+        <>
+          {pageState === "MY_LEAVES" && (
+            <MyLeaves leaves={leaves.filter((l) => l.user._id === user._id)} select={select} />
+          )}
+          {loaded && pageState === "APPROVALS" && (
+            <MyLeaves leaves={leaves.filter((l) => l.sendTo._id === user._id)} select={select} />
+          )}
+        </>
+      )}
       <AddLeave open={modalOpen} setOpen={setModalOpen} setLeaves={setLeaves} />
-      <Outlet context={{ open: slideOpen, setOpen: setSlideOpen, selected }} />
+      <Detail open={slideOpen} setOpen={setSlideOpen} selected={selected} setLeaves={setLeaves} />
     </div>
   );
 }

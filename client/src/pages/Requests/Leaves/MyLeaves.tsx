@@ -1,24 +1,25 @@
 import React from "react";
-import { LeaveModel } from "../../../../../src/types/models";
+import { Leave } from ".";
 import EmptyState from "./EmptyState";
 import MyLeavesList from "./MyLeavesList";
 import MyLeavesTable from "./MyLeavesTable";
 
 interface Props {
-  leaves: LeaveModel[];
+  leaves: Leave[];
+  select: (leave: Leave) => void;
 }
 
 export default function MyLeaves(props: Props) {
-  const { leaves } = props;
+  const { leaves, select } = props;
   return (
     <>
       {leaves.length > 0 ? (
         <div>
           <div className="hidden sm:block">
-            <MyLeavesTable leaves={leaves} />
+            <MyLeavesTable leaves={leaves} select={select} />
           </div>
           <div className="sm:hidden block">
-            <MyLeavesList leaves={leaves} />
+            <MyLeavesList leaves={leaves} select={select} />
           </div>
         </div>
       ) : (

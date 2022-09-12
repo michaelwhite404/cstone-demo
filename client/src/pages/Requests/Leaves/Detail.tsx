@@ -1,71 +1,27 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
-import React, { Fragment, useCallback, useEffect } from "react";
-import { useOutletContext, useNavigate, useLocation } from "react-router-dom";
-import { LeaveModel } from "../../../../../src/types/models";
-import Badge from "../../../components/Badge/Badge";
-import BadgeColor from "../../../components/Badge/BadgeColor";
+import React, { Fragment } from "react";
+import { Leave } from ".";
+import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import FadeIn from "../../../components/FadeIn";
+import wait from "../../../utils/wait";
 
 interface OutletContext {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  selected: LeaveModel | undefined;
+  selected: Leave | undefined;
+  setLeaves: React.Dispatch<React.SetStateAction<Leave[]>>;
 }
 
-export default function Detail() {
-  const { open, setOpen, selected } = useOutletContext<OutletContext>();
-  const navigate = useNavigate();
-  const location = useLocation();
+export default function Detail(props: OutletContext) {
+  const { open, setOpen, selected, setLeaves } = props;
 
-  const handleClose = useCallback(
-    async (from?: string) => {
-      if (from === "back" && !(location.state as any)?.fromLeaves) {
-        return navigate(-1);
-      }
-      setOpen(false);
-      if ((location.state as any)?.fromLeaves) {
-        return setTimeout(() => {
-          navigate(-1);
-        }, 500);
-      }
-      return setTimeout(() => {
-        navigate("/requests/leaves");
-      }, 500);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [navigate, setOpen]
-  );
-
-  const onBackButtonEvent = useCallback(
-    (e: PopStateEvent) => {
-      e.preventDefault();
-      handleClose("back");
-    },
-    [handleClose]
-  );
-
-  useEffect(() => {
-    // @ts-ignore
-    window.history.pushState(null, null, window.location.pathname);
-    window.addEventListener("popstate", onBackButtonEvent);
-    return () => {
-      window.removeEventListener("popstate", onBackButtonEvent);
-    };
-  }, [onBackButtonEvent]);
-
-  const badgeObj: { [x: string]: BadgeColor } = {
-    Approved: "emerald",
-    Pending: "yellow",
-    Rejected: "red",
+  const handleClose = async () => {
+    setOpen(false);
+    await wait(500);
+    setLeaves((leaves) => leaves.map((l) => ({ ...l, selected: false })));
   };
-
-  const status = selected?.approval
-    ? selected?.approval.approved
-      ? "Approved"
-      : "Rejected"
-    : "Pending";
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -106,7 +62,7 @@ export default function Detail() {
                         </span>
                         <span className="text-xl font-semibold ml-4">{selected?.reason}</span>
                       </div>
-                      <Badge color={badgeObj[status]} text={status} />
+                      {selected && <ApprovalBadge status={selected.status} />}
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
                       {/* Replace with your content */}

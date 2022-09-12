@@ -1,16 +1,16 @@
 import { ArrowNarrowRightIcon } from "@heroicons/react/outline";
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
-import { LeaveModel } from "../../../../../src/types/models";
+import { Leave } from ".";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 
 interface Props {
-  leaves: LeaveModel[];
+  leaves: Leave[];
+  select: (leave: Leave) => void;
 }
 
 export default function MyLeavesTable(props: Props) {
-  const { leaves } = props;
+  const { leaves, select } = props;
   return (
     <TableWrapper>
       <table>
@@ -35,9 +35,12 @@ export default function MyLeavesTable(props: Props) {
               >
                 <td className="pl-6 py-2 w-[35%]">
                   <div className="pr-6 md:w-[350px]">
-                    <Link to={`/requests/leaves/${leave._id}`} state={{ fromLeaves: true }}>
-                      <div className="text-blue-500 font-medium">{leave.reason}</div>
-                    </Link>
+                    <div
+                      className="text-blue-500 font-medium cursor-pointer"
+                      onClick={() => select(leave)}
+                    >
+                      {leave.reason}
+                    </div>
                     {leave.comments && (
                       <div className="hidden md:block whitespace-nowrap overflow-hidden overflow-ellipsis">
                         {leave.comments}
