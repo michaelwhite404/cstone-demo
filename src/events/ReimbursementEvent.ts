@@ -72,7 +72,7 @@ class ReimbursementEvent {
                             text: "APPROVE",
                             onClick: {
                               action: {
-                                actionMethodName: "FINALIZE_TIMESHEET",
+                                actionMethodName: "FINALIZE_REIMBURSEMENT",
                                 parameters: [
                                   { key: "reimbursementId", value: reimbursement._id.toString() },
                                   { key: "approved", value: "true" },
@@ -86,7 +86,7 @@ class ReimbursementEvent {
                             text: "REJECT",
                             onClick: {
                               action: {
-                                actionMethodName: "FINALIZE_TIMESHEET",
+                                actionMethodName: "FINALIZE_REIMBURSEMENT",
                                 parameters: [
                                   { key: "reimbursementId", value: reimbursement._id.toString() },
                                   { key: "approved", value: "false" },

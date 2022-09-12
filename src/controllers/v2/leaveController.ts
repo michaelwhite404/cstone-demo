@@ -2,6 +2,7 @@ import { Leave } from "@models";
 import { LeaveDocument } from "@@types/models";
 import { APIFeatures, AppError, catchAsync, getUserLeaders } from "@utils";
 import { handlerFactory as factory } from ".";
+import { leaveEvent } from "@events";
 
 const Model = Leave;
 const key = "leave";
@@ -92,4 +93,5 @@ export const createLeave = catchAsync(async (req, res, next) => {
     select: "fullName slug email",
   });
   res.sendJson(201, { leave });
+  leaveEvent.submit(leave);
 });
