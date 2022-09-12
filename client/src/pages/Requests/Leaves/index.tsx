@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth, useDocTitle } from "../../../hooks";
+import { useAuth, useDocTitle, useSocket } from "../../../hooks";
 import { LeaveApproval, LeaveModel } from "../../../../../src/types/models";
 import Detail from "./Detail";
 import AddLeave from "./AddLeave";
@@ -25,6 +25,8 @@ function Leaves() {
   const [slideOpen, setSlideOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const user = useAuth().user!;
+  const socket = useSocket();
+
   useEffect(() => {
     const getLeaves = async () => {
       setLoaded(false);
@@ -40,6 +42,31 @@ function Leaves() {
 
     getLeaves();
   }, []);
+
+  useEffect(() => {
+    const handleFinalize = (finalized: LeaveModel) => {
+      const index = leaves.findIndex((r) => r._id === finalized._id);
+      if (index === -1) return;
+      const copy = [...leaves];
+      const status = getStatus(finalized.approval);
+      copy[index].approval = finalized.approval;
+      copy[index].status = status;
+      setLeaves(copy);
+    };
+
+    const handleSubmitted = (leave: LeaveModel) => {
+      const copy = [...leaves];
+      copy.unshift({ ...leave, selected: false, status: "Pending" });
+      setLeaves(copy);
+    };
+
+    socket?.on("finalizeLeave", handleFinalize);
+    socket?.on("submittedLeave", handleSubmitted);
+    return () => {
+      socket?.off("finalizeLeave", handleFinalize);
+      socket?.off("submittedLeave", handleSubmitted);
+    };
+  }, [leaves, socket, user]);
 
   const isLeader = user.departments?.some((d) => d.role === "LEADER");
   const selected = leaves.find((leave) => leave.selected);

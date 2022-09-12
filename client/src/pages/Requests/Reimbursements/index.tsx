@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
-import { useAuth, useDocTitle, useSocket, useToasterContext } from "../../../hooks";
+import { useAuth, useDocTitle, useSocket } from "../../../hooks";
 import { APIReimbursementResponse } from "../../../types/apiResponses";
 import AddReimbursement from "./AddReimbursement";
 import Approvals from "./Approvals";
@@ -27,7 +27,6 @@ export default function Reimbursements() {
   const location = useLocation();
   const user = useAuth().user!;
   const socket = useSocket();
-  const { showToaster } = useToasterContext();
 
   const getStatus = (approval?: ReimbursementApproval) =>
     approval ? (approval.approved ? "Approved" : "Rejected") : ("Pending" as RM["status"]);
@@ -86,7 +85,7 @@ export default function Reimbursements() {
       socket?.off("finalizeReimbursement", handleFinalize);
       socket?.off("submittedReimbursement", handleSubmitted);
     };
-  }, [reimbursements, socket, showToaster, user]);
+  }, [reimbursements, socket, user]);
 
   const selected = reimbursements.find((r) => r.selected);
 
