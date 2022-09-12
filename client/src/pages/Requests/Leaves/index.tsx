@@ -7,6 +7,7 @@ import AddLeave from "./AddLeave";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
 import MyLeaves from "./MyLeaves";
+import { APILeaveResponse } from "../../../types/apiResponses";
 
 type PageState = "MY_LEAVES" | "APPROVALS";
 const getStatus = (approval?: LeaveApproval): Leave["status"] =>
@@ -80,6 +81,11 @@ function Leaves() {
     setSlideOpen(true);
   };
 
+  const finalizeLeave = async (id: string, approved: boolean) => {
+    const res = await axios.post<APILeaveResponse>(`/api/v2/leaves/${id}/approve`, { approved });
+    return res.data.data.leave;
+  };
+
   return (
     <div className="relative h-[100vh]" style={{ padding: "10px 25px 25px" }}>
       <div className="sm:flex sm:justify-between  sm:align-center">
@@ -122,7 +128,15 @@ function Leaves() {
         </>
       )}
       <AddLeave open={modalOpen} setOpen={setModalOpen} setLeaves={setLeaves} />
-      <Detail open={slideOpen} setOpen={setSlideOpen} selected={selected} setLeaves={setLeaves} />
+      <Detail
+        open={slideOpen}
+        setOpen={setSlideOpen}
+        selected={selected}
+        setLeaves={setLeaves}
+        user={user}
+        finalizeLeave={finalizeLeave}
+        getStatus={getStatus}
+      />
     </div>
   );
 }

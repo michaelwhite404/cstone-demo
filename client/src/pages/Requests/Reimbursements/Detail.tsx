@@ -11,7 +11,8 @@ import {
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import FadeIn from "../../../components/FadeIn";
 import { useToasterContext } from "../../../hooks";
-import ConfirmButtons from "./ConfirmButtons";
+import wait from "../../../utils/wait";
+import ConfirmButtons from "../ConfirmButtons";
 
 interface DetailProps {
   open: boolean;
@@ -21,10 +22,6 @@ interface DetailProps {
   user: EmployeeModel;
   finalizeReimbursement: (id: string, approved: boolean) => Promise<ReimbursementModel>;
   getStatus: (approval?: ReimbursementApproval) => "Approved" | "Rejected" | "Pending";
-}
-
-function wait(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export default function Detail(props: DetailProps) {

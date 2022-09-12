@@ -1,6 +1,7 @@
 import {
   AttendanceStat,
   EmployeeModel,
+  LeaveModel,
   ReimbursementModel,
   TicketModel,
 } from "../../../src/types/models";
@@ -55,3 +56,6 @@ export interface APIReimbursementsResponse
 
 export interface APIUserResponse extends APIResponse<{ user: EmployeeModel }> {}
 export interface APIUsersResponse extends APIResponse<{ users: EmployeeModel[] }> {}
+
+export interface APILeaveResponse extends APIResponse<{ leave: LeaveModel }> {}
+export interface APILeavesResponse extends APIResponse<{ leaves: LeaveModel[] }> {}

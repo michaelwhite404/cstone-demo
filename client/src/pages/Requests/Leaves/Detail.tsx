@@ -3,24 +3,51 @@ import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
 import React, { Fragment } from "react";
 import { Leave } from ".";
+import { EmployeeModel, LeaveApproval, LeaveModel } from "../../../../../src/types/models";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import FadeIn from "../../../components/FadeIn";
+import { useToasterContext } from "../../../hooks";
 import wait from "../../../utils/wait";
+import ConfirmButtons from "../ConfirmButtons";
 
 interface OutletContext {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selected: Leave | undefined;
   setLeaves: React.Dispatch<React.SetStateAction<Leave[]>>;
+  user: EmployeeModel;
+  finalizeLeave: (id: string, approved: boolean) => Promise<LeaveModel>;
+  getStatus: (approval?: LeaveApproval | undefined) => "Approved" | "Rejected" | "Pending";
 }
 
 export default function Detail(props: OutletContext) {
-  const { open, setOpen, selected, setLeaves } = props;
+  const { finalizeLeave, open, setOpen, selected, setLeaves, user } = props;
+  const { showError } = useToasterContext();
 
   const handleClose = async () => {
     setOpen(false);
     await wait(500);
     setLeaves((leaves) => leaves.map((l) => ({ ...l, selected: false })));
+  };
+  const canApprove = selected?.sendTo?._id === user._id && !selected?.approval;
+
+  const submitApproval = async (approved: boolean) => {
+    if (selected) {
+      finalizeLeave(selected._id, approved)
+        .then((newLeave) =>
+          setLeaves((ls) => {
+            const copy = [...ls];
+            const index = copy.findIndex((r) => r._id === selected._id);
+            copy[index] = {
+              ...copy[index],
+              status: props.getStatus(newLeave.approval),
+              approval: newLeave.approval,
+            };
+            return copy;
+          })
+        )
+        .catch(showError);
+    }
   };
 
   return (
@@ -67,6 +94,8 @@ export default function Detail(props: OutletContext) {
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
                       {/* Replace with your content */}
                       <div className="absolute inset-0">
+                        {canApprove && <ConfirmButtons submitApproval={submitApproval} />}
+
                         {selected && (
                           <div className="mt-10 grid gap-8 grid-cols-2">
                             <div>
@@ -89,22 +118,6 @@ export default function Detail(props: OutletContext) {
                                 </FadeIn>
                               </div>
                             )}
-                            {/* {selected.approval && (
-                              <>
-                                <div className="col-span-2">
-                                  <FadeIn>
-                                    <div className="show-entry-label">{props.entry.status} At</div>
-                                    <div>{format(new Date(props.entry.finalizedAt), "PPPp")}</div>
-                                  </FadeIn>
-                                </div>
-                                <div className="col-span-2">
-                                  <FadeIn>
-                                    <div className="show-entry-label">{props.entry.status} By</div>
-                                    <div>{props.entry.finalizedBy.fullName}</div>
-                                  </FadeIn>
-                                </div>
-                              </>
-                            )} */}
                           </div>
                         )}
                       </div>

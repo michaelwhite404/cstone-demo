@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FadeIn from "../../../components/FadeIn";
+import FadeIn from "../../components/FadeIn";
 
 interface Props {
   submitApproval: (approved: boolean) => Promise<void>;
