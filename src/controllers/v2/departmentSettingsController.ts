@@ -46,7 +46,7 @@ export const createDepartmentSetting = catchAsync(async (req, res, next) => {
         if (typeof unconstrainedValue !== "string")
           return next(new AppError("Value must be a string", 400));
       case "COLOR":
-        if (!validator.isHexColor(unconstrainedValue))
+        if (!validator.isHexColor(unconstrainedValue || ""))
           return next(new AppError("Value must be a hex color", 400));
         break;
     }
@@ -74,4 +74,37 @@ export const createDepartmentSetting = catchAsync(async (req, res, next) => {
   }
 
   res.sendJson(201, { setting: departmentSetting });
+});
+
+// ------------------------------
+
+export const createAllowedSettingValue = catchAsync(async (req, res, next) => {
+  const { setting, value, caption } = req.body;
+  const availableSetting = await DepartmentAvailableSetting.findById(setting);
+  if (!availableSetting)
+    return next(new AppError("There is no available setting with this id", 400));
+  if (!availableSetting.constrained)
+    return next(
+      new AppError(
+        "Allowed setting value can only be attached to available settings with constrained values",
+        400
+      )
+    );
+  switch (availableSetting.dataType) {
+    case "BOOLEAN":
+      if (typeof value !== "boolean")
+        return next(new AppError("Value must be a boolean value", 400));
+      break;
+    case "NUMBER":
+      if (typeof value !== "number") return next(new AppError("Value must be a number", 400));
+      break;
+    case "STRING":
+      if (typeof value !== "string") return next(new AppError("Value must be a string", 400));
+    case "COLOR":
+      if (!validator.isHexColor(value || ""))
+        return next(new AppError("Value must be a hex color", 400));
+      break;
+  }
+  const allowedSetting = await DepartmentAllowedSetting.create({ setting, value, caption });
+  res.sendJson(201, { allowedSetting });
 });

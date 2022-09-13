@@ -8,6 +8,8 @@ settingsRouter
   .get(departmentSettingsController.getAllAvailableSettings)
   .post(departmentSettingsController.createAvailableSetting);
 
+settingsRouter.route("/allowed").post(departmentSettingsController.createAllowedSettingValue);
+
 settingsRouter.route("/:id").get(departmentSettingsController.getAvailableSetting);
 
 export default settingsRouter;

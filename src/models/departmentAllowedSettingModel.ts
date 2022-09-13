@@ -13,9 +13,10 @@ const allowedSettingValueSchema = new Schema({
   caption: {
     type: String,
     required: false,
-    minLength: 1,
   },
 });
+
+allowedSettingValueSchema.index({ setting: 1, value: 1 }, { unique: true });
 
 const DepartmentAllowedSettingValue = model(
   "DepartmentAllowedSettingValue",
