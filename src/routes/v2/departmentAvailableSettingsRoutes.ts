@@ -6,7 +6,7 @@ const settingsRouter = Router();
 settingsRouter
   .route("/")
   .get(departmentSettingsController.getAllAvailableSettings)
-  .post(departmentSettingsController.createAvailableSettings);
+  .post(departmentSettingsController.createAvailableSetting);
 
 settingsRouter.route("/:id").get(departmentSettingsController.getAvailableSetting);
 

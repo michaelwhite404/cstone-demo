@@ -15,18 +15,16 @@ const departmentSettingSchema = new Schema({
     type: Types.ObjectId,
     ref: "DepartmentAvailableSetting",
     required: true,
-    validate: {
-      validator: async (id: ObjectId) => FKHelper(DepartmentAvailableSetting, id),
-    },
+    validate: { validator: async (id: ObjectId) => FKHelper(DepartmentAvailableSetting, id) },
   },
   allowedSettingValue: {
     type: Types.ObjectId,
     ref: "DepartmentAllowedSettingValue",
-    validate: {
-      validator: async (id: ObjectId) => FKHelper(DepartmentAllowedSetting, id),
-    },
+    validate: { validator: async (id: ObjectId) => FKHelper(DepartmentAllowedSetting, id) },
   },
-  unconstrainedValue: Schema.Types.Mixed,
+  unconstrainedValue: {
+    type: Schema.Types.Mixed,
+  },
 });
 
 departmentSettingSchema.index({ department: 1, setting: 1 }, { unique: true });
