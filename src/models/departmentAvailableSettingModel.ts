@@ -1,7 +1,16 @@
 import { model, Schema } from "mongoose";
 
 const availableSettingSchema = new Schema({
-  description: String,
+  key: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  helpText: String,
   constrained: {
     type: Boolean,
     required: true,

@@ -12,7 +12,7 @@ const allowedSettingValueSchema = new Schema({
   },
   caption: {
     type: String,
-    required: true,
+    required: false,
     minLength: 1,
   },
 });
