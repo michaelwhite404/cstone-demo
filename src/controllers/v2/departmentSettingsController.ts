@@ -19,7 +19,10 @@ export const createAvailableSetting = factory.createOne(
 
 // =---------------------
 
-export const getAllDepartmentSettings = factory.getAll(DepartmentSetting, "setting");
+export const getAllDepartmentSettings = catchAsync(async (req, res) => {
+  const settings = await DepartmentSetting.getDepartmentSettings(req.params.departmentId);
+  res.sendJson(200, { settings });
+});
 
 export const addDepartmentToBody: RequestHandler = (req, _, next) => {
   req.body.department = req.params.departmentId;

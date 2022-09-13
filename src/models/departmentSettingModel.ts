@@ -1,8 +1,12 @@
 import { Department, DepartmentAllowedSetting, DepartmentAvailableSetting } from "@models";
-import { model, ObjectId, Schema, Types } from "mongoose";
+import { DepartmentSettingDocument, IDepartmentSettingModel } from "@@types/models";
+import { Model, model, ObjectId, Schema, Types } from "mongoose";
 import FKHelper from "./helpers/foreignKeyHelper";
 
-const departmentSettingSchema = new Schema({
+const departmentSettingSchema: Schema<
+  DepartmentSettingDocument,
+  Model<DepartmentSettingDocument>
+> = new Schema({
   department: {
     type: Types.ObjectId,
     ref: "Department",
@@ -29,6 +33,66 @@ const departmentSettingSchema = new Schema({
 
 departmentSettingSchema.index({ department: 1, setting: 1 }, { unique: true });
 
-const DepartmentSetting = model("DepartmentSetting", departmentSettingSchema);
+departmentSettingSchema.static("getDepartmentSettings", async function (departmentId: string) {
+  return await this.aggregate([
+    {
+      $match: {
+        department: new Types.ObjectId(departmentId),
+      },
+    },
+    {
+      $lookup: {
+        from: "departmentavailablesettings",
+        localField: "setting",
+        foreignField: "_id",
+        as: "set",
+        pipeline: [
+          {
+            $project: {
+              key: 1,
+              description: 1,
+              helpText: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "departmentallowedsettingvalues",
+        localField: "allowedSettingValue",
+        foreignField: "_id",
+        as: "aSV",
+      },
+    },
+    {
+      $unwind: {
+        path: "$set",
+      },
+    },
+    {
+      $unwind: {
+        path: "$aSV",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $project: {
+        key: "$set.key",
+        description: "$set.description",
+        helpText: "$set.helpText",
+        value: {
+          $ifNull: ["$unconstrainedValue", "$aSV.value"],
+        },
+        caption: "$aSV.caption",
+      },
+    },
+  ]);
+});
+
+const DepartmentSetting = model<DepartmentSettingDocument, IDepartmentSettingModel>(
+  "DepartmentSetting",
+  departmentSettingSchema
+);
 
 export default DepartmentSetting;

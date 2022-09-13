@@ -92,7 +92,7 @@ export default function DepartmentDetails() {
               />
             </div> */}
             {pageState === "MEMBERS" && <DepartmentMembersTable department={department} />}
-            {pageState === "SETTINGS" && <DepartmentSettings />}
+            {pageState === "SETTINGS" && <DepartmentSettings department={department} />}
           </div>
           <AddDepartmentUserModal
             open={open}

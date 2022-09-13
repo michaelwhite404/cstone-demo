@@ -1,38 +1,57 @@
-import { Switch } from "@headlessui/react";
-import classNames from "classnames";
-import React, { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import {
+  DepartmentAvailableSettingModel as AvailableSetting,
+  DepartmentModel,
+  DepartmentSetting,
+} from "../../../../src/types/models";
+import BooleanSetting from "./SettingsComponents/BooleanSetting";
 
-export default function DepartmentSettings() {
-  const [availableForTickets, setAvailableForTickets] = useState(false);
+interface Props {
+  department: DepartmentModel;
+}
 
-  return (
-    <ul className="mt-2 divide-y divide-gray-200">
-      <Switch.Group as="li" className="flex items-center justify-between py-4">
-        <div className="flex flex-col">
-          <Switch.Label as="p" className="text-sm font-medium text-gray-900 mb-1" passive>
-            Available for Tickets
-          </Switch.Label>
-          <Switch.Description className="text-sm text-gray-500">
-            Should this department be available to accept ticket requests?
-          </Switch.Description>
-        </div>
-        <Switch
-          checked={availableForTickets}
-          onChange={setAvailableForTickets}
-          className={classNames(
-            availableForTickets ? "bg-indigo-500" : "bg-gray-200",
-            "relative ml-4 inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          )}
-        >
-          <span
-            aria-hidden="true"
-            className={classNames(
-              availableForTickets ? "translate-x-5" : "translate-x-0",
-              "inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-            )}
-          />
-        </Switch>
-      </Switch.Group>
-    </ul>
-  );
+export default function DepartmentSettings(props: Props) {
+  const { department } = props;
+  const [availableSettings, setAvailableSettings] = useState<AvailableSetting[]>([]);
+  const [departmentSettings, setDepartmentSettings] = useState<DepartmentSetting[]>([]);
+  const [editted, setEditted] = useState(false);
+
+  const handleChange = (key: string, value: any) => {
+    const copy = [...departmentSettings];
+    const index = copy.findIndex((ds) => ds.key === key);
+    if (index < 0) return;
+    copy[index].value = value;
+    setDepartmentSettings(copy);
+    setEditted(true);
+  };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const [res1, res2] = await axios.all([
+        axios.get(`/api/v2/departments/settings`),
+        axios.get(`/api/v2/departments/${department._id}/settings`),
+      ]);
+      setAvailableSettings(res1.data.data.availableSettings);
+      setDepartmentSettings(res2.data.data.settings);
+    };
+
+    fetchSettings();
+  }, [department._id]);
+
+  const elements = departmentSettings.map((setting) => {
+    const availableSetting = availableSettings.find((aS) => aS.key === setting.key);
+    if (!availableSetting) return undefined;
+    const setValue = (value: any) => handleChange(setting.key, value);
+    switch (availableSetting.dataType) {
+      case "BOOLEAN":
+        return <BooleanSetting key={setting.key} value={setting.value} setValue={setValue} />;
+      case "COLOR":
+      case "NUMBER":
+      case "STRING":
+    }
+    return undefined;
+  });
+
+  return <ul className="mt-2 divide-y divide-gray-200">{elements}</ul>;
 }
