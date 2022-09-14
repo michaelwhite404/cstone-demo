@@ -17,6 +17,7 @@ export interface DepartmentSetting {
   _id: any;
   key: string;
   description: string;
+  helpText?: string;
   value: any;
   caption?: String;
 }

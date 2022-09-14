@@ -6,6 +6,7 @@ import {
   DepartmentSetting,
 } from "../../../../src/types/models";
 import BooleanSetting from "./SettingsComponents/BooleanSetting";
+import ConstrainedColorSetting from "./SettingsComponents/ConstrainedColorSetting";
 
 interface Props {
   department: DepartmentModel;
@@ -45,8 +46,12 @@ export default function DepartmentSettings(props: Props) {
     const setValue = (value: any) => handleChange(setting.key, value);
     switch (availableSetting.dataType) {
       case "BOOLEAN":
-        return <BooleanSetting key={setting.key} value={setting.value} setValue={setValue} />;
+        return <BooleanSetting key={setting.key} setting={setting} setValue={setValue} />;
       case "COLOR":
+        if (availableSetting.constrained) {
+          return <ConstrainedColorSetting key={setting.key} setting={setting} />;
+        }
+        return undefined;
       case "NUMBER":
       case "STRING":
     }
