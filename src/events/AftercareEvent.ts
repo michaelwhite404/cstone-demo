@@ -1,5 +1,5 @@
 import { AftercareAttendanceEntryModel } from "@@types/models";
-import { AftercareAttendanceEntry } from "@models";
+import { AftercareAttendanceEntry, Department } from "@models";
 import { chat } from "@utils";
 
 class AftercareEvent {
@@ -7,7 +7,7 @@ class AftercareEvent {
     const arrRes = await AftercareAttendanceEntry.aggregate([
       {
         $match: {
-          signOutDate: { $gt: new Date("2022-05-03T13:20:57.010+00:00") },
+          signOutDate: { $gt: new Date("2022-08-25T13:20:57.010+00:00") },
           student: entry.student._id,
           dropIn: true,
         },
@@ -16,9 +16,11 @@ class AftercareEvent {
     ]);
 
     const dropIns: number | undefined = arrRes[0]?.dropIns;
-    if (dropIns) {
+    if (!dropIns) return;
+    const spaces = await getAftercareLeaderSpaces();
+    spaces.forEach(async (space) => {
       await chat.spaces.messages.create({
-        parent: "spaces/xDMtAEAAAAE",
+        parent: space,
         requestBody: {
           text: `${entry.student.fullName} now has ${dropIns} drop ins.`,
           cards: [
@@ -50,8 +52,56 @@ class AftercareEvent {
           ],
         },
       });
-    }
+    });
   }
 }
 
 export const aftercareEvent = new AftercareEvent();
+
+const getAftercareLeaderSpaces = async () => {
+  const leaders = await Department.aggregate([
+    {
+      $match: {
+        name: "Lions Den",
+      },
+    },
+    {
+      $lookup: {
+        from: "departmentmembers",
+        localField: "_id",
+        foreignField: "department",
+        as: "dm",
+      },
+    },
+    {
+      $unwind: {
+        path: "$dm",
+      },
+    },
+    {
+      $match: {
+        "dm.role": "LEADER",
+      },
+    },
+    {
+      $lookup: {
+        from: "employees",
+        localField: "dm.member",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: {
+        path: "$user",
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$user",
+      },
+    },
+  ]);
+
+  return leaders.filter((l) => l.space).map((l) => l.space);
+};

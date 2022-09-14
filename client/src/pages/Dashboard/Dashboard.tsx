@@ -19,11 +19,9 @@ const links = [
   {
     to: "/lions-den",
     heading: "Lions Den",
-    text: "View sessions from Lions' Den",
+    text: "View sessions from Lions Den",
     show: (user: EmployeeModel) =>
-      user.departments && user.departments.find((dept) => dept.name === "Lion's Den")
-        ? true
-        : false,
+      user.departments && user.departments.find((dept) => dept.name === "Lions Den") ? true : false,
   },
 ];
 
