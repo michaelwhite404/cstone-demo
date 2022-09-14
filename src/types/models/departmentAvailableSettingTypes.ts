@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { AllowedSettingValueModel } from "./departmentAllowedSettingValueTypes";
 
 export interface DepartmentAvailableSettingModel {
   _id: any;
@@ -7,6 +8,7 @@ export interface DepartmentAvailableSettingModel {
   helpText?: string;
   constrained: boolean;
   dataType: "NUMBER" | "STRING" | "COLOR" | "BOOLEAN" | "MEMBERS";
+  allowedValues?: AllowedSettingValueModel[];
 }
 
 export interface DepartmentAvailableSettingDocument

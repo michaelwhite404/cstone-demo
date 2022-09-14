@@ -18,11 +18,12 @@ export default function DepartmentSettings(props: Props) {
   const [departmentSettings, setDepartmentSettings] = useState<DepartmentSetting[]>([]);
   const [editted, setEditted] = useState(false);
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: any, caption?: string) => {
     const copy = [...departmentSettings];
     const index = copy.findIndex((ds) => ds.key === key);
     if (index < 0) return;
     copy[index].value = value;
+    if (caption) copy[index].caption = caption;
     setDepartmentSettings(copy);
     setEditted(true);
   };
@@ -43,13 +44,20 @@ export default function DepartmentSettings(props: Props) {
   const elements = departmentSettings.map((setting) => {
     const availableSetting = availableSettings.find((aS) => aS.key === setting.key);
     if (!availableSetting) return undefined;
-    const setValue = (value: any) => handleChange(setting.key, value);
+    const setValue = (value: any, caption?: string) => handleChange(setting.key, value, caption);
     switch (availableSetting.dataType) {
       case "BOOLEAN":
         return <BooleanSetting key={setting.key} setting={setting} setValue={setValue} />;
       case "COLOR":
         if (availableSetting.constrained) {
-          return <ConstrainedColorSetting key={setting.key} setting={setting} />;
+          return (
+            <ConstrainedColorSetting
+              allowedValues={availableSetting.allowedValues!}
+              key={setting.key}
+              setting={setting}
+              setValue={setValue}
+            />
+          );
         }
         return undefined;
       case "NUMBER":

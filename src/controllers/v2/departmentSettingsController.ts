@@ -4,10 +4,33 @@ import { RequestHandler } from "express";
 import validator from "validator";
 import * as factory from "./handlerFactory";
 
-export const getAllAvailableSettings = factory.getAll(
-  DepartmentAvailableSetting,
-  "availableSetting"
-);
+export const getAllAvailableSettings = catchAsync(async (_, res) => {
+  const availableSettings = await DepartmentAvailableSetting.aggregate([
+    {
+      $lookup: {
+        from: "departmentallowedsettingvalues",
+        localField: "_id",
+        foreignField: "setting",
+        as: "allowedValues",
+      },
+    },
+    {
+      $set: {
+        allowedValues: {
+          $cond: {
+            if: {
+              $eq: ["$constrained", true],
+            },
+            then: "$allowedValues",
+            else: "$$REMOVE",
+          },
+        },
+      },
+    },
+  ]);
+  res.sendJson(200, { availableSettings });
+});
+
 export const getAvailableSetting = factory.getOneById(
   DepartmentAvailableSetting,
   "availableSetting"
