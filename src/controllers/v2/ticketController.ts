@@ -1,5 +1,6 @@
 import {
   Department,
+  DepartmentAvailableSetting,
   Employee,
   Ticket,
   TicketAssignUpdate,
@@ -7,7 +8,7 @@ import {
   TicketTag,
   TicketTagUpdate,
 } from "@models";
-import { EmployeeModel } from "@@types/models";
+import { DepartmentDocument, EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
 
 export const getAllTickets = catchAsync(async (req, res) => {
@@ -50,9 +51,14 @@ export const getTicket = catchAsync(async (req, res, next) => {
 });
 
 export const createTicket = catchAsync(async (req, res, next) => {
-  const dept = await Department.findById(req.body.department);
+  const dept = await Department.findById(req.body.department).populate("members");
   if (!dept) return next(new AppError("There is no department with the given department id", 404));
-  const assignedTo = dept.members.filter((m) => m.role === "LEADER").map((m) => m.userId);
+  // @ts-ignore
+  const allowsTickets: DepartmentDocument[] = await DepartmentAvailableSetting.allowTickets();
+  if (!allowsTickets.find((d) => d._id.toString() === req.body.department)) {
+    return next(new AppError("This department does not accept tickets", 400));
+  }
+  const assignedTo = dept.members!.filter((m) => m.role === "LEADER").map((m) => m._id);
   const { title, description, department, priority } = req.body;
 
   const response = await Ticket.create({

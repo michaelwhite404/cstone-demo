@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
-import { Department } from "@models";
+import { Department, DepartmentAvailableSetting } from "@models";
 import * as factory from "./handlerFactory";
 import { catchAsync, getUserLeaders } from "@utils";
+import { DepartmentDocument } from "@@types/models";
 
 const Model = Department;
 const key = "department";
@@ -31,4 +32,11 @@ export const createDepartment: RequestHandler = factory.createOne(Model, key);
 export const getMyLeaders = catchAsync(async (req, res) => {
   const leaders = await getUserLeaders(req.employee);
   res.sendJson(200, { leaders });
+});
+
+export const getAllowTicketsDepartments = catchAsync(async (_, res) => {
+  // @ts-ignore
+  const departments: DepartmentDocument[] = await DepartmentAvailableSetting.allowTickets();
+
+  res.sendJson(200, { departments });
 });

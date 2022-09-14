@@ -5,12 +5,19 @@ import { departmentController as dC } from "@controllers/v2";
 import memberRouter from "./departmentMemberRoutes";
 import availableSettingsRouter from "./departmentAvailableSettingsRoutes";
 import departmentSettingsRouter from "./departmentSettingsRoutes";
-const { createDepartment, getAllDepartments, getOneDepartment, getMyLeaders } = dC;
+const {
+  createDepartment,
+  getAllDepartments,
+  getOneDepartment,
+  getMyLeaders,
+  getAllowTicketsDepartments,
+} = dC;
 
 const router = Router();
 
 router.use(v2auth.protect);
 router.get("/my-leaders", getMyLeaders);
+router.get("/allow-tickets", getAllowTicketsDepartments);
 
 router.use(v1auth.restrictTo("Super Admin", "Admin"));
 

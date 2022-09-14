@@ -1,11 +1,11 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/solid";
 import LabeledInput2 from "../../components/LabeledInput2";
 import capitalize from "capitalize";
 import { Divider } from "@mui/material";
 import axios from "axios";
-import { TicketModel } from "../../../../src/types/models";
+import { DepartmentModel, TicketModel } from "../../../../src/types/models";
 import { useNavigate } from "react-router-dom";
 
 const priorities = ["LOW", "MEDIUM", "HIGH", "URGENT"];
@@ -19,7 +19,16 @@ const initialData = {
 
 export default function CreateTicketModal(props: Props) {
   const [data, setData] = useState(initialData);
+  const [allows, setAllows] = useState<DepartmentModel[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getAllowTickets = async () => {
+      const res = await axios.get("/api/v2/departments/allow-tickets");
+      setAllows(res.data.data.departments);
+    };
+    getAllowTickets();
+  }, []);
 
   const close = () => {
     props.setOpen(false);
@@ -27,9 +36,13 @@ export default function CreateTicketModal(props: Props) {
   };
   const submittable = Object.values(data).every((v) => v.length);
   const submit = async () => {
-    const res = await axios.post("/api/v2/tickets", data);
-    const ticket = res.data.data.ticket as TicketModel;
-    navigate(`/tickets/${ticket.ticketId}`);
+    try {
+      const res = await axios.post("/api/v2/tickets", data);
+      const ticket = res.data.data.ticket as TicketModel;
+      navigate(`/tickets/${ticket.ticketId}`);
+    } catch (err: any) {
+      console.log(err.response);
+    }
   };
   const handleChange = (e: any) => setData({ ...data, [e.target.name]: e.target.value });
 
@@ -87,8 +100,12 @@ export default function CreateTicketModal(props: Props) {
                           className="py-2 px-3 shadow focus:border-blue-500 border-white border-2 block w-full sm:text-sm rounded-md "
                           style={{ boxShadow: "0px 0px 2px #aeaeae" }}
                         >
-                          <option>Technology</option>
-                          <option>Maintenance</option>
+                          <option value="">Choose a department...</option>
+                          {allows.map((department) => (
+                            <option key={department._id} value={department._id}>
+                              {department.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>

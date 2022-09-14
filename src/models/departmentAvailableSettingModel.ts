@@ -30,6 +30,52 @@ const availableSettingSchema = new Schema({
   },
 });
 
+availableSettingSchema.static("allowTickets", async function () {
+  return await this.aggregate([
+    {
+      $match: {
+        key: "tickets",
+      },
+    },
+    {
+      $lookup: {
+        from: "departmentsettings",
+        localField: "_id",
+        foreignField: "setting",
+        as: "result",
+      },
+    },
+    {
+      $unwind: {
+        path: "$result",
+      },
+    },
+    {
+      $match: {
+        "result.unconstrainedValue": true,
+      },
+    },
+    {
+      $lookup: {
+        from: "departments",
+        localField: "result.department",
+        foreignField: "_id",
+        as: "dept",
+      },
+    },
+    {
+      $project: {
+        _id: {
+          $first: "$dept._id",
+        },
+        name: {
+          $first: "$dept.name",
+        },
+      },
+    },
+  ]);
+});
+
 const DepartmentAvailableSetting = model<DepartmentAvailableSettingDocument>(
   "DepartmentAvailableSetting",
   availableSettingSchema

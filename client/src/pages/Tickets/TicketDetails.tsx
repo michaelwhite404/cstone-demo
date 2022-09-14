@@ -44,7 +44,6 @@ export default function TicketDetails() {
   const handleCommentUpdate = async () => {
     try {
       const ticket = await updateComment();
-      console.log(ticket);
       setTicket(ticket);
       setComment("");
     } catch (err) {

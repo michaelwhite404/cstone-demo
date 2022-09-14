@@ -49,17 +49,14 @@ export default function DepartmentSettings(props: Props) {
       case "BOOLEAN":
         return <BooleanSetting key={setting.key} setting={setting} setValue={setValue} />;
       case "COLOR":
-        if (availableSetting.constrained) {
-          return (
-            <ConstrainedColorSetting
-              allowedValues={availableSetting.allowedValues!}
-              key={setting.key}
-              setting={setting}
-              setValue={setValue}
-            />
-          );
-        }
-        return undefined;
+        return availableSetting.constrained ? (
+          <ConstrainedColorSetting
+            allowedValues={availableSetting.allowedValues!}
+            key={setting.key}
+            setting={setting}
+            setValue={setValue}
+          />
+        ) : undefined;
       case "NUMBER":
       case "STRING":
     }
