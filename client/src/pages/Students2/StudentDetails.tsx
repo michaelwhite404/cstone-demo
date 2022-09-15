@@ -103,10 +103,18 @@ export default function StudentDetails() {
                   <div className="mr-5">
                     {/* School Image */}
                     <div
-                      className="bg-gray-600 w-40 rounded-md border-[3px] border-white overflow-hidden"
-                      style={{ boxShadow: "0 0 10px 2px rgb(0 0 0 / 51%)" }}
+                      className="bg-gray-600 w-40 min-h-[190px] rounded-md border-[3px] border-white overflow-hidden"
+                      style={{
+                        boxShadow: "0 0 10px 2px rgb(0 0 0 / 51%)",
+                        backgroundImage: "url(/Cornerstone-Logo.png)",
+                        backgroundSize: "110px",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
                     >
-                      <img className="p-4" src="/Cornerstone-Logo.png" alt="Cornerstone Logo" />
+                      {student.mainPhoto && (
+                        <img className="" src={student.mainPhoto} alt={student.firstName} />
+                      )}
                     </div>
                   </div>
                   <div className="pb-3">
