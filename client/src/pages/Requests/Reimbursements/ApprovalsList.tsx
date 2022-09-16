@@ -18,7 +18,11 @@ export default function ApprovalsList(props: Props) {
       </div>
       <div className="divide-y divide-gray-200">
         {reimbursements.map((reimbursement) => (
-          <button className="block p-4 w-full" onClick={() => select(reimbursement)}>
+          <button
+            key={reimbursement._id}
+            className="block p-4 w-full"
+            onClick={() => select(reimbursement)}
+          >
             <div className="flex justify-between mb-2">
               <div className="font-medium text-blue-500 ">{reimbursement.purpose}</div>
               <div>

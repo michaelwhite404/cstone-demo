@@ -1,23 +1,33 @@
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import classNames from "classnames";
 import { format } from "date-fns";
+import pluralize from "pluralize";
 import { RM } from ".";
-import { EmployeeModel } from "../../../../../src/types/models";
+import { EmployeeModel, ReimbursementModel } from "../../../../../src/types/models";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
-import { useChecker2 } from "../../../hooks";
+import { useChecker2, useToasterContext } from "../../../hooks";
 import ApprovalsList from "./ApprovalsList";
 import ApprovalsTable from "./ApprovalsTable";
 
 interface Props {
   reimbursements: RM[];
+  setReimbursements: React.Dispatch<React.SetStateAction<RM[]>>;
   select: (reimbursement: RM) => void;
   user: EmployeeModel;
+  finalizeReimbursement: (id: string, approved: boolean) => Promise<ReimbursementModel>;
 }
 
 const headings = ["Purpose", "Date", "Amount", "Submitted By", "Status"];
 
-export default function Approvals({ reimbursements, select, user }: Props) {
+export default function Approvals({
+  reimbursements,
+  select,
+  user,
+  finalizeReimbursement,
+  setReimbursements,
+}: Props) {
+  const { showToaster } = useToasterContext();
   const approvals = reimbursements.filter((r) => r.sendTo?._id === user._id);
   const { pending, finalized } = approvals.reduce(
     (prev, reimbursement) => {
@@ -30,6 +40,26 @@ export default function Approvals({ reimbursements, select, user }: Props) {
   );
   const { allSelected, checkboxRef, data, toggleAll, selectedData, setSelectedData } =
     useChecker2(pending);
+
+  const handleMultiFinalize = async (approved: boolean) => {
+    if (!selectedData.length) return;
+    const requests = selectedData.map((r) => finalizeReimbursement(r._id, approved));
+    const responses = await Promise.allSettled(requests);
+    const copy = [...reimbursements];
+    const fulfilled = responses.filter(
+      (r) => r.status === "fulfilled"
+    ) as PromiseFulfilledResult<ReimbursementModel>[];
+    const word = approved ? "Approved" : "Rejected";
+    fulfilled.forEach((result) => {
+      const reimbursement = result.value;
+      const index = copy.findIndex((rm) => rm._id === reimbursement._id);
+      if (index < 0) return;
+      copy[index].selected = false;
+      copy[index].status = word;
+    });
+    setReimbursements(copy);
+    showToaster(`${pluralize("request", fulfilled.length, true)} ${word}`.toLowerCase(), "success");
+  };
 
   return (
     <div>
@@ -44,6 +74,7 @@ export default function Approvals({ reimbursements, select, user }: Props) {
             <button
               type="button"
               className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              onClick={() => handleMultiFinalize(true)}
             >
               <CheckIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
               Approve {allSelected ? "All" : ""}
@@ -51,6 +82,7 @@ export default function Approvals({ reimbursements, select, user }: Props) {
             <button
               type="button"
               className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              onClick={() => handleMultiFinalize(false)}
             >
               <XIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
               Reject {allSelected ? "All" : ""}

@@ -147,7 +147,13 @@ export default function Reimbursements() {
           select={select}
         />
       ) : (
-        <Approvals reimbursements={reimbursements} select={select} user={user} />
+        <Approvals
+          reimbursements={reimbursements}
+          setReimbursements={setReimbursements}
+          select={select}
+          user={user}
+          finalizeReimbursement={finalizeReimbursement}
+        />
       )}
       <AddReimbursement
         open={modalOpen}
