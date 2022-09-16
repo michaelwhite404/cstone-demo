@@ -6,6 +6,8 @@ import { EmployeeModel } from "../../../../../src/types/models";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import TableWrapper from "../../../components/TableWrapper";
 import { useChecker2 } from "../../../hooks";
+import ApprovalsList from "./ApprovalsList";
+import ApprovalsTable from "./ApprovalsTable";
 
 interface Props {
   reimbursements: RM[];
@@ -55,125 +57,94 @@ export default function Approvals({ reimbursements, select, user }: Props) {
             </button>
           </div>
         </div>
-        <TableWrapper>
-          <table className="table-auto">
-            <thead>
-              <tr>
-                <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8 border-b">
-                  <input
-                    type="checkbox"
-                    className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                    ref={checkboxRef}
-                    checked={allSelected && reimbursements.length > 0}
-                    onChange={toggleAll}
-                  />
-                </th>
-                {headings.map((h) => (
-                  <th key={h}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((reimbursement) => {
-                const selected = selectedData.includes(reimbursement);
-                return (
-                  <tr
-                    className={classNames(
-                      { "bg-indigo-50": selected },
-                      { "hover:bg-gray-100": !selected }
-                    )}
-                    key={reimbursement._id}
-                  >
-                    <td className="relative w-12 px-6 sm:w-16 sm:px-8 pl-4 py-2.5 border-b border-gray-300">
-                      <input
-                        type="checkbox"
-                        className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                        value={reimbursement._id}
-                        checked={selected}
-                        onChange={(e) =>
-                          setSelectedData(
-                            e.target.checked
-                              ? [...selectedData, reimbursement]
-                              : selectedData.filter((r) => r !== reimbursement)
-                          )
-                        }
-                      />
-                    </td>
-
-                    <td
-                      onClick={() => select(reimbursement)}
-                      className="py-2.5 border-b border-gray-300 font-medium text-blue-500 cursor-pointer"
+        <div className="hidden sm:block">
+          <TableWrapper>
+            <table className="table-auto">
+              <thead>
+                <tr>
+                  <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8 border-b">
+                    <input
+                      type="checkbox"
+                      className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
+                      ref={checkboxRef}
+                      checked={allSelected && reimbursements.length > 0}
+                      onChange={toggleAll}
+                    />
+                  </th>
+                  {headings.map((h) => (
+                    <th key={h}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((reimbursement) => {
+                  const selected = selectedData.includes(reimbursement);
+                  return (
+                    <tr
+                      className={classNames(
+                        { "bg-indigo-50": selected },
+                        { "hover:bg-gray-100": !selected }
+                      )}
+                      key={reimbursement._id}
                     >
-                      {reimbursement.purpose}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300">
-                      {format(new Date(reimbursement.date), "P")}
-                    </td>
-                    <td className="py-2.5  border-b border-gray-300 text-gray-400 ">
-                      {(reimbursement.amount / 100).toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      })}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                      {reimbursement.user.fullName}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                      <ApprovalBadge status={reimbursement.status} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </TableWrapper>
+                      <td className="relative w-12 px-6 sm:w-16 sm:px-8 pl-4 py-2.5 border-b border-gray-300">
+                        <input
+                          type="checkbox"
+                          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
+                          value={reimbursement._id}
+                          checked={selected}
+                          onChange={(e) =>
+                            setSelectedData(
+                              e.target.checked
+                                ? [...selectedData, reimbursement]
+                                : selectedData.filter((r) => r !== reimbursement)
+                            )
+                          }
+                        />
+                      </td>
+
+                      <td
+                        onClick={() => select(reimbursement)}
+                        className="py-2.5 border-b border-gray-300 font-medium text-blue-500 cursor-pointer"
+                      >
+                        {reimbursement.purpose}
+                      </td>
+                      <td className="py-2.5 border-b border-gray-300">
+                        {format(new Date(reimbursement.date), "P")}
+                      </td>
+                      <td className="py-2.5  border-b border-gray-300 text-gray-400 ">
+                        {(reimbursement.amount / 100).toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        })}
+                      </td>
+                      <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                        {reimbursement.user.fullName}
+                      </td>
+                      <td className="py-2.5 border-b border-gray-300 text-gray-400">
+                        <ApprovalBadge status={reimbursement.status} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </TableWrapper>
+        </div>
+        <div className="block sm:hidden">
+          <ApprovalsList reimbursements={pending} select={select} />
+        </div>
       </div>
       <div>
         <div className="mt-4 sm:h-14 sm:flex items-center justify-between">
           <span className="text-xl font-bold text-gray-900">Finalized ({finalized.length})</span>
         </div>
-        <TableWrapper>
-          <table className="table-auto">
-            <thead>
-              <tr>
-                {headings.map((h, i) => (
-                  <th className={classNames({ "pl-8": i === 0 })} key={h}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {finalized.map((reimbursement) => {
-                return (
-                  <tr className={"hover:bg-gray-100"} key={reimbursement._id}>
-                    <td
-                      onClick={() => select(reimbursement)}
-                      className="py-2.5 border-b border-gray-300 pl-8 font-medium text-blue-500 cursor-pointer"
-                    >
-                      {reimbursement.purpose}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300">
-                      {format(new Date(reimbursement.date), "P")}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300 text-gray-400 ">
-                      {(reimbursement.amount / 100).toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD",
-                      })}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                      {reimbursement.user.fullName}
-                    </td>
-                    <td className="py-2.5 border-b border-gray-300 text-gray-400">
-                      <ApprovalBadge status={reimbursement.status} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </TableWrapper>
+        <div className="hidden sm:block">
+          <ApprovalsTable reimbursements={finalized} select={select} />
+        </div>
+        <div className="block sm:hidden">
+          <ApprovalsList reimbursements={finalized} select={select} />
+        </div>
       </div>
     </div>
   );
