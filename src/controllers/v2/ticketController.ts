@@ -10,6 +10,7 @@ import {
 } from "@models";
 import { DepartmentDocument, EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
+import { ticketEvent } from "@events";
 
 export const getAllTickets = catchAsync(async (req, res) => {
   const query = Ticket.find({
@@ -78,6 +79,7 @@ export const createTicket = catchAsync(async (req, res, next) => {
     select: "name email fullName",
   });
   res.sendJson(201, { ticket });
+  ticketEvent.submit(ticket);
 });
 
 export const addTicketUpdate = catchAsync(async (req, res, next) => {
