@@ -58,6 +58,7 @@ export default function Approvals({
       copy[index].status = word;
     });
     setReimbursements(copy);
+    setSelectedData([]);
     showToaster(`${pluralize("request", fulfilled.length, true)} ${word}`.toLowerCase(), "success");
   };
 

@@ -8,7 +8,7 @@ Resources:
     ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s)
     ☐ Assign User (UI)
     ☐ Add tags (UI)
-    ☐ Change table layout (Click on name, ticket number right beside it)
+    ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
     ☐ Close ticket
     ☐ Responsive Tickets Table
     ☐ Fix User submitted comment bug
