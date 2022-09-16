@@ -1,0 +1,57 @@
+Resources:
+
+  Students:
+    ☐ Reset class passwords @low
+    ☐ Deactivate MULTIPLE students - both in app and Google
+    ☐ Change in grade changes in OU
+  Tickets:
+    ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s)
+    ☐ Assign User (UI)
+    ☐ Add tags (UI)
+    ☐ Change table layout (Click on name, ticket number right beside it)
+    ☐ Close ticket
+    ☐ Responsive Tickets Table
+    ☐ Fix User submitted comment bug
+    Notifications:
+      ☐ On submit, send to assigned user
+      ☐ On assign, send to assigned user
+      ☐ On comment update, send to creation user
+      ☐ On ticket close, send to creation user
+  Reimbursements:
+    ☐ Empty State Reimbursements (UI)
+    ☐ Empty State Aprrovals (UI)
+    ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
+    ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
+  Leaves:
+    ☐ Empty State (Approvals)
+  Timesheets:
+    ☐ Day View (UI)
+    ☐ Year View (UI) @low
+    ☐ Month View (UI, Mobile)
+    ☐ Send notifications on day to approve
+    ☐ Admin View (UI)
+    ☐ Approve Timesheets
+  Users:
+    ☐ Choose whether or not to add to Google
+    ☐ Deactivate users @low
+    ☐ User filter by status (UI)
+    ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
+    Detail Page:
+      ☐ Add to department
+      ☐ Add to group
+      ☐ Edit data
+  Departments:
+    ☐ Create Department (UI)
+    ☐ Delete members in department (UI)
+    ☐ Add settings (Production)
+    ☐ Change member role (UI and backend)
+    ☐ Change settings (backend)
+    ☐ Change settings (UI)
+  Groups:
+    ☐ Possible redesign
+    ☐ Remove search bar (UI)
+    ☐ Change member role (UI and backend)
+    ☐ Remove members from group (UI and backend)
+    ☐ Delete group (UI and backend)
+  Lions Den:
+    ☐ Export Data
