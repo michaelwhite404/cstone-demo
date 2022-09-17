@@ -148,20 +148,21 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
               400
             )
           );
-        const req1 = Ticket.findByIdAndUpdate(
-          ticket._id,
-          { $push: { assignedTo: emp._id } },
-          { new: true }
-        ).populate({
-          path: "department submittedBy assignedTo",
-          select: "name email fullName",
-        });
-        const req2 = TicketAssignUpdate.create({
+        // Create ticket update
+        await TicketAssignUpdate.create({
           ...data,
           assign: req.body.assign,
           op: req.body.op,
         });
-        [newTicket] = await Promise.all([req1, req2]);
+        newTicket = await Ticket.findByIdAndUpdate(
+          ticket._id,
+          { $push: { assignedTo: emp._id } },
+          { new: true }
+        ).populate({
+          path: "department submittedBy assignedTo updates",
+          select: "name email image slug fullName comment assign op date createdBy",
+          populate: { path: "assign createdBy", select: "fullName email image slug" },
+        });
         break;
       }
       // If operation is remove
@@ -172,7 +173,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
         (e) => e._id.toString() !== emp._id.toString()
       );
       ticket.assignedTo = newAssigned;
-      const req1 = await ticket.save();
+      const req1 = ticket.save();
       const req2 = TicketAssignUpdate.create({ ...data, assign: req.body.assign, op: req.body.op });
       [newTicket] = await Promise.all([req1, req2]);
       break;

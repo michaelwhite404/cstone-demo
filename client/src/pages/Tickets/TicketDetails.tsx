@@ -16,6 +16,7 @@ import { EmployeeModel, TicketModel } from "../../../../src/types/models";
 import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import { APIError, APITicketResponse } from "../../types/apiResponses";
 import ActivityFeed from "./ActivityFeed";
+import AssignUser from "./AssignUser";
 
 export default function TicketDetails() {
   useDocTitle("Tickets | Cornerstone App");
@@ -37,6 +38,15 @@ export default function TicketDetails() {
     const res = await axios.post<APITicketResponse>(`/api/v2/tickets/${ticketId}/update`, {
       type: "COMMENT",
       comment,
+    });
+    return res.data.data.ticket;
+  };
+
+  const assignUser = async (assign: string, op: "ADD" | "REMOVE") => {
+    const res = await axios.post<APITicketResponse>(`/api/v2/tickets/${ticketId}/update`, {
+      type: "ASSIGN",
+      assign,
+      op,
     });
     return res.data.data.ticket;
   };
@@ -128,8 +138,8 @@ export default function TicketDetails() {
                                   <div className="flex-shrink-0">
                                     <img
                                       className="h-5 w-5 rounded-full"
-                                      src={user.image}
-                                      alt=""
+                                      src={user.image || "/avatar_placeholder.png"}
+                                      alt={user.fullName}
                                       onError={(e) =>
                                         (e.currentTarget.src = "/avatar_placeholder.png")
                                       }
@@ -142,6 +152,7 @@ export default function TicketDetails() {
                               </li>
                             ))}
                           </ul>
+                          {/* <AssignUser assignUser={assignUser} setTicket={setTicket} /> */}
                         </div>
                         {/* <div>
                           <h2 className="text-sm font-medium text-gray-500">Tags</h2>
@@ -293,8 +304,8 @@ export default function TicketDetails() {
                             <div className="flex-shrink-0">
                               <img
                                 className="h-5 w-5 rounded-full"
-                                src={user.image}
-                                alt=""
+                                src={user.image || "/avatar_placeholder.png"}
+                                alt={user.fullName}
                                 onError={(e) => (e.currentTarget.src = "/avatar_placeholder.png")}
                               />
                             </div>
@@ -303,6 +314,8 @@ export default function TicketDetails() {
                         </li>
                       ))}
                     </ul>
+                    {/* Add assignees */}
+                    <AssignUser assignUser={assignUser} setTicket={setTicket} />
                   </div>
                   {/* <div>
                     <h2 className="text-sm font-medium text-gray-500">Tags</h2>

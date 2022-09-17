@@ -6,7 +6,7 @@ Resources:
     ☐ Change in grade changes in OU @est(2h)
   Tickets:
     ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s)
-    ☐ Assign User (UI) @est(40m) @today
+    ✔ Assign User (UI) @est(40m) @today @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s)
     ☐ Add tags (UI, backend) @est(2h)
     ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
     ☐ Close ticket (UI, backend) @est(1.5h)
@@ -18,7 +18,7 @@ Resources:
       ☐ On comment update, send to creation user @est(25m)
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
-    ✔ Empty State Reimbursements (UI) @est(30m) @today @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
+    ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
     ☐ Empty State Aprovals (UI) @est(30m) @today
     ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
     ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
