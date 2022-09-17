@@ -18,7 +18,7 @@ Resources:
       ☐ On comment update, send to creation user @est(25m)
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
-    ☐ Empty State Reimbursements (UI) @est(30m) @today
+    ✔ Empty State Reimbursements (UI) @est(30m) @today @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
     ☐ Empty State Aprovals (UI) @est(30m) @today
     ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
     ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
@@ -26,7 +26,7 @@ Resources:
     ☐ View all reimbursements (Finance) @est(1h)
   Leaves:
     ☐ Empty State (Approvals) @est(20m) @today
-    ✔ Go to leave from hash @est(30m) @today @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
+    ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
   Timesheets:
     ☐ Day View (UI) @low
     ☐ Year View (UI) @low

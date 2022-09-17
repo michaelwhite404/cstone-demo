@@ -24,6 +24,7 @@ export default function Reimbursements() {
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const location = useLocation();
   const user = useAuth().user!;
   const socket = useSocket();
@@ -54,6 +55,7 @@ export default function Reimbursements() {
         setPageState("APPROVALS");
       setSlideOpen(true);
     }
+    setLoaded(true);
     return r;
   };
 
@@ -141,19 +143,23 @@ export default function Reimbursements() {
           />
         </div>
       )}
-      {pageState === "MY_REIMBURSEMENTS" ? (
-        <MyReimbursements
-          reimbursements={reimbursements.filter((r) => r.user._id === user._id)}
-          select={select}
-        />
-      ) : (
-        <Approvals
-          reimbursements={reimbursements}
-          setReimbursements={setReimbursements}
-          select={select}
-          user={user}
-          finalizeReimbursement={finalizeReimbursement}
-        />
+      {loaded && (
+        <>
+          {pageState === "MY_REIMBURSEMENTS" ? (
+            <MyReimbursements
+              reimbursements={reimbursements.filter((r) => r.user._id === user._id)}
+              select={select}
+            />
+          ) : (
+            <Approvals
+              reimbursements={reimbursements}
+              setReimbursements={setReimbursements}
+              select={select}
+              user={user}
+              finalizeReimbursement={finalizeReimbursement}
+            />
+          )}
+        </>
       )}
       <AddReimbursement
         open={modalOpen}

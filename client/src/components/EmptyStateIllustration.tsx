@@ -1,5 +1,5 @@
 export default function EmptyStateIllustration(props: EmptyStateIllustrationProps) {
-  const { imgSrc, text, xlWidth } = props;
+  const { imgSrc, text, xlWidth = "50%" } = props;
   return (
     <div className="flex justify-center w-full lg:absolute">
       <div className="flex align-center justify-center flex-col mt-8 py-5">
@@ -17,5 +17,5 @@ export default function EmptyStateIllustration(props: EmptyStateIllustrationProp
 interface EmptyStateIllustrationProps {
   imgSrc: string;
   text: string;
-  xlWidth: string;
+  xlWidth?: string;
 }
