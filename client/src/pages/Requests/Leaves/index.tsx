@@ -8,6 +8,7 @@ import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../../components/Tabs2";
 import MyLeaves from "./MyLeaves";
 import { APILeaveResponse } from "../../../types/apiResponses";
+import { useLocation } from "react-router-dom";
 
 type PageState = "MY_LEAVES" | "APPROVALS";
 const getStatus = (approval?: LeaveApproval): Leave["status"] =>
@@ -25,23 +26,40 @@ function Leaves() {
   const [leaves, setLeaves] = useState<Leave[]>([]);
   const [slideOpen, setSlideOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const location = useLocation();
   const user = useAuth().user!;
   const socket = useSocket();
 
   useEffect(() => {
     const getLeaves = async () => {
+      const leaveId = location.hash.replace("#", "");
+      leaveId &&
+        window.history.replaceState(
+          "",
+          document.title,
+          window.location.pathname + window.location.search
+        );
+
       setLoaded(false);
       const leaves = (await axios.get("/api/v2/leaves")).data.data.leaves as LeaveModel[];
       const l = leaves.map((leave) => ({
         ...leave,
-        selected: false,
+        selected: leave._id === leaveId,
         status: getStatus(leave.approval),
       }));
+      const selected = l.find((leave) => leave.selected);
       setLeaves(l);
+      if (selected) {
+        selected.sendTo._id === user._id &&
+          selected.user._id !== user._id &&
+          setPageState("APPROVALS");
+        setSlideOpen(true);
+      }
       setLoaded(true);
     };
 
     getLeaves();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
