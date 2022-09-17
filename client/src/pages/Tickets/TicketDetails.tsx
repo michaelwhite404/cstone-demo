@@ -42,6 +42,7 @@ export default function TicketDetails() {
   };
 
   const handleCommentUpdate = async () => {
+    if (!comment) return;
     try {
       const ticket = await updateComment();
       setTicket(ticket);
@@ -246,8 +247,9 @@ export default function TicketDetails() {
                                   </button>
                                   <button
                                     type="submit"
-                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:bg-gray-200"
                                     onClick={handleCommentUpdate}
+                                    disabled={!comment}
                                   >
                                     Comment
                                   </button>

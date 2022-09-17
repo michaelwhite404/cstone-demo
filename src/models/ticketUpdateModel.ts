@@ -35,6 +35,7 @@ export const TicketCommentUpdate: Model<TicketCommentUpdateDocument> = TicketUpd
   new Schema({
     comment: {
       type: String,
+      minLength: 1,
       required: true,
     },
   })

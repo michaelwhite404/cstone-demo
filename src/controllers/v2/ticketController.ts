@@ -8,7 +8,7 @@ import {
   TicketTag,
   TicketTagUpdate,
 } from "@models";
-import { DepartmentDocument, EmployeeModel } from "@@types/models";
+import { DepartmentDocument, EmployeeDocument, EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
 import { ticketEvent } from "@events";
 
@@ -95,15 +95,19 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
     populate: { path: "assign createdBy", select: "fullName email image slug" },
   });
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
-  if (ticket.submittedBy._id.toString() === req.employee._id.toString()) {
-    return next(new AppError("You are not authorized to update this ticket", 403));
-  }
   const data = {
     date: req.requestTime,
     createdBy: req.employee._id,
     ticket: ticket._id,
   };
   let newTicket;
+  const isOnlySubmittedUser =
+    // Is submitted user and not an assigned user
+    ticket.submittedBy._id.toString() === req.employee._id.toString() &&
+    !(ticket.assignedTo as EmployeeDocument[]).some(
+      (employee) => employee._id.toString() === req.employee._id.toString()
+    );
+
   switch (req.body.type) {
     case "COMMENT":
       const ticketComment = (
@@ -121,6 +125,8 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       newTicket = ticket;
       break;
     case "ASSIGN":
+      if (isOnlySubmittedUser)
+        return next(new AppError("You are not authorized to assign a user to this ticket", 403));
       // Make sure valid employee
       const emp = await Employee.findOne({ _id: req.body.assign, active: true });
       if (!emp)
@@ -171,6 +177,8 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       [newTicket] = await Promise.all([req1, req2]);
       break;
     case "TAG":
+      if (isOnlySubmittedUser)
+        return next(new AppError("You are not authorized to add a tag to this ticket", 403));
       // Make sure label is valid
       const tag = await TicketTag.findOne({ name: req.body.tag });
       if (!tag) return next(new AppError("There is no label with the name ${}", 400));
