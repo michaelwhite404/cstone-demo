@@ -1,6 +1,6 @@
 import axios from "axios";
 import pluralize from "pluralize";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DepartmentModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
@@ -8,7 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import Tabs2 from "../../components/Tabs2";
 import { useToasterContext } from "../../hooks";
 import AddDepartmentUserModal from "./AddDepartmentUserModal";
-import DepartmentMembersTable from "./DepartmentMembersTable";
+import DepartmentMembers from "./DepartmentMembers";
 import DepartmentSettings from "./DepartmentSettings";
 
 const tabs = [
@@ -22,14 +22,14 @@ export default function DepartmentDetails() {
   const [pageState, setPageState] = useState("MEMBERS");
   const { id } = useParams<"id">();
   const { showToaster } = useToasterContext();
-  useEffect(() => {
-    const fetchDepartment = async () => {
-      const res = await axios.get(`/api/v2/departments/${id}`);
-      setDepartment(res.data.data.department);
-    };
-
-    fetchDepartment();
+  const fetchDepartment = useCallback(async () => {
+    const res = await axios.get(`/api/v2/departments/${id}`);
+    setDepartment(res.data.data.department);
   }, [id]);
+
+  useEffect(() => {
+    fetchDepartment();
+  }, [fetchDepartment]);
 
   const addMembersToGroup = async (users: { id: string; role: string }[]) => {
     if (department) {
@@ -72,7 +72,7 @@ export default function DepartmentDetails() {
             />
           </div>
           <Tabs2 tabs={tabs} value={pageState} onChange={(tab) => setPageState(tab.value)} />
-          <div className="mt-6">
+          <div className="mt-3">
             {/* <div className="sm:flex justify-between">
               <div className="relative mb-2 sm:mb-0">
                 <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -91,7 +91,9 @@ export default function DepartmentDetails() {
                 onClick={() => setOpen(true)}
               />
             </div> */}
-            {pageState === "MEMBERS" && <DepartmentMembersTable department={department} />}
+            {pageState === "MEMBERS" && (
+              <DepartmentMembers department={department} fetchDepartment={fetchDepartment} />
+            )}
             {pageState === "SETTINGS" && <DepartmentSettings department={department} />}
           </div>
           <AddDepartmentUserModal
