@@ -1,5 +1,5 @@
 import { MailIcon as MailIconSolid } from "@heroicons/react/solid";
-import { MailIcon as MailIconOutline, PencilIcon, SearchIcon } from "@heroicons/react/outline";
+import { MailIcon as MailIconOutline, PencilIcon } from "@heroicons/react/outline";
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -134,18 +134,7 @@ export default function GroupData() {
             <Divider />
           </div>
           <div>
-            <div className="sm:flex justify-between align-center">
-              <div className="relative mb-2 sm:mb-0">
-                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                  <SearchIcon className="w-4" />
-                </div>
-                <input
-                  type="search"
-                  id="search"
-                  className="block p-2 pl-10 w-full sm:w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Search"
-                />
-              </div>
+            <div className="sm:flex justify-end align-center">
               <div className="flex space-x-4">
                 <PrimaryButton
                   className="w-full sm:w-auto"

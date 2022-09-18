@@ -1,13 +1,12 @@
-import { SearchIcon } from "@heroicons/react/outline";
 import axios, { AxiosError } from "axios";
 import classNames from "classnames";
 import { admin_directory_v1 } from "googleapis";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TableWrapper from "../../components/TableWrapper";
 import { APIError, APIResponse } from "../../types/apiResponses";
 import CreateGroup from "./CreateGroup";
+import DirectoryMainButton from "./DirectoryMainButton";
 
 export default function Groups() {
   const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
@@ -61,26 +60,7 @@ export default function Groups() {
 
   return (
     <div>
-      <div className="sm:flex justify-between align-center">
-        <div className="relative mb-2 sm:mb-0">
-          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-            <SearchIcon className="w-4" />
-          </div>
-          <input
-            type="search"
-            id="search"
-            className="block p-2 pl-10 w-full sm:w-64 text-sm text-gray-900 bg-white rounded-md border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Search"
-          />
-        </div>
-        <div className="flex space-x-4">
-          <PrimaryButton
-            className="w-full sm:w-auto"
-            text="+ Create Group"
-            onClick={() => setModalOpen(true)}
-          />
-        </div>
-      </div>
+      <DirectoryMainButton text="+ Create Group" onClick={() => setModalOpen(true)} />
       <TableWrapper>
         <table>
           <thead>
