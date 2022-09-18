@@ -33,7 +33,7 @@ function Users() {
   }, []);
 
   return (
-    <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
+    <div className="flex flex-col relative" style={{ padding: "10px 25px 25px" }}>
       {/* Header */}
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>User Management</h1>

@@ -19,13 +19,13 @@ Resources:
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
     ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
-    ✔ Empty State Aprovals (UI) @est(30m) @today @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s)
+    ✔ Empty State Aprovals (UI) @est(30m) @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s)
     ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
     ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
     ☐ Edit dropzone for mobile @est(1h)
     ☐ View all reimbursements (Finance) @est(1h)
   Leaves:
-    ☐ Empty State (Approvals) @est(30m) @today
+    ☐ Empty State (Approvals) @est(30m)
     ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
   Timesheets:
     ☐ Day View (UI) @low
@@ -44,7 +44,7 @@ Resources:
       ☐ Add to group @est(30m)
       ☐ Edit data @est(1h15m)
   Departments:
-    ☐ Create Department (UI) @est(35m) @today
+    ✔ Create Department (UI) @est(35m) @today @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s)
     ☐ Delete members in department (UI) @est(40m)
     ☐ Add settings (Production) @est(40m)
     ☐ Change member role (UI and backend) @est(1h15m)
