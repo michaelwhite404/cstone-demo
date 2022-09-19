@@ -1,4 +1,4 @@
-import { EmployeeDocument, TicketDocument } from "@@types/models";
+import { EmployeeDocument, TicketAssignUpdateDocument, TicketDocument } from "@@types/models";
 import { Ticket } from "@models";
 import { chat } from "@utils";
 import capitalize from "capitalize";
@@ -66,7 +66,64 @@ class TicketEvent {
 
   update() {}
 
-  async assign() {}
+  async assign(update: TicketAssignUpdateDocument) {
+    const ticket = await Ticket.findById(update.ticket).populate({
+      path: "assignedTo submittedBy",
+    });
+    if (!ticket) return;
+
+    const user = (ticket.assignedTo as EmployeeDocument[]).find(
+      (user) => user._id.toString() === update.assign.toString()
+    );
+    if (!user || !user.space) return;
+    await chat.spaces.messages.create({
+      parent: user.space,
+      requestBody: {
+        text: `You have been assigned to a ticket`,
+        cards: [
+          {
+            header: {
+              title: "Assigned Ticket",
+              subtitle: `#${ticket.ticketId}`,
+              imageUrl: "https://i.ibb.co/Ypsrycx/Ticket-Blue.png",
+            },
+            sections: [
+              {
+                widgets: [
+                  { keyValue: { topLabel: "Title", content: ticket.title } },
+                  { keyValue: { topLabel: "Description", content: ticket.description } },
+                  {
+                    keyValue: {
+                      topLabel: "Priority",
+                      content: capitalize(ticket.priority.toLowerCase()),
+                    },
+                  },
+                ],
+              },
+              {
+                widgets: [
+                  {
+                    buttons: [
+                      {
+                        textButton: {
+                          text: "OPEN IN APP",
+                          onClick: {
+                            openLink: {
+                              url: `${URL}/tickets/${ticket.ticketId}`,
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+  }
 
   async comment() {}
 

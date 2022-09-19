@@ -149,7 +149,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
             )
           );
         // Create ticket update
-        await TicketAssignUpdate.create({
+        const update = await TicketAssignUpdate.create({
           ...data,
           assign: req.body.assign,
           op: req.body.op,
@@ -163,6 +163,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
           select: "name email image slug fullName comment assign op date createdBy",
           populate: { path: "assign createdBy", select: "fullName email image slug" },
         });
+        ticketEvent.assign(update);
         break;
       }
       // If operation is remove

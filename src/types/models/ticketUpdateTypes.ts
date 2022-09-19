@@ -27,11 +27,11 @@ export interface TicketCommentUpdateDocument extends TicketCommentUpdateModel, D
   _id: any;
 }
 
-export interface TicketAssignUpdateDocument extends TicketCommentUpdateModel, Document {
+export interface TicketAssignUpdateDocument extends TicketAssignUpdateModel, Document {
   _id: any;
 }
 
-export interface TicketTagUpdateDocument extends TicketCommentUpdateModel, Document {
+export interface TicketTagUpdateDocument extends TicketTagUpdateModel, Document {
   _id: any;
 }
 

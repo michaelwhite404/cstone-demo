@@ -14,7 +14,7 @@ Resources:
     ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s)
     Notifications:
       ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
-      ☐ On assign, send to assigned user @est(25m) @today
+      ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s)
       ☐ On comment update, send to creation user @est(25m) @today
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
@@ -42,7 +42,7 @@ Resources:
     ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
     Detail Page:
       ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s)
-      ✔ Add to group @est(1h45m) @today @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s)
+      ✔ Add to group @est(1h45m) @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s)
       ☐ Edit data @est(1h15m)
   Departments:
     ✔ Create Department (UI) @est(35m) @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s)
@@ -56,6 +56,6 @@ Resources:
     ✔ Remove search bar (UI) @est(20m) @started(22-09-17 21:13) @done(22-09-17 21:23) @lasted(10m21s)
     ☐ Change member role (UI and backend) @est(45m)
     ☐ Remove members from group (UI and backend) @est(1h)
-    ☐ Delete group (UI and backend)
+    ☐ Delete group (UI and backend) @est(1.5h)
   Lions Den:
     ☐ Export Data
