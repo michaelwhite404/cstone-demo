@@ -1,5 +1,7 @@
+import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/solid";
 import capitalize from "capitalize";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, formatDistanceToNowStrict } from "date-fns";
+import { singular } from "pluralize";
 import { Link } from "react-router-dom";
 import { TicketModel } from "../../../../src/types/models";
 import TableWrapper from "../../components/TableWrapper";
@@ -12,10 +14,12 @@ export default function MyTicketTable({ tickets }: MyTicketTableProps) {
     <TableWrapper>
       <div className="px-4 sm:px-8 p-2 grid grid-cols-[1fr_110px_70px] items-center bg-gray-50 border-b font-medium">
         <div className="uppercase text-gray-400 text-[12px] tracking-[1px]">Ticket</div>
-        <div className="text-center uppercase text-gray-400 text-[12px] tracking-[1px]">
+        <div className="text-center uppercase text-gray-400 text-[12px] tracking-[1px] hidden sm:block">
           Priority
         </div>
-        <div className="text-center uppercase text-gray-400 text-[12px] tracking-[1px]">Status</div>
+        <div className="text-center uppercase text-gray-400 text-[12px] tracking-[1px]  hidden sm:block">
+          Status
+        </div>
       </div>
       <div className="bg-white divide-y divide-gray-200">
         {tickets.map((ticket) => (
@@ -34,20 +38,25 @@ export default function MyTicketTable({ tickets }: MyTicketTableProps) {
 }
 
 const MobileRow = ({ ticket }: { ticket: TicketModel }) => {
+  const Icon = ticket.status === "OPEN" ? LockOpenIcon : LockClosedIcon;
+  const color = ticket.status === "OPEN" ? "green" : "red";
   return (
     <Link
       to={`/tickets/${ticket.ticketId}`}
-      className="px-4 sm:px-8 p-2 grid grid-cols-[1fr_110px_70px] items-center w-full"
+      className="px-4 sm:px-8 p-2 grid grid-cols-[35px_1fr_70px] items-center w-full"
     >
       <div>
-        <div className="text-[16px] font-medium hover:text-blue-500">{ticket.title}</div>
-        <div className="text-xs text-gray-400 mt-1">
-          #{ticket.ticketId} opened on {formatDistanceToNow(new Date(ticket.createdAt))} ago by{" "}
-          {ticket.submittedBy.fullName}
+        <Icon className={`h-5 w-5 text-${color}-500`} aria-hidden="true" />
+      </div>
+      <div>
+        <div className="text-[16px] font-medium hover:text-blue-500">
+          {ticket.title}
+          <span className="text-xs text-gray-400 ml-2">#{ticket.ticketId}</span>
         </div>
       </div>
-      <div className="text-center">{capitalize(ticket.priority.toLowerCase())}</div>
-      <div className="text-center">{capitalize(ticket.status.toLowerCase())}</div>
+      <div className="text-right text-gray-400 font-light text-[12px]">
+        {dateDistanceFormat(new Date(ticket.createdAt))}
+      </div>
     </Link>
   );
 };
@@ -71,4 +80,18 @@ const DesktopRow = ({ ticket }: { ticket: TicketModel }) => {
       <div className="text-center">{capitalize(ticket.status.toLowerCase())}</div>
     </div>
   );
+};
+
+const dateDistanceFormat = (date: Date) => {
+  const units: { [x: string]: any } = {
+    second: "s",
+    minute: "m",
+    hour: "h",
+    day: "d",
+    month: "mo",
+    year: "y",
+  };
+  const result = formatDistanceToNowStrict(date);
+  const [number, unit] = result.split(" ");
+  return number + units[singular(unit)];
 };

@@ -21,5 +21,5 @@ export interface TicketDocument extends TicketModel, Document {
   ticketId: number;
 }
 
-type TicketStatus = "COMPLETE" | "NOT_STARTED";
+type TicketStatus = "OPEN" | "CLOSED";
 type TicketPriority = "URGENT" | "HIGH" | "MEDIUM" | "LOW";
