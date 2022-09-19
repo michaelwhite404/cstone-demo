@@ -10,7 +10,7 @@ Resources:
     ☐ Add tags (UI, backend) @est(2h30m) @low
     ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
     ☐ Close ticket (UI, backend) @est(1.5h)
-    ✔ Responsive Tickets Table @est(30m) @today @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
+    ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
     ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s)
     Notifications:
       ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
@@ -30,7 +30,8 @@ Resources:
   Timesheets:
     ☐ Day View (UI) @low
     ☐ Year View (UI) @low
-    ☐ Month View (UI, Mobile) @est(1h) @today
+    ✔ Month View (UI, Mobile) @est(1h) @today @started(22-09-19 04:39) @done(22-09-19 05:20) @lasted(41m44s)
+    ☐ Top View 3 Dots (All Views)
     ☐ Send notifications on day to approve
     ☐ Admin View (UI) @est(3h30m) @critical
     ☐ Approve Timesheets (Batch) @est(3h30m) @critical

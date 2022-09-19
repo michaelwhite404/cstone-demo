@@ -207,13 +207,7 @@ chatRouter.get(
 chatRouter.get(
   "/test4",
   catchAsync(async (req, res, next) => {
-    const sockets = await io.fetchSockets();
-    const me = sockets.find(
-      (socket) => socket.data?.user?.email === "mwhite1@cornerstone-schools.org"
-    );
-    if (me) {
-      io.to(me.id).emit("finalizeReimbursement", "Let's GOOOOO");
-    }
-    res.send("DONE");
+    const response = await chat.spaces.list();
+    res.sendJson(200, response.data.spaces);
   })
 );
