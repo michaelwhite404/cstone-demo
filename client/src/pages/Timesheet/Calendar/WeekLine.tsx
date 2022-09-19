@@ -1,14 +1,17 @@
 import { differenceInMinutes, format, startOfDay } from "date-fns";
 import { useEffect, useState } from "react";
+import { useWindowSize } from "../../../hooks";
 
 export function WeekLine() {
   const [{ dayOfWeek, minutes }, setValue] = useState(getInfo());
+  const [width] = useWindowSize();
 
   useEffect(() => {
     const interval = setInterval(() => setValue(getInfo()), 60000);
     return () => clearInterval(interval);
   }, []);
 
+  const num = width < 640 ? 1 : dayOfWeek;
   return (
     <div
       className="div-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
@@ -16,8 +19,8 @@ export function WeekLine() {
     >
       <div
         // sm:col-start-${dayOfWeek}
-        className={`relative mt-px flex bg-red-500 align-center z-10`}
-        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2", gridColumnStart: dayOfWeek }}
+        className={`relative mt-px flex bg-red-500 align-center z-10 col-start-1 col-start-${num}`}
+        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2" }}
       >
         <div className="relative left-2">
           <div

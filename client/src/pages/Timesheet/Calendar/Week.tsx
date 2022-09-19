@@ -4,12 +4,14 @@ import { add, isToday, set, startOfWeek, differenceInMinutes, format, isSameDay 
 import { CalendarEvent } from "../../../types/calendar";
 import classNames from "classnames";
 import Calendar from ".";
+import { useWindowSize } from "../../../hooks";
 
 export function CalendarWeek(props: CalendarWeekProps) {
   const [days, setDays] = useState(createDates(props.date));
   const container = useRef<HTMLDivElement>(null);
   const containerNav = useRef<HTMLDivElement>(null);
   const containerOffset = useRef<HTMLDivElement>(null);
+  const [width] = useWindowSize();
 
   useEffect(() => {
     // Set the container scroll position based on the current time.
@@ -60,6 +62,8 @@ export function CalendarWeek(props: CalendarWeekProps) {
     props.onEntryClick?.(entryId);
   };
 
+  const showLine = width >= 640 ? days.some((d) => d.isToday) : isToday(props.date);
+
   return (
     <div className="flex flex-col week-view-wrapper">
       <div
@@ -89,7 +93,10 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     key={day.date}
                     type="button"
                     className="flex flex-col items-center pt-2 pb-3"
-                    onClick={() => props.setDate(new Date(`${day.date},`))}
+                    onClick={() => {
+                      const thisDate = day.date.split("-").map((d) => +d);
+                      props.setDate(new Date(+thisDate[0], thisDate[1] - 1, thisDate[2]));
+                    }}
                   >
                     {daysofWeek[i][0]}{" "}
                     <span className={className}>
@@ -167,7 +174,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     />
                   ))}
               </ol>
-              {days.filter((d) => d.isToday).length === 1 && <Calendar.WeekLine />}
+              {showLine && <Calendar.WeekLine />}
             </div>
           </div>
         </div>
@@ -196,15 +203,9 @@ const createDates = (date: Date) => {
   return dates;
 };
 
-const Event = ({
-  event,
-  onClick,
-  hideBelowSmBreakpoint,
-}: {
-  event: Required<Omit<CalendarEvent, "timeLabel" | "color">>;
-  onClick?: React.MouseEventHandler<HTMLLIElement>;
-  hideBelowSmBreakpoint?: boolean;
-}) => {
+const Event = ({ event, onClick, hideBelowSmBreakpoint }: EventProps) => {
+  const [width] = useWindowSize();
+
   const dayOfWeek = new Date(event.date).getDay() + 1;
   const start = new Date(event.timeStart);
   const end = new Date(event.timeEnd);
@@ -212,6 +213,7 @@ const Event = ({
   const rowStartOffset = 2;
   const gridRowStart = differenceInMinutes(start, beginningOfDay) / 5 + rowStartOffset;
   const gridRowEnd = `span ${differenceInMinutes(end, start) / 5}`;
+  const gridColumnStart = width < 640 ? 1 : dayOfWeek;
 
   const className = classNames(`relative mt-px sm:flex sm:col-start-${dayOfWeek}`, {
     hidden: hideBelowSmBreakpoint,
@@ -220,7 +222,7 @@ const Event = ({
   return (
     <li
       className={className}
-      style={{ gridRowStart, gridRowEnd, gridColumnStart: dayOfWeek }}
+      style={{ gridRowStart, gridRowEnd, gridColumnStart }}
       onClick={onClick}
     >
       <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100 cursor-pointer">
@@ -232,3 +234,9 @@ const Event = ({
     </li>
   );
 };
+
+interface EventProps {
+  event: Required<Omit<CalendarEvent, "timeLabel" | "color">>;
+  onClick?: React.MouseEventHandler<HTMLLIElement>;
+  hideBelowSmBreakpoint?: boolean;
+}

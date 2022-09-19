@@ -5,7 +5,7 @@ import { format, startOfWeek, endOfWeek } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../src/types/models";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
-import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
+import { useAuth, useDocTitle, useToasterContext, useWindowSize } from "../../hooks";
 import { APIError } from "../../types/apiResponses";
 import { CalendarEvent, CalendarView } from "../../types/calendar";
 import Month from "../../types/month";
@@ -25,6 +25,7 @@ export default function Timesheet() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<TimesheetModel>();
   const { showToaster } = useToasterContext();
+  const [width] = useWindowSize();
 
   const { month, year } = getMDY(date);
 
@@ -129,11 +130,11 @@ export default function Timesheet() {
       </Dialog>
       <Drawer
         portalClassName="z-40"
-        size={"480px"}
+        size={width >= 640 ? 480 : "90%"}
         isOpen={drawerOpen}
         onClose={handleDrawerClose}
         canOutsideClickClose
-        className="pass-along"
+        className="sm:w-[480px] w-72"
       >
         {selectedEntry && (
           <ShowEntry entry={selectedEntry} closeDrawer={() => setDrawerOpen(false)} />

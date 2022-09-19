@@ -173,7 +173,7 @@ export function CalendarMonth(props: CalendarMonthProps) {
 }
 
 const createDates = (month: Month, year: number, events?: CalendarEvent[]) => {
-  const firstDay = new Date(`${month} ${year}`);
+  const firstDay = new Date(`${month} 1 ${year}`);
   const daysInMonth = getDaysInMonth(firstDay);
   const form = (month: string, day: number, year: number) =>
     format(new Date(`${month} ${day}, ${year}`), "y-LL-dd");
@@ -189,6 +189,7 @@ const createDates = (month: Month, year: number, events?: CalendarEvent[]) => {
   events?.forEach((event) => {
     // console.log(format(event.date, "LLLL"), event.date.getFullYear());
     if (format(event.date, "LLLL") === month && event.date.getFullYear() === year) {
+      // console.log(dates, event.date.getDate());
       dates[event.date.getDate() - 1].events?.push(event);
     }
   });

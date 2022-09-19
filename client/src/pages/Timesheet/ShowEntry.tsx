@@ -2,24 +2,17 @@ import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
 import { CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import { TimesheetModel } from "../../../../src/types/models";
-import Badge from "../../components/Badge/Badge";
-import BadgeColor from "../../components/Badge/BadgeColor";
 import "./ShowEntry.sass";
 import "react-circular-progressbar/dist/styles.css";
 import ProgressProvider from "./ProgressProvider";
 import FadeIn from "../../components/FadeIn";
-
-const badgeObj: { [x: string]: BadgeColor } = {
-  Approved: "emerald",
-  Pending: "yellow",
-  Rejected: "red",
-};
+import ApprovalBadge from "../../components/Badges/ApprovalBadge";
 
 export default function ShowEntry(props: ShowEntryProps) {
   return (
     <div className="px-7 pb-7 h-full overflow-scroll">
-      <div className="flex justify-between align-center sticky top-0 bg-white pt-7 pb-2">
-        <div className="flex align-center">
+      <div className="block sm:flex justify-between align-center sticky top-0 bg-white pt-7 pb-2">
+        <div className="mb-4 sm:mb-0 flex align-center">
           <span
             className="p-1 hover:bg-gray-100 rounded cursor-pointer"
             onClick={() => props.closeDrawer()}
@@ -28,9 +21,9 @@ export default function ShowEntry(props: ShowEntryProps) {
           </span>
           <span className="text-xl font-semibold ml-4">Timesheet Entry</span>
         </div>
-        <Badge color={badgeObj[props.entry.status]} text={props.entry.status} />
+        <ApprovalBadge status={props.entry.status} />
       </div>
-      <div className="mt-10 grid gap-8">
+      <div className="sm:mt-10 mt-6 grid gap-8">
         <div className="col-span-2">
           <FadeIn>
             <div className="show-entry-label">Description</div>
