@@ -9,7 +9,7 @@ export interface DepartmentModel {
   members?: DepartmentMember[];
 }
 
-interface DepartmentMember {
+export interface DepartmentMember {
   _id: EmployeeModel["_id"];
   fullName: string;
   email: string;

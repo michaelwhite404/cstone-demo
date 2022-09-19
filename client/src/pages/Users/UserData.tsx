@@ -49,8 +49,26 @@ export default function UserData() {
     setUserEdit({ ...userEdit, [e.target.name]: e.target.value });
   };
 
+  const addDepartmentMember = async (
+    department: {
+      _id: string;
+      name: string;
+    },
+    role: "MEMBER" | "LEADER"
+  ) => {
+    if (!user) return;
+    await axios.post(`/api/v2/departments/${department._id}/members`, {
+      users: [{ id: user._id, role }],
+    });
+    if (!user.departments) return setUser({ ...user, departments: [{ ...department, role }] });
+    const sortedDepartments = [...user.departments, { ...department, role }].sort((a, b) =>
+      a.name!.localeCompare(b.name!)
+    );
+    setUser({ ...user, departments: sortedDepartments });
+  };
+
   return (
-    <div className="flex flex-col" style={{ padding: "10px 25px 25px" }}>
+    <div className="flex flex-col sm:px-6 px-4 pb-6 pt-2.5">
       <div className="my-4 hover:underline cursor-pointer max-w-fit" onClick={goToUsersPage}>
         <BackButton />
         Back to users
@@ -180,7 +198,11 @@ export default function UserData() {
       <div className="mx-5">
         <div className="flex flex-col md:flex-row">
           <div className="flex-1">
-            <DepartmentList user={user} departments={departments} />
+            <DepartmentList
+              user={user}
+              departments={departments}
+              addDepartmentMember={addDepartmentMember}
+            />
           </div>
           <div className="px-5 py-5 md:py-0">
             <Divider className="hidden md:block" orientation="vertical" />
