@@ -49,6 +49,7 @@ export default function DepartmentList(props: DepartmentListProps) {
     addDepartmentMember(selectedDepartment!, role)
       .then(() => {
         setSelectedDepartment(undefined);
+        setQuery("");
         setRole("MEMBER");
       })
       .catch(showError);
@@ -70,7 +71,7 @@ export default function DepartmentList(props: DepartmentListProps) {
               className="flex-1 mr-3"
             >
               {({ open }) => (
-                <div className="relative">
+                <div className="relative z-50">
                   <Combobox.Button className="w-full">
                     <Combobox.Input
                       className="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm"

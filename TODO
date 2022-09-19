@@ -42,7 +42,7 @@ Resources:
     ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
     Detail Page:
       ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s)
-      ☐ Add to group @est(1h45m) @today
+      ✔ Add to group @est(1h45m) @today @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s)
       ☐ Edit data @est(1h15m)
   Departments:
     ✔ Create Department (UI) @est(35m) @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s)

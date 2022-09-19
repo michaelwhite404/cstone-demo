@@ -2,18 +2,20 @@ import axios from "axios";
 import { Divider, Switch } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { DepartmentModel, EmployeeModel } from "../../../../src/types/models";
+import { DepartmentModel, EmployeeModel, UserGroup } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import LabeledInput2 from "../../components/LabeledInput2";
 import { AddOnInput } from "../../components/Inputs";
 import DepartmentList from "./UserData/DepartmentList";
 import GroupList from "./UserData/GroupsList";
 import { grades } from "../../utils/grades";
+import { admin_directory_v1 } from "googleapis";
 
 export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
   const [userEdit, setUserEdit] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
+  const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
   // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
@@ -32,9 +34,13 @@ export default function UserData() {
       const res = await axios.get("/api/v2/departments");
       setDepartments(res.data.data.departments);
     };
-
+    const getGroups = async () => {
+      const res = await axios.get("/api/v2/groups");
+      setGroups(res.data.data.groups);
+    };
     getUser();
     getDepartments();
+    getGroups();
   }, [slug]);
 
   const goToUsersPage = () => (locationState.fromUsersPage ? navigate(-1) : navigate("/users"));
@@ -65,6 +71,31 @@ export default function UserData() {
       a.name!.localeCompare(b.name!)
     );
     setUser({ ...user, departments: sortedDepartments });
+  };
+
+  const addGroupMember = async (email: string, role: string) => {
+    if (!user) return;
+    const emailStart = email.replace("@cornerstone-schools.org", "");
+    const res = await axios.post(`/api/v2/groups/${emailStart}/members`, {
+      users: [{ email: user.email, role }],
+    });
+    const member = res.data.data.members[0] as admin_directory_v1.Schema$Member | undefined;
+    if (!member) return;
+    const group = groups.find((g) => g.email === email);
+    if (!group) return;
+    const userGroup: UserGroup = {
+      email,
+      id: group.id!,
+      name: group.name!,
+      role,
+      status: "ACTIVE",
+      type: "USER",
+    };
+    if (!user.groups) return setUser({ ...user, groups: [userGroup] });
+    const sortedGroups = [...user.groups, userGroup].sort((a, b) =>
+      a.email!.localeCompare(b.email!)
+    );
+    setUser({ ...user, groups: sortedGroups });
   };
 
   return (
@@ -209,7 +240,12 @@ export default function UserData() {
             <Divider className="md:hidden" orientation="horizontal" />
           </div>
           <div className="flex-1">
-            <GroupList userGroups={userEdit?.groups || []} />
+            <GroupList
+              user={user}
+              userGroups={user?.groups || []}
+              groups={groups}
+              addGroupMember={addGroupMember}
+            />
           </div>
         </div>
       </div>
