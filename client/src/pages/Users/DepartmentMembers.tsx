@@ -2,15 +2,21 @@ import axios from "axios";
 import capitalize from "capitalize";
 import classNames from "classnames";
 import pluralize from "pluralize";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { DepartmentModel } from "../../../../src/types/models";
+import { DepartmentMember, DepartmentModel } from "../../../../src/types/models";
+import Menuuuu from "../../components/Menu";
 import TableWrapper from "../../components/TableWrapper";
 import { useChecker2, useToasterContext } from "../../hooks";
 
 interface Props {
   department: DepartmentModel;
   fetchDepartment: () => Promise<void>;
+}
+
+interface DirtyRow {
+  _id: string;
+  role: string;
 }
 
 export default function DepartmentMembers(props: Props) {
@@ -24,9 +30,14 @@ export default function DepartmentMembers(props: Props) {
     setSelectedData: setSelectedMembers,
   } = useChecker2(department.members || []);
   const { showToaster } = useToasterContext();
+  const [dirtyRows, setDirtyRows] = useState<DirtyRow[]>([]);
 
   const deleteMember = async (departmentId: string, memberId: string) => {
     return axios.delete(`/api/v2/departments/${departmentId}/members/${memberId}`);
+  };
+
+  const updateMember = async (departmentId: string, memberId: string, role: string) => {
+    return axios.patch(`/api/v2/departments/${departmentId}/members/${memberId}`, { role });
   };
 
   const handleDeleteMembers = async () => {
@@ -45,28 +56,52 @@ export default function DepartmentMembers(props: Props) {
     );
   };
 
+  const handleUpdateMembers = async () => {
+    const response = await Promise.allSettled(
+      dirtyRows.map((row) => updateMember(department._id, row._id, row.role))
+    );
+    fetchDepartment();
+    setSelectedMembers([]);
+    setDirtyRows([]);
+    showToaster(
+      pluralize(
+        "members",
+        response.filter((result) => result.status === "fulfilled").length,
+        true
+      ) + " updated!",
+      "success"
+    );
+  };
+
   return (
     <div>
       <div className="sm:h-[35px] sm:flex items-center justify-between">
         <span className="text-sm font-bold text-gray-900">
           Showing {pluralize("Members", members.length, true)}
         </span>
-        <div
-          className={`${
-            selectedMembers.length ? "sm:block flex" : "hidden"
-          } space-x-3  pt-2 sm:pt-0`}
-        >
-          <button
-            type="button"
-            className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            onClick={handleDeleteMembers}
-          >
-            Remove {pluralize("Members", selectedMembers.length, true)}
-          </button>
+        <div className="sm:block flex space-x-3  pt-2 sm:pt-0">
+          {selectedMembers.length > 0 && (
+            <button
+              type="button"
+              className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              onClick={handleDeleteMembers}
+            >
+              Remove {pluralize("Members", selectedMembers.length, true)}
+            </button>
+          )}
+          {dirtyRows.length > 0 && (
+            <button
+              type="button"
+              className="w-full sm:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
+              onClick={handleUpdateMembers}
+            >
+              Update {pluralize("Members", dirtyRows.length, true)}
+            </button>
+          )}
         </div>
       </div>
-      <TableWrapper>
-        <table className="table-auto">
+      <TableWrapper overflow>
+        <table className="table-auto rounded">
           <thead>
             <tr>
               <th scope="col" className="relative w-12 px-6 sm:w-16 sm:px-8 border-b">
@@ -84,52 +119,16 @@ export default function DepartmentMembers(props: Props) {
             </tr>
           </thead>
           <tbody>
-            {members.map((member) => {
-              const selected = selectedMembers.includes(member);
-              return (
-                <tr
-                  className={classNames(
-                    { "bg-indigo-50": selected },
-                    { "hover:bg-gray-100": !selected }
-                  )}
-                  key={member._id}
-                >
-                  <td className="relative w-12 px-6 sm:w-16 sm:px-8 pl-4 py-2.5 border-b border-gray-300">
-                    <input
-                      type="checkbox"
-                      className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                      value={member._id!}
-                      checked={selected}
-                      onChange={(e) =>
-                        setSelectedMembers(
-                          e.target.checked
-                            ? [...selectedMembers, member]
-                            : selectedMembers.filter((m) => m !== member)
-                        )
-                      }
-                    />
-                  </td>
-                  <td className="py-2.5 border-b border-gray-300">
-                    <div>
-                      <Link to={`/users/${slugify(member.fullName)}`}>
-                        <span className="text-blue-500 font-medium">{member.fullName}</span>
-                      </Link>
-                      <div className="text-gray-400 text-xs md:hidden">{member.email}</div>
-                      <div className="sm:hidden text-gray-400 mt-1 text-xs">
-                        <span className="capitalize font-medium">TYPE: </span>
-                        {capitalize(member.role.toLocaleLowerCase())}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-2.5 border-b border-gray-300 text-gray-400 hidden md:table-cell">
-                    {member.email}
-                  </td>
-                  <td className="py-2.5 border-b border-gray-300 text-gray-400 md:w-1/6 w-1/6 pr-4">
-                    {capitalize(member.role?.toLowerCase() || "")}
-                  </td>
-                </tr>
-              );
-            })}
+            {members.map((member) => (
+              <MemberRow
+                key={member._id}
+                member={member}
+                selectedMembers={selectedMembers}
+                setSelectedMembers={setSelectedMembers}
+                setDirtyRows={setDirtyRows}
+                dirty={dirtyRows.some((row) => row._id === member._id)}
+              />
+            ))}
           </tbody>
         </table>
       </TableWrapper>
@@ -155,3 +154,82 @@ function slugify(str: string) {
 
   return str;
 }
+
+const MemberRow = ({
+  member,
+  selectedMembers,
+  setSelectedMembers,
+  setDirtyRows,
+  dirty,
+}: {
+  member: DepartmentMember;
+  selectedMembers: DepartmentMember[];
+  setSelectedMembers: React.Dispatch<React.SetStateAction<DepartmentMember[]>>;
+  setDirtyRows: React.Dispatch<React.SetStateAction<DirtyRow[]>>;
+  dirty: boolean;
+}) => {
+  const [role, setRole] = useState(member.role);
+  const selected = selectedMembers.includes(member);
+
+  const handleRowChange = (option: { label: string; value: string }) => {
+    if (!dirty && role === option.value) return;
+    setRole(option.value as "LEADER" | "MEMBER");
+    setDirtyRows((rows) => {
+      const copiedRows = [...rows];
+      const index = copiedRows.findIndex((row) => row._id === member._id);
+      if (index < 0) return copiedRows.concat({ _id: member._id, role: option.value });
+      copiedRows[index].role = option.value;
+      return copiedRows;
+    });
+  };
+
+  return (
+    <tr
+      className={classNames({ "bg-indigo-50": selected }, { "hover:bg-gray-100": !selected })}
+      key={member._id}
+    >
+      <td className="relative w-12 px-6 sm:w-16 sm:px-8 pl-4 py-2.5 border-b border-gray-300">
+        <div className={`absolute w-1 h-full top-0 left-0 ${dirty ? "bg-amber-500" : ""}`} />
+        <input
+          type="checkbox"
+          className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
+          value={member._id!}
+          checked={selected}
+          onChange={(e) =>
+            setSelectedMembers(
+              e.target.checked
+                ? [...selectedMembers, member]
+                : selectedMembers.filter((m) => m !== member)
+            )
+          }
+        />
+      </td>
+      <td className="border-b border-gray-300">
+        <div>
+          <Link to={`/users/${slugify(member.fullName)}`}>
+            <span className="text-blue-500 font-medium">{member.fullName}</span>
+          </Link>
+          <div className="text-gray-400 text-xs md:hidden">{member.email}</div>
+          <div className="sm:hidden text-gray-400 mt-1 text-xs">
+            <span className="capitalize font-medium">TYPE: </span>
+            {capitalize(member.role.toLocaleLowerCase())}
+          </div>
+        </div>
+      </td>
+      <td className="border-b border-gray-300 text-gray-400 hidden md:table-cell">
+        {member.email}
+      </td>
+      <td className="border-b border-gray-300 text-gray-400 md:w-1/6 w-1/6 pr-4">
+        <Menuuuu
+          inRow
+          options={[
+            { label: "Member", value: "MEMBER" },
+            { label: "Leader", value: "LEADER" },
+          ]}
+          value={role}
+          onChange={handleRowChange}
+        />
+      </td>
+    </tr>
+  );
+};

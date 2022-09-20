@@ -7,6 +7,7 @@ interface MenuProps {
   options: Option[];
   onChange?: (value: Option) => void;
   value?: string;
+  inRow?: boolean;
 }
 
 interface Option {
@@ -36,7 +37,10 @@ export default function Menuuuu(props: MenuProps) {
     <Menu as="div" className="relative">
       <Menu.Button
         type="button"
-        className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+        className={classNames(
+          "flex items-center rounded-md py-2  pr-2 text-sm font-medium text-gray-700 shadow-sm ",
+          { "hover:bg-gray-50 pl-3 border border-gray-300 bg-white": !props.inRow }
+        )}
       >
         {selectedOption.label}
         <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -51,7 +55,7 @@ export default function Menuuuu(props: MenuProps) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="z-10 focus:outline-none absolute right-0 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+        <Menu.Items className="z-10 focus:outline-none absolute left-0 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="py-1">
             {props.options.map((option, i) => (
               <Menu.Item key={i}>

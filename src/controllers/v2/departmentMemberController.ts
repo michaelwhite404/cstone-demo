@@ -66,6 +66,19 @@ export const removeDepartmentMember = catchAsync(async (req, res, next) => {
   });
 });
 
+export const updateDepartmentMember = catchAsync(async (req, res, next) => {
+  const { role } = req.body;
+  if (!role)
+    return next(new AppError("Only the role property can be updated with this route", 400));
+  const member = await DepartmentMember.findOneAndUpdate(
+    { department: req.params.departmentId, member: req.params.id },
+    { role },
+    { new: true, runValidators: true }
+  ).populate({ path: "member", select: "fullName email" });
+  if (!member) return next(new AppError("No member found", 404));
+  res.sendJson(200, { member: makeMember(member) });
+});
+
 const makeMember = (info: any) => ({
   _id: info.member._id,
   fullName: info.member.fullName,
