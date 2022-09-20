@@ -45,6 +45,7 @@ interface UserToCreate {
   timesheetEnabled: boolean;
   password: string;
   changePasswordAtNextLogin: boolean;
+  doNotAddGoogleUser: boolean;
 }
 
 export default function CreateUser(props: CreateUserProps) {
@@ -113,6 +114,11 @@ export default function CreateUser(props: CreateUserProps) {
     setUser({ ...user, [name]: value });
   };
 
+  const handleCheckboxChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    // @ts-ignore
+    setUser({ ...user, [e.target.name]: !user[e.target.name] });
+  };
+
   const submittable =
     user.firstName &&
     user.lastName &&
@@ -121,7 +127,11 @@ export default function CreateUser(props: CreateUserProps) {
     user.role &&
     //@ts-ignore
     Object.keys(formErrors).every((key) => formErrors[key].valid === true) &&
-    (selected === "custom" ? user.password.length >= 8 : true);
+    user.doNotAddGoogleUser
+      ? true
+      : selected === "custom"
+      ? user.password.length >= 8
+      : true;
 
   return (
     <motion.div
@@ -247,109 +257,129 @@ export default function CreateUser(props: CreateUserProps) {
               </div>
             </div>
             {/* Divider */}
-            <div className="pt-4 pb-6 px-6">
+            <div className="pt-4 pb-4 px-6">
               <Divider />
             </div>
             <div>
-              {/* <label className="block text-sm font-medium text-gray-700 mb-2">Password</label> */}
-              <RadioGroup value={selected} onChange={setSelected}>
-                <RadioGroup.Label className="sr-only">Password</RadioGroup.Label>
-                <div className="bg-white rounded-md -space-y-px">
-                  {settings.map((setting, settingIdx) => (
-                    <RadioGroup.Option
-                      key={setting.name}
-                      value={setting.value}
-                      className={({ checked }) =>
-                        classNames(
-                          settingIdx === 0 ? "rounded-tl-md rounded-tr-md" : "",
-                          settingIdx === settings.length - 1 ? "rounded-bl-md rounded-br-md" : "",
-                          checked ? "bg-blue-50 border-blue-200 z-10" : "border-gray-200",
-                          "relative border p-4 flex cursor-pointer focus:outline-none"
-                        )
-                      }
-                    >
-                      {({ active, checked }) => (
-                        <>
-                          <span
-                            className={classNames(
-                              checked
-                                ? "bg-blue-600 border-transparent"
-                                : "bg-white border-gray-300",
-                              active ? "ring-2 ring-offset-2 ring-blue-500" : "",
-                              "h-4 w-4 mt-0.5 cursor-pointer shrink-0 rounded-full border flex items-center justify-center"
-                            )}
-                            aria-hidden="true"
-                          >
-                            <span className="rounded-full bg-white w-1.5 h-1.5" />
-                          </span>
-                          <span className="ml-3 flex flex-col">
-                            <RadioGroup.Label
-                              as="span"
-                              className={classNames(
-                                checked ? "text-blue-900" : "text-gray-900",
-                                "block text-sm font-medium"
-                              )}
-                            >
-                              {setting.name}
-                            </RadioGroup.Label>
-                            <RadioGroup.Description
-                              as="span"
-                              className={classNames(
-                                checked ? "text-blue-700" : "text-gray-500",
-                                "block text-sm"
-                              )}
-                            >
-                              {setting.description}
-                            </RadioGroup.Description>
-                            {selected === "custom" && settingIdx === 1 && (
-                              <div className="mt-2">
-                                <input
-                                  type="password"
-                                  name="password"
-                                  id="password"
-                                  className="block w-full rounded-md border-gray-300 shadow-sm py-1.5 px-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                  onChange={handleChange}
-                                  value={user.password}
-                                />
-                                <div className="text-xs mt-2 text-gray-400">
-                                  Password must have at least 8 characters
-                                </div>
-                                <div className="relative flex items-start mt-3">
-                                  <div className="flex items-center h-5">
-                                    <input
-                                      id="changePasswordAtNextLogin"
-                                      aria-describedby="changePasswordAtNextLogin"
-                                      name="changePasswordAtNextLogin"
-                                      type="checkbox"
-                                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                                      checked={user.changePasswordAtNextLogin}
-                                      onChange={() =>
-                                        setUser({
-                                          ...user,
-                                          changePasswordAtNextLogin:
-                                            !user.changePasswordAtNextLogin,
-                                        })
-                                      }
-                                    />
-                                  </div>
-                                  <div className="ml-3 text-sm">
-                                    <label
-                                      htmlFor="changePasswordAtNextLogin"
-                                      className="font-medium text-gray-700"
-                                    >
-                                      Ask user to change their password when they sign in
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </span>
-                        </>
-                      )}
-                    </RadioGroup.Option>
-                  ))}
+              <div className="relative flex items-start pt-4 pb-6">
+                <div className="mr-3 flex h-5 items-center">
+                  <input
+                    id="doNotAddGoogleUserCheckbox"
+                    name="doNotAddGoogleUser"
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    checked={user.doNotAddGoogleUser}
+                    onChange={handleCheckboxChange}
+                  />
                 </div>
-              </RadioGroup>
+                <div className="min-w-0 flex-1 text-sm">
+                  <label htmlFor="doNotAddGoogleUserCheckbox">
+                    <span className="select-none font-semibold text-gray-700">DO NOT</span> add user
+                    to Google Admin
+                  </label>
+                </div>
+              </div>
+              {/* <label className="block text-sm font-medium text-gray-700 mb-2">Password</label> */}
+              {!user.doNotAddGoogleUser && (
+                <RadioGroup value={selected} onChange={setSelected}>
+                  <RadioGroup.Label className="sr-only">Password</RadioGroup.Label>
+                  <div className="bg-white rounded-md -space-y-px">
+                    {settings.map((setting, settingIdx) => (
+                      <RadioGroup.Option
+                        key={setting.name}
+                        value={setting.value}
+                        className={({ checked }) =>
+                          classNames(
+                            settingIdx === 0 ? "rounded-tl-md rounded-tr-md" : "",
+                            settingIdx === settings.length - 1 ? "rounded-bl-md rounded-br-md" : "",
+                            checked ? "bg-blue-50 border-blue-200 z-10" : "border-gray-200",
+                            "relative border p-4 flex cursor-pointer focus:outline-none"
+                          )
+                        }
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <span
+                              className={classNames(
+                                checked
+                                  ? "bg-blue-600 border-transparent"
+                                  : "bg-white border-gray-300",
+                                active ? "ring-2 ring-offset-2 ring-blue-500" : "",
+                                "h-4 w-4 mt-0.5 cursor-pointer shrink-0 rounded-full border flex items-center justify-center"
+                              )}
+                              aria-hidden="true"
+                            >
+                              <span className="rounded-full bg-white w-1.5 h-1.5" />
+                            </span>
+                            <span className="ml-3 flex flex-col">
+                              <RadioGroup.Label
+                                as="span"
+                                className={classNames(
+                                  checked ? "text-blue-900" : "text-gray-900",
+                                  "block text-sm font-medium"
+                                )}
+                              >
+                                {setting.name}
+                              </RadioGroup.Label>
+                              <RadioGroup.Description
+                                as="span"
+                                className={classNames(
+                                  checked ? "text-blue-700" : "text-gray-500",
+                                  "block text-sm"
+                                )}
+                              >
+                                {setting.description}
+                              </RadioGroup.Description>
+                              {selected === "custom" && settingIdx === 1 && (
+                                <div className="mt-2">
+                                  <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    className="block w-full rounded-md border-gray-300 shadow-sm py-1.5 px-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    onChange={handleChange}
+                                    value={user.password}
+                                  />
+                                  <div className="text-xs mt-2 text-gray-400">
+                                    Password must have at least 8 characters
+                                  </div>
+                                  <div className="relative flex items-start mt-3">
+                                    <div className="flex items-center h-5">
+                                      <input
+                                        id="changePasswordAtNextLogin"
+                                        aria-describedby="changePasswordAtNextLogin"
+                                        name="changePasswordAtNextLogin"
+                                        type="checkbox"
+                                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        checked={user.changePasswordAtNextLogin}
+                                        onChange={() =>
+                                          setUser({
+                                            ...user,
+                                            changePasswordAtNextLogin:
+                                              !user.changePasswordAtNextLogin,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                      <label
+                                        htmlFor="changePasswordAtNextLogin"
+                                        className="font-medium text-gray-700"
+                                      >
+                                        Ask user to change their password when they sign in
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </span>
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              )}
             </div>
           </div>
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

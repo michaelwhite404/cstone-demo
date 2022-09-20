@@ -38,8 +38,8 @@ export default function Menuuuu(props: MenuProps) {
       <Menu.Button
         type="button"
         className={classNames(
-          "flex items-center rounded-md py-2  pr-2 text-sm font-medium text-gray-700 shadow-sm ",
-          { "hover:bg-gray-50 pl-3 border border-gray-300 bg-white": !props.inRow }
+          "flex items-center rounded-md py-2 pr-2 text-sm font-medium text-gray-700",
+          { "hover:bg-gray-50 pl-3 border border-gray-300 bg-white shadow-sm": !props.inRow }
         )}
       >
         {selectedOption.label}

@@ -36,7 +36,7 @@ Resources:
     ☐ Admin View (UI) @est(3h30m) @critical
     ☐ Approve Timesheets (Batch) @est(3h30m) @critical
   Users:
-    ☐ Choose whether or not to add to Google @est(22.5m) @today
+    ✔ Choose whether or not to add to Google @est(22.5m) @started(22-09-20 16:45) @done(22-09-20 17:15) @lasted(30m18s)
     ☐ Deactivate users @low
     ☐ User filter by status (UI)
     ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)

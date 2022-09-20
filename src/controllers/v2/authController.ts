@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { Employee } from "@models";
 import { EmployeeModel } from "@@types/models";
 import { DecodedPayload } from "@@types";
-import { AppError, catchAsync, isObjectID, makePassword } from "@utils";
+import { admin, AppError, catchAsync, isObjectID, makePassword } from "@utils";
 import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 
 /**
@@ -17,6 +17,7 @@ export const createEmployee = catchAsync(
     if (req.employee.role !== "Super Admin" && req.body.role === "Super Admin") {
       return next(new AppError("You are not authorized to create a user with that role", 403));
     }
+    const password = req.body.password || makePassword(12);
 
     const user = await Employee.create({
       firstName: req.body.firstName,
@@ -24,12 +25,30 @@ export const createEmployee = catchAsync(
       title: req.body.title,
       email: req.body.email,
       role: req.body.role,
-      password: req.body.password || makePassword(12),
+      password,
       active: true,
     } as EmployeeModel);
 
     // const url = `${req.protocol}://${req.get("host")}`;
     // await new Email(req.body, url).sendWelcome();
+
+    try {
+      const response = await admin.users.insert({
+        requestBody: {
+          name: {
+            givenName: user.firstName,
+            familyName: user.lastName,
+          },
+          primaryEmail: user.email,
+          password,
+          orgUnitPath: "Staff",
+        },
+      });
+      if (response.data.id) (user.googleId = response.data.id), await user.save();
+    } catch (err) {
+      await user.remove();
+      throw err;
+    }
 
     // Remove password from output
     // @ts-ignore

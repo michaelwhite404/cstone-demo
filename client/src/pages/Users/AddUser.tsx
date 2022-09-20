@@ -22,6 +22,7 @@ const initialUser = {
   timesheetEnabled: false,
   password: "",
   changePasswordAtNextLogin: true,
+  doNotAddGoogleUser: false,
 };
 
 export default function AddUser(props: AddUserProps) {
