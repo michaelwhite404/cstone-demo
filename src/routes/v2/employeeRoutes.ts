@@ -13,13 +13,18 @@ employeeRouter.patch("/spaces", v2auth.gChatProtect, employeeController.addToSpa
 
 employeeRouter.use(v2auth.protect);
 
-employeeRouter.patch("/update-password", v2auth.protect, v1auth.updatePassword);
+employeeRouter.patch("/update-password", v1auth.updatePassword);
 
 employeeRouter.route("/").get(employeeController.getAllEmployees).post(v2auth.createEmployee);
 employeeRouter.route("/me").get(employeeController.getMe, employeeController.getOneEmployee);
-employeeRouter.get("/from-google", employeeController.getGoogleUsers);
+employeeRouter.get(
+  "/from-google",
+  v2auth.restrictTo("Super Admin"),
+  employeeController.getGoogleUsers
+);
 employeeRouter
   .route("/:id")
-  .get(employeeController.getOneEmployee) /* .patch(employeeController.updateUser) */;
+  .get(employeeController.getOneEmployee)
+  .patch(v2auth.restrictTo("Super Admin"), employeeController.updateUser);
 
 export default employeeRouter;

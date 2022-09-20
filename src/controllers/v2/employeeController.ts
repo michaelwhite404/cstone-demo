@@ -97,3 +97,42 @@ export const addToSpace = catchAsync(async (req, res, next) => {
   employee.save();
   res.status(201).send({ status: "success", message: "User added to space" });
 });
+
+const filterObj = (obj: any, ...allowedFields: string[]) => {
+  const newObj: any = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+
+  return newObj;
+};
+
+export const updateUser = catchAsync(async (req, res, next) => {
+  const filteredBody = filterObj(
+    req.body,
+    "firstName",
+    "lastName",
+    "title",
+    "role",
+    "email",
+    "homeroomGrade",
+    "timesheetEnabled"
+  );
+  const queryOptions = {
+    new: true,
+    runValidators: true,
+    populate: { path: "departments", populate: { path: "department" } },
+  };
+  let query = isObjectID(req.params.id.toString())
+    ? Model.findByIdAndUpdate(req.params.id, filteredBody, queryOptions)
+    : Model.findOneAndUpdate({ slug: req.params.id }, filteredBody, queryOptions);
+  const user = await query;
+  if (!user) return next(new AppError("No user found with that ID", 404));
+  if (filteredBody.firstName || filteredBody.lastName) {
+    user.fullName = `${user.firstName} ${user.lastName}`;
+    // user.slug = slugify(user.fullName, { lower: true });
+    await user.save();
+  }
+
+  res.sendJson(200, { user: formatDepartments(user) });
+});
