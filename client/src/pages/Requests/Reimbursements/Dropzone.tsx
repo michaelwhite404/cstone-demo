@@ -16,7 +16,7 @@ interface DropzoneProps {
 export default function Dropzone(props: DropzoneProps) {
   const [files, setFiles] = useState<CustomFile[]>([]);
   const { showToaster } = useToasterContext();
-  const { getRootProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/jpeg": [],
       "image/png": [],
@@ -99,6 +99,7 @@ export default function Dropzone(props: DropzoneProps) {
               "dropzone  cursor-pointer select-none flex flex-col items-center pointer border-2 border-gray-200 border-dashed rounded-lg p-6 sm:p-12 text-center hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
           })}
         >
+          <input {...getInputProps()} />
           <PaperClipIcon className="h-12 w-12 mb-2" />
           <div className="font-semibold">Drag your document or file here</div>
           <p>or click to browse for a file</p>

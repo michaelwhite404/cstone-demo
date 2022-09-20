@@ -15,17 +15,17 @@ Resources:
     Notifications:
       ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
       ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s)
-      ☐ On comment update, send to creation user @est(25m)
+      ☐ On comment update, send to creation user @est(25m) @today
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
     ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
     ✔ Empty State Aprovals (UI) @est(30m) @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s)
     ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
     ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
-    ☐ Edit dropzone for mobile @est(1h)
+    ✔ Edit dropzone for mobile @est(1h) @started(22-09-20 13:20) @done(22-09-20 13:25) @lasted(5m32s)
     ☐ View all reimbursements (For finance) @est(1h45m)
   Leaves:
-    ☐ Empty State (Approvals) @est(30m) @tomorrow
+    ☐ Empty State (Approvals) @est(30m) @today
     ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
   Timesheets:
     ☐ Day View (UI) @low
@@ -36,14 +36,14 @@ Resources:
     ☐ Admin View (UI) @est(3h30m) @critical
     ☐ Approve Timesheets (Batch) @est(3h30m) @critical
   Users:
-    ☐ Choose whether or not to add to Google @est(22.5m)
+    ☐ Choose whether or not to add to Google @est(22.5m) @today
     ☐ Deactivate users @low
     ☐ User filter by status (UI)
     ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
     Detail Page:
       ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s)
       ✔ Add to group @est(1h45m) @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s)
-      ☐ Edit data @est(1h15m)
+      ☐ Edit data @est(1h15m) @today
   Departments:
     ✔ Create Department (UI) @est(35m) @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s)
     ✔ Delete members in department (UI) @est(40m) @started(22-09-18 00:52) @done(22-09-18 01:29) @lasted(37m51s)
@@ -52,10 +52,10 @@ Resources:
     ☐ Change settings (backend) @est(2h)
     ☐ Change settings (UI) @est(1h)
   Groups:
-    ☐ Possible redesign
+    Possible redesign
     ✔ Remove search bar (UI) @est(20m) @started(22-09-17 21:13) @done(22-09-17 21:23) @lasted(10m21s)
     ☐ Change member role (UI and backend) @est(45m)
     ☐ Remove members from group (UI and backend) @est(1h)
     ☐ Delete group (UI and backend) @est(1.5h)
   Lions Den:
-    ☐ Export Data
+    Export Data
