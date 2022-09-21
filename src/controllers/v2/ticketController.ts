@@ -237,6 +237,6 @@ export const closeTicket = catchAsync(async (req, res, next) => {
   ticket.closedAt = new Date();
   await ticket.save();
   await ticket.populate({ path: "closedBy", select: "email image slug fullName" }).execPopulate();
-
   res.sendJson(200, { ticket });
+  ticketEvent.close(ticket);
 });

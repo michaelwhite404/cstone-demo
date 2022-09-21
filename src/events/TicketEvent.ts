@@ -69,8 +69,6 @@ class TicketEvent {
     });
   }
 
-  update() {}
-
   async assign(update: TicketAssignUpdateDocument) {
     const ticket = await Ticket.findById(update.ticket).populate({
       path: "assignedTo submittedBy",
@@ -137,10 +135,9 @@ class TicketEvent {
     });
     if (!ticket) return;
 
-    const users = [
-      ...(ticket.assignedTo as EmployeeDocument[]),
-      ticket.submittedBy as EmployeeDocument,
-    ];
+    const users = [...(ticket.assignedTo as EmployeeDocument[])];
+    if (!users.some((user) => user._id.toString() === commenterId)) users.push(ticket.submittedBy);
+
     const { commenter, rest } = users.reduce(
       (value, currEmployee) => {
         currEmployee._id.toString() === commenterId
@@ -200,7 +197,78 @@ class TicketEvent {
     });
   }
 
-  async close() {}
+  async close(ticket: TicketDocument) {
+    await ticket.populate("assignedTo submittedBy closedBy").execPopulate();
+    const closerId = ticket.closedBy!._id.toString();
+
+    const users = [...(ticket.assignedTo as EmployeeDocument[])];
+    if (!users.some((user) => user._id.toString() === closerId)) users.push(ticket.submittedBy);
+
+    const { closer, rest } = users.reduce(
+      (value, currEmployee) => {
+        currEmployee._id.toString() === closerId
+          ? (value.closer = currEmployee)
+          : value.rest.push(currEmployee);
+        return value;
+      },
+      { closer: undefined, rest: [] } as {
+        closer?: EmployeeDocument;
+        rest: EmployeeDocument[];
+      }
+    );
+
+    rest.forEach(async (user) => {
+      if (!user.space) return;
+      await chat.spaces.messages.create({
+        parent: user.space,
+        requestBody: {
+          text: `${closer?.fullName} has closed ticket #${ticket.ticketId}`,
+          cards: [
+            {
+              header: {
+                title: "Closed Ticket",
+                subtitle: `#${ticket.ticketId}`,
+                imageUrl: "https://i.ibb.co/Ypsrycx/Ticket-Blue.png",
+              },
+              sections: [
+                {
+                  widgets: [
+                    { keyValue: { topLabel: "Title", content: ticket.title } },
+                    { keyValue: { topLabel: "Description", content: ticket.description } },
+                    {
+                      keyValue: {
+                        topLabel: "Priority",
+                        content: capitalize(ticket.priority.toLowerCase()),
+                      },
+                    },
+                    { keyValue: { topLabel: "Status", content: "Closed" } },
+                  ],
+                },
+                {
+                  widgets: [
+                    {
+                      buttons: [
+                        {
+                          textButton: {
+                            text: "OPEN IN APP",
+                            onClick: {
+                              openLink: {
+                                url: `${URL}/tickets/${ticket.ticketId}`,
+                              },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+  }
 }
 
 export const ticketEvent = new TicketEvent();

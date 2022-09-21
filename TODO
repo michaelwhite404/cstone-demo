@@ -1,62 +1,64 @@
 Resources:
 
   Students:
-    ☐ Reset class passwords @low
+    Reset class passwords @low
     Change in grade changes in OU @est(2h) @low
     ☐ Deactivate MULTIPLE students - both in app and Google @est(1h30m) 
   Tickets:
-    ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s)
-    ✔ Assign User (UI) @est(40m) @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s)
     Add tags (UI, backend) @est(2h30m) @low
-    ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
-    ✔ Close ticket (UI, backend) @est(1.5h) @started(22-09-21 15:00) @done(22-09-21 16:52) @lasted(1h52m13s)
-    ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
-    ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s)
     Websocket implementation
     Notifications:
-      ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
-      ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s)
-      ✔ On comment update, send to all users (except commenter) @est(25m) @started(22-09-20 17:36) @done(22-09-20 18:09) @lasted(33m23s)
-      ☐ On ticket close, send to creation user @est(25m) @today
+      ✔ On ticket close, send to users @est(25m) @started(22-09-21 18:57) @done(22-09-21 19:13) @lasted(16m58s)
   Reimbursements:
-    ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
-    ✔ Empty State Aprovals (UI) @est(30m) @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s)
-    ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
-    ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
-    ✔ Edit dropzone for mobile @est(1h) @started(22-09-20 13:20) @done(22-09-20 13:25) @lasted(5m32s)
     ☐ View all reimbursements (For finance) @est(1h45m) @critical
   Leaves:
     ☐ Empty State (Approvals) @est(30m) @today
-    ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
   Timesheets:
     Day View (UI) @low
     Year View (UI) @low
-    ✔ Month View (UI, Mobile) @est(1h) @started(22-09-19 04:39) @done(22-09-19 05:20) @lasted(41m44s)
     ☐ Top View 3 Dots (All Views)
     ☐ Send notifications on day to approve
     ☐ Admin View (UI) @est(3h30m) @critical
     ☐ Approve Timesheets (Batch) @est(3h30m) @critical
   Users:
-    ✔ Choose whether or not to add to Google @est(22.5m) @started(22-09-20 16:45) @done(22-09-20 17:15) @lasted(30m18s)
     ☐ Deactivate users @low
     ☐ User filter by status (UI) @low
-    ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
-    Detail Page:
-      ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s)
-      ✔ Add to group @est(1h45m) @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s)
-      ✔ Edit data @est(1h15m) @started(22-09-20 13:36) @done(22-09-20 16:32) @lasted(2h56m43s)
   Departments:
-    ✔ Create Department (UI) @est(35m) @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s)
-    ✔ Delete members in department (UI) @est(40m) @started(22-09-18 00:52) @done(22-09-18 01:29) @lasted(37m51s)
     ☐ Add settings (Production) @est(1h)
-    ✔ Change member role (UI and backend) @est(1h15m) @done(22-09-19 22:48)
     ☐ Change settings (backend) @est(2h)
     ☐ Change settings (UI) @est(1h)
   Groups:
     Possible redesign
-    ✔ Remove search bar (UI) @est(20m) @started(22-09-17 21:13) @done(22-09-17 21:23) @lasted(10m21s)
     ☐ Change member role (UI and backend) @est(45m)
     ☐ Remove members from group (UI and backend) @est(1h)
     ☐ Delete group (UI and backend) @est(1.5h) 
-  Lions Den:
-    Export Data
+
+
+
+
+Archive:
+  ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s) @project(Resources.Tickets)
+  ✔ Assign User (UI) @est(40m) @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s) @project(Resources.Tickets)
+  ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s) @project(Resources.Tickets)
+  ✔ Close ticket (UI, backend) @est(1.5h) @started(22-09-21 15:00) @done(22-09-21 16:52) @lasted(1h52m13s) @project(Resources.Tickets)
+  ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s) @project(Resources.Tickets)
+  ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s) @project(Resources.Tickets)
+  ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s) @project(Resources.Tickets.Notifications)
+  ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s) @project(Resources.Tickets.Notifications)
+  ✔ On comment update, send to all users (except commenter) @est(25m) @started(22-09-20 17:36) @done(22-09-20 18:09) @lasted(33m23s) @project(Resources.Tickets.Notifications)
+  ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s) @project(Resources.Reimbursements)
+  ✔ Empty State Aprovals (UI) @est(30m) @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s) @project(Resources.Reimbursements)
+  ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s) @project(Resources.Reimbursements)
+  ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s) @project(Resources.Reimbursements)
+  ✔ Edit dropzone for mobile @est(1h) @started(22-09-20 13:20) @done(22-09-20 13:25) @lasted(5m32s) @project(Resources.Reimbursements)
+  ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s) @project(Resources.Leaves)
+  ✔ Month View (UI, Mobile) @est(1h) @started(22-09-19 04:39) @done(22-09-19 05:20) @lasted(41m44s) @project(Resources.Timesheets)
+  ✔ Choose whether or not to add to Google @est(22.5m) @started(22-09-20 16:45) @done(22-09-20 17:15) @lasted(30m18s) @project(Resources.Users)
+  ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m) @project(Resources.Users)
+  ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s) @project(Resources.Users.Detail Page)
+  ✔ Add to group @est(1h45m) @started(22-09-19 14:37) @done(22-09-19 16:33) @lasted(1h56m58s) @project(Resources.Users.Detail Page)
+  ✔ Edit data @est(1h15m) @started(22-09-20 13:36) @done(22-09-20 16:32) @lasted(2h56m43s) @project(Resources.Users.Detail Page)
+  ✔ Create Department (UI) @est(35m) @started(22-09-17 19:42) @done(22-09-17 20:49) @lasted(1h7m51s) @project(Resources.Departments)
+  ✔ Delete members in department (UI) @est(40m) @started(22-09-18 00:52) @done(22-09-18 01:29) @lasted(37m51s) @project(Resources.Departments)
+  ✔ Change member role (UI and backend) @est(1h15m) @done(22-09-19 22:48) @project(Resources.Departments)
+  ✔ Remove search bar (UI) @est(20m) @started(22-09-17 21:13) @done(22-09-17 21:23) @lasted(10m21s) @project(Resources.Groups)
