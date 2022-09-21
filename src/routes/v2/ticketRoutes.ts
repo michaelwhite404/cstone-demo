@@ -8,5 +8,6 @@ ticketRouter.use(protect);
 ticketRouter.route("/").get(ticketController.getAllTickets).post(ticketController.createTicket);
 ticketRouter.route("/:id").get(ticketController.getTicket);
 ticketRouter.post("/:id/update", ticketController.addTicketUpdate);
+ticketRouter.post("/:id/close", ticketController.closeTicket);
 
 export default ticketRouter;

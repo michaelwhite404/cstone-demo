@@ -69,6 +69,12 @@ const ticketSchema: Schema<TicketDocument, Model<TicketDocument>> = new Schema(
       default: () => Date.now(),
       required: true,
     },
+
+    closedBy: {
+      type: Types.ObjectId,
+      ref: "Employee",
+    },
+    closedAt: Date,
   },
   {
     toJSON: { virtuals: true },

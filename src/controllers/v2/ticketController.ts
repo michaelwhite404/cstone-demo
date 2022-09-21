@@ -18,7 +18,7 @@ export const getAllTickets = catchAsync(async (req, res) => {
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore
   }).populate({
-    path: "department submittedBy assignedTo",
+    path: "department submittedBy assignedTo closedBy",
     select: "name email fullName",
   });
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
@@ -41,7 +41,7 @@ export const getTicket = catchAsync(async (req, res, next) => {
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore
   }).populate({
-    path: "department submittedBy assignedTo updates",
+    path: "department submittedBy assignedTo updates closedBy",
     select: "name email image slug fullName comment assign op date createdBy",
     populate: { path: "assign createdBy", select: "fullName email image slug" },
   });
@@ -90,11 +90,12 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
     $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
     // @ts-ignore
   }).populate({
-    path: "department submittedBy assignedTo updates",
-    select: "name email image slug fullName comment assign op date createdBy",
+    path: "department submittedBy assignedTo updates closedBy",
+    select: "name email image slug fullName comment assign op date createdBy closedBy",
     populate: { path: "assign createdBy", select: "fullName email image slug" },
   });
   if (!ticket) return next(new AppError("No ticket found with this id", 404));
+  if (ticket.status === "CLOSED") return next(new AppError("This ticket is closed", 403));
   const data = {
     date: req.requestTime,
     createdBy: req.employee._id,
@@ -203,6 +204,39 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
         )
       );
   }
-
+  ticket.updatedAt = new Date();
+  await ticket.save();
   res.sendJson(200, { ticket: newTicket });
+});
+
+export const closeTicket = catchAsync(async (req, res, next) => {
+  if (isNaN(+req.params.id)) return next(new AppError("Ticket id must be a number", 400));
+  const ticket = await Ticket.findOne({
+    ticketId: +req.params.id,
+    // Either was created by requesting user or assigned to requesting user
+    $or: [{ submittedBy: req.employee._id }, { assignedTo: { $in: req.employee._id } }],
+    // @ts-ignore
+  }).populate({
+    path: "department submittedBy assignedTo updates",
+    select: "name email image slug fullName comment assign op date createdBy",
+    populate: { path: "assign createdBy", select: "fullName email image slug" },
+  });
+  if (!ticket) return next(new AppError("No ticket found with this id", 404));
+  if (ticket.status === "CLOSED") return next(new AppError("This ticket is already closed", 403));
+
+  // Not an assigned user
+  if (
+    !(ticket.assignedTo as EmployeeModel[]).some(
+      (user) => user._id.toString() === req.employee._id.toString()
+    )
+  ) {
+    return next(new AppError("You are not authorized to close this ticket", 403));
+  }
+  ticket.status = "CLOSED";
+  ticket.closedBy = req.employee._id;
+  ticket.closedAt = new Date();
+  await ticket.save();
+  await ticket.populate({ path: "closedBy", select: "email image slug fullName" }).execPopulate();
+
+  res.sendJson(200, { ticket });
 });

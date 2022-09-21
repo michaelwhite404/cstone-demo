@@ -72,8 +72,14 @@ const DesktopRow = ({ ticket }: { ticket: TicketModel }) => {
           {ticket.title}
         </Link>
         <div className="text-xs text-gray-400 mt-1">
-          #{ticket.ticketId} opened on {formatDistanceToNow(new Date(ticket.createdAt))} ago by{" "}
-          {ticket.submittedBy.fullName}
+          {ticket.status === "OPEN" &&
+            `#${ticket.ticketId} opened ${formatDistanceToNow(new Date(ticket.createdAt))} ago by ${
+              ticket.submittedBy.fullName
+            }`}
+          {ticket.status === "CLOSED" &&
+            `#${ticket.ticketId} closed ${formatDistanceToNow(new Date(ticket.closedAt!))} ago by ${
+              ticket.closedBy.fullName
+            }`}
         </div>
       </div>
       <div className="text-center">{capitalize(ticket.priority.toLowerCase())}</div>

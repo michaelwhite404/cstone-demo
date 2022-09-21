@@ -1,10 +1,11 @@
 import {
-  BellIcon,
+  // BellIcon,
   CalendarIcon,
   ChatAltIcon,
   CheckCircleIcon,
+  LockClosedIcon,
   LockOpenIcon,
-  PencilIcon,
+  // PencilIcon,
 } from "@heroicons/react/solid";
 import axios, { AxiosError } from "axios";
 import { format } from "date-fns";
@@ -17,11 +18,13 @@ import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import { APIError, APITicketResponse } from "../../types/apiResponses";
 import ActivityFeed from "./ActivityFeed";
 import AssignUser from "./AssignUser";
+import CloseTicketModal from "./CloseTicketModal";
 
 export default function TicketDetails() {
   useDocTitle("Tickets | Cornerstone App");
   const [ticket, setTicket] = useState<TicketModel>();
   const [comment, setComment] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const { ticketId } = useParams<"ticketId">();
   const { user } = useAuth();
   const { showToaster } = useToasterContext();
@@ -62,6 +65,22 @@ export default function TicketDetails() {
     }
   };
 
+  const canCloseTicket =
+    ticket &&
+    ticket.status === "OPEN" &&
+    (ticket.assignedTo as EmployeeModel[]).some((employee) => employee._id === user!._id);
+
+  const closeTicket = async () => {
+    if (!canCloseTicket) return;
+    try {
+      const res = await axios.post<APITicketResponse>(`/api/v2/tickets/${ticket!.ticketId}/close`);
+      setTicket(res.data.data.ticket);
+      showToaster("Ticket closed", "success");
+    } catch (err) {
+      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
+    }
+  };
+
   return (
     <>
       {ticket && (
@@ -85,8 +104,9 @@ export default function TicketDetails() {
                           </Link>
                         </p>
                       </div>
-                      <div className="mt-4 flex space-x-3 md:mt-0">
-                        <button
+                      {canCloseTicket && (
+                        <div className="mt-4 flex space-x-3 md:mt-0">
+                          {/* <button
                           type="button"
                           className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
                         >
@@ -105,15 +125,40 @@ export default function TicketDetails() {
                             aria-hidden="true"
                           />
                           <span>Subscribe</span>
-                        </button>
-                      </div>
+                        </button> */}
+                          <button
+                            type="button"
+                            className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                            onClick={() => setModalOpen(true)}
+                          >
+                            <CheckCircleIcon
+                              className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <span>Close ticket</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <aside className="mt-8 xl:hidden">
                       <h2 className="sr-only">Details</h2>
                       <div className="space-y-5">
                         <div className="flex items-center space-x-2">
-                          <LockOpenIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
-                          <span className="text-green-700 text-sm font-medium">Open Ticket</span>
+                          {ticket.status === "OPEN" ? (
+                            <>
+                              <LockOpenIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                              <span className="text-green-700 text-sm font-medium">
+                                Open Ticket
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <LockClosedIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                              <span className="text-red-700 text-sm font-medium">
+                                Closed Ticket
+                              </span>
+                            </>
+                          )}
                         </div>
                         <div className="flex items-center space-x-2">
                           <ChatAltIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -152,7 +197,7 @@ export default function TicketDetails() {
                               </li>
                             ))}
                           </ul>
-                          {/* <AssignUser assignUser={assignUser} setTicket={setTicket} /> */}
+                          {/* {ticket.status === "OPEN" && <AssignUser assignUser={assignUser} setTicket={setTicket} />} */}
                         </div>
                         {/* <div>
                           <h2 className="text-sm font-medium text-gray-500">Tags</h2>
@@ -210,65 +255,70 @@ export default function TicketDetails() {
                       <div className="pt-6">
                         {/* Activity feed*/}
                         {ticket.updates && <ActivityFeed updates={ticket.updates} />}
-                        <div className="mt-6">
-                          <div className="flex space-x-3">
-                            <div className="flex-shrink-0">
-                              <div className="relative">
-                                <img
-                                  className="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white"
-                                  src={user!.image}
-                                  alt={user!.fullName}
-                                  onError={(e) => (e.currentTarget.src = "/avatar_placeholder.png")}
-                                />
+                        {ticket.status === "OPEN" && (
+                          <div className="mt-6">
+                            <div className="flex space-x-3">
+                              <div className="flex-shrink-0">
+                                <div className="relative">
+                                  <img
+                                    className="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white"
+                                    src={user!.image}
+                                    alt={user!.fullName}
+                                    onError={(e) =>
+                                      (e.currentTarget.src = "/avatar_placeholder.png")
+                                    }
+                                  />
 
-                                <span className="absolute -bottom-0.5 -right-1 bg-white rounded-tl px-0.5 py-px">
-                                  <ChatAltIcon
-                                    className="h-5 w-5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </div>
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div>
-                                <div>
-                                  <label htmlFor="comment" className="sr-only">
-                                    Comment
-                                  </label>
-                                  <textarea
-                                    id="comment"
-                                    name="comment"
-                                    rows={3}
-                                    className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border border-gray-300 rounded-md"
-                                    placeholder="Leave a comment"
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                  />
-                                </div>
-                                <div className="mt-6 flex items-center justify-end space-x-4">
-                                  <button
-                                    type="button"
-                                    className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-                                  >
-                                    <CheckCircleIcon
-                                      className="-ml-1 mr-2 h-5 w-5 text-green-500"
+                                  <span className="absolute -bottom-0.5 -right-1 bg-white rounded-tl px-0.5 py-px">
+                                    <ChatAltIcon
+                                      className="h-5 w-5 text-gray-400"
                                       aria-hidden="true"
                                     />
-                                    <span>Close ticket</span>
-                                  </button>
-                                  <button
-                                    type="submit"
-                                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:bg-gray-200"
-                                    onClick={handleCommentUpdate}
-                                    disabled={!comment}
-                                  >
-                                    Comment
-                                  </button>
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div>
+                                  <div>
+                                    <label htmlFor="comment" className="sr-only">
+                                      Comment
+                                    </label>
+                                    <textarea
+                                      id="comment"
+                                      name="comment"
+                                      rows={3}
+                                      className="shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border border-gray-300 rounded-md"
+                                      placeholder="Leave a comment"
+                                      value={comment}
+                                      onChange={(e) => setComment(e.target.value)}
+                                    />
+                                  </div>
+                                  <div className="mt-6 flex items-center justify-end space-x-4">
+                                    {/* <button
+                                      type="button"
+                                      className="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                                      onClick={closeTicket}
+                                    >
+                                      <CheckCircleIcon
+                                        className="-ml-1 mr-2 h-5 w-5 text-green-500"
+                                        aria-hidden="true"
+                                      />
+                                      <span>Close ticket</span>
+                                    </button> */}
+                                    <button
+                                      type="submit"
+                                      className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:bg-gray-200"
+                                      onClick={handleCommentUpdate}
+                                      disabled={!comment}
+                                    >
+                                      Comment
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -278,8 +328,17 @@ export default function TicketDetails() {
                 <h2 className="sr-only">Details</h2>
                 <div className="space-y-5">
                   <div className="flex items-center space-x-2">
-                    <LockOpenIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
-                    <span className="text-green-700 text-sm font-medium">Open Ticket</span>
+                    {ticket.status === "OPEN" ? (
+                      <>
+                        <LockOpenIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
+                        <span className="text-green-700 text-sm font-medium">Open Ticket</span>
+                      </>
+                    ) : (
+                      <>
+                        <LockClosedIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
+                        <span className="text-red-700 text-sm font-medium">Closed Ticket</span>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center space-x-2">
                     <ChatAltIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -315,7 +374,9 @@ export default function TicketDetails() {
                       ))}
                     </ul>
                     {/* Add assignees */}
-                    <AssignUser assignUser={assignUser} setTicket={setTicket} />
+                    {ticket.status === "OPEN" && (
+                      <AssignUser assignUser={assignUser} setTicket={setTicket} />
+                    )}
                   </div>
                   {/* <div>
                     <h2 className="text-sm font-medium text-gray-500">Tags</h2>
@@ -356,6 +417,7 @@ export default function TicketDetails() {
               </aside>
             </div>
           </div>
+          <CloseTicketModal closeTicket={closeTicket} open={modalOpen} setOpen={setModalOpen} />
         </main>
       )}
     </>

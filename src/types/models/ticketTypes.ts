@@ -14,6 +14,8 @@ export interface TicketModel {
   assignedTo: PopulatedDoc<EmployeeModel[]>;
   createdAt: Date;
   updatedAt: Date;
+  closedBy?: PopulatedDoc<EmployeeModel>;
+  closedAt?: Date;
 }
 
 export interface TicketDocument extends TicketModel, Document {

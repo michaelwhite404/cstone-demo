@@ -9,7 +9,7 @@ Resources:
     ✔ Assign User (UI) @est(40m) @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s)
     ☐ Add tags (UI, backend) @est(2h30m) @low
     ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
-    ☐ Close ticket (UI, backend) @est(1.5h)
+    ✔ Close ticket (UI, backend) @est(1.5h) @started(22-09-21 15:00) @done(22-09-21 16:52) @lasted(1h52m13s)
     ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
     ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s)
     Websocket implementation
@@ -39,7 +39,7 @@ Resources:
   Users:
     ✔ Choose whether or not to add to Google @est(22.5m) @started(22-09-20 16:45) @done(22-09-20 17:15) @lasted(30m18s)
     ☐ Deactivate users @low
-    ☐ User filter by status (UI)
+    ☐ User filter by status (UI) @low
     ✔ Add new staff @started(22-09-15 22:31) @done(22-09-15 22:55) @lasted(25m)
     Detail Page:
       ✔ Add to department @est(45m) @started(22-09-19 05:31) @done(22-09-19 06:49) @lasted(1h18m21s)
