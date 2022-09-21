@@ -1,4 +1,9 @@
-import { EmployeeDocument, TicketAssignUpdateDocument, TicketDocument } from "@@types/models";
+import {
+  EmployeeDocument,
+  TicketAssignUpdateDocument,
+  TicketCommentUpdateDocument,
+  TicketDocument,
+} from "@@types/models";
 import { Ticket } from "@models";
 import { chat } from "@utils";
 import capitalize from "capitalize";
@@ -125,7 +130,75 @@ class TicketEvent {
     });
   }
 
-  async comment() {}
+  async comment(update: TicketCommentUpdateDocument) {
+    const commenterId = update.createdBy.toString();
+    const ticket = await Ticket.findById(update.ticket).populate({
+      path: "assignedTo submittedBy",
+    });
+    if (!ticket) return;
+
+    const users = [
+      ...(ticket.assignedTo as EmployeeDocument[]),
+      ticket.submittedBy as EmployeeDocument,
+    ];
+    const { commenter, rest } = users.reduce(
+      (value, currEmployee) => {
+        currEmployee._id.toString() === commenterId
+          ? (value.commenter = currEmployee)
+          : value.rest.push(currEmployee);
+        return value;
+      },
+      { commenter: undefined, rest: [] } as {
+        commenter?: EmployeeDocument;
+        rest: EmployeeDocument[];
+      }
+    );
+
+    rest.forEach(async (user) => {
+      if (!user.space) return;
+      await chat.spaces.messages.create({
+        parent: user.space,
+        requestBody: {
+          text: `${commenter?.fullName} left a comment on ticket #${ticket.ticketId}`,
+          cards: [
+            {
+              header: {
+                title: "Ticket Comment",
+                subtitle: `#${ticket.ticketId}`,
+                imageUrl: "https://i.ibb.co/Ypsrycx/Ticket-Blue.png",
+              },
+              sections: [
+                {
+                  widgets: [
+                    { keyValue: { topLabel: "Title", content: ticket.title } },
+                    { keyValue: { topLabel: "Comment", content: update.comment } },
+                  ],
+                },
+                {
+                  widgets: [
+                    {
+                      buttons: [
+                        {
+                          textButton: {
+                            text: "OPEN IN APP",
+                            onClick: {
+                              openLink: {
+                                url: `${URL}/tickets/${ticket.ticketId}`,
+                              },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+  }
 
   async close() {}
 }

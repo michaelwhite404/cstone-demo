@@ -12,10 +12,11 @@ Resources:
     ☐ Close ticket (UI, backend) @est(1.5h)
     ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
     ✔ Fix User submitted comment bug @started(22-09-17 04:52) @done(22-09-17 05:14) @lasted(22m39s)
+    Websocket implementation
     Notifications:
       ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
       ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s)
-      ☐ On comment update, send to creation user @est(25m) @today
+      ✔ On comment update, send to all users (except commenter) @est(25m) @started(22-09-20 17:36) @done(22-09-20 18:09) @lasted(33m23s)
       ☐ On ticket close, send to creation user @est(25m)
   Reimbursements:
     ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
@@ -23,7 +24,7 @@ Resources:
     ✔ Responsive Approvals Table (UI) @started(22-09-16 00:49) @done(22-09-16 01:40) @lasted(51m25s)
     ✔ Finalize Multiple Approvals at once @started(22-09-16 01:44) @done(22-09-16 02:34) @lasted(50m32s)
     ✔ Edit dropzone for mobile @est(1h) @started(22-09-20 13:20) @done(22-09-20 13:25) @lasted(5m32s)
-    ☐ View all reimbursements (For finance) @est(1h45m)
+    ☐ View all reimbursements (For finance) @est(1h45m) @critical
   Leaves:
     ☐ Empty State (Approvals) @est(30m) @today
     ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)

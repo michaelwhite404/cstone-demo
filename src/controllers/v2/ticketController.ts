@@ -110,10 +110,12 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
 
   switch (req.body.type) {
     case "COMMENT":
-      const ticketComment = (
-        await TicketCommentUpdate.create({ ...data, comment: req.body.comment })
-      ).toJSON();
-      ticketComment.createdBy = {
+      const ticketCommentUpdate = await TicketCommentUpdate.create({
+        ...data,
+        comment: req.body.comment,
+      });
+      const comment = ticketCommentUpdate.toJSON();
+      comment.createdBy = {
         _id: req.employee._id,
         fullName: req.employee.fullName,
         image: req.employee.image,
@@ -121,8 +123,9 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
         email: req.employee.email,
         id: req.employee._id,
       };
-      ticket.updates ? ticket.updates.push(ticketComment) : (ticket.updates = [ticketComment]);
+      ticket.updates ? ticket.updates.push(comment) : (ticket.updates = [comment]);
       newTicket = ticket;
+      ticketEvent.comment(ticketCommentUpdate);
       break;
     case "ASSIGN":
       if (isOnlySubmittedUser)
