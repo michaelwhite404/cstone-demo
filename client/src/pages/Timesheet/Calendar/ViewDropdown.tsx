@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/solid";
 import capitalize from "capitalize";
 import { CalendarView } from "../../../types/calendar";
 
-const views: CalendarView[] = ["day", "week", "month", "year"];
+const views: CalendarView[] = ["week", "month"];
 
 export function CalendarViewDropdown(props: ViewProps) {
   return (

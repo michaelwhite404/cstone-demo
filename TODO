@@ -2,12 +2,12 @@ Resources:
 
   Students:
     ☐ Reset class passwords @low
+    Change in grade changes in OU @est(2h) @low
     ☐ Deactivate MULTIPLE students - both in app and Google @est(1h30m) 
-    ☐ Change in grade changes in OU @est(2h)
   Tickets:
     ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s)
     ✔ Assign User (UI) @est(40m) @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s)
-    ☐ Add tags (UI, backend) @est(2h30m) @low
+    Add tags (UI, backend) @est(2h30m) @low
     ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s)
     ✔ Close ticket (UI, backend) @est(1.5h) @started(22-09-21 15:00) @done(22-09-21 16:52) @lasted(1h52m13s)
     ✔ Responsive Tickets Table @est(30m) @started(22-09-19 03:50) @done(22-09-19 04:35) @lasted(45m41s)
@@ -17,7 +17,7 @@ Resources:
       ✔ On submit, send to assigned user(s) @started(22-09-16 09:17) @done(22-09-16 09:58) @lasted(41m56s)
       ✔ On assign, send to assigned user @est(25m) @started(22-09-19 16:50) @done(22-09-19 17:18) @lasted(28m19s)
       ✔ On comment update, send to all users (except commenter) @est(25m) @started(22-09-20 17:36) @done(22-09-20 18:09) @lasted(33m23s)
-      ☐ On ticket close, send to creation user @est(25m)
+      ☐ On ticket close, send to creation user @est(25m) @today
   Reimbursements:
     ✔ Empty State Reimbursements (UI) @est(30m) @started(22-09-17 12:33) @done(22-09-17 12:57) @lasted(24m37s)
     ✔ Empty State Aprovals (UI) @est(30m) @started(22-09-17 18:54) @done(22-09-17 19:28) @lasted(34m13s)
@@ -29,8 +29,8 @@ Resources:
     ☐ Empty State (Approvals) @est(30m) @today
     ✔ Go to leave from hash @est(30m) @started(22-09-17 05:40) @done(22-09-17 05:55) @lasted(15m29s)
   Timesheets:
-    ☐ Day View (UI) @low
-    ☐ Year View (UI) @low
+    Day View (UI) @low
+    Year View (UI) @low
     ✔ Month View (UI, Mobile) @est(1h) @started(22-09-19 04:39) @done(22-09-19 05:20) @lasted(41m44s)
     ☐ Top View 3 Dots (All Views)
     ☐ Send notifications on day to approve
@@ -57,6 +57,6 @@ Resources:
     ✔ Remove search bar (UI) @est(20m) @started(22-09-17 21:13) @done(22-09-17 21:23) @lasted(10m21s)
     ☐ Change member role (UI and backend) @est(45m)
     ☐ Remove members from group (UI and backend) @est(1h)
-    ☐ Delete group (UI and backend) @est(1.5h)
+    ☐ Delete group (UI and backend) @est(1.5h) 
   Lions Den:
     Export Data
