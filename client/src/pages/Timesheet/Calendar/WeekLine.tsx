@@ -19,8 +19,8 @@ export function WeekLine() {
     >
       <div
         // sm:col-start-${dayOfWeek}
-        className={`relative mt-px flex bg-red-500 align-center z-10 col-start-1 col-start-${num}`}
-        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2" }}
+        className={`relative mt-px flex bg-red-500 align-center z-10`}
+        style={{ gridRowStart: minutes + 2, gridRowEnd: "span 2", gridColumnStart: num }}
       >
         <div className="relative left-2">
           <div

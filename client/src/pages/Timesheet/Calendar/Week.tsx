@@ -174,7 +174,7 @@ export function CalendarWeek(props: CalendarWeekProps) {
                     />
                   ))}
               </ol>
-              {showLine && <Calendar.WeekLine />}
+              {showLine && <Calendar.Line />}
             </div>
           </div>
         </div>

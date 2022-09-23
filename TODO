@@ -10,12 +10,13 @@ Resources:
     Notifications:
       ✔ On ticket close, send to users @est(25m) @started(22-09-21 18:57) @done(22-09-21 19:13) @lasted(16m58s)
   Reimbursements:
-    ☐ View all reimbursements (For finance) @est(1h45m) @critical
+    ✔ View all reimbursements (For finance) @est(1h45m) @done(22-09-23 03:14)
   Leaves:
     ☐ Empty State (Approvals) @est(30m) @today
   Timesheets:
     Day View (UI) @low
     Year View (UI) @low
+    ☐ Put calendar in seperate component
     ☐ Top View 3 Dots (All Views)
     ☐ Send notifications on day to approve
     ☐ Admin View (UI) @est(3h30m) @critical
