@@ -1,15 +1,16 @@
 import { Reimbursement } from "@models";
 import { ReimbursementDocument } from "@@types/models";
 import { APIFeatures, AppError, catchAsync, getUserLeaders, s3 } from "@utils";
-import { Query } from "mongoose";
+import { FilterQuery, Query } from "mongoose";
 import { reimbursementEvent } from "@events";
 
 const Model = Reimbursement;
 
 export const getAllReimbursements = catchAsync(async (req, res) => {
-  const query = Model.find({
-    $or: [{ sendTo: req.employee._id }, { user: req.employee._id }],
-  }).populate([
+  const filter: FilterQuery<ReimbursementDocument> = req.employee.isLeader("Finance")
+    ? {}
+    : { $or: [{ sendTo: req.employee._id }, { user: req.employee._id }] };
+  let query = Model.find(filter).populate([
     { path: "user sendTo", select: "fullName slug email" },
     { path: "approval", populate: { path: "user", select: "fullName email" } },
   ]);
@@ -45,6 +46,7 @@ export const getReimbursement = catchAsync(async (req, res) => {
     { path: "user sendTo", select: "fullName slug email" },
     { path: "approval", populate: { path: "user", select: "fullName email" } },
   ]);
+  console.log(req.employee.isLeader("Lions Den"));
 
   // SEND RESPONSE
   res.status(200).json({

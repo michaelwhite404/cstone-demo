@@ -1,5 +1,4 @@
 import axios from "axios";
-import capitalize from "capitalize";
 import classNames from "classnames";
 import pluralize from "pluralize";
 import React, { useState } from "react";
@@ -204,16 +203,12 @@ const MemberRow = ({
           }
         />
       </td>
-      <td className="border-b border-gray-300">
+      <td className="border-b border-gray-300 py-2">
         <div>
           <Link to={`/users/${slugify(member.fullName)}`}>
             <span className="text-blue-500 font-medium">{member.fullName}</span>
           </Link>
           <div className="text-gray-400 text-xs md:hidden">{member.email}</div>
-          <div className="sm:hidden text-gray-400 mt-1 text-xs">
-            <span className="capitalize font-medium">TYPE: </span>
-            {capitalize(member.role.toLocaleLowerCase())}
-          </div>
         </div>
       </td>
       <td className="border-b border-gray-300 text-gray-400 hidden md:table-cell">

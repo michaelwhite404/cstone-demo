@@ -101,6 +101,10 @@ employeeSchema.virtual("departments", {
   foreignField: "member",
 });
 
+employeeSchema.method("isLeader", function (departmentName: string) {
+  return this.departments?.some((d) => d.name === departmentName && d.role === "LEADER") || false;
+});
+
 employeeSchema.pre<EmployeeDocument>("save", function (next) {
   this.fullName = `${this.firstName} ${this.lastName}`;
   this.slug = slugify(this.fullName, { lower: true });

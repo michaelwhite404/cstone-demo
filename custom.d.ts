@@ -9,6 +9,7 @@ interface Employee {
   slug: string;
   departments?: UserDepartment[];
   space?: string;
+  isLeader: (departmentName: string) => boolean;
 }
 
 interface UserDepartment {

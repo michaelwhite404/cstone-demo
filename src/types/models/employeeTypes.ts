@@ -56,4 +56,5 @@ export interface EmployeeDocument extends EmployeeModel, Document {
   correctPassword: (candidatePassword: any, userPassword: string) => Promise<boolean>;
   changedPasswordAfter: (JWTTimestamp: number) => boolean;
   createPasswordResetToken: () => string;
+  isLeader: (departmentName: string) => boolean;
 }

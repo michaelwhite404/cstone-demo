@@ -78,10 +78,11 @@ export default function Timesheet() {
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       {/* Header */}
-      <div className="page-header">
+      <div className="page-header flex justify-between align-center">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
+        <PrimaryButton text="+ Add Entry" onClick={() => setModalOpen(true)} />
       </div>
-      <header className="xs:flex justify-between align-center mb-4">
+      <header className="xs:flex justify-between align-center my-4">
         <div className="font-medium">
           {view === "week" && formatWeekString(date)}
           {view === "month" && `${month} ${year}`}
@@ -90,12 +91,8 @@ export default function Timesheet() {
           <Calendar.DatePick view={view} setDate={setDate} />
           <div className="space-x-3 align-center hidden md:flex">
             <Calendar.View view={view} setView={setView} />
-            <div className="h-6 w-px bg-gray-300" />
+            {/* <div className="h-6 w-px bg-gray-300" /> */}
           </div>
-          <PrimaryButton onClick={() => setModalOpen(true)}>
-            <span className="sm:font-normal font-bold">+</span>{" "}
-            <span className="sr-only sm:not-sr-only"> Add Entry</span>
-          </PrimaryButton>
           <button className="-mx-2 flex md:hidden items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
             <span className="sr-only">Open menu</span>
             <DotsHorizontalIcon className="h-5 w-5" aria-hidden="true" />
