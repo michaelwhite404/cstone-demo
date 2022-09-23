@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { format } from "date-fns";
 import pluralize from "pluralize";
 import { RM } from ".";
-import { EmployeeModel, ReimbursementModel } from "../../../../../src/types/models";
+import { ReimbursementModel } from "../../../../../src/types/models";
 import ApprovalBadge from "../../../components/Badges/ApprovalBadge";
 import EmptyStateIllustration from "../../../components/EmptyStateIllustration";
 import TableWrapper from "../../../components/TableWrapper";
@@ -15,17 +15,15 @@ interface Props {
   reimbursements: RM[];
   setReimbursements: React.Dispatch<React.SetStateAction<RM[]>>;
   select: (reimbursement: RM) => void;
-  user: EmployeeModel;
   finalizeReimbursement: (id: string, approved: boolean) => Promise<ReimbursementModel>;
 }
 
 const headings = ["Purpose", "Date", "Amount", "Submitted By", "Status"];
 
 export default function Approvals(props: Props) {
-  const { reimbursements, select, user, finalizeReimbursement, setReimbursements } = props;
+  const { reimbursements, select, finalizeReimbursement, setReimbursements } = props;
   const { showToaster } = useToasterContext();
-  const approvals = reimbursements.filter((r) => r.sendTo?._id === user._id);
-  const { pending, finalized } = approvals.reduce(
+  const { pending, finalized } = reimbursements.reduce(
     (prev, reimbursement) => {
       reimbursement.approval
         ? prev.finalized.push(reimbursement)

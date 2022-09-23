@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-interface TabOption<T> {
+export interface TabOption<T> {
   name: string;
   count?: number | string;
   value: T;

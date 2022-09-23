@@ -1,20 +1,21 @@
 import { Reimbursement } from "@models";
 import { ReimbursementDocument } from "@@types/models";
 import { APIFeatures, AppError, catchAsync, getUserLeaders, s3 } from "@utils";
-import { FilterQuery, Query } from "mongoose";
+import { FilterQuery, PopulateOptions } from "mongoose";
 import { reimbursementEvent } from "@events";
 
 const Model = Reimbursement;
 
-export const getAllReimbursements = catchAsync(async (req, res) => {
-  const filter: FilterQuery<ReimbursementDocument> = req.employee.isLeader("Finance")
-    ? {}
-    : { $or: [{ sendTo: req.employee._id }, { user: req.employee._id }] };
-  let query = Model.find(filter).populate([
-    { path: "user sendTo", select: "fullName slug email" },
-    { path: "approval", populate: { path: "user", select: "fullName email" } },
-  ]);
+const getFilter = (employee: Employee): FilterQuery<ReimbursementDocument> =>
+  employee.isLeader("Finance") ? {} : { $or: [{ sendTo: employee._id }, { user: employee._id }] };
 
+const populateOptions: Array<PopulateOptions> = [
+  { path: "user sendTo", select: "fullName slug email" },
+  { path: "approval", populate: { path: "user", select: "fullName email" } },
+];
+
+export const getAllReimbursements = catchAsync(async (req, res) => {
+  const query = Model.find(getFilter(req.employee)).populate(populateOptions);
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
   const reimbursements = await features.query;
 
@@ -29,25 +30,12 @@ export const getAllReimbursements = catchAsync(async (req, res) => {
   });
 });
 
-export const getReimbursement = catchAsync(async (req, res) => {
-  let query: Query<ReimbursementDocument | null, ReimbursementDocument, {}, ReimbursementDocument>;
-  const leaderDepartments = req.employee.departments?.filter((d) => d.role === "MEMBER");
-  if (leaderDepartments && leaderDepartments.length > 0) {
-    query = Model.findOne({
-      $or: [
-        { department: { $in: leaderDepartments.map((d) => d._id.toString()) }, _id: req.params.id },
-        { user: req.employee._id, _id: req.params.id },
-      ],
-    });
-  } else {
-    query = Model.findOne({ user: req.employee._id, _id: req.params.id });
-  }
-  const reimbursement = await query.populate([
-    { path: "user sendTo", select: "fullName slug email" },
-    { path: "approval", populate: { path: "user", select: "fullName email" } },
-  ]);
-  console.log(req.employee.isLeader("Lions Den"));
-
+export const getReimbursement = catchAsync(async (req, res, next) => {
+  const reimbursement = await Model.findOne({
+    ...getFilter(req.employee),
+    _id: req.params.id,
+  }).populate(populateOptions);
+  if (!reimbursement) return next(new AppError("There is no reimbursement with this ID", 404));
   // SEND RESPONSE
   res.status(200).json({
     status: "success",

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ReimbursementApproval, ReimbursementModel } from "../../../../../src/types/models";
 import PrimaryButton from "../../../components/PrimaryButton/PrimaryButton";
-import Tabs2 from "../../../components/Tabs2";
+import Tabs2, { TabOption } from "../../../components/Tabs2";
 import { useAuth, useDocTitle, useSocket } from "../../../hooks";
 import { APIReimbursementResponse } from "../../../types/apiResponses";
 import AddReimbursement from "./AddReimbursement";
@@ -16,7 +16,7 @@ export interface RM extends ReimbursementModel {
   status: "Approved" | "Rejected" | "Pending";
 }
 
-type PageState = "MY_REIMBURSEMENTS" | "APPROVALS";
+type PageState = "MY_REIMBURSEMENTS" | "APPROVALS" | "ALL";
 
 export default function Reimbursements() {
   const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
@@ -109,6 +109,18 @@ export default function Reimbursements() {
 
   const isLeader = user.departments?.some((d) => d.role === "LEADER");
 
+  const tabs: TabOption<PageState>[] = [
+    { name: "My Reimbursements", value: "MY_REIMBURSEMENTS" },
+    {
+      name: "Approvals",
+      value: "APPROVALS",
+      count: reimbursements.filter((r) => r.sendTo._id === user._id && !r.approval).length,
+    },
+  ];
+  if (user.departments?.some((d) => d.name === "Finance" && d.role === "LEADER")) {
+    tabs.push({ name: "All", value: "ALL" });
+  }
+
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="sm:flex sm:justify-between  sm:align-center">
@@ -128,34 +140,39 @@ export default function Reimbursements() {
       </div>
       {isLeader && (
         <div className="sm:mt-0 mt-3">
-          <Tabs2
-            tabs={[
-              { name: "My Reimbursements", value: "MY_REIMBURSEMENTS" },
-              {
-                name: "Approvals",
-                value: "APPROVALS",
-                count: reimbursements.filter((r) => r.sendTo._id === user._id && !r.approval)
-                  .length,
-              },
-            ]}
-            value={pageState}
-            onChange={(tab) => setPageState(tab.value)}
-          />
+          <Tabs2 tabs={tabs} value={pageState} onChange={(tab) => setPageState(tab.value)} />
         </div>
       )}
       {loaded && (
         <>
-          {pageState === "MY_REIMBURSEMENTS" ? (
+          {pageState === "MY_REIMBURSEMENTS" && (
             <MyReimbursements
               reimbursements={reimbursements.filter((r) => r.user._id === user._id)}
               select={select}
             />
-          ) : (
+          )}
+
+          {pageState === "APPROVALS" && (
+            <Approvals
+              reimbursements={reimbursements.filter((r) => r.sendTo?._id === user._id)}
+              setReimbursements={setReimbursements}
+              select={select}
+              finalizeReimbursement={finalizeReimbursement}
+            />
+          )}
+          {pageState === "APPROVALS" && (
+            <Approvals
+              reimbursements={reimbursements.filter((r) => r.sendTo?._id === user._id)}
+              setReimbursements={setReimbursements}
+              select={select}
+              finalizeReimbursement={finalizeReimbursement}
+            />
+          )}
+          {pageState === "ALL" && (
             <Approvals
               reimbursements={reimbursements}
               setReimbursements={setReimbursements}
               select={select}
-              user={user}
               finalizeReimbursement={finalizeReimbursement}
             />
           )}

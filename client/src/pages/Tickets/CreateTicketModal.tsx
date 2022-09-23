@@ -158,7 +158,7 @@ export default function CreateTicketModal(props: Props) {
                       onClick={submit}
                       disabled={!submittable}
                     >
-                      Create Leave
+                      Create Ticket
                     </button>
                     <button
                       type="button"
