@@ -5,7 +5,7 @@ import { TimesheetEntry } from "@models";
 import { AppError, APIFeatures, catchAsync, distinctArrays } from "@utils";
 import { TimesheetEntryDocument, TimesheetModel } from "@@types/models";
 
-const getLeaderDepartments = (employee: Request["employee"]) =>
+const getLeaderDepartments = (employee: Employee) =>
   employee.departments?.filter((d) => d.role === "LEADER") || [];
 
 const Model = TimesheetEntry;
