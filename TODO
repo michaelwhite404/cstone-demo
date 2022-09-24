@@ -19,8 +19,8 @@ Resources:
     ✔ Put calendar in seperate component @done(22-09-23 13:10)
     ☐ Top View 3 Dots (All Views)
     ✘ Send notifications on day to approve @cancelled(22-09-23 13:17)
-    ✔ Admin View (UI) @est(3h30m) @critical @started(22-09-23 13:54) @done(22-09-23 19:52) @lasted(5h58m9s)
-    ☐ Approve Timesheets (Batch) @est(3h30m) @critical
+    ✔ Admin View (UI) @est(3h30m) @started(22-09-23 13:54) @done(22-09-23 19:52) @lasted(5h58m9s)
+    ☐ Approve Timesheets (Batch) @est(3h30m) 
   Users:
     ☐ Deactivate users @low
     ☐ User filter by status (UI) @low

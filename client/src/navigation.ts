@@ -12,7 +12,8 @@ const navigation = [
     name: "Timesheet",
     href: "/timesheet",
     icon: Icon.TableIcon,
-    show: (user: EmployeeModel) => Boolean(user.timesheetEnabled),
+    show: (user: EmployeeModel) =>
+      user.timesheetEnabled || user.departments?.some((dept) => dept.role === "LEADER"),
   },
   {
     name: "Users",

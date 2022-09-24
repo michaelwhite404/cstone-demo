@@ -53,7 +53,7 @@ export default function EntriesTable(props: Props) {
             const approvalText =
               entry.status === "Pending"
                 ? "Not Approved Yet"
-                : `${entry.status} by ${entry.finalizedBy}`;
+                : `${entry.status} by ${entry.finalizedBy.fullName}`;
             const info = status[entry.status];
             return (
               <Fragment key={entry._id}>

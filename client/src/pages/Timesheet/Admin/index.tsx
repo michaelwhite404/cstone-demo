@@ -6,10 +6,11 @@ import PageHeader from "../../../components/PageHeader";
 import SideTable from "../../../components/SideTable/SideTable";
 import { useWindowSize } from "../../../hooks";
 import { APIUsersResponse } from "../../../types/apiResponses";
+import PendingPage from "./PendingPage";
 import UserPage from "./UserPage";
 
 export default function Admin() {
-  const [viewState, setViewState] = useState("blank");
+  const [viewState, setViewState] = useState("pending");
   const [users, setUsers] = useState<EmployeeModel[]>([]);
   const [selected, setSelected] = useState<EmployeeModel>();
   const width = useWindowSize()[0];
@@ -72,6 +73,7 @@ export default function Admin() {
         </SideTable>
       )}
       <MainContent>
+        {viewState === "pending" && <PendingPage />}
         {viewState === "timesheet" && selected && (
           <UserPage onBack={handleBack} selected={selected} />
         )}

@@ -35,7 +35,9 @@ export default function Routes() {
           <Route path="add" element={<AddDevice />} />
           <Route path=":slug" element={<DeviceData />} />
         </Route>
-        {user.timesheetEnabled && <Route path="timesheet" element={<Page.Timesheet />} />}
+        {(user.timesheetEnabled || user.departments?.some((dept) => dept.role === "LEADER")) && (
+          <Route path="timesheet" element={<Page.Timesheet />} />
+        )}
         {user.departments && user.departments.find((dept) => dept.name === "Lions Den") && (
           <Route path="lions-den" element={<LionsDen />}>
             <Route index element={<CurrentSession />} />

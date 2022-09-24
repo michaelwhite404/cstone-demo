@@ -25,6 +25,11 @@ export const getAllTimeSheetEntries = catchAsync(async (req: Request, res: Respo
     query = Model.find({ employee: req.employee._id });
   }
 
+  query.populate({
+    path: "employee finalizedBy department",
+    select: "fullName email role name image",
+  });
+
   const features = new APIFeatures(query, req.query).filter().limitFields().sort().paginate();
   const timesheetEntries = await features.query;
 
@@ -60,7 +65,7 @@ export const getOneTimesheetEntry = catchAsync(
     }
     query.populate({
       path: "employee finalizedBy department",
-      select: "fullName email role name",
+      select: "fullName email role name image",
     });
     const timesheetEntry = await query;
 
