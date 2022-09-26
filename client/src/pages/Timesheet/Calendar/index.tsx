@@ -6,7 +6,6 @@ import { WeekLine } from "./WeekLine";
 import { useCallback, useEffect, useState } from "react";
 import { CalendarEvent, CalendarView } from "../../../types/calendar";
 import { endOfWeek, format, startOfWeek } from "date-fns";
-import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import { TimesheetModel } from "../../../../../src/types/models";
 import { useAuth } from "../../../hooks";
@@ -53,16 +52,11 @@ function Calendar(props: CalendarProps) {
           {view === "week" && formatWeekString(date)}
           {view === "month" && `${month} ${year}`}
         </div>
-        <div className="flex md:space-x-3 align-center space-x-4 justify-end xs:m-0 mt-3 lg:min-w-[410px]">
+        <div className="flex md:space-x-3 align-center space-x-2 justify-end xs:m-0 mt-3 min-w-fit">
           <Calendar.DatePick view={view} setDate={setDate} />
-          <div className="space-x-3 align-center hidden md:flex">
+          <div className="space-x-3 align-center flex">
             <Calendar.View view={view} setView={setView} />
-            {/* <div className="h-6 w-px bg-gray-300" /> */}
           </div>
-          <button className="-mx-2 flex md:hidden items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
-            <span className="sr-only">Open menu</span>
-            <DotsHorizontalIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
         </div>
       </header>
       {view === "month" && (
@@ -104,7 +98,12 @@ const getMDY = (date: Date) => {
 const formatWeekString = (date: Date) => {
   const start = startOfWeek(date);
   const end = endOfWeek(date);
-  return `${format(start, "PPP")} - ${format(end, "PPP")}`;
+  return start.getMonth() === end.getMonth()
+    ? format(start, "LLLL y")
+    : `${format(start, `LLLL ${start.getFullYear() !== end.getFullYear() ? "y" : ""}`)} - ${format(
+        end,
+        "LLLL y"
+      )}`;
 };
 
 interface CalendarProps {

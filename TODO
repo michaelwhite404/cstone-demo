@@ -7,20 +7,11 @@ Resources:
   Tickets:
     Add tags (UI, backend) @est(2h30m) @low
     Websocket implementation
-    Notifications:
-      ✔ On ticket close, send to users @est(25m) @started(22-09-21 18:57) @done(22-09-21 19:13) @lasted(16m58s)
-  Reimbursements:
-    ✔ View all reimbursements (For finance) @est(1h45m) @done(22-09-23 03:14)
   Leaves:
-    ☐ Empty State (Approvals) @est(30m) @today
+    ☐ Empty State (Approvals) @est(30m)
   Timesheets:
     Day View (UI) @low
     Year View (UI) @low
-    ✔ Put calendar in seperate component @done(22-09-23 13:10)
-    ☐ Top View 3 Dots (All Views)
-    ✘ Send notifications on day to approve @cancelled(22-09-23 13:17)
-    ✔ Admin View (UI) @est(3h30m) @started(22-09-23 13:54) @done(22-09-23 19:52) @lasted(5h58m9s)
-    ✔ Approve Timesheets (Batch) @est(3h30m) @done(22-09-26 02:11)
   Users:
     ☐ Deactivate users @low
     ☐ User filter by status (UI) @low
@@ -34,10 +25,14 @@ Resources:
     ☐ Remove members from group (UI and backend) @est(1h)
     ☐ Delete group (UI and backend) @est(1.5h) 
 
-
-
-
 Archive:
+  ✔ On ticket close, send to users @est(25m) @started(22-09-21 18:57) @done(22-09-21 19:13) @lasted(16m58s) @project(Resources.Tickets.Notifications)
+  ✔ View all reimbursements (For finance) @est(1h45m) @done(22-09-23 03:14) @project(Resources.Reimbursements)
+  ✔ Put calendar in seperate component @done(22-09-23 13:10) @project(Resources.Timesheets)
+  ✔ Top View 3 Dots (All Views) @done(22-09-26 16:01) @project(Resources.Timesheets)
+  ✘ Send notifications on day to approve @cancelled(22-09-23 13:17) @project(Resources.Timesheets)
+  ✔ Admin View (UI) @est(3h30m) @started(22-09-23 13:54) @done(22-09-23 19:52) @lasted(5h58m9s) @project(Resources.Timesheets)
+  ✔ Approve Timesheets (Batch) @est(3h30m) @done(22-09-26 02:11) @project(Resources.Timesheets)
   ✔ Empty State (UI) @started(22-09-15 23:07) @done(22-09-15 23:32) @lasted(25m23s) @project(Resources.Tickets)
   ✔ Assign User (UI) @est(40m) @started(22-09-17 13:09) @done(22-09-17 15:20) @lasted(2h11m53s) @project(Resources.Tickets)
   ✔ Change table layout (Click on name, ticket number right beside it) @started(22-09-16 03:29) @done(22-09-16 04:46) @lasted(1h17m33s) @project(Resources.Tickets)

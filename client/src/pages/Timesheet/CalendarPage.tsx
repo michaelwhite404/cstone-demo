@@ -27,7 +27,7 @@ export default function CalendarPage(props: Props) {
   };
 
   return (
-    <div style={{ padding: "10px 25px 25px" }}>
+    <div className="sm:px-6 px-5 pt-2.5 pb-6">
       {/* Header */}
       <div className="page-header flex justify-between align-center">
         <h1 style={{ marginBottom: "10px" }}>Timesheet</h1>
