@@ -160,14 +160,6 @@ export default function Reimbursements() {
               finalizeReimbursement={finalizeReimbursement}
             />
           )}
-          {pageState === "APPROVALS" && (
-            <Approvals
-              reimbursements={reimbursements.filter((r) => r.sendTo?._id === user._id)}
-              setReimbursements={setReimbursements}
-              select={select}
-              finalizeReimbursement={finalizeReimbursement}
-            />
-          )}
           {pageState === "ALL" && (
             <Approvals
               reimbursements={reimbursements}

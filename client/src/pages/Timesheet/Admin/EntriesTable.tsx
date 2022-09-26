@@ -1,7 +1,7 @@
 import { ArrowNarrowRightIcon } from "@heroicons/react/outline";
 import { CheckCircleIcon, ExclamationCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 import { format } from "date-fns";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { TimesheetModel } from "../../../../../src/types/models";
 import TableWrapper from "../../../components/TableWrapper";
 import { useChecker2 } from "../../../hooks";
@@ -24,9 +24,16 @@ const status = {
 };
 
 export default function EntriesTable(props: Props) {
+  const { setSelected } = props;
   const { allSelected, checkboxRef, toggleAll, selectedData, data, setSelectedData } = useChecker2(
     props.entries
   );
+
+  useEffect(() => setSelectedData([]), [data, setSelectedData]);
+
+  useEffect(() => {
+    setSelected(selectedData);
+  }, [selectedData, setSelected]);
 
   return (
     <TableWrapper>
@@ -108,4 +115,5 @@ export default function EntriesTable(props: Props) {
 
 interface Props {
   entries: TimesheetModel[];
+  setSelected: React.Dispatch<React.SetStateAction<TimesheetModel[]>>;
 }

@@ -73,9 +73,14 @@ export default function Admin(props: Props) {
         </SideTable>
       )}
       <MainContent>
-        {viewState === "pending" && <PendingPage showTimesheetEntry={props.showTimesheetEntry} />}
+        {viewState === "pending" && (
+          <PendingPage
+            showTimesheetEntry={props.showTimesheetEntry}
+            finalizeTimesheet={finalizeTimesheet}
+          />
+        )}
         {viewState === "timesheet" && selected && (
-          <UserPage onBack={handleBack} selected={selected} />
+          <UserPage onBack={handleBack} selected={selected} finalizeTimesheet={finalizeTimesheet} />
         )}
       </MainContent>
     </div>
@@ -102,3 +107,10 @@ const RowComponent = (user: EmployeeModel) => {
 interface Props {
   showTimesheetEntry: (entryId: string) => Promise<void>;
 }
+
+const finalizeTimesheet = async (ids: string[], approve: boolean) => {
+  const res = await axios.patch("/api/v2/timesheets/approve", {
+    [approve ? "approve" : "reject"]: ids,
+  });
+  return res.data.data.message as string;
+};

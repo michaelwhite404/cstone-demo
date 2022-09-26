@@ -11,7 +11,7 @@ import MainContent from "../../../components/MainContent";
 import { useChecker2 } from "../../../hooks";
 
 export default function PendingPage(props: Props) {
-  const { showTimesheetEntry } = props;
+  const { showTimesheetEntry, finalizeTimesheet } = props;
   const [pending, setPending] = useState<TimesheetModel[]>([]);
   const { data, checkboxRef, allSelected, toggleAll, setSelectedData, selectedData } =
     useChecker2(pending);
@@ -28,16 +28,17 @@ export default function PendingPage(props: Props) {
 
   const onBack = () => {};
 
-  const handeleTimesheetFinalize = async (approve: boolean) => {
+  const handleTimesheetFinalize = async (approve: boolean) => {
     try {
       const ids = selectedData.map((entry) => entry._id) as string[];
       await finalizeTimesheet(ids, approve);
+      setSelectedData([]);
       getPendingEntries();
     } catch (err) {
       console.log(err);
     }
   };
-  const approve = () => handeleTimesheetFinalize(true);
+  const approve = () => handleTimesheetFinalize(true);
 
   return (
     <MainContent.InnerWrapper>
@@ -48,7 +49,7 @@ export default function PendingPage(props: Props) {
             <span style={{ fontWeight: 500, fontSize: 16 }}>Go back</span>
           </div>
         </MainContent.Header>
-        <div className="px-6 xs:py-2 py-4">
+        <div className="flex-grow px-6 xs:py-2 py-4">
           <div className="xs:h-14 xs:flex items-center justify-between">
             <div className="text-xl font-bold text-gray-900">Pending ({data.length})</div>
             <div
@@ -159,14 +160,7 @@ export default function PendingPage(props: Props) {
     </MainContent.InnerWrapper>
   );
 }
-
-const finalizeTimesheet = async (ids: string[], approve: boolean) => {
-  const res = await axios.patch("/api/v2/timesheets/approve", {
-    [approve ? "approve" : "reject"]: ids,
-  });
-  return res.data;
-};
-
 interface Props {
   showTimesheetEntry: (entryId: string) => Promise<void>;
+  finalizeTimesheet: (ids: string[], approve: boolean) => Promise<string>;
 }

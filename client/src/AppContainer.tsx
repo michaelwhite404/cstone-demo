@@ -39,7 +39,7 @@ export default function AppContainer() {
       showToaster("You have received a reimbusement request", "none", "envelope")
     );
     socket?.on("submittedLeave", () =>
-      showToaster("You have received a reimbusement request", "none", "envelope")
+      showToaster("You have received a leave request", "none", "envelope")
     );
 
     return () => {
@@ -64,7 +64,7 @@ export default function AppContainer() {
       >
         <Outlet />
       </div>
-      {process.env.NODE_ENV === "development" && <DevTag />}
+      {/* {process.env.NODE_ENV === "development" && <DevTag />} */}
     </Div100vh>
   );
 }
