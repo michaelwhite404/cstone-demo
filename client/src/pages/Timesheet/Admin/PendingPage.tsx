@@ -10,20 +10,35 @@ import FadeIn from "../../../components/FadeIn";
 import MainContent from "../../../components/MainContent";
 import { useChecker2 } from "../../../hooks";
 
-export default function PendingPage() {
+export default function PendingPage(props: Props) {
+  const { showTimesheetEntry } = props;
   const [pending, setPending] = useState<TimesheetModel[]>([]);
   const { data, checkboxRef, allSelected, toggleAll, setSelectedData, selectedData } =
     useChecker2(pending);
+  const getPendingEntries = async () => {
+    const res = await axios.get("/api/v2/timesheets", {
+      params: { status: "Pending", sort: "-timeStart" },
+    });
+    setPending(res.data.data.timesheetEntries);
+  };
+
   useEffect(() => {
-    const getPendingEntries = async () => {
-      const res = await axios.get("/api/v2/timesheets", {
-        params: { status: "Pending", sort: "-timeStart" },
-      });
-      setPending(res.data.data.timesheetEntries);
-    };
     getPendingEntries();
   }, []);
+
   const onBack = () => {};
+
+  const handeleTimesheetFinalize = async (approve: boolean) => {
+    try {
+      const ids = selectedData.map((entry) => entry._id) as string[];
+      await finalizeTimesheet(ids, approve);
+      getPendingEntries();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const approve = () => handeleTimesheetFinalize(true);
+
   return (
     <MainContent.InnerWrapper>
       <FadeIn>
@@ -44,7 +59,7 @@ export default function PendingPage() {
               <button
                 type="button"
                 className="w-full xs:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                onClick={() => {}}
+                onClick={approve}
               >
                 <CheckIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
                 Approve {allSelected ? "All" : ""}
@@ -60,7 +75,7 @@ export default function PendingPage() {
             </div>
           </div>
           <div
-            className="rounded-lg overflow-hidden"
+            className="rounded-lg overflow-hidden mb-4"
             style={{ boxShadow: "#d4d4d4 0px 0px 2px 1px" }}
           >
             {/* Indeterminate */}
@@ -102,14 +117,18 @@ export default function PendingPage() {
                   {/* Actual Row */}
                   <div className="w-full">
                     <div className="flex justify-between mb-1">
-                      <p className="truncate text-sm font-medium text-indigo-600 mb-0">
+                      <p
+                        className="truncate text-sm font-medium text-indigo-600 mb-0 cursor-pointer"
+                        onClick={() => showTimesheetEntry(entry._id)}
+                      >
                         {entry.description}
                       </p>
                       <div className="flex align-center">
                         <img
                           className="w-4 h-4 rounded-full mr-1.5"
-                          src={entry.employee.image}
+                          src={entry.employee.image || "/avatar_placeholder.png"}
                           alt={entry.employee.fullName}
+                          onError={(e) => (e.currentTarget.src = "/avatar_placeholder.png")}
                         />
                         <p className="inline-flex text-md text-gray-600 font-medium leading-5 mb-0">
                           {entry.employee.fullName}
@@ -139,4 +158,15 @@ export default function PendingPage() {
       </FadeIn>
     </MainContent.InnerWrapper>
   );
+}
+
+const finalizeTimesheet = async (ids: string[], approve: boolean) => {
+  const res = await axios.patch("/api/v2/timesheets/approve", {
+    [approve ? "approve" : "reject"]: ids,
+  });
+  return res.data;
+};
+
+interface Props {
+  showTimesheetEntry: (entryId: string) => Promise<void>;
 }

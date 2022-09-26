@@ -10,9 +10,11 @@ import ShowEntry from "./ShowEntry";
 type PageState = "CALENDAR" | "ADMIN";
 
 export default function Timesheet() {
+  const user = useAuth().user!;
   useDocTitle("Timesheet | Cornerstone App");
-  const [pageState, setPageState] = useState<PageState>("ADMIN");
-  const { user } = useAuth();
+  const [pageState, setPageState] = useState<PageState>(
+    user.departments?.some((d) => d.role === "LEADER") ? "ADMIN" : "CALENDAR"
+  );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<TimesheetModel>();
   const [width] = useWindowSize();
@@ -31,7 +33,7 @@ export default function Timesheet() {
   return (
     <>
       {pageState === "CALENDAR" && <CalendarPage showTimesheetEntry={showTimesheetEntry} />}
-      {pageState === "ADMIN" && <Admin />}
+      {pageState === "ADMIN" && <Admin showTimesheetEntry={showTimesheetEntry} />}
       <Drawer
         portalClassName="z-40"
         size={width >= 640 ? 480 : "90%"}

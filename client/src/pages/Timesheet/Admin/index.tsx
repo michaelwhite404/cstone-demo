@@ -9,7 +9,7 @@ import { APIUsersResponse } from "../../../types/apiResponses";
 import PendingPage from "./PendingPage";
 import UserPage from "./UserPage";
 
-export default function Admin() {
+export default function Admin(props: Props) {
   const [viewState, setViewState] = useState("pending");
   const [users, setUsers] = useState<EmployeeModel[]>([]);
   const [selected, setSelected] = useState<EmployeeModel>();
@@ -73,7 +73,7 @@ export default function Admin() {
         </SideTable>
       )}
       <MainContent>
-        {viewState === "pending" && <PendingPage />}
+        {viewState === "pending" && <PendingPage showTimesheetEntry={props.showTimesheetEntry} />}
         {viewState === "timesheet" && selected && (
           <UserPage onBack={handleBack} selected={selected} />
         )}
@@ -98,3 +98,7 @@ const RowComponent = (user: EmployeeModel) => {
     </div>
   );
 };
+
+interface Props {
+  showTimesheetEntry: (entryId: string) => Promise<void>;
+}
