@@ -47,7 +47,7 @@ export default function Admin(props: Props) {
   );
 
   const handleBack = () => {
-    setViewState("blank");
+    setViewState("pending");
     setSelected(undefined);
   };
 

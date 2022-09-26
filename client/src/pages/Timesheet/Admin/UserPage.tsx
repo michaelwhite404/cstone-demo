@@ -14,7 +14,6 @@ export default function UserPage(props: UserPageProps) {
   const [entries, setEntries] = useState<TimesheetModel[]>([]);
   const [date, setDate] = useState(new Date());
   const [selectedData, setSelectedData] = useState<TimesheetModel[]>([]);
-
   const { selected, onBack, finalizeTimesheet } = props;
   const getUserEntries = useCallback(async () => {
     const res = await axios.get(`/api/v2/timesheets/`, {
@@ -42,6 +41,7 @@ export default function UserPage(props: UserPageProps) {
     }
   };
   const approve = () => handleTimesheetFinalize(true);
+  const reject = () => handleTimesheetFinalize(false);
 
   return (
     <MainContent.InnerWrapper>
@@ -70,7 +70,7 @@ export default function UserPage(props: UserPageProps) {
                   .reduce((prev, curr) => prev + curr.hours!, 0)}
               />
               <Stat
-                label={`Hours (${format(date, "MMM")}. 16-${getDaysInMonth(date)}`}
+                label={`Hours (${format(date, "MMM")}. 16-${getDaysInMonth(date)})`}
                 value={entries
                   .filter((e) => new Date(e.timeStart).getDate() > 15)
                   .reduce((prev, curr) => prev + curr.hours!, 0)}
@@ -79,7 +79,18 @@ export default function UserPage(props: UserPageProps) {
             <div className="flex justify-end">
               <MonthYearPicker date={date} setDate={setDate} />
             </div>
-            <EntriesTable entries={entries} setSelected={setSelectedData} />
+            <FadeIn>
+              {entries.length > 0 ? (
+                <EntriesTable entries={entries} setSelected={setSelectedData} />
+              ) : (
+                <div className="p-4 w-full flex flex-col items-center">
+                  <img src="/error_in_calendar_illustration.png" alt="Empty Timesheet" />
+                  <span className="font-medium text-lg mt-1 text-gray-600 text-center">
+                    There are no entries from {selected.fullName} in {format(date, "LLLL y")}
+                  </span>
+                </div>
+              )}
+            </FadeIn>
           </div>
         </div>
         {selectedData.length > 0 && (
@@ -96,7 +107,7 @@ export default function UserPage(props: UserPageProps) {
               <button
                 type="button"
                 className="w-full xs:w-auto justify-center inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                onClick={() => {}}
+                onClick={reject}
               >
                 <XIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
                 Reject
