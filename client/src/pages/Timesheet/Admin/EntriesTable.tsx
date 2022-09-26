@@ -24,7 +24,7 @@ const status = {
 };
 
 export default function EntriesTable(props: Props) {
-  const { setSelected } = props;
+  const { setSelected, showTimesheetEntry } = props;
   const { allSelected, checkboxRef, toggleAll, selectedData, data, setSelectedData } = useChecker2(
     props.entries
   );
@@ -83,8 +83,10 @@ export default function EntriesTable(props: Props) {
                   <td rowSpan={2} className="font-medium">
                     {new Date(entry.timeStart).getDate()}
                   </td>
-                  <td className="text-[16px] font-medium text-gray-700 pb-0.5 pt-2">
-                    {entry.description}
+                  <td className="text-[16px] font-medium text-indigo-600 pb-0.5 pt-2">
+                    <span className="cursor-pointer" onClick={() => showTimesheetEntry(entry._id)}>
+                      {entry.description}
+                    </span>
                   </td>
                   <td rowSpan={2}>
                     <div className="flex">
@@ -116,4 +118,5 @@ export default function EntriesTable(props: Props) {
 interface Props {
   entries: TimesheetModel[];
   setSelected: React.Dispatch<React.SetStateAction<TimesheetModel[]>>;
+  showTimesheetEntry: (entryId: string) => Promise<void>;
 }

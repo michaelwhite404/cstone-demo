@@ -14,7 +14,7 @@ export default function UserPage(props: UserPageProps) {
   const [entries, setEntries] = useState<TimesheetModel[]>([]);
   const [date, setDate] = useState(new Date());
   const [selectedData, setSelectedData] = useState<TimesheetModel[]>([]);
-  const { selected, onBack, finalizeTimesheet } = props;
+  const { selected, onBack, finalizeTimesheet, showTimesheetEntry } = props;
   const getUserEntries = useCallback(async () => {
     const res = await axios.get(`/api/v2/timesheets/`, {
       params: {
@@ -81,7 +81,11 @@ export default function UserPage(props: UserPageProps) {
             </div>
             <FadeIn>
               {entries.length > 0 ? (
-                <EntriesTable entries={entries} setSelected={setSelectedData} />
+                <EntriesTable
+                  entries={entries}
+                  setSelected={setSelectedData}
+                  showTimesheetEntry={showTimesheetEntry}
+                />
               ) : (
                 <div className="p-4 w-full flex flex-col items-center">
                   <img src="/error_in_calendar_illustration.png" alt="Empty Timesheet" />
@@ -124,6 +128,7 @@ interface UserPageProps {
   onBack: () => void;
   selected: EmployeeModel;
   finalizeTimesheet: (ids: string[], approve: boolean) => Promise<string>;
+  showTimesheetEntry: (entryId: string) => Promise<void>;
 }
 
 const Stat = (props: StatProps) => {

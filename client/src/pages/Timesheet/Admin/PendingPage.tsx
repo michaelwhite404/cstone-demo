@@ -3,9 +3,9 @@ import { CalendarIcon, ClockIcon } from "@heroicons/react/solid";
 import axios from "axios";
 import classNames from "classnames";
 import { format } from "date-fns";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TimesheetModel } from "../../../../../src/types/models";
-import BackButton from "../../../components/BackButton";
+// import BackButton from "../../../components/BackButton";
 import FadeIn from "../../../components/FadeIn";
 import MainContent from "../../../components/MainContent";
 import { useChecker2 } from "../../../hooks";
@@ -26,7 +26,7 @@ export default function PendingPage(props: Props) {
     getPendingEntries();
   }, []);
 
-  const onBack = () => {};
+  // const onBack = () => {};
 
   const handleTimesheetFinalize = async (approve: boolean) => {
     try {
@@ -44,12 +44,12 @@ export default function PendingPage(props: Props) {
   return (
     <MainContent.InnerWrapper>
       <FadeIn>
-        <MainContent.Header>
+        {/* <MainContent.Header>
           <div style={{ display: "flex", alignItems: "center" }}>
             <BackButton onClick={onBack} />
             <span style={{ fontWeight: 500, fontSize: 16 }}>Go back</span>
           </div>
-        </MainContent.Header>
+        </MainContent.Header> */}
         <div className="flex-grow px-6 xs:py-2 py-4">
           <div className="xs:h-14 xs:flex items-center justify-between">
             <div className="text-xl font-bold text-gray-900">Pending ({data.length})</div>

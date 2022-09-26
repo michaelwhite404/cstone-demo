@@ -4,6 +4,7 @@ import { EmployeeModel } from "../../../../../src/types/models";
 import MainContent from "../../../components/MainContent";
 import PageHeader from "../../../components/PageHeader";
 import SideTable from "../../../components/SideTable/SideTable";
+import SideTableFilter from "../../../components/SideTable/SideTableFilter";
 import { useWindowSize } from "../../../hooks";
 import { APIUsersResponse } from "../../../types/apiResponses";
 import PendingPage from "./PendingPage";
@@ -14,6 +15,7 @@ export default function Admin(props: Props) {
   const [users, setUsers] = useState<EmployeeModel[]>([]);
   const [selected, setSelected] = useState<EmployeeModel>();
   const width = useWindowSize()[0];
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const getTimesheetUsers = async () => {
@@ -66,9 +68,11 @@ export default function Admin(props: Props) {
           groupBy="firstLetter"
           onSelectionChange={handleSelection}
           selected={selected?._id || ""}
+          filterValue={filter}
         >
           <div className="side-table-top">
             <PageHeader text="Timesheets" />
+            <SideTableFilter value={filter} onChange={(value) => setFilter(value)} />
           </div>
         </SideTable>
       )}
@@ -80,7 +84,12 @@ export default function Admin(props: Props) {
           />
         )}
         {viewState === "timesheet" && selected && (
-          <UserPage onBack={handleBack} selected={selected} finalizeTimesheet={finalizeTimesheet} />
+          <UserPage
+            onBack={handleBack}
+            selected={selected}
+            finalizeTimesheet={finalizeTimesheet}
+            showTimesheetEntry={props.showTimesheetEntry}
+          />
         )}
       </MainContent>
     </div>
