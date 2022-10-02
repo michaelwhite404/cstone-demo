@@ -36,3 +36,9 @@ export const chat = google.chat({
     scopes: ["https://www.googleapis.com/auth/chat.bot"],
   }),
 });
+
+export const sheets = (email: string) =>
+  google.sheets({
+    version: "v4",
+    auth: googleAuthJWT(["https://www.googleapis.com/auth/spreadsheets"], email),
+  });

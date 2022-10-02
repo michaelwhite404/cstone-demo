@@ -24,7 +24,7 @@ const items: INavItem[] = [
   {
     name: "Deactive Students",
     description: "Remove students from the active roster",
-    href: "#",
+    href: "##",
     iconColor: "bg-red-500",
     icon: BanIcon,
     comingSoon: true,

@@ -13,10 +13,10 @@ import orgUnitRouter from "./orgUnitRoutes";
 import shortUrlRouter from "./shortUrlRoutes";
 import aftercareRouter from "./aftercareRoutes";
 import groupRouter from "./groupRoutes";
-import chatRouter from "./chatRoutes";
 import ticketRouter from "./ticketRoutes";
 import reimbursementRouter from "./reimbursementRoutes";
 import leaveRouter from "./leaveRoutes";
+import testRouter from "./testRoutes";
 
 const v2Router = Router();
 
@@ -32,9 +32,9 @@ v2Router.use("/short", shortUrlRouter);
 v2Router.use("/aftercare", aftercareRouter);
 v2Router.use("/groups", groupRouter);
 v2Router.use("/tickets", ticketRouter);
-v2Router.use("/chat", chatRouter);
 v2Router.use("/reimbursements", reimbursementRouter);
 v2Router.use("/leaves", leaveRouter);
+v2Router.use("/tests", testRouter);
 // v2Router.use("/ideas" /* ,ideaRouter */);
 
 export {

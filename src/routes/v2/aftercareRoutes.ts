@@ -15,11 +15,14 @@ const {
   getAftercareSession,
   addDateToParams,
   getAttendanceStats,
+  generateReport,
 } = aftercareController;
 
 const router = Router();
 
 router.use(v2auth.protect);
+
+router.post("/generate-report", generateReport);
 
 router.route("/attendance").get(getAllAttendanceEntries).post(createAttendanceEntries);
 router.get("/attendance/stats", getAttendanceStats);
