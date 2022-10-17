@@ -317,7 +317,10 @@ export const generateReport = catchAsync(async (req, res, next) => {
   const response = await googleSheets.spreadsheets.create({
     requestBody: {
       properties: {
-        title: "Test Generate Aftercare 3",
+        title: `Lions Den Report ${format(new Date(startDate), "P")} - ${format(
+          new Date(endDate),
+          "P"
+        )}`,
       },
     },
   });
