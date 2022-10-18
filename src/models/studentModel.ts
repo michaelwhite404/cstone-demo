@@ -33,8 +33,7 @@ const studentSchema = new Schema(
     schoolEmail: {
       type: String,
       required: true,
-      validate: (value: any) =>
-        typeof value === "string" && value.endsWith("@cornerstone-schools.org"),
+      validate: (value: any) => typeof value === "string" && value.endsWith("@school-email.org"),
     },
     personalEmail: {
       type: String,

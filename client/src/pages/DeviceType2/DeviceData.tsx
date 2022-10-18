@@ -15,7 +15,6 @@ import MainContent from "../../components/MainContent";
 import { useDevice, useToasterContext } from "../../hooks";
 import BadgeSkeleton from "../../components/BadgeSkeleton";
 import { Button, ButtonGroup, IconName } from "@blueprintjs/core";
-import ResetBody from "../DeviceType/SingleDevice/ResetBody";
 import CreateError from "./Modals/CreateError";
 import { EmployeeModel } from "../../../../src/types/models/employeeTypes";
 import { useOutletContext, useParams } from "react-router-dom";
@@ -37,6 +36,7 @@ interface SubHeadingButton {
   icon: IconName;
   onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   show?: boolean;
+  disabled?: boolean;
 }
 
 export default function DeviceData() {
@@ -59,7 +59,6 @@ export default function DeviceData() {
     errors,
     updateDeviceError,
     updateableErrors,
-    resetDevice,
     createDeviceError,
     assignDevice,
     unassignDevice,
@@ -80,13 +79,9 @@ export default function DeviceData() {
     {
       text: "Reset",
       icon: "reset",
-      onClick: () =>
-        dialogControls.open(
-          `Reset ${device?.name || ""}`,
-          400,
-          <ResetBody close={dialogControls.close} resetDevice={resetDevice} />
-        ),
+      onClick: () => {},
       show: Boolean(device?.directoryId) && user.role === "Super Admin",
+      disabled: true,
     },
     {
       text: "Create Error",
@@ -128,8 +123,8 @@ export default function DeviceData() {
         {showableButtons.length > 0 && (
           <MainContent.Header>
             <ButtonGroup style={{ marginLeft: "auto" }}>
-              {showableButtons.map(({ text, icon, onClick }) => (
-                <Button key={text} text={text} icon={icon} onClick={onClick} />
+              {showableButtons.map(({ text, icon, onClick, disabled }) => (
+                <Button key={text} text={text} icon={icon} onClick={onClick} disabled={disabled} />
               ))}
             </ButtonGroup>
           </MainContent.Header>

@@ -10,7 +10,6 @@ import { RequestHandler } from "express";
 import validator from "validator";
 import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import { io } from "@server";
-import { aftercareEvent } from "@events/AftercareEvent";
 
 export const getAllAftercareStudents = factory.getAll(Student, "students", { aftercare: true });
 
@@ -148,7 +147,6 @@ export const signOutStudent = catchAsync(async (req, res, next) => {
     entry,
   });
   io.emit("aftercareSignOutSuccess");
-  aftercareEvent.signOut(entry);
 });
 
 export const createAttendanceEntries = catchAsync(async (req, res, next) => {
@@ -317,7 +315,7 @@ export const generateReport = catchAsync(async (req, res, next) => {
   const response = await googleSheets.spreadsheets.create({
     requestBody: {
       properties: {
-        title: `Lions Den Report ${format(new Date(startDate), "P")} - ${format(
+        title: `Aftercare Report ${format(new Date(startDate), "P")} - ${format(
           new Date(endDate),
           "P"
         )}`,
@@ -332,7 +330,7 @@ export const generateReport = catchAsync(async (req, res, next) => {
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: [
-        ["Lions Den Report"],
+        ["Aftercare Report"],
         [`Generated at: ${format(new Date(), "Pp")}`],
         [
           `Date Start: ${format(new Date(startDate), "P")}`,

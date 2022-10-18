@@ -21,7 +21,7 @@ import AssignUser from "./AssignUser";
 import CloseTicketModal from "./CloseTicketModal";
 
 export default function TicketDetails() {
-  useDocTitle("Tickets | Cornerstone App");
+  useDocTitle("Tickets | School App");
   const [ticket, setTicket] = useState<TicketModel>();
   const [comment, setComment] = useState("");
   const [modalOpen, setModalOpen] = useState(false);

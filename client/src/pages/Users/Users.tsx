@@ -22,7 +22,7 @@ export interface CreateUserArgs {
 }
 
 export default function Users() {
-  useDocTitle("Users | Cornerstone App");
+  useDocTitle("Users | School App");
   const [modalOpen, setModalOpen] = useState(false);
   const { users } = useOutletContext<{ users: EmployeeModel[] }>();
 

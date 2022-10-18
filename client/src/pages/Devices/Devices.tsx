@@ -5,7 +5,7 @@ import { useDocTitle } from "../../hooks";
 import "./Devices.sass";
 
 export default function Devices() {
-  useDocTitle("Devices | Cornerstone App");
+  useDocTitle("Devices | School App");
 
   const links = [
     {

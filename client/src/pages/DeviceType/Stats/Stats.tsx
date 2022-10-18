@@ -10,7 +10,7 @@ import StatsTable from "./StatsTable";
 
 export default function Stats() {
   const { deviceType } = useParams<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType!)} Stats | Cornerstone App`);
+  useDocTitle(`${capitalize(deviceType!)} Stats | School App`);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [totals, setTotals] = useState<Totals>();
   useEffect(() => {

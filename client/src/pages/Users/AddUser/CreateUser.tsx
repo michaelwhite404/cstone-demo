@@ -109,7 +109,7 @@ export default function CreateUser(props: CreateUserProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     let { name, value } = e.target;
-    if (name === "email") value = value + "@cornerstone-schools.org";
+    if (name === "email") value = value + "@school-email.org";
     validateField(name, value);
     setUser({ ...user, [name]: value });
   };
@@ -185,7 +185,7 @@ export default function CreateUser(props: CreateUserProps) {
               </div>
               <div className="sm:col-span-2 col-span-1">
                 <AddOnInput
-                  addOnText="@cornerstone-schools.org"
+                  addOnText="@school-email.org"
                   name="email"
                   id="email"
                   label="Email"

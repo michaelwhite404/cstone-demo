@@ -1095,14 +1095,6 @@ a {
   margin-top: 32px;
 }
 
-.cornerstone-login-logo {
-  position: absolute;
-  left: auto;
-  top: 50px;
-  right: 50px;
-  bottom: auto;
-}
-
 .forgot-password-link {
   font-family: GilroyBold, sans-serif;
   color: #4195f8;

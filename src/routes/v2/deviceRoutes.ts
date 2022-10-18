@@ -30,32 +30,6 @@ deviceRouter.route("/").get(deviceController.getAllDevices).post(deviceControlle
 
 deviceRouter.get("/types", deviceController.getAllDeviceTypes);
 
-deviceRouter.get(
-  "/from-google",
-  restrictTo("Super Admin", "Admin"),
-  deviceController.getDevicesFromGoogle
-);
-deviceRouter.get(
-  "/from-google/:id",
-  restrictTo("Super Admin", "Admin"),
-  deviceController.getOneDeviceFromGoogle
-);
-deviceRouter.post(
-  "/from-google/:id/:reset(wipe|powerwash)",
-  restrictTo("Super Admin"),
-  deviceController.resetDeviceFromGoogle
-);
-deviceRouter.post(
-  "/from-google/:id/move",
-  restrictTo("Super Admin"),
-  deviceController.moveDeviceToOu
-);
-deviceRouter.post(
-  "/from-google/:id/:action(disable|reenable|deprovision)",
-  restrictTo("Super Admin"),
-  deviceController.deviceAction
-);
-
 deviceRouter
   .route("/:id")
   .get(deviceController.getOneDevice)

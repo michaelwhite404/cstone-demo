@@ -16,7 +16,7 @@ const tabs = [
 type LionsDenPageState = "current-session" | "sessions" | "students";
 
 export default function LionsDen() {
-  useDocTitle("Lions Den | Cornerstone App");
+  useDocTitle("Aftercare | School App");
   const socket = useSocket();
   const [pageState, setPageState] = useState<LionsDenPageState>();
   const [currentSession, setCurrentSession] = useState<CurrentSession>({
@@ -64,7 +64,7 @@ export default function LionsDen() {
     <div style={{ padding: "10px 25px 25px" }}>
       {/* Header */}
       <div className="page-header">
-        <h1 style={{ marginBottom: "10px" }}>Lions Den</h1>
+        <h1 style={{ marginBottom: "10px" }}>Aftercare</h1>
       </div>
       {/* Tabs */}
       <div className="hidden sm:block mb-10">

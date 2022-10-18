@@ -20,7 +20,7 @@ type PageState = "MY_REIMBURSEMENTS" | "APPROVALS" | "ALL";
 
 export default function Reimbursements() {
   const [pageState, setPageState] = useState<PageState>("MY_REIMBURSEMENTS");
-  useDocTitle("Reimbursement Requests | Cornerstone App");
+  useDocTitle("Reimbursement Requests | School App");
   const [reimbursements, setReimbursements] = useState<RM[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [slideOpen, setSlideOpen] = useState(false);

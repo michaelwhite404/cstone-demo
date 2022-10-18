@@ -1,8 +1,7 @@
-import capitalize from "capitalize";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { Types } from "mongoose";
 import { CheckoutLog, Device, ErrorLog, Student } from "@models";
-import { admin, AppError, catchAsync } from "@utils";
+import { AppError, catchAsync } from "@utils";
 import { ErrorLogModel } from "@@types/models";
 import * as factory from "./handlerFactory";
 
@@ -162,101 +161,6 @@ export const getAllDeviceTypes = catchAsync(async (req: Request, res: Response) 
     status: "success",
     requestedAt: req.requestTime,
     types,
-  });
-});
-
-export const getDevicesFromGoogle = catchAsync(async (_, res) => {
-  const result = await admin.chromeosdevices.list({
-    customerId: process.env.GOOGLE_CUSTOMER_ID,
-    projection: "BASIC",
-  });
-
-  const devices = result.data.chromeosdevices;
-  res.status(200).json({
-    devices,
-  });
-});
-
-export const getOneDeviceFromGoogle = catchAsync(async (req, res, next) => {
-  try {
-    const { data: device } = await admin.chromeosdevices.get({
-      customerId: process.env.GOOGLE_CUSTOMER_ID,
-      deviceId: req.params.id,
-    });
-
-    res.status(200).json({
-      status: "success",
-      requestedAt: req.requestTime,
-      data: {
-        device,
-      },
-    });
-  } catch (err) {
-    return next(new AppError((err as any).response.data.error.message, 500));
-  }
-});
-
-export const resetDeviceFromGoogle = catchAsync(async (req, res) => {
-  let command = "";
-  switch (req.params.reset) {
-    case "wipe":
-      command = "WIPE_USERS";
-      break;
-    case "powerwash":
-      command = "REMOTE_POWERWASH";
-      break;
-  }
-
-  await admin.customer.devices.chromeos.issueCommand({
-    customerId: process.env.GOOGLE_CUSTOMER_ID,
-    deviceId: req.params.id,
-    requestBody: {
-      commandType: command,
-    },
-  });
-
-  res.status(200).json({
-    success: "success",
-    requestedAt: req.requestTime,
-    data: {
-      message: "Device has been reset",
-    },
-  });
-});
-
-export const moveDeviceToOu = catchAsync(async (req, res) => {
-  await admin.chromeosdevices.moveDevicesToOu({
-    customerId: process.env.GOOGLE_CUSTOMER_ID,
-    orgUnitPath: req.body.orgUnitPath,
-    requestBody: {
-      deviceIds: [req.params.id],
-    },
-  });
-
-  res.status(200).json({
-    success: "success",
-    requestedAt: req.requestTime,
-    data: {
-      message: `Device has been moved to ${req.body.orgUnitPath}`,
-    },
-  });
-});
-
-export const deviceAction = catchAsync(async (req, res) => {
-  await admin.chromeosdevices.action({
-    customerId: process.env.GOOGLE_CUSTOMER_ID,
-    resourceId: req.params.id,
-    requestBody: {
-      action: req.params.action,
-    },
-  });
-
-  res.status(200).json({
-    success: "success",
-    requestedAt: req.requestTime,
-    data: {
-      message: `${capitalize(req.params.action)} action completed suceessfully`,
-    },
   });
 });
 

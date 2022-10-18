@@ -1,11 +1,11 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 import { promisify } from "util";
 import { Employee } from "@models";
 import { EmployeeModel } from "@@types/models";
 import { DecodedPayload } from "@@types";
-import { admin, AppError, catchAsync, isObjectID, makePassword } from "@utils";
+import { AppError, catchAsync, isObjectID, makePassword } from "@utils";
 import { createSendToken, restrictTo as v1restrictTo } from "../v1/authController";
 
 /**
@@ -31,24 +31,6 @@ export const createEmployee = catchAsync(
 
     // const url = `${req.protocol}://${req.get("host")}`;
     // await new Email(req.body, url).sendWelcome();
-
-    try {
-      const response = await admin.users.insert({
-        requestBody: {
-          name: {
-            givenName: user.firstName,
-            familyName: user.lastName,
-          },
-          primaryEmail: user.email,
-          password,
-          orgUnitPath: "Staff",
-        },
-      });
-      if (response.data.id) (user.googleId = response.data.id), await user.save();
-    } catch (err) {
-      await user.remove();
-      throw err;
-    }
 
     // Remove password from output
     // @ts-ignore
@@ -127,18 +109,6 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
   // GRANT ACCESS TO PROTECTED ROUTE
   next();
 });
-
-export const gChatProtect: RequestHandler = (req, _, next) => {
-  const key = process.env.G_CHAT_KEY;
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    token = req.headers.authorization.split(" ")[1];
-  }
-  if (token !== key) {
-    next(new AppError("Only Google Chat can add spaces property to users", 401));
-  }
-  next();
-};
 
 export const restrictTo = v1restrictTo;
 

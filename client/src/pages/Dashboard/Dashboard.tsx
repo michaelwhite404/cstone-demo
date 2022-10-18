@@ -18,17 +18,17 @@ const links = [
   },
   {
     to: "/lions-den",
-    heading: "Lions Den",
-    text: "View sessions from Lions Den",
+    heading: "Aftercare",
+    text: "View sessions from Aftercare",
     show: (user: EmployeeModel) =>
-      user.departments && user.departments.find((dept) => dept.name === "Lions Den") ? true : false,
+      user.departments && user.departments.find((dept) => dept.name === "Aftercare") ? true : false,
   },
 ];
 
 const getLinks = (user: EmployeeModel) => links.filter((resource) => resource.show(user));
 
 export default function Dashboard() {
-  useDocTitle("Dashboard | Cornerstone App");
+  useDocTitle("Dashboard | School App");
   const user = useAuth().user!;
   const links = getLinks(user);
 

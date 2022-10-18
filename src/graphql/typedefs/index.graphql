@@ -2,7 +2,7 @@
 scalar Date
 
 type Query {
-  "The list of students at Cornerstone"
+  "The list of students at the school"
   students(sort: String, limit: Int, page: Int, filter: StudentFilter): [Student!]!
   student(id: ID!): Student
 }

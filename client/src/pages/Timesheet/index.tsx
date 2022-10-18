@@ -11,7 +11,7 @@ type PageState = "CALENDAR" | "ADMIN";
 
 export default function Timesheet() {
   const user = useAuth().user!;
-  useDocTitle("Timesheet | Cornerstone App");
+  useDocTitle("Timesheet | School App");
   const [pageState, setPageState] = useState<PageState>(
     user.departments?.some((d) => d.role === "LEADER") ? "ADMIN" : "CALENDAR"
   );

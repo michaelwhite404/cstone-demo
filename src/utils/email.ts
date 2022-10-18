@@ -18,7 +18,7 @@ export default class Email {
     this.firstName = user.firstName.split(" ")[0];
     this.url = url;
     this.password = user.password;
-    this.from = `Cornerstone App <${process.env.EMAIL_FROM}>`;
+    this.from = `School App <${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
@@ -68,7 +68,7 @@ export default class Email {
   }
 
   async sendWelcome() {
-    await this.send("welcome", "Welcome to the new Cornerstone App!");
+    await this.send("welcome", "Welcome to the new School App!");
   }
 
   async sendPasswordReset() {

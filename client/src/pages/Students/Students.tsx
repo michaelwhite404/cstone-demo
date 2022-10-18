@@ -10,7 +10,7 @@ import { APIError, APIStudentsResponse } from "../../types/apiResponses";
 export default function Students() {
   const [students, setStudents] = useState<StudentModel[]>([]);
   const [width] = useWindowSize();
-  useDocTitle("Students | Cornerstone App");
+  useDocTitle("Students | School App");
   const columns = useMemo(
     () => [
       { Header: "Name", accessor: "fullName", width: (width - 344) / 4 },

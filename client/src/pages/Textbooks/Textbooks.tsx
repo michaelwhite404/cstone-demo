@@ -16,7 +16,7 @@ import CheckinTable from "./CheckinTable";
 import AddTable from "./AddTable";
 
 export default function Textbooks() {
-  useDocTitle("Textbooks | Cornerstone App");
+  useDocTitle("Textbooks | School App");
   const [textbooks, setTextbooks] = useState<TextbookModel[]>([]);
   const [selected, setSelected] = useState<TextbookModel[]>([]);
   const [open, setOpen] = useState(false);

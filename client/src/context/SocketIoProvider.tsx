@@ -4,9 +4,7 @@ import { useAuth } from "../hooks";
 
 export const SocketIoContext = createContext<Socket | undefined>(undefined);
 const uri =
-  process.env.NODE_ENV === "production"
-    ? "https://app.cornerstone-schools.org"
-    : "http://127.0.0.1:8080";
+  process.env.NODE_ENV === "production" ? "https://school-app.org" : "http://127.0.0.1:8080";
 
 export default function SocketIoProvider({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket>();

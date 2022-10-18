@@ -1,7 +1,6 @@
 import { InputGroup, Label } from "@blueprintjs/core";
 import { useState } from "react";
 import Div100vh from "react-div-100vh";
-import CornerstoneLogo from "../../components/CornerstoneLogo";
 import Login from "../../components/Login";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TextOverLine from "../../components/TextOverLine";
@@ -9,7 +8,7 @@ import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
 import "./Home.sass";
 
 export default function Home() {
-  useDocTitle("Login Page | Cornerstone App");
+  useDocTitle("Login Page | School App");
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const { showToaster } = useToasterContext();
   const { login } = useAuth();
@@ -30,7 +29,6 @@ export default function Home() {
       <Div100vh className="home-container">
         <div className="login-main">
           <div className="welcome-section">
-            <CornerstoneLogo style={{ width: 50 }} />
             <h1 style={{ fontWeight: 600, margin: "5px 0" }}>Welcome Back!!</h1>
             <p>Sign into your account</p>
           </div>

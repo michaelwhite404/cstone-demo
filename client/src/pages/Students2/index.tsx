@@ -12,7 +12,7 @@ import CreateStudent from "./CreateStudent";
 import StudentDetails from "./StudentDetails";
 
 function Students2() {
-  useDocTitle("Students | Cornerstone App");
+  useDocTitle("Students | School App");
   const [students, setStudents] = useState<StudentModel[]>([]);
   const location = useLocation();
   const navigate = useNavigate();

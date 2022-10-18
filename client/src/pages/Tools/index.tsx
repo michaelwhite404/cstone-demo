@@ -2,7 +2,7 @@ import { useDocTitle } from "../../hooks";
 import ShortUrl from "./ShortUrl";
 
 function Tools() {
-  useDocTitle("Tools | Cornerstone App");
+  useDocTitle("Tools | School App");
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">

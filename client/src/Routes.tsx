@@ -38,7 +38,7 @@ export default function Routes() {
         {(user.timesheetEnabled || user.departments?.some((dept) => dept.role === "LEADER")) && (
           <Route path="timesheet" element={<Page.Timesheet />} />
         )}
-        {user.departments && user.departments.find((dept) => dept.name === "Lions Den") && (
+        {user.departments && user.departments.find((dept) => dept.name === "Aftercare") && (
           <Route path="lions-den" element={<LionsDen />}>
             <Route index element={<CurrentSession />} />
             <Route path="sessions" element={<Sessions />} />
@@ -63,11 +63,9 @@ export default function Routes() {
             <Route path="users" element={<Page.Users />}>
               <Route index element={<Page.Users.Users />} />
               <Route path="departments" element={<Page.Users.Departments />} />
-              <Route path="groups" element={<Page.Users.Groups />} />
             </Route>
             <Route path="users/departments/:id" element={<Page.Users.Departments.Detail />} />
             <Route path="users/:slug" element={<Page.Users.UserData />} />
-            <Route path="users/groups/:slug" element={<Page.Users.GroupData />} />
           </Route>
         )}
       </Route>

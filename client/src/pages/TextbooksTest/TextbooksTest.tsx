@@ -26,7 +26,7 @@ export default function TextbooksTest() {
   const [pageState, setPageState] = useState<PageState>("blank");
   const [selected, setSelected] = useState<TextbookSetModel>();
   const [width] = useWindowSize();
-  useDocTitle("Textbooks | Cornerstone App");
+  useDocTitle("Textbooks | School App");
 
   useEffect(() => {
     getTextbookSets();

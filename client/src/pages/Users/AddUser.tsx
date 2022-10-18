@@ -15,7 +15,7 @@ interface AddUserProps {
 const initialUser = {
   firstName: "",
   lastName: "",
-  email: "@cornerstone-schools.org",
+  email: "@school-email.org",
   title: "",
   homeroomGrade: "" as string | number,
   role: "",

@@ -17,7 +17,7 @@ export default function CreateStudent() {
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
-    schoolEmail: "@cornerstone-schools.org",
+    schoolEmail: "@school-email.org",
     status: "Active",
     grade: "-1",
     password: "",
@@ -30,7 +30,7 @@ export default function CreateStudent() {
   type InputElement = HTMLInputElement | HTMLSelectElement;
   const handleChange: React.ChangeEventHandler<InputElement> = (e) => {
     let { name, value } = e.target;
-    if (name === "schoolEmail") value = value + "@cornerstone-schools.org";
+    if (name === "schoolEmail") value = value + "@school-email.org";
     setData({ ...data, [name]: value });
   };
 
@@ -94,7 +94,7 @@ export default function CreateStudent() {
                   <AddOnInput
                     label="School Email Address"
                     name="schoolEmail"
-                    addOnText="@cornestone-schools.org"
+                    addOnText="@school-email.org"
                     addOnSide="right"
                     value={data.schoolEmail.split("@")[0]}
                     onChange={handleChange}
@@ -142,7 +142,7 @@ export default function CreateStudent() {
               <div className="flex items-end justify-center">
                 <div className="flex-1">
                   <LabeledInput2
-                    label="Password"
+                    label="Gmail Password"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     value={data.password}

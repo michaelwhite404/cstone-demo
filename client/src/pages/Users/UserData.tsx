@@ -18,7 +18,7 @@ export default function UserData() {
   const [user, setUser] = useState<EmployeeModel>();
   const [userEdit, setUserEdit] = useState<EmployeeModel>();
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
-  const [groups, setGroups] = useState<admin_directory_v1.Schema$Group[]>([]);
+  const [groups /* , setGroups */] = useState<admin_directory_v1.Schema$Group[]>([]);
   // const [pageState, setPageState] = useState<"loading" | "display" | "edit">("display");
   const { slug } = useParams();
   const location = useLocation();
@@ -38,13 +38,8 @@ export default function UserData() {
       const res = await axios.get("/api/v2/departments");
       setDepartments(res.data.data.departments);
     };
-    const getGroups = async () => {
-      const res = await axios.get("/api/v2/groups");
-      setGroups(res.data.data.groups);
-    };
     getUser();
     getDepartments();
-    getGroups();
   }, [slug]);
 
   const goToUsersPage = () => (locationState.fromUsersPage ? navigate(-1) : navigate("/users"));
@@ -57,7 +52,7 @@ export default function UserData() {
   const handleChange = <T extends HTMLElement>(e: React.ChangeEvent<T>) => {
     //@ts-ignore
     let { name, value } = e.target as { name: string; value: string };
-    if (name === "email") value = value.concat("@cornerstone-schools.org");
+    if (name === "email") value = value.concat("@school-email.org");
     //@ts-ignore
     setUserEdit({ ...userEdit, [name]: value });
   };
@@ -82,7 +77,7 @@ export default function UserData() {
 
   const addGroupMember = async (email: string, role: string) => {
     if (!user) return;
-    const emailStart = email.replace("@cornerstone-schools.org", "");
+    const emailStart = email.replace("@school-email.org", "");
     const res = await axios.post(`/api/v2/groups/${emailStart}/members`, {
       users: [{ email: user.email, role }],
     });
@@ -234,7 +229,7 @@ export default function UserData() {
                   addOnSide="right"
                   name="email"
                   label="Email Address"
-                  addOnText="@cornerstone-schools.org"
+                  addOnText="@school-email.org"
                   value={userEdit?.email.split("@")[0] || ""}
                   onChange={handleChange}
                 />

@@ -17,7 +17,7 @@ export default function DeviceType2() {
   const [devices, setDevices] = useState<DeviceModel[]>([]);
   const { deviceType, slug } = useParams<"deviceType" | "slug">();
   const location = useLocation();
-  useDocTitle(`${capitalize(deviceType!)} | Devices | Cornerstone App`);
+  useDocTitle(`${capitalize(deviceType!)} | Devices | School App`);
   const [selected, setSelected] = useState<DeviceModel>();
 
   const getPageState = useCallback(() => {

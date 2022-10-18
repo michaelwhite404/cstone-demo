@@ -115,25 +115,6 @@ export const createTimeSheetEntry = catchAsync(
         timesheetEntry,
       },
     });
-
-    //  Submission test
-    //     if (employee.space) {
-    //       const format = (date: Date) => moment(date).format("h:mm A");
-    //       await chat.spaces.messages.create({
-    //         parent: employee.space,
-    //         requestBody: {
-    //           text: `Timesheet submitted!
-
-    // Date: ${new Date(timesheetEntry.timeStart).toLocaleDateString()}
-
-    // Description: ${timesheetEntry.description}
-    // Time Start: ${format(new Date(timesheetEntry.timeStart))}
-    // Time End: ${format(new Date(timesheetEntry.timeEnd))}
-    // Department: ${foundDepartment.name}
-    //   `,
-    //         },
-    //       });
-    //     }
   }
 );
 

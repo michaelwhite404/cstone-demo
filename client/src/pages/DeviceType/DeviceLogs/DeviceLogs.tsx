@@ -14,7 +14,7 @@ import "./DeviceLogs.sass";
 
 export default function DeviceLogs() {
   const { deviceType } = useParams<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType!)} Logs | Cornerstone App`);
+  useDocTitle(`${capitalize(deviceType!)} Logs | School App`);
   const windowHeight = useWindowSize()[1];
   const [deviceLogs, setDeviceLogs] = useState<CheckoutLogModel[]>([]);
   useEffect(() => {

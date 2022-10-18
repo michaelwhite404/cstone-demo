@@ -17,7 +17,7 @@ import DeviceContent from "./DeviceContent";
 export default function DeviceType() {
   const { pathname } = useLocation();
   const { deviceType } = useParams<{ deviceType: string }>();
-  useDocTitle(`${capitalize(deviceType!)} | Cornerstone App`);
+  useDocTitle(`${capitalize(deviceType!)} | School App`);
   const navigate = useNavigate();
   const [width] = useWindowSize();
   const [devices, setDevices] = useState<DeviceModel[]>([]);

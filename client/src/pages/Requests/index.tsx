@@ -18,7 +18,7 @@ const links = [
 ];
 
 function Requests() {
-  useDocTitle("Requests | Cornerstone App");
+  useDocTitle("Requests | School App");
   return (
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">

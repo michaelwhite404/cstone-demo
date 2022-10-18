@@ -1,15 +1,12 @@
-import { Divider } from "@mui/material";
-import axios, { AxiosError } from "axios";
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { useLocation, useOutletContext, useParams } from "react-router-dom";
 import { StudentModel } from "../../../../src/types/models";
 import BackButton from "../../components/BackButton";
 import FadeIn from "../../components/FadeIn";
-import LabeledInput2 from "../../components/LabeledInput2";
 import MainContent from "../../components/MainContent";
-import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
-import { useAuth, useToasterContext } from "../../hooks";
-import { APIError, APIStudentResponse } from "../../types/apiResponses";
+import { useToasterContext } from "../../hooks";
+import { APIStudentResponse } from "../../types/apiResponses";
 import { numberToGrade } from "../../utils/grades";
 import "./StudentDetails.scss";
 import StudentDevicesTable from "./StudentDevicesTable";
@@ -23,13 +20,6 @@ interface StudentDetailProps {
 
 export default function StudentDetails() {
   const location = useLocation();
-  const { user } = useAuth();
-  const [passwordReset, setPasswordReset] = useState("");
-  // const [student, setStudent] = useState<StudentModel | undefined>(() =>
-  //   (location.state as any)?.newStudent
-  //     ? (location.state as { newStudent: true; student: StudentModel }).student
-  //     : undefined
-  // );
   const { slug } = useParams<{ slug: string }>();
   const { showToaster } = useToasterContext();
   const { student, setSelectedStudent, onBack } = useOutletContext<StudentDetailProps>();
@@ -57,29 +47,6 @@ export default function StudentDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
-  const canUpdatePassword =
-    (user?.role === "Admin" ||
-      user?.role === "Super Admin" ||
-      user?.homeroomGrade === student?.grade) &&
-    student?.status === "Active";
-
-  const resetPassword = () => {
-    try {
-      axios.patch("/api/v2/students/update-password", {
-        students: [
-          {
-            email: student!.schoolEmail,
-            password: passwordReset,
-          },
-        ],
-      });
-      setPasswordReset("");
-      showToaster("Password Reset", "success");
-    } catch (err) {
-      showToaster((err as AxiosError<APIError>).response!.data.message, "danger");
-    }
-  };
-
   return (
     <MainContent.InnerWrapper>
       <MainContent.Header>
@@ -106,7 +73,7 @@ export default function StudentDetails() {
                       className="bg-gray-600 w-40 min-h-[190px] rounded-md border-[3px] border-white overflow-hidden"
                       style={{
                         boxShadow: "0 0 10px 2px rgb(0 0 0 / 51%)",
-                        backgroundImage: "url(/Cornerstone-Logo.png)",
+                        backgroundImage: "url(/paw.png)",
                         backgroundSize: "110px",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
@@ -181,32 +148,6 @@ export default function StudentDetails() {
                     </div>
                   )}
                 </div>
-                <div className="py-10 px-5">
-                  <Divider />
-                </div>
-                {canUpdatePassword && (
-                  <div className="">
-                    <div className="font-medium text-gray-700 text-base">Reset Password</div>
-                    <div className="flex items-center">
-                      <div className="w-64 mr-4">
-                        <LabeledInput2
-                          type="password"
-                          className="mr-4"
-                          label=""
-                          value={passwordReset}
-                          onChange={(e) => setPasswordReset(e.target.value)}
-                          placeholder="Password"
-                        />
-                      </div>
-                      <PrimaryButton
-                        className="mt-1"
-                        text="Reset"
-                        disabled={passwordReset.length < 8}
-                        onClick={resetPassword}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             </FadeIn>
           )}

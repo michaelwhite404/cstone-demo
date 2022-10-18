@@ -64,7 +64,11 @@ export default function TextbooksTestContent({
         accessor: "lastUser.fullName",
         Cell: ({ row: { original } }: { row: { original: TextbookModel } }) => {
           return original?.status === "Checked Out" && original.lastUser
-            ? `${original.lastUser.fullName} (${numberToGrade(original.lastUser.grade)})`
+            ? `${original.lastUser.fullName} (${
+                original.lastUser.status === "Graduate"
+                  ? "Graduate"
+                  : numberToGrade(original.lastUser.grade)
+              })`
             : "";
         },
       },

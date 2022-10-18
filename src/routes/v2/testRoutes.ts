@@ -10,7 +10,7 @@ router.use(protect);
 router.patch(
   "/update",
   catchAsync(async (req, res, next) => {
-    const googleSheets = sheets("mwhite1@cornerstone-schools.org");
+    const googleSheets = sheets("mwhite1@school-email.org");
     // await googleSheets.spreadsheets.
     const r = await googleSheets.spreadsheets.batchUpdate({
       // spreadsheetId: "1Oa8NTCPG3L0oRZR43SgVpo7o6zhBjtvuXuOIuWQtITM",

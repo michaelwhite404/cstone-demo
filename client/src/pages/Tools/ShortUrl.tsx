@@ -11,7 +11,7 @@ import ShortLinksTable from "./ShortLinksTable";
 import ShortLinksTableMobile from "./ShortLinksTableMobile";
 
 export default function ShortUrl() {
-  useDocTitle("Short URL | Tools | Cornerstone App");
+  useDocTitle("Short URL | Tools | School App");
   const { showToaster } = useToasterContext();
   const [newLink, setNewLink] = useState({
     full: "",
@@ -72,7 +72,7 @@ export default function ShortUrl() {
     <div style={{ padding: "10px 25px 25px" }}>
       <div className="page-header">
         <h1 style={{ marginBottom: "10px" }}>Short URL</h1>
-        <p>Create short links with Cornerstone branding</p>
+        <p>Create short links with school branding</p>
       </div>
       <div className="align-center flex md:flex-row mt-10 flex-col space-between">
         <div className="w-full md:w-1/3">

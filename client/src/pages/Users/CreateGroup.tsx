@@ -12,7 +12,7 @@ interface CreateGroupProps {
 const initialGroup = {
   name: "",
   description: "",
-  email: "@cornerstone-schools.org",
+  email: "@school-email.org",
 };
 
 export default function CreateGroup(props: CreateGroupProps) {
@@ -28,7 +28,7 @@ export default function CreateGroup(props: CreateGroupProps) {
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
     let { name, value } = e.target;
-    if (name === "email") value = value + "@cornerstone-schools.org";
+    if (name === "email") value = value + "@school-email.org";
     setGroup({ ...group, [name]: value });
   };
 
@@ -70,7 +70,7 @@ export default function CreateGroup(props: CreateGroupProps) {
               </div>
               <div>
                 <AddOnInput
-                  addOnText="@cornerstone-schools.org"
+                  addOnText="@school-email.org"
                   name="email"
                   id="email"
                   label="Email"

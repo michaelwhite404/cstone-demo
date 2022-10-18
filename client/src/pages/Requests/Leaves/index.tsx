@@ -20,7 +20,7 @@ export interface Leave extends LeaveModel {
 }
 
 function Leaves() {
-  useDocTitle("Leave Requests | Cornerstone App");
+  useDocTitle("Leave Requests | School App");
   const [pageState, setPageState] = useState<PageState>("MY_LEAVES");
   const [loaded, setLoaded] = useState(false);
   const [leaves, setLeaves] = useState<Leave[]>([]);

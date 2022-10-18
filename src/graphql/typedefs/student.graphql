@@ -5,7 +5,7 @@ enum StudentStatus {
   Graduate
 }
 
-"A student at Cornerstone Schools of Washington"
+"A student at the school"
 type Student {
   "The ID of the student"
   _id: ID!

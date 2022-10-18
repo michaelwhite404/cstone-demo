@@ -16,7 +16,7 @@ export default function Sidebar(props: SidebarProps) {
       <div className="sidebar">
         <div className="sidebar-inner">
           <div className="logo-wrapper">
-            <img className="brand-image" alt="Cornerstone Logo" src="/cstonealttest.png" />
+            <img className="brand-image" alt="School Logo" src="/school_app_logo.png" />
           </div>
           <div className="profile-button-wrapper">{user && <ProfileButton user={user} />}</div>
           <div className="navigation-wrapper">

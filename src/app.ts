@@ -17,7 +17,6 @@ import apiRouter from "./routes/apiRoutes";
 import authRouter from "./routes/authRoutes";
 import pdfRouter from "./routes/pdfRoutes";
 import csvRouter from "./routes/csvRoutes";
-import "./config/passport-setup";
 import schema from "./graphql/schema";
 
 const app = express();
