@@ -1,11 +1,10 @@
-import { InputGroup, Label } from "@blueprintjs/core";
 import { useState } from "react";
 import Div100vh from "react-div-100vh";
-import Login from "../../components/Login";
+import LabeledInput2 from "../../components/LabeledInput2";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TextOverLine from "../../components/TextOverLine";
 import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
-import "./Home.sass";
+import "./Home,.sass";
 
 export default function Home() {
   useDocTitle("Login Page | School App");
@@ -29,47 +28,45 @@ export default function Home() {
       <Div100vh className="home-container">
         <div className="login-main">
           <div className="welcome-section">
+            <img style={{ width: 50 }} src="/paw.png" alt="Paw Logo" />
             <h1 style={{ fontWeight: 600, margin: "5px 0" }}>Welcome Back!!</h1>
             <p>Sign into your account</p>
           </div>
-          <div>
-            <Label>
-              <span style={{ fontWeight: 500 }}>Sign in with Cornestone Gmail Account</span>
-            </Label>
-            <Login />
-          </div>
-          <span style={{ padding: "1rem 0" }}>
-            <TextOverLine text="Or continue with" />
-          </span>
           <div className="sign-in-form">
             <form onSubmit={handleSubmit}>
-              <div style={{ padding: "5px 0" }}>
-                <Label>
-                  <span style={{ fontWeight: 500 }}>Email Address</span>
-                  <InputGroup
-                    fill
-                    value={credentials.email}
-                    onChange={handleChange}
-                    name="email"
-                    required
-                  />
-                </Label>
+              <div className="mb-4 pb-1.5">
+                <LabeledInput2
+                  label="Email Address"
+                  value={credentials.email}
+                  onChange={handleChange}
+                  name="email"
+                  type="email"
+                  required
+                />
               </div>
-              <div style={{ padding: "5px 0" }}>
-                <Label>
-                  <span style={{ fontWeight: 500 }}>Password</span>
-                  <InputGroup
-                    fill
-                    value={credentials.password}
-                    onChange={handleChange}
-                    name="password"
-                    type="password"
-                    required
-                  />
-                </Label>
+              <div className="mb-4 pb-1.5">
+                <LabeledInput2
+                  label="Password"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  name="password"
+                  type="password"
+                  required
+                />
               </div>
               <PrimaryButton text="Sign In" type="submit" fill />
             </form>
+          </div>
+          <span style={{ padding: "1rem 0" }}>
+            <TextOverLine text="OR" />
+          </span>
+          <div>
+            <button
+              type="button"
+              className="w-full inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-1.5 text-base font-medium text-gray-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Generate Credentials
+            </button>
           </div>
           <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
