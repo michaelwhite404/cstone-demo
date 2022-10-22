@@ -4,7 +4,7 @@ import LabeledInput2 from "../../components/LabeledInput2";
 import PrimaryButton from "../../components/PrimaryButton/PrimaryButton";
 import TextOverLine from "../../components/TextOverLine";
 import { useAuth, useDocTitle, useToasterContext } from "../../hooks";
-import "./Home,.sass";
+import "./Home.sass";
 
 export default function Home() {
   useDocTitle("Login Page | School App");
