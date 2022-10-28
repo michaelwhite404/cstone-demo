@@ -23,8 +23,8 @@ export default function PaginationNumbers({
     const delta = 1;
     const left = current - delta;
     const right = current + delta + 1;
-    const range = [];
-    const rangeWithDots = [];
+    const range: number[] = [];
+    const rangeWithDots: (number | string)[] = [];
     let l: number | undefined;
 
     for (let i = 1; i <= pageCount; i++) {

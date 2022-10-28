@@ -136,7 +136,7 @@ interface AddEntryProps {
 }
 
 const createTimes = (interval: number = 15) => {
-  const times = []; // time array
+  const times: string[] = []; // time array
   let tt = 0; // start time
   const ap = ["AM", "PM"]; // AM-PM
 
