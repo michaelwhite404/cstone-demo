@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Div100vh from "react-div-100vh";
 import { useEffect } from "react";
-import DevTag from "./components/DevTag";
+// import DevTag from "./components/DevTag";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Topbar from "./components/Topbar/Topbar";
 import { useAuth, useSocket, useToasterContext, useWindowSize } from "./hooks";

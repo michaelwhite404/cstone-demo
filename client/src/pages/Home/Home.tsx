@@ -68,7 +68,6 @@ export default function Home() {
               Generate Credentials
             </button>
           </div>
-          <span className="motto-text">Love. Integrity. Opportunity. Nobilty. Strength.</span>
         </div>
         <div
           className="login-image-banner"

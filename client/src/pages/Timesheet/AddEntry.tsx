@@ -41,6 +41,7 @@ export default function AddEntry(props: AddEntryProps) {
       timeEnd: set(entry.date, getTimes(entry.timeEnd)).toISOString(),
     });
   };
+  console.log(props.user?.departments);
 
   return (
     <div className="p-10">
