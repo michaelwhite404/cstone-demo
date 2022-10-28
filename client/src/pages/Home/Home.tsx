@@ -23,6 +23,9 @@ export default function Home() {
       .catch((err) => showToaster(err.message, "danger"));
   };
 
+  const createCredentials = () =>
+    setCredentials({ email: "knicolas@school-email.org", password: "iloveschool1" });
+
   return (
     <div>
       <Div100vh className="home-container">
@@ -64,6 +67,7 @@ export default function Home() {
             <button
               type="button"
               className="w-full inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-1.5 text-base font-medium text-gray-500 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              onClick={createCredentials}
             >
               Generate Credentials
             </button>

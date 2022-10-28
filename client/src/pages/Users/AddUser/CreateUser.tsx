@@ -114,11 +114,6 @@ export default function CreateUser(props: CreateUserProps) {
     setUser({ ...user, [name]: value });
   };
 
-  const handleCheckboxChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    // @ts-ignore
-    setUser({ ...user, [e.target.name]: !user[e.target.name] });
-  };
-
   const submittable =
     user.firstName &&
     user.lastName &&
@@ -261,24 +256,6 @@ export default function CreateUser(props: CreateUserProps) {
               <Divider />
             </div>
             <div>
-              <div className="relative flex items-start pt-4 pb-6">
-                <div className="mr-3 flex h-5 items-center">
-                  <input
-                    id="doNotAddGoogleUserCheckbox"
-                    name="doNotAddGoogleUser"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    checked={user.doNotAddGoogleUser}
-                    onChange={handleCheckboxChange}
-                  />
-                </div>
-                <div className="min-w-0 flex-1 text-sm">
-                  <label htmlFor="doNotAddGoogleUserCheckbox">
-                    <span className="select-none font-semibold text-gray-700">DO NOT</span> add user
-                    to Google Admin
-                  </label>
-                </div>
-              </div>
               {/* <label className="block text-sm font-medium text-gray-700 mb-2">Password</label> */}
               {!user.doNotAddGoogleUser && (
                 <RadioGroup value={selected} onChange={setSelected}>
