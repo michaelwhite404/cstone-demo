@@ -10,7 +10,7 @@ import {
 } from "@models";
 import { DepartmentDocument, EmployeeDocument, EmployeeModel } from "@@types/models";
 import { APIFeatures, AppError, catchAsync } from "@utils";
-import { ticketEvent } from "@events";
+// import { ticketEvent } from "@events";
 
 export const getAllTickets = catchAsync(async (req, res) => {
   const query = Ticket.find({
@@ -79,7 +79,7 @@ export const createTicket = catchAsync(async (req, res, next) => {
     select: "name email fullName",
   });
   res.sendJson(201, { ticket });
-  ticketEvent.submit(ticket);
+  // ticketEvent.submit(ticket);
 });
 
 export const addTicketUpdate = catchAsync(async (req, res, next) => {
@@ -126,7 +126,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
       };
       ticket.updates ? ticket.updates.push(comment) : (ticket.updates = [comment]);
       newTicket = ticket;
-      ticketEvent.comment(ticketCommentUpdate);
+      // ticketEvent.comment(ticketCommentUpdate);
       break;
     case "ASSIGN":
       if (isOnlySubmittedUser)
@@ -153,7 +153,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
             )
           );
         // Create ticket update
-        const update = await TicketAssignUpdate.create({
+        await TicketAssignUpdate.create({
           ...data,
           assign: req.body.assign,
           op: req.body.op,
@@ -167,7 +167,7 @@ export const addTicketUpdate = catchAsync(async (req, res, next) => {
           select: "name email image slug fullName comment assign op date createdBy",
           populate: { path: "assign createdBy", select: "fullName email image slug" },
         });
-        ticketEvent.assign(update);
+        // ticketEvent.assign(update);
         break;
       }
       // If operation is remove
@@ -238,5 +238,5 @@ export const closeTicket = catchAsync(async (req, res, next) => {
   await ticket.save();
   await ticket.populate({ path: "closedBy", select: "email image slug fullName" }).execPopulate();
   res.sendJson(200, { ticket });
-  ticketEvent.close(ticket);
+  // ticketEvent.close(ticket);
 });
